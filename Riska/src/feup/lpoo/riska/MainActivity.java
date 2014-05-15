@@ -54,7 +54,7 @@ public class MainActivity extends SimpleBaseGameActivity {
 		mFont.load();
 	}
 
-	private void loadGraphics() {
+	public void loadGraphics() {
 		BitmapTextureAtlasTextureRegionFactory.setAssetBasePath("gfx/");
 		logoTexture = new BitmapTextureAtlas(getTextureManager(), 512, 512, TextureOptions.DEFAULT);
 		logoTextureRegion = BitmapTextureAtlasTextureRegionFactory.createFromAsset(logoTexture, this, 

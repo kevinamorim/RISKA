@@ -11,6 +11,8 @@ import feup.lpoo.riska.SplashScene;
 
 public class MainTests extends ActivityUnitTestCase<MainActivity> {
 	
+	private final float LOGO_WIDTH = 370;
+	
 	private MainActivity activity;
 	
 	public MainTests() {
@@ -27,13 +29,20 @@ public class MainTests extends ActivityUnitTestCase<MainActivity> {
 		
 		startActivity(intent, null, null);
 		activity = getActivity();
+		activity.onCreateEngineOptions();
 	}
 	
-	public void testCurrentScene() {
-		Scene scene = new SplashScene();
-		
-		activity.setCurrentScene(scene);
-		Assert.assertTrue(activity.mCurrentScene.equals(scene));
+//	public void testCurrentScene() {
+//		Scene scene = new SplashScene();
+//		
+//		activity.setCurrentScene(scene);
+//		Assert.assertTrue(activity.mCurrentScene.equals(scene));
+//	}
+	
+	public void testGraphicsLoad() {
+		activity.loadGraphics();
+		Assert.assertTrue(activity.logoTexture.getWidth() == LOGO_WIDTH);	
 	}
+	
 
 }
