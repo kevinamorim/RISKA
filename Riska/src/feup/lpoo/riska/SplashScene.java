@@ -1,9 +1,14 @@
 package feup.lpoo.riska;
 
+import org.andengine.entity.modifier.AlphaModifier;
 import org.andengine.entity.modifier.MoveXModifier;
 import org.andengine.entity.scene.Scene;
 import org.andengine.entity.scene.background.Background;
+import org.andengine.entity.sprite.Sprite;
 import org.andengine.entity.text.Text;
+import org.andengine.util.adt.color.Color;
+
+import android.opengl.GLES20;
 
 public class SplashScene extends Scene {
 	
@@ -11,30 +16,20 @@ public class SplashScene extends Scene {
 	
 	Text title, description;
 	
+	Sprite logoSprite;
+	
 	public SplashScene() {
 		
-		setBackground(new Background(0.3333f, 0.4196f, 0.1843f));
+		setBackground(new Background(Color.BLACK));
 		activity = MainActivity.getSharedInstance();
+	
+		logoSprite = new Sprite(activity.CAMERA_WIDTH/2, activity.CAMERA_HEIGHT/2, 
+				activity.logoTextureRegion, activity.getVertexBufferObjectManager());
 		
-//		title = new Text(0, 0, activity.mFont, activity.getString(R.string.title), 
-//				activity.getVertexBufferObjectManager());
-//		description = new Text(0, 0, activity.mFont, activity.getString(R.string.description),
-//				activity.getVertexBufferObjectManager());
-//		
-//		setText();
+		logoSprite.setBlendFunction(GLES20.GL_SRC_ALPHA, GLES20.GL_ONE_MINUS_SRC_ALPHA);
+		logoSprite.registerEntityModifier(new AlphaModifier(6f, 0f, 1f));
 		
+		attachChild(logoSprite);
 	}
 	
-	public void setText() {
-		title.setPosition(-title.getWidth(), activity.mCamera.getHeight()/2);
-		description.setPosition(-description.getWidth(), 
-				activity.mCamera.getHeight()/2 - title.getHeight()*2);
-		
-		attachChild(title);
-		attachChild(description);
-		
-		title.registerEntityModifier(new MoveXModifier(1, title.getX(), activity.mCamera.getWidth()/2));
-		description.registerEntityModifier(new MoveXModifier(1, description.getX(), activity.mCamera.getWidth()/2));
-	}
-
 }
