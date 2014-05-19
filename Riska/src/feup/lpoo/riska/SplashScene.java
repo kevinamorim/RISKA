@@ -1,13 +1,15 @@
 package feup.lpoo.riska;
 
+import org.andengine.entity.IEntity;
 import org.andengine.entity.modifier.AlphaModifier;
-import org.andengine.entity.modifier.MoveXModifier;
+import org.andengine.entity.modifier.DelayModifier;
+import org.andengine.entity.modifier.IEntityModifier.IEntityModifierListener;
+import org.andengine.util.modifier.IModifier;
 import org.andengine.entity.scene.Scene;
 import org.andengine.entity.scene.background.Background;
 import org.andengine.entity.sprite.Sprite;
 import org.andengine.entity.text.Text;
 import org.andengine.util.adt.color.Color;
-
 import android.opengl.GLES20;
 
 public class SplashScene extends Scene {
@@ -30,6 +32,30 @@ public class SplashScene extends Scene {
 		logoSprite.registerEntityModifier(new AlphaModifier(6f, 0f, 1f));
 		
 		attachChild(logoSprite);
+		
+		loadResources();
+	}
+
+	private void loadResources() {
+		DelayModifier dMod = new DelayModifier(2, 
+				new IEntityModifierListener() {
+		
+					@Override 
+					public void onModifierStarted(IModifier<IEntity> arg0, IEntity arg1) {
+						// FUCK
+					}
+		
+					@Override
+					public void onModifierFinished(IModifier<IEntity> arg0, IEntity arg1) {
+						activity.setCurrentScene(new MainMenuScene());
+					}
+
+				});
+		
+		
+		registerEntityModifier(dMod);
+
+		
 	}
 	
 }

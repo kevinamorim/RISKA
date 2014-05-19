@@ -4,7 +4,7 @@ import java.util.Random;
 
 public class Dice extends Element {
 	
-	public static int MIN_VALUE = 2;
+	public static int MIN_VALUE = 1;
 	public static int MAX_VALUE = 6;
 	
 	private int value;
