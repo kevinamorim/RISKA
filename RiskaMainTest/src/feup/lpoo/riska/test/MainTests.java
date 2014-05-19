@@ -6,6 +6,7 @@ import java.util.List;
 import junit.framework.Assert;
 import android.content.Intent;
 import android.test.ActivityUnitTestCase;
+import android.util.Log;
 import feup.lpoo.riska.Dice;
 import feup.lpoo.riska.MainActivity;
 
@@ -31,7 +32,7 @@ public class MainTests extends ActivityUnitTestCase<MainActivity> {
 	
 	public void testDice() {
 		
-		int NUMBER_OF_TESTS = 100;
+		int NUMBER_OF_TESTS = 5000;
 		
 		Dice dice = new Dice(0, 0);
 		
@@ -44,8 +45,8 @@ public class MainTests extends ActivityUnitTestCase<MainActivity> {
 		
 		Arrays.sort(values);
 		
-		Assert.assertTrue(values[0] >= dice.MIN_VALUE);
-		Assert.assertTrue(values[values.length - 1] <= dice.MAX_VALUE);
+		Assert.assertTrue(values[0] == Dice.MIN_VALUE);
+		Assert.assertTrue(values[values.length - 1] == Dice.MAX_VALUE);
 		
 	}
 	
