@@ -1,18 +1,16 @@
 package feup.lpoo.riska.test;
 
-import org.andengine.entity.scene.Scene;
+import java.util.Arrays;
+import java.util.List;
 
 import junit.framework.Assert;
 import android.content.Intent;
 import android.test.ActivityUnitTestCase;
-import android.util.Log;
+import feup.lpoo.riska.Dice;
 import feup.lpoo.riska.MainActivity;
-import feup.lpoo.riska.SplashScene;
 
 public class MainTests extends ActivityUnitTestCase<MainActivity> {
-	
-	private final float LOGO_WIDTH = 370;
-	
+		
 	private MainActivity activity;
 	
 	public MainTests() {
@@ -29,20 +27,27 @@ public class MainTests extends ActivityUnitTestCase<MainActivity> {
 		
 		startActivity(intent, null, null);
 		activity = getActivity();
-		activity.onCreateEngineOptions();
 	}
 	
-//	public void testCurrentScene() {
-//		Scene scene = new SplashScene();
-//		
-//		activity.setCurrentScene(scene);
-//		Assert.assertTrue(activity.mCurrentScene.equals(scene));
-//	}
-	
-	public void testGraphicsLoad() {
-		activity.loadGraphics();
-		Assert.assertTrue(activity.logoTexture.getWidth() == LOGO_WIDTH);	
+	public void testDice() {
+		
+		int NUMBER_OF_TESTS = 100;
+		
+		Dice dice = new Dice(0, 0);
+		
+		int[] values = new int[NUMBER_OF_TESTS];
+		
+		for(int i = 0; i < NUMBER_OF_TESTS; i++) {
+			dice.generateNewValue();
+			values[i] = dice.getValue();
+		}
+		
+		Arrays.sort(values);
+		
+		Assert.assertTrue(values[0] >= dice.MIN_VALUE);
+		Assert.assertTrue(values[values.length - 1] <= dice.MAX_VALUE);
+		
 	}
 	
-
+	
 }
