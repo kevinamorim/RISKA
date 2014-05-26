@@ -6,18 +6,6 @@ public class Card extends Element {
 	
 	protected Sprite template;
 	protected String name;
-
-	public Card(float x, float y) {
-		super(x,y);
-		this.template = null;
-		this.name = null;
-	}
-	
-	public Card(float x, float y, String TAG) {
-		super(x,y,TAG);
-		this.template = null;
-		this.name = null;
-	}
 	
 	public Card(float x, float y, Sprite t, String name) {
 		super(x,y);
