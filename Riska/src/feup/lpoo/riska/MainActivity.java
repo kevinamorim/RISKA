@@ -2,26 +2,29 @@ package feup.lpoo.riska;
 import java.io.IOException;
 
 import org.andengine.engine.camera.Camera;
+import org.andengine.engine.handler.timer.ITimerCallback;
+import org.andengine.engine.handler.timer.TimerHandler;
 import org.andengine.engine.options.EngineOptions;
 import org.andengine.engine.options.ScreenOrientation;
 import org.andengine.engine.options.resolutionpolicy.RatioResolutionPolicy;
 import org.andengine.entity.scene.Scene;
-import org.andengine.entity.scene.background.Background;
 import org.andengine.opengl.font.Font;
 import org.andengine.opengl.font.FontFactory;
 import org.andengine.opengl.texture.TextureOptions;
 import org.andengine.opengl.texture.atlas.bitmap.BitmapTextureAtlas;
 import org.andengine.opengl.texture.atlas.bitmap.BitmapTextureAtlasTextureRegionFactory;
 import org.andengine.opengl.texture.region.ITextureRegion;
+import org.andengine.ui.activity.BaseGameActivity;
 import org.andengine.ui.activity.SimpleBaseGameActivity;
+import org.andengine.util.adt.color.Color;
 
+import feup.lpoo.riska.SceneManager.SceneType;
 import android.graphics.Typeface;
 
-
-public class MainActivity extends SimpleBaseGameActivity {
+public class MainActivity extends BaseGameActivity {	
 	
-	static final int CAMERA_WIDTH = 800;
-	static final int CAMERA_HEIGHT = 480;
+	final static int CAMERA_WIDTH = 854;
+	final static int CAMERA_HEIGHT = 480;
 	
 	public Font mFont;
 	public Camera mCamera;
@@ -29,9 +32,7 @@ public class MainActivity extends SimpleBaseGameActivity {
 	public Scene mCurrentScene;
 	public static MainActivity instance;
 	
-	// Textures
-	public BitmapTextureAtlas logoTexture;
-	public ITextureRegion logoTextureRegion;
+	protected SceneManager sceneManager;
 
 	@Override
 	public EngineOptions onCreateEngineOptions() {
@@ -43,38 +44,77 @@ public class MainActivity extends SimpleBaseGameActivity {
 		return new EngineOptions(true, ScreenOrientation.LANDSCAPE_SENSOR, 
 				new RatioResolutionPolicy(CAMERA_WIDTH, CAMERA_HEIGHT), mCamera);
 	}
-
+	
 	@Override
-	protected void onCreateResources() throws IOException {
+	public void onCreateResources(
+			OnCreateResourcesCallback pOnCreateResourcesCallback)
+			throws IOException {
 		
-		loadGraphics();
+		sceneManager = new SceneManager(this, mEngine, mCamera);
+		sceneManager.loadSplashSceneResources();
 		
-		mFont = FontFactory.create(this.getFontManager(), this.getTextureManager(), 
-				256, 256, Typeface.create(Typeface.DEFAULT, Typeface.BOLD), 32);
-		mFont.load();
-	}
-
-	public void loadGraphics() {
-		BitmapTextureAtlasTextureRegionFactory.setAssetBasePath("gfx/");
-		logoTexture = new BitmapTextureAtlas(getTextureManager(), 512, 512, TextureOptions.DEFAULT);
-		logoTextureRegion = BitmapTextureAtlasTextureRegionFactory.createFromAsset(logoTexture, this, 
-				"logo.png", 0, 0);
-		logoTexture.load();
+		pOnCreateResourcesCallback.onCreateResourcesFinished();
+		
 	}
 
 	@Override
-	protected Scene onCreateScene() {
-		mCurrentScene = new SplashScene();
-		return mCurrentScene;
+	public void onCreateScene(OnCreateSceneCallback pOnCreateSceneCallback)
+			throws IOException {
+		
+		pOnCreateSceneCallback.onCreateSceneFinished(sceneManager.createSplashScene());
+		
 	}
+
+	@Override
+	public void onPopulateScene(Scene pScene,
+			OnPopulateSceneCallback pOnPopulateSceneCallback)
+			throws IOException {
+		
+		mEngine.registerUpdateHandler(new TimerHandler(1f, new ITimerCallback() {
+			
+			public void onTimePassed(final TimerHandler pTimerHandler) {
+				
+				mEngine.unregisterUpdateHandler(pTimerHandler);
+				
+				sceneManager.loadMainMenuResources();
+				sceneManager.createGameScenes();
+				sceneManager.setCurrentScene(SceneType.MENU);
+				
+			}
+		}));
+		
+		pOnPopulateSceneCallback.onPopulateSceneFinished();
+		
+	}
+	
+	/**
+	 * Handles what happens when the back button is pressed.
+	 */
+	@Override
+	public void onBackPressed() {
+		// TODO
+	}
+
+	
+/*
+ * Just kept this for future reference.
+ * 
+ */
+//	private void loadFonts() {
+//		
+//		FontFactory.setAssetBasePath("fonts/");
+//		
+//		mFont = FontFactory.createFromAsset(mEngine.getFontManager(),
+//	            mEngine.getTextureManager(), 256, 256, TextureOptions.BILINEAR,
+//	            this.getAssets(), "reprise.ttf", 125f, true,
+//	            Color.BLACK_ABGR_PACKED_INT);
+//		
+//	    mFont.load();
+//	
+//	}
 	
 	public static MainActivity getSharedInstance() {
 		 return instance;
 	}
 	
-	public void setCurrentScene(Scene scene) {
-		mCurrentScene = scene;
-		getEngine().setScene(mCurrentScene);
-	}
-
 }
