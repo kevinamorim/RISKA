@@ -6,12 +6,6 @@ import org.andengine.entity.scene.menu.item.IMenuItem;
 import org.andengine.entity.scene.menu.item.TextMenuItem;
 import org.andengine.entity.scene.menu.MenuScene.IOnMenuItemClickListener;
 import org.andengine.entity.sprite.Sprite;
-<<<<<<< HEAD
-=======
-import org.andengine.input.touch.TouchEvent;
-
-import android.util.Log;
->>>>>>> 4542bda479f6a00084e8c3c3e0c2f312ebca28a4
 
 public class MainMenuScene extends MenuScene implements IOnMenuItemClickListener {
 	
@@ -20,11 +14,7 @@ public class MainMenuScene extends MenuScene implements IOnMenuItemClickListener
 	
 	final int MENU_START = 0;
 	
-<<<<<<< HEAD
 	Sprite backgroundSprite;
-=======
-	Sprite testSprite;
->>>>>>> 4542bda479f6a00084e8c3c3e0c2f312ebca28a4
 	
 	public MainMenuScene() {
 		
@@ -40,40 +30,9 @@ public class MainMenuScene extends MenuScene implements IOnMenuItemClickListener
 				activity.getString(R.string.start_button), 
 				activity.getVertexBufferObjectManager());
 		
-<<<<<<< HEAD
 		startButton.setPosition(mCamera.getWidth()/2, mCamera.getHeight()/2);
 
 		setOnMenuItemClickListener(this);
-=======
-		startButton.setPosition(mCamera.getWidth()/2 - startButton.getWidth()/2,
-				mCamera.getHeight()/2 - startButton.getHeight()/2);
-		
-		//addMenuItem(startButton);
-		
-		//this.setOnMenuItemClickListener(this);
-		
-		/* TESTING */
-		
-		testSprite = new Sprite(activity.CAMERA_WIDTH/2, activity.CAMERA_HEIGHT/2, 
-				activity.logoTextureRegion, activity.getVertexBufferObjectManager()) {
-
-					@Override
-					public boolean onAreaTouched(TouchEvent ev, float x, float y) {
-						
-						Log.d("Touched: ", "touched lol");
-						
-						return true;
-					}
-			
-		};
-		
-		this.setOnMenuItemClickListener(this);
-		this.registerTouchArea(testSprite);
-		this.setTouchAreaBindingOnActionDownEnabled(true);
-		this.attachChild(testSprite);
-		
-		/* END TESTING */
->>>>>>> 4542bda479f6a00084e8c3c3e0c2f312ebca28a4
 		
 		setBackground(background);
 		addMenuItem(startButton);

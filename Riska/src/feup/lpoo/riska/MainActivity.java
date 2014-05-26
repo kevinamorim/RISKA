@@ -95,24 +95,6 @@ public class MainActivity extends BaseGameActivity {
 		// TODO
 	}
 
-	
-/*
- * Just kept this for future reference.
- * 
- */
-//	private void loadFonts() {
-//		
-//		FontFactory.setAssetBasePath("fonts/");
-//		
-//		mFont = FontFactory.createFromAsset(mEngine.getFontManager(),
-//	            mEngine.getTextureManager(), 256, 256, TextureOptions.BILINEAR,
-//	            this.getAssets(), "reprise.ttf", 125f, true,
-//	            Color.BLACK_ABGR_PACKED_INT);
-//		
-//	    mFont.load();
-//	
-//	}
-	
 	public static MainActivity getSharedInstance() {
 		 return instance;
 	}
