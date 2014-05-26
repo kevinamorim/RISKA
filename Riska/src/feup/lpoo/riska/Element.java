@@ -1,13 +1,24 @@
 package feup.lpoo.riska;
 
-public class Element {
+public class Element extends Object {
 	
-	private float x;
-	private float y;
+	protected float x;
+	protected float y;
 	
-	public Element(float x, float y) {
+	// TODO private float depth;
+	
+	public String TAG; 
+	
+	protected Element(float x, float y) {
 		this.x = x;
 		this.y = y;
+		this.TAG = null;
+	}
+	
+	protected Element(float x, float y, String TAG) {
+		this.x = x;
+		this.y = y;
+		this.TAG = TAG;
 	}
 	
 	public float getX() {
@@ -24,6 +35,14 @@ public class Element {
 	
 	public void setY(float y) {
 		this.y = y;
+	}
+	
+	public String getTAG() {
+		return TAG;
+	}
+
+	public void setTAG(String tAG) {
+		TAG = tAG;
 	}
 
 }

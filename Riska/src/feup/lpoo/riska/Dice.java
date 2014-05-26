@@ -7,10 +7,11 @@ public class Dice extends Element {
 	public static int MIN_VALUE = 1;
 	public static int MAX_VALUE = 6;
 	
-	private int value;
+	protected int value;
 
 	public Dice(float x, float y) {
 		super(x, y);
+		this.value = 0;
 	}
 
 	/**

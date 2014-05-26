@@ -6,3 +6,5 @@
 /RiskaMainTest/bin
 /RiskaMainTest/gen
 /RiskaMainTest/project.properties
+*.classpath
+Riska/lint.xml
