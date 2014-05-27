@@ -3,27 +3,18 @@ package feup.lpoo.riska;
 import org.andengine.entity.scene.background.SpriteBackground;
 import org.andengine.entity.scene.menu.MenuScene;
 import org.andengine.entity.scene.menu.item.IMenuItem;
-import org.andengine.entity.scene.menu.item.TextMenuItem;
 import org.andengine.entity.scene.menu.MenuScene.IOnMenuItemClickListener;
 import org.andengine.entity.sprite.Sprite;
-import org.andengine.opengl.texture.TextureOptions;
-import org.andengine.opengl.texture.atlas.bitmap.BitmapTextureAtlas;
-import org.andengine.opengl.texture.atlas.bitmap.BitmapTextureAtlasTextureRegionFactory;
-import org.andengine.util.adt.color.Color;
 
-import android.graphics.Bitmap;
-import android.util.Log;
-import feup.lpoo.riska.region.color.RegionColor;
-import feup.lpoo.riska.region.creator.RegionCreator;
+import feup.lpoo.riska.SceneManager.SceneType;
 
 public class MainMenuScene extends MenuScene implements IOnMenuItemClickListener {
 	
 	MainActivity activity; 
 	SceneManager instance;
-	
-	RegionCreator creator;
-	
+		
 	final int MENU_START = 0;
+	final int MENU_OPTIONS = 1;
 	
 	Sprite backgroundSprite;
 	
@@ -34,38 +25,31 @@ public class MainMenuScene extends MenuScene implements IOnMenuItemClickListener
 		activity = MainActivity.getSharedInstance();
 		instance = SceneManager.getSharedInstance();	
 		
-		evaluateRegions(); /* NEW */
-		
 		SpriteBackground background = new SpriteBackground(new Sprite(MainActivity.CAMERA_WIDTH/2, MainActivity.CAMERA_HEIGHT/2, 
 				instance.mMenuBackgroundTextureRegion, activity.getVertexBufferObjectManager()));
 
-		IMenuItem startButton = new TextMenuItem(MENU_START, instance.mFont, 
-				activity.getString(R.string.start_button), 
+		final AnimatedTextButtonSpriteMenuItem button_start = new AnimatedTextButtonSpriteMenuItem(MENU_START, instance.mStartButtonTiledTextureRegion.getWidth(), 
+				instance.mStartButtonTiledTextureRegion.getHeight(), instance.mStartButtonTiledTextureRegion, 
+				activity.getVertexBufferObjectManager(), "START", instance.mFont);
+		
+		final AnimatedButtonSpriteMenuItem button_options = new AnimatedButtonSpriteMenuItem(MENU_OPTIONS, (float)(0.3*instance.mOptionsButtonTiledTextureRegion.getWidth()),
+				(float)(0.3*instance.mOptionsButtonTiledTextureRegion.getHeight()), instance.mOptionsButtonTiledTextureRegion, 
 				activity.getVertexBufferObjectManager());
 		
-		startButton.setPosition(mCamera.getWidth()/2, mCamera.getHeight()/2);
-
-		setOnMenuItemClickListener(this);
+		final int centerX = MainActivity.CAMERA_WIDTH/2, centerY = MainActivity.CAMERA_HEIGHT/2;
+		
+		button_start.setPosition(centerX, centerY);
+		
+		button_options.setPosition(button_options.getWidth()/2, button_options.getHeight()/2);
 		
 		setBackground(background);
-		//addMenuItem(startButton);
+		addMenuItem(button_start);
+		addMenuItem(button_options);
+		
+		setOnMenuItemClickListener(this);
 	
 	}
 	
-	/*
-	 * NEW REGION CREATOR
-	 */
-	private void evaluateRegions() {
-
-		creator = new RegionCreator();
-		
-		Log.d("regions", "Will now create the regions.");
-		
-		creator = RegionCreator.getSharedInstance();
-		creator.CreateAllRegions(instance.mapRegions, new RegionColor(Color.BLACK));
-		
-		Log.d("regions", "Has created the regions.");
-	}
 
 	@Override
 	public boolean onMenuItemClicked(MenuScene pMenuScene, IMenuItem pMenuItem,
@@ -73,8 +57,11 @@ public class MainMenuScene extends MenuScene implements IOnMenuItemClickListener
 		switch(pMenuItem.getID()) {
 		case MENU_START:
 			break;
+		case MENU_OPTIONS:
+			instance.setCurrentScene(SceneType.OPTIONS);
+			break;
 		default:
-				break;
+			break;
 		}
 		return false;
 	}
