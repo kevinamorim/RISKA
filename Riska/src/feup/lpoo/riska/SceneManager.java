@@ -1,5 +1,8 @@
 package feup.lpoo.riska;
 
+import java.io.IOException;
+import java.io.InputStream;
+
 import org.andengine.engine.Engine;
 import org.andengine.engine.camera.Camera;
 import org.andengine.entity.scene.Scene;
@@ -10,8 +13,11 @@ import org.andengine.opengl.texture.atlas.bitmap.BitmapTextureAtlas;
 import org.andengine.opengl.texture.atlas.bitmap.BitmapTextureAtlasTextureRegionFactory;
 import org.andengine.opengl.texture.region.ITextureRegion;
 
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
 import android.graphics.Color;
 import android.graphics.Typeface;
+import android.util.Log;
 
 public class SceneManager {
 	
@@ -42,6 +48,8 @@ public class SceneManager {
 	protected BitmapTextureAtlas mFontTexture;
 	protected Font mFont;
 	
+	public Bitmap mapRegions;
+	
 	
 	public SceneManager(MainActivity activity, Engine engine, Camera camera) {
 		this.activity = activity;
@@ -60,6 +68,20 @@ public class SceneManager {
 	public void loadSplashSceneResources() {
 		
 		BitmapTextureAtlasTextureRegionFactory.setAssetBasePath("gfx/");
+		
+		/* 
+		 * NEW READ BITMAP
+		 */
+		InputStream bitmapIs = null;
+		try {
+			bitmapIs = activity.getAssets().open("gfx/map_regions.png");
+			//bitmapIs = activity.getAssets().open("gfx/test.png");
+			mapRegions = BitmapFactory.decodeStream(bitmapIs);
+		} catch (IOException e) {
+		}
+		/*
+		 * END OF NEW READ BITMAP
+		 */
 		
 		logoTexture = new BitmapTextureAtlas(activity.getTextureManager(), 512, 512, TextureOptions.DEFAULT);
 		

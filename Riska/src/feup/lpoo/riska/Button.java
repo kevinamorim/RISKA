@@ -8,7 +8,7 @@ public class Button extends Element {
 	protected String text;
 	
 	public Button(float x, float y, Sprite t, String text) {
-		super(x,y);
+		super(x,y, null);
 		this.template = t;
 		this.text = text;
 	}

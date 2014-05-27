@@ -4,20 +4,11 @@ public class Unit extends Element {
 	
 	protected float attack;
 	protected float defense;
-	protected String name;
 	
 	public Unit(float x, float y, float att, float def, String name) {
-		super(x,y);
+		super(x,y, name);
 		this.attack = att;
 		this.defense = def;
-		this.name = name;
-	}
-	
-	public Unit(float x, float y, float att, float def, String name, String TAG) {
-		super(x,y, TAG);
-		this.attack = att;
-		this.defense = def;
-		this.name = name;
 	}
 
 	public float getAttack() {

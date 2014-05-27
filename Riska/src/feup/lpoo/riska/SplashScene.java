@@ -40,7 +40,7 @@ public class SplashScene extends Scene {
 
 	private void loadResources() {
 		
-		DelayModifier delayModifier = new DelayModifier(2) {
+		DelayModifier delayModifier = new DelayModifier(4) {
 			
 			@Override
 			protected void onModifierFinished(IEntity pItem) {

@@ -92,7 +92,7 @@ public class MainActivity extends BaseGameActivity {
 	 */
 	@Override
 	public void onBackPressed() {
-		// TODO
+		this.finish();
 	}
 
 	public static MainActivity getSharedInstance() {

@@ -1,32 +1,51 @@
 package feup.lpoo.riska;
 
-import org.andengine.util.adt.color.Color;
+import feup.lpoo.riska.region.color.RegionColor;
+import android.graphics.Point;
 
 public class Region extends Element {
+	
+	protected String name;
 
-	protected Color color;
+	protected RegionColor color;
+	protected Point stratCenter;
 	
-	public Region(float x, float y) {
-		super(x, y);
+	protected int width;
+	protected int height;
+	
+	@Override
+	public String toString() {
+		return "Region: '" + this.name + "' at (" + (int)this.x + "," + (int)this.y + ") sized (" + this.width + "," + this.height + ")";
+	}
+	
+	public Region(float x, float y, int width, int height, String name) {
+		super(x, y, name);
+		this.width = width;
+		this.height = height;
 		this.color = null;
 	}
 	
-	public Region(float x, float y, String TAG) {
-		super(x, y, TAG);
-		this.color = null;
-	}
-	
-	public Region(float x, float y, Color c, String TAG) {
-		super(x, y, TAG);
+	public Region(float x, float y, int width, int height, RegionColor c, String name) {
+		super(x, y, name);
+		this.width = width;
+		this.height = height;
 		this.color = c;
 	}
 
-	public Color getColor() {
+	public RegionColor getColor() {
 		return color;
 	}
 
-	public void setColor(Color color) {
+	public void setRegionColor(RegionColor color) {
 		this.color = color;
+	}
+	
+	public void setStratCenter(int x, int y) {
+		this.stratCenter.set(x, y);
+	}
+	
+	public Point getStratCenter() {
+		return this.stratCenter;
 	}
 
 }

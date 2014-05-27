@@ -5,18 +5,10 @@ import org.andengine.entity.sprite.Sprite;
 public class Card extends Element {
 	
 	protected Sprite template;
-	protected String name;
 	
 	public Card(float x, float y, Sprite t, String name) {
-		super(x,y);
+		super(x,y,name);
 		this.template = t;
-		this.name = name;
-	}
-	
-	public Card(float x, float y, String TAG, Sprite t, String name) {
-		super(x,y,TAG);
-		this.template = t;
-		this.name = name;
 	}
 
 	public Sprite getTemplate() {

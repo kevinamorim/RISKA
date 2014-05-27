@@ -6,6 +6,6 @@
 	<classpathentry exported="true" kind="con" path="com.android.ide.eclipse.adt.LIBRARIES"/>
 	<classpathentry exported="true" kind="con" path="com.android.ide.eclipse.adt.DEPENDENCIES"/>
 	<classpathentry exported="true" kind="src" path="/AndEngine"/>
-	<classpathentry exported="true" kind="lib" path="C:/Users/Kevin/Documents/GitHub/AndEngine/bin/andengine.jar" sourcepath="/AndEngine/src"/>
+	<classpathentry kind="lib" path="/AndEngine/bin/andengine.jar"/>
 	<classpathentry kind="output" path="bin/classes"/>
 </classpath>
