@@ -6,7 +6,7 @@ public class GoalCard extends Card {
 	
 	protected String description;
 
-	public GoalCard(float x, float y, Sprite t, String name, String descr) {
+	public GoalCard(int x, int y, Sprite t, String name, String descr) {
 		super(x, y, t, name);
 		this.description = descr;
 	}

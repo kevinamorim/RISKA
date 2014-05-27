@@ -5,7 +5,7 @@ public class Unit extends Element {
 	protected float attack;
 	protected float defense;
 	
-	public Unit(float x, float y, float att, float def, String name) {
+	public Unit(int x, int y, float att, float def, String name) {
 		super(x,y, name);
 		this.attack = att;
 		this.defense = def;

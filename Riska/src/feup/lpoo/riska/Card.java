@@ -6,7 +6,7 @@ public class Card extends Element {
 	
 	protected Sprite template;
 	
-	public Card(float x, float y, Sprite t, String name) {
+	public Card(int x, int y, Sprite t, String name) {
 		super(x,y,name);
 		this.template = t;
 	}

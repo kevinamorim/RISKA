@@ -52,6 +52,8 @@ public class RegionCreator {
 		Log.d("regions", "Creating transparency maps...");
 		
 		addMasksToRegions(special);
+		
+		Log.d("regions", "All created. Returning...");
 	}
 
 	private void addMasksToRegions(RegionColor special) {
@@ -61,9 +63,9 @@ public class RegionCreator {
 			Bitmap regionSubMap = Bitmap.createBitmap(src, (int)region.getX(), (int)region.getY(), region.getWidth(), region.getHeight());
 			mask = new TransparencyMask(regionSubMap, region, special);
 			region.setMask(mask);
+			//region.getMask().print();
 		}
 		
-		//regions.get(0).getMask().print();
 	}
 
 	private void evaluateRegionsPosition(RegionColor special) {
@@ -124,7 +126,7 @@ public class RegionCreator {
 			int width = regionLimits.get(i).second.x - x;
 			int height = regionLimits.get(i).second.y - y;
 			
-			regions.add(new Region(x, y, width, height, colors.get(i), "Region"));
+			regions.add(new Region(x, y, width, height, colors.get(i), "Region " + i));
 			Log.d("regions", regions.get(i).toString());
 		}
 	}
