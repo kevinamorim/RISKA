@@ -49,7 +49,8 @@ public class SceneManager {
 	protected Font mFont;
 	
 	public Bitmap mapRegions;
-	
+	public BitmapTextureAtlas mapTexture;
+	public ITextureRegion mapTextureRegion;
 	
 	public SceneManager(MainActivity activity, Engine engine, Camera camera) {
 		this.activity = activity;
@@ -75,7 +76,7 @@ public class SceneManager {
 		InputStream bitmapIs = null;
 		try {
 			bitmapIs = activity.getAssets().open("gfx/map_regions.png");
-			//bitmapIs = activity.getAssets().open("gfx/test.png");
+			//bitmapIs = activity.getAssets().open("gfx/map_influence.png");
 			mapRegions = BitmapFactory.decodeStream(bitmapIs);
 		} catch (IOException e) {
 		}

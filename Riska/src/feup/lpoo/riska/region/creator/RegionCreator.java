@@ -6,6 +6,7 @@ import org.andengine.util.adt.color.Color;
 
 import feup.lpoo.riska.Region;
 import feup.lpoo.riska.region.color.RegionColor;
+import feup.lpoo.riska.region.color.TransparencyMask;
 import android.graphics.Bitmap;
 import android.graphics.Point;
 import android.util.Log;
@@ -46,19 +47,47 @@ public class RegionCreator {
 		Log.d("regions", "Creating regions...");
 		
 		addRegionsToArray();
+		
+		Log.d("regions", "Number of Created Regions (total): " + regions.size() + " (" + colors.size() + ")");
+		Log.d("regions", "Creating transparency maps...");
+		
+		addMasksToRegions(special);
+	}
+
+	private void addMasksToRegions(RegionColor special) {
+		TransparencyMask mask;
+		
+		for(Region region: regions) {
+			Bitmap regionSubMap = Bitmap.createBitmap(src, (int)region.getX(), (int)region.getY(), region.getWidth(), region.getHeight());
+			mask = new TransparencyMask(regionSubMap, region, special);
+			region.setMask(mask);
+		}
+		
+		//regions.get(0).getMask().print();
 	}
 
 	private void evaluateRegionsPosition(RegionColor special) {
 		RegionColor col = new RegionColor();
 		
+		int done = 0;
+		
 		for(RegionColor c: colors) {
 			int Xmin = Integer.MAX_VALUE, Ymin = Integer.MAX_VALUE, Xmax = 0, Ymax = 0;
+//			boolean foundTop = false;
 			
 			for(int y = 0; y < src.getHeight() ; y++) {
+//				boolean foundBottom = false;
+				
 				for(int x = 0; x < src.getWidth() ; x++) {
 					col.set(src.getPixel(x, y));
 					
-					if(col.equals(c)) {		
+					if(col.equals(c)) {
+//						if(!foundTop) {
+//							foundTop = true;
+//						}
+//						
+//						foundBottom = true;
+						
 						if(x < Xmin) {
 							Xmin = x;
 						}
@@ -73,9 +102,17 @@ public class RegionCreator {
 						}
 					}
 				}
+				
+//				// Optimization
+//				if(foundTop && !foundBottom) {
+//					break;
+//				}
 			}
 			
 			regionLimits.add(new Pair<Point, Point>(new Point(Xmin, Ymin), new Point(Xmax, Ymax)));
+			Log.d("regions","Region " + done + " done");
+			done++;
+			
 			//Log.d("regions", "added: " + c.toString() + " at (" + Xmin + "," + Ymin + ") to (" + Xmax + "," + Ymax + ")");
 		}
 	}
@@ -121,6 +158,10 @@ public class RegionCreator {
 	
 	public static RegionCreator getSharedInstance() {
 		return instance;
+	}
+
+	public ArrayList<Region> getRegions() {
+		return regions;
 	}
 
 }

@@ -6,8 +6,12 @@ import org.andengine.entity.scene.menu.item.IMenuItem;
 import org.andengine.entity.scene.menu.item.TextMenuItem;
 import org.andengine.entity.scene.menu.MenuScene.IOnMenuItemClickListener;
 import org.andengine.entity.sprite.Sprite;
+import org.andengine.opengl.texture.TextureOptions;
+import org.andengine.opengl.texture.atlas.bitmap.BitmapTextureAtlas;
+import org.andengine.opengl.texture.atlas.bitmap.BitmapTextureAtlasTextureRegionFactory;
 import org.andengine.util.adt.color.Color;
 
+import android.graphics.Bitmap;
 import android.util.Log;
 import feup.lpoo.riska.region.color.RegionColor;
 import feup.lpoo.riska.region.creator.RegionCreator;
@@ -44,7 +48,7 @@ public class MainMenuScene extends MenuScene implements IOnMenuItemClickListener
 		setOnMenuItemClickListener(this);
 		
 		setBackground(background);
-		addMenuItem(startButton);
+		//addMenuItem(startButton);
 	
 	}
 	

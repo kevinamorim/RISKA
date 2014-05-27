@@ -30,4 +30,12 @@ public class Element extends Object {
 		this.y = y;
 	}
 
+	public String getName() {
+		return name;
+	}
+
+	public void setName(String name) {
+		this.name = name;
+	}
+
 }
