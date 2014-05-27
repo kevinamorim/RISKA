@@ -77,7 +77,7 @@ public class MainActivity extends BaseGameActivity {
 				mEngine.unregisterUpdateHandler(pTimerHandler);
 				
 				sceneManager.loadMainMenuResources();
-				sceneManager.createMenuScenes();
+				sceneManager.createGameScenes();
 				sceneManager.setCurrentScene(SceneType.MENU);
 				
 			}
