@@ -8,3 +8,4 @@
 /RiskaMainTest/project.properties
 *.classpath
 Riska/lint.xml
+Riska/.classpath
