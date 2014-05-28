@@ -9,7 +9,7 @@ public class Dice extends Element {
 	
 	protected int value;
 
-	public Dice(float x, float y) {
+	public Dice(int x, int y) {
 		super(x, y, null);
 		this.value = 0;
 	}

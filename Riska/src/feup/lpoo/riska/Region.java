@@ -16,10 +16,10 @@ public class Region extends Element {
 	
 	@Override
 	public String toString() {
-		return "Region: '" + this.name + "' at (" + (int)this.x + "," + (int)this.y + ") sized (" + this.width + "," + this.height + ")";
+		return "Region: '" + this.name + "' at (" + this.x + "," + this.y + ") sized (" + this.width + "," + this.height + ")";
 	}
 	
-	public Region(float x, float y, int width, int height, String name) {
+	public Region(int x, int y, int width, int height, String name) {
 		super(x, y, name);
 		this.width = width;
 		this.height = height;
@@ -27,7 +27,7 @@ public class Region extends Element {
 		this.mask = null;
 	}
 	
-	public Region(float x, float y, int width, int height, RegionColor c, String name) {
+	public Region(int x, int y, int width, int height, RegionColor c, String name) {
 		super(x, y, name);
 		this.width = width;
 		this.height = height;

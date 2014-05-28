@@ -9,3 +9,4 @@
 *.classpath
 /Riska/lint.xml
 /Riska/.classpath
+*.db

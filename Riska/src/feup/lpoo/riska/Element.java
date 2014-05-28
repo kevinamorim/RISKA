@@ -3,30 +3,30 @@ package feup.lpoo.riska;
 public class Element extends Object {
 	
 	protected String name;
-	protected float x;
-	protected float y;
+	protected int x;
+	protected int y;
 	
 	// TODO private float depth;
 	
-	protected Element(float x, float y, String name) {
+	protected Element(int x, int y, String name) {
 		this.x = x;
 		this.y = y;
-		this.name = null;
+		this.name = name;
 	}
 	
-	public float getX() {
+	public int getX() {
 		return x;
 	}
 	
-	public float getY() {
+	public int getY() {
 		return y;
 	}
 	
-	public void setX(float x) {
+	public void setX(int x) {
 		this.x = x;
 	}
 	
-	public void setY(float y) {
+	public void setY(int y) {
 		this.y = y;
 	}
 

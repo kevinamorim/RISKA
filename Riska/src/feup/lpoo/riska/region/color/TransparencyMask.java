@@ -4,6 +4,7 @@ import org.andengine.util.adt.color.Color;
 
 import feup.lpoo.riska.Region;
 import android.graphics.Bitmap;
+import android.graphics.Point;
 import android.util.Log;
 
 public class TransparencyMask {
@@ -21,31 +22,48 @@ public class TransparencyMask {
 		this.region = region;
 		this.regionColor = region.getColor();
 		this.special = special;
+		
+		createMask();
 	}
 	
-	public void init() {
+	public void createMask() {
 		boolean TRANSPARENT = false;
 		boolean OPAQUE = true;
 		
 		RegionColor comp = new RegionColor();
 		
-		for(int x = 0; x < src.getHeight(); x++) {
-			for(int y = 0; y < src.getWidth(); y++) {
+		for(int x = 0; x < src.getWidth(); x++) {
+			for(int y = 0; y < src.getHeight(); y++) {
 				comp.set(src.getPixel(x, y));
 
-				if(comp == special) {
+				if(comp.equals(special)) {
 					region.setStratCenter(x, y);
-					mask[x][y] = OPAQUE;
-					continue;
+					mask[y][x] = OPAQUE;
 				}
-				if(comp == regionColor) {
-					mask[x][y] = OPAQUE;
-					continue;
+				else if(comp.equals(regionColor)) {
+					mask[y][x] = OPAQUE;
 				}
-				
-				mask[x][y] = TRANSPARENT;
+				else {
+					mask[y][x] = TRANSPARENT;
+				}
 			}
 		}
+	}
+	
+	public boolean isOpaque(int x, int y) {
+		Point pt = convertToMaskPosition(x,y);
+		return (mask[pt.y][pt.x]);
+	}
+
+	public boolean isOpaque(Point point) {
+		Point pt = convertToMaskPosition(point.x,point.y);
+		return (mask[pt.y][pt.x]);
+	}
+	
+	private Point convertToMaskPosition(int x, int y) {
+		Point p = new Point();
+		p.set(region.getX() + region.getWidth() - x, region.getY() + region.getHeight() - y);
+		return p;
 	}
 	
 	public void print() {
@@ -53,9 +71,9 @@ public class TransparencyMask {
 		Log.d("regions", "mask of " + region.toString());
 		Log.d("regions", "size: " + mask[0].length + "x" + mask.length);
 		
-		for(int x = 0; x < mask.length; x++) {
-			for(int y = 0; y < mask[0].length; y++) {
-				msg += " " + (mask[x][y] == true ? 1 : 0);
+		for(int y = 0; y < mask.length; y++) {
+			for(int x = 0; x < mask[0].length; x++) {
+				msg += "" + ((mask[y][x] == true) ? 1 : 0);
 			}
 			Log.d("regions", msg);
 			msg = "";
