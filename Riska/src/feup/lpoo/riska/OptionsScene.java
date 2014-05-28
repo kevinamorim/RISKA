@@ -5,7 +5,9 @@ import org.andengine.entity.scene.menu.MenuScene;
 import org.andengine.entity.scene.menu.MenuScene.IOnMenuItemClickListener;
 import org.andengine.entity.scene.menu.item.IMenuItem;
 import org.andengine.entity.sprite.Sprite;
+import org.andengine.entity.text.Text;
 
+import android.graphics.Color;
 import feup.lpoo.riska.SceneManager.SceneType;
 
 public class OptionsScene extends MenuScene implements IOnMenuItemClickListener {
@@ -14,6 +16,8 @@ public class OptionsScene extends MenuScene implements IOnMenuItemClickListener 
 	SceneManager instance;
 	
 	final int RETURN = 0;
+	final int SFX = 1;
+	final int MUSIC = 2;
 	
 	public OptionsScene() {		
 		super(MainActivity.getSharedInstance().mCamera);
@@ -28,10 +32,42 @@ public class OptionsScene extends MenuScene implements IOnMenuItemClickListener 
 				(float) 0.3*instance.mReturnButtonTiledTextureRegion.getHeight(), instance.mReturnButtonTiledTextureRegion, 
 				activity.getVertexBufferObjectManager());
 		
+		final AnimatedButtonSpriteMenuItem button_slider_sfx = new AnimatedButtonSpriteMenuItem(SFX, (float) 0.3*instance.mSliderButtonTiledTextureRegion.getWidth(),
+				(float) 0.3*instance.mSliderButtonTiledTextureRegion.getHeight(), instance.mSliderButtonTiledTextureRegion, 
+				activity.getVertexBufferObjectManager());
+		
+		final AnimatedButtonSpriteMenuItem button_slider_music = new AnimatedButtonSpriteMenuItem(MUSIC, (float) 0.3*instance.mSliderButtonTiledTextureRegion.getWidth(),
+				(float) 0.3*instance.mSliderButtonTiledTextureRegion.getHeight(), instance.mSliderButtonTiledTextureRegion, 
+				activity.getVertexBufferObjectManager());
+		
+		final Text music_text = new Text(0, 0, instance.mFont, "MUSIC", 1000, activity.getVertexBufferObjectManager());
+		/* There is a minimun length for the text. lol */
+		final Text sfx_text = new Text(0, 0, instance.mFont, "MUSIC", 1000, activity.getVertexBufferObjectManager());
+		
 		button_return.setPosition(button_return.getWidth()/2, button_return.getHeight()/2);
 		
+		button_slider_sfx.setPosition(MainActivity.CAMERA_WIDTH/2 + button_slider_sfx.getWidth()/2, 
+				(float) 0.75*MainActivity.CAMERA_HEIGHT);
+		button_slider_music.setPosition(MainActivity.CAMERA_WIDTH/2 + button_slider_music.getWidth()/2, 
+				(float) 0.5*MainActivity.CAMERA_HEIGHT);
+		
+		music_text.setPosition(MainActivity.CAMERA_WIDTH/2 - (float) 0.75*music_text.getWidth(), 
+				(float) 0.5*MainActivity.CAMERA_HEIGHT);
+		music_text.setColor(Color.BLACK);
+		
+		//sfx_text.setText("SOUND");
+		sfx_text.setPosition(MainActivity.CAMERA_WIDTH/2 - (float) 0.75*sfx_text.getWidth(),
+				(float) 0.75*MainActivity.CAMERA_HEIGHT);
+		sfx_text.setColor(Color.BLACK);
+		
 		setBackground(background);
+		
 		addMenuItem(button_return);
+		addMenuItem(button_slider_sfx);
+		addMenuItem(button_slider_music);
+		
+		attachChild(music_text);
+		attachChild(sfx_text);
 		
 		setOnMenuItemClickListener(this);	
 		
@@ -45,6 +81,10 @@ public class OptionsScene extends MenuScene implements IOnMenuItemClickListener 
 		case RETURN:
 			// TODO: Save configurations.
 			instance.setCurrentScene(SceneType.MENU);
+			break;
+		case SFX:
+			break;
+		case MUSIC:
 			break;
 		default:
 				break;

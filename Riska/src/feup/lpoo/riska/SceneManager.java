@@ -5,6 +5,7 @@ import java.io.InputStream;
 
 import org.andengine.engine.Engine;
 import org.andengine.engine.camera.Camera;
+import org.andengine.entity.Entity;
 import org.andengine.entity.scene.Scene;
 import org.andengine.opengl.font.Font;
 import org.andengine.opengl.font.FontFactory;
@@ -52,6 +53,9 @@ public class SceneManager {
 	
 	protected BitmapTextureAtlas mReturnButtonTextureAtlas;
 	protected TiledTextureRegion mReturnButtonTiledTextureRegion;
+	
+	protected BitmapTextureAtlas mSliderButtonTextureAtlas;
+	protected TiledTextureRegion mSliderButtonTiledTextureRegion;
 	
 	protected BitmapTextureAtlas mFontTexture;
 	protected Font mFont;
@@ -144,6 +148,13 @@ public class SceneManager {
 	    		activity.getAssets(), "return_button.png", 0, 0, 1, 2);
 	    
 	    mReturnButtonTextureAtlas.load();
+	    
+	    // LOADS SLIDER BUTTON
+	    mSliderButtonTextureAtlas = new BitmapTextureAtlas(activity.getTextureManager(), 1024, 1024, TextureOptions.DEFAULT);
+	    mSliderButtonTiledTextureRegion = BitmapTextureAtlasTextureRegionFactory.createTiledFromAsset(mSliderButtonTextureAtlas, 
+	    		activity.getAssets(), "slider_button.png", 0, 0, 1, 2);
+	    
+	    mSliderButtonTextureAtlas.load();
 	    
 		
 	}
