@@ -25,7 +25,7 @@ public class SceneManager {
 	private MainActivity activity;
 	private Engine engine;
 	
-	private Scene splashScene, mainMenuScene, optionsScene; /* Create more scene if needed, like gameScene. */
+	private Scene splashScene, mainMenuScene, optionsScene, gameScene; /* Create more scene if needed, like gameScene. */
 	
 	public static SceneManager instance;
 	
@@ -39,8 +39,8 @@ public class SceneManager {
 	};
 	
 	// Textures
-	public BitmapTextureAtlas logoTexture;
-	public ITextureRegion logoTextureRegion;
+	protected BitmapTextureAtlas logoTexture;
+	protected ITextureRegion logoTextureRegion;
 	
 	protected BitmapTextureAtlas mMenuBackground;
 	protected ITextureRegion mMenuBackgroundTextureRegion;
@@ -60,9 +60,8 @@ public class SceneManager {
 	protected BitmapTextureAtlas mFontTexture;
 	protected Font mFont;
 	
-	public Bitmap mapRegions;
-	public BitmapTextureAtlas mapTexture;
-	public ITextureRegion mapTextureRegion;
+	protected BitmapTextureAtlas mapTexture;
+	protected ITextureRegion mapTextureRegion;
 	
 	public SceneManager(MainActivity activity, Engine engine, Camera camera) {
 		this.activity = activity;
@@ -81,26 +80,12 @@ public class SceneManager {
 		
 		BitmapTextureAtlasTextureRegionFactory.setAssetBasePath("gfx/");
 		
-		/* 
-		 * NEW READ BITMAP
-		 */
-		InputStream bitmapIs = null;
-		try {
-			bitmapIs = activity.getAssets().open("gfx/map_regions.png");
-			//bitmapIs = activity.getAssets().open("gfx/map_influence.png");
-			mapRegions = BitmapFactory.decodeStream(bitmapIs);
-		} catch (IOException e) {
-		}
-		/*
-		 * END OF NEW READ BITMAP
-		 */
-		
+		// LOADS LOGO PIC
 		logoTexture = new BitmapTextureAtlas(activity.getTextureManager(), 512, 512, TextureOptions.DEFAULT);
 		
-		logoTextureRegion = BitmapTextureAtlasTextureRegionFactory.createFromAsset(logoTexture, activity, 
-				"logo.png", 0, 0);
+		logoTextureRegion = BitmapTextureAtlasTextureRegionFactory.createFromAsset(logoTexture, activity, "logo.png", 0, 0);
 		
-		logoTexture.load();		
+		logoTexture.load();	
 		
 	}
 	
@@ -110,7 +95,12 @@ public class SceneManager {
 	public void loadMainMenuResources() {
 		
 		BitmapTextureAtlasTextureRegionFactory.setAssetBasePath("gfx/");
-		
+
+		// LOADS GAME BACKGROUND *MUST BE MOVED FROM HERE*
+		mapTexture = new BitmapTextureAtlas(activity.getTextureManager(), 1024, 1024, TextureOptions.DEFAULT);
+		mapTextureRegion = BitmapTextureAtlasTextureRegionFactory.createFromAsset(mapTexture, activity, "map_regions.png", 0, 0);
+		mapTexture.load();
+
 		// LOADS MENU BACKGROUND
 		mMenuBackground = new BitmapTextureAtlas(activity.getTextureManager(), 2048, 2048, TextureOptions.DEFAULT);
 		mMenuBackgroundTextureRegion = BitmapTextureAtlasTextureRegionFactory.createFromAsset(mMenuBackground, 
@@ -170,7 +160,7 @@ public class SceneManager {
 		
 		mainMenuScene = new MainMenuScene();
 		optionsScene = new OptionsScene();
-		
+		gameScene = new GameScene();
 	}
 	
 	public SceneType getCurrentScene() {
@@ -189,6 +179,9 @@ public class SceneManager {
 			break;
 		case OPTIONS:
 			engine.setScene(optionsScene);
+			break;
+		case GAME:
+			engine.setScene(gameScene);
 			break;
 		default:
 				break;

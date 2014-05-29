@@ -1,10 +1,9 @@
 package feup.lpoo.riska;
 
-import java.util.ArrayList;
-
 import org.andengine.entity.scene.Scene;
 import org.andengine.entity.sprite.Sprite;
 import org.andengine.input.touch.TouchEvent;
+import org.andengine.util.adt.color.Color;
 
 import android.graphics.Point;
 import android.support.v4.view.MotionEventCompat;
@@ -19,11 +18,11 @@ public class GameScene extends Scene {
 	
 	protected Map map;
 	
-	public GameScene(Map map) {
+	public GameScene() {
 		activity = MainActivity.getSharedInstance();
 		manager = SceneManager.getSharedInstance();
 		
-		this.map = map;
+		//this.map = map;
 		
 		this.touchPoint = new Point();
 		
@@ -45,15 +44,6 @@ public class GameScene extends Scene {
 							
 							Log.d("map", "touched: (" + touchPoint.x + "," + touchPoint.y + ")");
 							
-							Region reg;
-							reg = getTouchedRegion(touchPoint);	
-							
-							if(reg == null) {
-								Log.d("map", "No region touched");	
-							}
-							else {
-								Log.d("map", reg.toString());
-							}
 							break;
 						default:
 							break;
@@ -69,6 +59,8 @@ public class GameScene extends Scene {
 		registerTouchArea(background);
 		
 		attachChild(background);
+		
+		background.setColor(new Color(Color.GREEN));
 	}
 
 	protected Region getTouchedRegion(Point point) {
@@ -90,8 +82,8 @@ public class GameScene extends Scene {
 	}
 
 	protected void convertTouchPointToBitmapCoord(Point point) {
-		float horizontalConversionScale = ((float)manager.mapRegions.getWidth()) / background.getWidth();
-		float verticalConversionScale = ((float)manager.mapRegions.getWidth()) / background.getWidth();
+		float horizontalConversionScale = ((float)manager.mapTexture.getWidth()) / background.getWidth();
+		float verticalConversionScale = ((float)manager.mapTexture.getWidth()) / background.getWidth();
 		
 		point.x = (int) (point.x * horizontalConversionScale);
 		
