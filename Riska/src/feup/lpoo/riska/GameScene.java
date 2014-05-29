@@ -117,9 +117,31 @@ public class GameScene extends Scene {
 			for(int j = 0; j < COLS; j++) {
 				regions[pos] = new Sprite((width * j) + (width/2), (height * i) + (height/2), 
 						manager.mRegionsTextureRegions[pos],
-						activity.getVertexBufferObjectManager());
+						activity.getVertexBufferObjectManager()) {
+
+							@Override
+							public boolean onAreaTouched(
+									TouchEvent ev, float touchX, float toucY) {
+													
+								switch(ev.getAction()) {
+								case TouchEvent.ACTION_DOWN:
+									Log.d("Region", "Region pressed.");
+									this.setColor(Color.GREEN);
+									break;
+								case TouchEvent.ACTION_UP:
+									Log.d("Region", "Region released.");
+									this.setColor(Color.RED);
+								default:
+										break;
+								}
+								
+								return true;
+							}
+					
+				};
 				regions[pos].setSize(width, height);
 				regions[pos].setColor(Color.RED);
+				registerTouchArea(regions[pos]);
 				attachChild(regions[pos]);
 				pos++;
 			}
