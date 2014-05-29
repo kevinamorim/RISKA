@@ -23,7 +23,7 @@ import android.graphics.Typeface;
 
 public class MainActivity extends BaseGameActivity {	
 	
-	final static int CAMERA_WIDTH = 800;
+	final static int CAMERA_WIDTH = 854;
 	final static int CAMERA_HEIGHT = 480;
 	
 	public Font mFont;
@@ -77,6 +77,7 @@ public class MainActivity extends BaseGameActivity {
 				mEngine.unregisterUpdateHandler(pTimerHandler);
 				
 				sceneManager.loadMainMenuResources();
+				sceneManager.loadGameSceneResources();
 				sceneManager.createGameScenes();
 				sceneManager.setCurrentScene(SceneType.MENU);
 				

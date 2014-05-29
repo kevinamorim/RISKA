@@ -63,6 +63,20 @@ public class SceneManager {
 	protected BitmapTextureAtlas mapTexture;
 	protected ITextureRegion mapTextureRegion;
 	
+	
+	/* =============================
+	 *           MAP
+	 * =============================
+	 */
+	protected BitmapTextureAtlas mRegionsTextureAtlas[];
+	protected ITextureRegion mRegionsTextureRegions[];
+	
+	final int NUMBER_OF_REGIONS = 12;
+	/*=============================
+	 * =============================
+	 */
+	
+	
 	public SceneManager(MainActivity activity, Engine engine, Camera camera) {
 		this.activity = activity;
 		this.engine = engine;
@@ -146,6 +160,20 @@ public class SceneManager {
 	    
 	    mSliderButtonTextureAtlas.load();
 	    
+		
+	}
+	
+	public void loadGameSceneResources() {
+		
+		mRegionsTextureAtlas = new BitmapTextureAtlas[NUMBER_OF_REGIONS];
+		mRegionsTextureRegions = new ITextureRegion[NUMBER_OF_REGIONS];
+		
+		for(int i = 0; i < NUMBER_OF_REGIONS; i++) {
+			String path = "region_" + i + ".png";
+			mRegionsTextureAtlas[i] = new BitmapTextureAtlas(activity.getTextureManager(), 256, 256, TextureOptions.DEFAULT);
+			mRegionsTextureRegions[i] = BitmapTextureAtlasTextureRegionFactory.createFromAsset(mRegionsTextureAtlas[i], activity, path, 0, 0);
+			mRegionsTextureAtlas[i].load();
+		}
 		
 	}
 	
