@@ -1,11 +1,7 @@
 package feup.lpoo.riska;
 
-import java.io.IOException;
-import java.io.InputStream;
-
 import org.andengine.engine.Engine;
 import org.andengine.engine.camera.Camera;
-import org.andengine.entity.Entity;
 import org.andengine.entity.scene.Scene;
 import org.andengine.opengl.font.Font;
 import org.andengine.opengl.font.FontFactory;
@@ -15,8 +11,6 @@ import org.andengine.opengl.texture.atlas.bitmap.BitmapTextureAtlasTextureRegion
 import org.andengine.opengl.texture.region.ITextureRegion;
 import org.andengine.opengl.texture.region.TiledTextureRegion;
 
-import android.graphics.Bitmap;
-import android.graphics.BitmapFactory;
 import android.graphics.Color;
 
 public class SceneManager {
@@ -69,7 +63,7 @@ public class SceneManager {
 	 * =============================
 	 */
 	protected BitmapTextureAtlas mRegionsTextureAtlas[];
-	protected ITextureRegion mRegionsTextureRegions[];
+	protected TiledTextureRegion mRegionsTextureRegions[];
 	
 	final int NUMBER_OF_REGIONS = 12;
 	/*=============================
@@ -166,12 +160,13 @@ public class SceneManager {
 	public void loadGameSceneResources() {
 		
 		mRegionsTextureAtlas = new BitmapTextureAtlas[NUMBER_OF_REGIONS];
-		mRegionsTextureRegions = new ITextureRegion[NUMBER_OF_REGIONS];
+		mRegionsTextureRegions = new TiledTextureRegion[NUMBER_OF_REGIONS];
 		
 		for(int i = 0; i < NUMBER_OF_REGIONS; i++) {
 			String path = "region_" + i + ".png";
 			mRegionsTextureAtlas[i] = new BitmapTextureAtlas(activity.getTextureManager(), 256, 256, TextureOptions.DEFAULT);
-			mRegionsTextureRegions[i] = BitmapTextureAtlasTextureRegionFactory.createFromAsset(mRegionsTextureAtlas[i], activity, path, 0, 0);
+			mRegionsTextureRegions[i] = BitmapTextureAtlasTextureRegionFactory.createTiledFromAsset(mRegionsTextureAtlas[i], 
+					activity.getAssets(), path, 0, 0, 1, 1);
 			mRegionsTextureAtlas[i].load();
 		}
 		

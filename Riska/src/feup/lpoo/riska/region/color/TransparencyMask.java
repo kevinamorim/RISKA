@@ -20,7 +20,7 @@ public class TransparencyMask {
 		
 		this.src = source;
 		this.region = region;
-		this.regionColor = region.getColor();
+		//this.regionColor = region.getColor();
 		this.special = special;
 		
 		createMask();
@@ -62,7 +62,7 @@ public class TransparencyMask {
 	
 	private Point convertToMaskPosition(int x, int y) {
 		Point p = new Point();
-		p.set(region.getX() + region.getWidth() - x, region.getY() + region.getHeight() - y);
+		//p.set(region.getX() + region.getWidth() - x, region.getY() + region.getHeight() - y);
 		return p;
 	}
 	
