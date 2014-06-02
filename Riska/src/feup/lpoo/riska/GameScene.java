@@ -1,75 +1,46 @@
 package feup.lpoo.riska;
 
-import org.andengine.entity.scene.background.Background;
+import org.andengine.entity.scene.background.SpriteBackground;
 import org.andengine.entity.scene.menu.MenuScene;
 import org.andengine.entity.scene.menu.MenuScene.IOnMenuItemClickListener;
 import org.andengine.entity.scene.menu.item.IMenuItem;
 import org.andengine.entity.sprite.Sprite;
-import org.andengine.util.adt.color.Color;
 
 import android.graphics.Point;
 
 public class GameScene extends MenuScene implements IOnMenuItemClickListener {
+	
 	MainActivity activity;
-	SceneManager manager;
+	SceneManager instance;
 	
 	protected Point touchPoint;
 	protected Sprite background;
 	
-	final int COLS = 4;
-	final int ROWS = 3;
+	private int regionButtonID[];
+	private AnimatedTextButtonSpriteMenuItem regionButtons[];
 	
-	protected Region regions[]; /* TODO: Meter isto no mapa */ 
-	
-	protected Map map;
+	protected Map map; /* Not used for now */
 	
 	public GameScene() {
 		
 		super(MainActivity.getSharedInstance().mCamera);
 		
 		activity = MainActivity.getSharedInstance();
-		manager = SceneManager.getSharedInstance();
+		instance = SceneManager.getSharedInstance();
 		
-		setBackground(new Background(Color.CYAN));
+		regionButtonID = new int[instance.NUMBER_OF_REGIONS];
+		regionButtons = new AnimatedTextButtonSpriteMenuItem[instance.NUMBER_OF_REGIONS];
 		
-		createRegions();
-		drawMap();
+		SpriteBackground background = new SpriteBackground(new Sprite(MainActivity.CAMERA_WIDTH/2, MainActivity.CAMERA_HEIGHT/2,
+				MainActivity.CAMERA_WIDTH, MainActivity.CAMERA_HEIGHT,
+				instance.mapTextureRegion, activity.getVertexBufferObjectManager()));
+		
+		setBackground(background);
+		
+		setRegionButtons();
 		
 		setOnMenuItemClickListener(this);
 	
-	}
-	
-	private void createRegions() {
-		
-		regions = new Region[COLS*ROWS];
-		
-		float width = MainActivity.CAMERA_WIDTH/COLS;
-		float height = MainActivity.CAMERA_HEIGHT/ROWS;
-		
-		int pos = 0;
-		for(int i = 0; i < ROWS; i++) {
-			for(int j = 0; j < COLS; j++) {
-								
-				regions[pos] = new Region(pos, 
-						width, height,
-						((width * j) + (width/2)), ((height * i) + (height/2)),
-						manager.mRegionsTextureRegions[pos], 
-						activity.getVertexBufferObjectManager());
-			
-				pos++;
-				
-			}
-		}
-		
-	}
-	
-	private void drawMap() {
-		
-		for(int i = 0; i < regions.length; i++) {
-			regions[i].setPosition(regions[i].getPosX(), regions[i].getPosY());
-			addMenuItem(regions[i]);
-		}
-		
 	}
 
 	@Override
@@ -77,6 +48,28 @@ public class GameScene extends MenuScene implements IOnMenuItemClickListener {
 			float pMenuItemLocalX, float pMenuItemLocalY) {
 		// TODO Auto-generated method stub
 		return false;
+	}
+	
+	private void setRegionButtons() {
+		
+		for(int i = 0; i < instance.NUMBER_OF_REGIONS; i++) {
+			
+			regionButtons[i] = new AnimatedTextButtonSpriteMenuItem(regionButtonID[i], 
+					instance.regionButtonTiledTextureRegion.getWidth(), 
+					instance.regionButtonTiledTextureRegion.getHeight(), instance.regionButtonTiledTextureRegion, 
+					activity.getVertexBufferObjectManager(), "1", instance.mFont);
+			
+			int x = (instance.regions[i].getStratCenter().x * MainActivity.CAMERA_WIDTH)/100;
+			int y = (instance.regions[i].getStratCenter().y * MainActivity.CAMERA_HEIGHT)/100;
+			regionButtons[i].setPosition(x, y);
+			//regionButtons[i].setSize((float)regionButtons[i].getWidth()*0.5, (float)regionButtons[i].getHeight()*0.5);
+			regionButtons[i].setScale((float) 0.5);
+			
+			addMenuItem(regionButtons[i]);
+			
+		}
+	
+		
 	}
 	
 	

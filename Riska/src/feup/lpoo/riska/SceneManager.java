@@ -11,7 +11,10 @@ import org.andengine.opengl.texture.atlas.bitmap.BitmapTextureAtlasTextureRegion
 import org.andengine.opengl.texture.region.ITextureRegion;
 import org.andengine.opengl.texture.region.TiledTextureRegion;
 
+import feup.lpoo.riska.io.FileRead;
 import android.graphics.Color;
+import android.graphics.Point;
+import android.util.Log;
 
 public class SceneManager {
 	
@@ -19,7 +22,8 @@ public class SceneManager {
 	private MainActivity activity;
 	private Engine engine;
 	
-	private Scene splashScene, mainMenuScene, optionsScene, gameScene; /* Create more scene if needed, like gameScene. */
+	private Scene splashScene, mainMenuScene, optionsScene, 
+		loadMapScene, gameScene; /* Create more scene if needed, like gameScene. */
 	
 	public static SceneManager instance;
 	
@@ -28,6 +32,7 @@ public class SceneManager {
 		SPLASH, 
 		MENU,
 		OPTIONS,
+		LOAD_MAP,
 		GAME,
 		GAME_OVER
 	};
@@ -54,18 +59,24 @@ public class SceneManager {
 	protected BitmapTextureAtlas mFontTexture;
 	protected Font mFont;
 	
-	protected BitmapTextureAtlas mapTexture;
-	protected ITextureRegion mapTextureRegion;
-	
 	
 	/* =============================
 	 *           MAP
 	 * =============================
 	 */
-	protected BitmapTextureAtlas mRegionsTextureAtlas[];
-	protected TiledTextureRegion mRegionsTextureRegions[];
 	
-	final int NUMBER_OF_REGIONS = 12;
+	protected BitmapTextureAtlas regionButtonTextureAtlas;
+	protected TiledTextureRegion regionButtonTiledTextureRegion;
+	
+	protected BitmapTextureAtlas mapTextureAtlas;
+	protected ITextureRegion mapTextureRegion;
+	
+	private final int VALUES = 4;
+	protected final int NUMBER_OF_REGIONS = 38;
+	private int regionsCreated = 0;
+	
+	protected Region regions[];
+	
 	/*=============================
 	 * =============================
 	 */
@@ -103,11 +114,6 @@ public class SceneManager {
 	public void loadMainMenuResources() {
 		
 		BitmapTextureAtlasTextureRegionFactory.setAssetBasePath("gfx/");
-
-		// LOADS GAME BACKGROUND *MUST BE MOVED FROM HERE*
-		mapTexture = new BitmapTextureAtlas(activity.getTextureManager(), 1024, 1024, TextureOptions.DEFAULT);
-		mapTextureRegion = BitmapTextureAtlasTextureRegionFactory.createFromAsset(mapTexture, activity, "map_regions.png", 0, 0);
-		mapTexture.load();
 
 		// LOADS MENU BACKGROUND
 		mMenuBackground = new BitmapTextureAtlas(activity.getTextureManager(), 2048, 2048, TextureOptions.DEFAULT);
@@ -159,15 +165,38 @@ public class SceneManager {
 	
 	public void loadGameSceneResources() {
 		
-		mRegionsTextureAtlas = new BitmapTextureAtlas[NUMBER_OF_REGIONS];
-		mRegionsTextureRegions = new TiledTextureRegion[NUMBER_OF_REGIONS];
+		mapTextureAtlas = new BitmapTextureAtlas(activity.getTextureManager(), 4096, 2048, TextureOptions.DEFAULT);
+		mapTextureRegion = BitmapTextureAtlasTextureRegionFactory.createFromAsset(mapTextureAtlas, activity, "map.png", 0, 0);
 		
-		for(int i = 0; i < NUMBER_OF_REGIONS; i++) {
-			String path = "region_" + i + ".png";
-			mRegionsTextureAtlas[i] = new BitmapTextureAtlas(activity.getTextureManager(), 256, 256, TextureOptions.DEFAULT);
-			mRegionsTextureRegions[i] = BitmapTextureAtlasTextureRegionFactory.createTiledFromAsset(mRegionsTextureAtlas[i], 
-					activity.getAssets(), path, 0, 0, 1, 1);
-			mRegionsTextureAtlas[i].load();
+		mapTextureAtlas.load();
+		
+		regionButtonTextureAtlas = new BitmapTextureAtlas(activity.getTextureManager(), 128, 256, TextureOptions.DEFAULT);
+		regionButtonTiledTextureRegion = BitmapTextureAtlasTextureRegionFactory.createTiledFromAsset(regionButtonTextureAtlas, 
+	    		activity.getAssets(), "region_button.png", 0, 0, 1, 2);
+		
+		regionButtonTextureAtlas.load();
+		
+		String filename = "regions.csv";
+		String[] mapData = new String[VALUES * NUMBER_OF_REGIONS];
+		
+		new FileRead(filename, mapData);
+		
+		regions = new Region[NUMBER_OF_REGIONS];
+
+		for(int i = 0; i < mapData.length; i++) {
+			
+			String name = mapData[i];
+			i++;
+			int x = Integer.parseInt(mapData[i]);
+			i++;
+			int y = Integer.parseInt(mapData[i]);
+			i++;
+			String continent = mapData[i];
+			
+			Region newRegion = new Region(name, new Point(x, y), continent);
+			regions[regionsCreated] = newRegion;
+			regionsCreated++;
+			
 		}
 		
 	}
@@ -183,6 +212,7 @@ public class SceneManager {
 		
 		mainMenuScene = new MainMenuScene();
 		optionsScene = new OptionsScene();
+		//loadMapScene = new LoadMapScene();
 		gameScene = new GameScene();
 	}
 	
@@ -203,6 +233,9 @@ public class SceneManager {
 		case OPTIONS:
 			engine.setScene(optionsScene);
 			break;
+		case LOAD_MAP:
+			engine.setScene(loadMapScene);
+			break;
 		case GAME:
 			engine.setScene(gameScene);
 			break;
@@ -219,6 +252,23 @@ public class SceneManager {
 		 */
 	}
 	
+	public Scene getGameScene() {
+		return gameScene;
+	}
+	
+	
+	public void addRegion(Region region) {
+		
+		if(region.getName() != null && 
+				region.getName().length() > 0) {
+			
+			if(regionsCreated < NUMBER_OF_REGIONS) {
+				regions[regionsCreated] = region;
+				regionsCreated++;
+			}		
+		}
+		
+	}
 	
 
 }
