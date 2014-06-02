@@ -9,5 +9,7 @@
     <string name="description"> The best Android strategy game ever! </string>
     
     <string name="start_button">START</string>
+    
+    <string name="csvSplitBy">;</string>
 
 </resources>
