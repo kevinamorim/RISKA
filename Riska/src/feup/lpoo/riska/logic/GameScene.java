@@ -6,6 +6,7 @@ import org.andengine.entity.sprite.Sprite;
 import org.andengine.input.touch.TouchEvent;
 
 import android.graphics.Point;
+import android.util.Log;
 import android.view.MotionEvent;
 
 public class GameScene extends Scene {
@@ -31,7 +32,7 @@ public class GameScene extends Scene {
 		instance = SceneManager.getSharedInstance();
 		
 		cameraManager = instance.cameraManager;
-		cameraManager.setZoomFactor(2.0f);
+		//cameraManager.setZoomFactor(2.0f);
 		
 		regionButtonID = new int[instance.NUMBER_OF_REGIONS];
 		regionButtons = new AnimatedTextButtonSpriteMenuItem[instance.NUMBER_OF_REGIONS];
@@ -62,25 +63,28 @@ public class GameScene extends Scene {
 				float x = ev.getX();
 				float y = ev.getY();
 				
+				Point p = new Point();
+				p.set((int)x, (int)y);
+				
 				final int action = ev.getMotionEvent().getActionMasked();
 				
 				switch (action) 
 				{
 				case MotionEvent.ACTION_UP: // first finger up
-					//cameraManager.setStartPoint(x, y);
+					//cameraManager.setStartPoint(p.x, p.y);
 					cameraManager.panToStart();
 					break;
 				case MotionEvent.ACTION_DOWN: // first finger down
 					
-					cameraManager.setStartPoint(x, y);
+					cameraManager.setStartPoint(p.x, p.y);
 					//cameraManager.panToStart();
 					break;
 				case MotionEvent.ACTION_MOVE:
 					
-					cameraManager.setPoint(x, y);
+					cameraManager.setPoint(p.x, p.y);
 					
 					if(cameraManager.pointsNotNear()) {	
-						cameraManager.setStartPoint(x, y);
+						cameraManager.setStartPoint(p.x, p.y);
 						cameraManager.panToStart();
 					}
 					break;
