@@ -1,4 +1,5 @@
 package feup.lpoo.riska.logic;
+
 import java.io.IOException;
 
 import org.andengine.engine.camera.SmoothCamera;

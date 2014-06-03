@@ -6,7 +6,6 @@ import org.andengine.entity.modifier.DelayModifier;
 import org.andengine.entity.scene.Scene;
 import org.andengine.entity.scene.background.Background;
 import org.andengine.entity.sprite.Sprite;
-import org.andengine.entity.text.Text;
 import org.andengine.util.adt.color.Color;
 
 import feup.lpoo.riska.logic.SceneManager.SceneType;

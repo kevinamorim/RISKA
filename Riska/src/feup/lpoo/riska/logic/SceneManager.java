@@ -14,7 +14,6 @@ import org.andengine.opengl.texture.region.TiledTextureRegion;
 import feup.lpoo.riska.io.FileRead;
 import android.graphics.Color;
 import android.graphics.Point;
-import android.util.Log;
 
 public class SceneManager {
 	
