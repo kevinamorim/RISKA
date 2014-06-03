@@ -31,7 +31,11 @@ public class MainActivity extends BaseGameActivity {
 		
 		instance = this;
 		
-		mCamera = new SmoothCamera (0, 0, CAMERA_WIDTH, CAMERA_HEIGHT, 100, 100, 3.0f);
+		mCamera = new SmoothCamera (0, 0, CAMERA_WIDTH, CAMERA_HEIGHT, 150, 150, 3.0f);
+		
+		mCamera.setBounds(0, 0, CAMERA_WIDTH, CAMERA_HEIGHT);
+		mCamera.setBoundsEnabled(true);
+		mCamera.setMaxZoomFactorChange(5.0f);
 		
 		return new EngineOptions(true, ScreenOrientation.LANDSCAPE_SENSOR, 
 				new RatioResolutionPolicy(CAMERA_WIDTH, CAMERA_HEIGHT), mCamera);
