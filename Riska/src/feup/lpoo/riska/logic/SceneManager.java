@@ -76,6 +76,8 @@ public class SceneManager {
 	
 	protected Region regions[];
 	
+	protected CameraManager cameraManager;
+	
 	/*=============================
 	 * =============================
 	 */
@@ -174,6 +176,8 @@ public class SceneManager {
 	    		activity.getAssets(), "region_button.png", 0, 0, 1, 2);
 		
 		regionButtonTextureAtlas.load();
+		
+		cameraManager = new CameraManager(activity);
 		
 		String filename = "regions.csv";
 		String[] mapData = new String[VALUES * NUMBER_OF_REGIONS];

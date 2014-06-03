@@ -2,7 +2,6 @@ package feup.lpoo.riska.logic;
 
 import org.andengine.entity.scene.IOnSceneTouchListener;
 import org.andengine.entity.scene.Scene;
-import org.andengine.entity.scene.background.SpriteBackground;
 import org.andengine.entity.sprite.Sprite;
 import org.andengine.input.touch.TouchEvent;
 
@@ -27,15 +26,12 @@ public class GameScene extends Scene {
 
 	public GameScene() {
 
-		//super(MainActivity.getSharedInstance().mCamera);
-
 		activity = MainActivity.getSharedInstance();
 		instance = SceneManager.getSharedInstance();
-
-		cameraManager = new CameraManager(activity);
-		cameraManager = CameraManager.getSharedInstance();
 		
-
+		cameraManager = instance.cameraManager;
+		cameraManager.setZoomFactor(2.0f);
+		
 		regionButtonID = new int[instance.NUMBER_OF_REGIONS];
 		regionButtons = new AnimatedTextButtonSpriteMenuItem[instance.NUMBER_OF_REGIONS];
 
@@ -50,72 +46,42 @@ public class GameScene extends Scene {
 				instance.mapTextureRegion, activity.getVertexBufferObjectManager());
 
 		attachChild(map);
+		
+		Log.d("Map","Map dimensions: " + map.getWidth()+ "x" + map.getHeight());
 
 		setRegionButtons();
 
 		//setOnMenuItemClickListener(this);
-		setOnSceneTouchListener(new IOnSceneTouchListener() {
+		this.setOnSceneTouchListener(new IOnSceneTouchListener() {
 
 			@Override
-			public boolean onSceneTouchEvent(final Scene pScene, final TouchEvent event) {
+			public boolean onSceneTouchEvent(final Scene scene, final TouchEvent ev) {
 				
-				MotionEvent ev = event.getMotionEvent();
-
-				switch (ev.getActionMasked()) 
+				Log.d("Map","Event: " + ev.getX() + ", " + ev.getY());
+				
+				float x = ev.getX();
+				float y = ev.getY();
+				
+				final int action = ev.getMotionEvent().getActionMasked();
+				
+				switch (action) 
 				{
+				case MotionEvent.ACTION_UP: // first finger up
+					cameraManager.setStartPoint(x, y);
+					cameraManager.panToStart();
+					break;
 				case MotionEvent.ACTION_DOWN: // first finger down
 					
-					cameraManager.setStartPoint(ev.getX(), ev.getY());			
-					cameraManager.setMode(CameraManager.MODE_PAN);
-					
+					cameraManager.setStartPoint(x, y);
 					break;
-					
-				case MotionEvent.ACTION_UP: // first finger up			
+				default:
 					break;
-					
-				case MotionEvent.ACTION_POINTER_UP: // second finger up
-
-					cameraManager.setMode(CameraManager.MODE_NONE);  
-
-					break;
-					
-				case MotionEvent.ACTION_POINTER_DOWN: // first and second finger down
-
-					cameraManager.setInitialDistance(ev);
-					cameraManager.setMode(CameraManager.MODE_ZOOM);
-					
-					cameraManager.setMidPoint(ev);
-					
-					break;
-
-				case MotionEvent.ACTION_MOVE:
-
-					switch(cameraManager.mode)
-					{
-					case CameraManager.MODE_PAN:
-
-						cameraManager.pan();
-
-						break;
-
-					case CameraManager.MODE_ZOOM:
-
-						cameraManager.setFinalDistance(ev);
-
-						cameraManager.zoom();
-						break;
-					default:
-
-						break;
-					}
-
-					break;  
 				}
 
 				return true;
 			}
-		});
 
+		});
 	}
 
 

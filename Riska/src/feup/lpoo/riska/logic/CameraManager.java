@@ -6,20 +6,22 @@ import android.view.MotionEvent;
 
 public class CameraManager {
 
-	Point start, mid;
+	Point start, mid, temp;
 	
 	MainActivity activity;
-	
-	protected static final int MODE_NONE = 0;
-	protected static final int MODE_PAN = 1;
-	protected static final int MODE_ZOOM = 2;
+
+//	protected static final int MODE_NONE = 0;
+//	protected static final int MODE_PAN = 1;
+//	protected static final int MODE_ZOOM = 2;
 	
 	protected static final float MIN_DIST = 5.0f;
 	protected static final float MAX_ZOOM_FACTOR = 5.0f;
 	protected static final float MIN_ZOOM_FACTOR = 1.0f;
+	protected static final int NEAR_DIST = 10;
 	
 	protected float initialDistance;
 	protected float finalDistance;
+	protected float zoomFactor;
 	
 	protected int mode;
 	
@@ -31,8 +33,7 @@ public class CameraManager {
 		this.activity = activity;
 		this.start = new Point();
 		this.mid = new Point();
-		
-		this.mode = MODE_NONE;
+		this.temp = new Point();
 	}
 	
 	public void setStartPoint(float x, float y) {
@@ -43,21 +44,12 @@ public class CameraManager {
 		this.mode = mode;
 	}
 	
-	public void zoom() {
-		float factor = (finalDistance / initialDistance) * activity.mCamera.getZoomFactor();
-		
-		if(factor < MIN_ZOOM_FACTOR) {
-			factor = MIN_ZOOM_FACTOR;
-		}
-		else if(factor > MAX_ZOOM_FACTOR) {
-			factor = MAX_ZOOM_FACTOR;
-		}
-		
-		activity.mCamera.setCenter(mid.x, mid.y);
+	public void setZoomFactor(float factor) {
 		activity.mCamera.setZoomFactor(factor);
+		zoomFactor = factor;
 	}
 	
-	public void pan() {
+	public void panToStart() {
 
 		activity.mCamera.setCenter(start.x, start.y);
 	}
@@ -66,33 +58,16 @@ public class CameraManager {
 		return instance;
 	}
 
-	public void setInitialDistance(MotionEvent ev) {
-		float d = spacing(ev);
+	public void setPoint(float x, float y) {
+		temp.set((int)x, (int)y);
+	}
+
+	public boolean pointsNotNear() {
+		int x = start.x - temp.x;
+		int y = start.y - temp.y;
 		
-		if(d > MIN_DIST) {
-			initialDistance = d;
-		}
+		return(Math.sqrt(x * x + y * y) > NEAR_DIST);
 	}
-	
-	public void setFinalDistance(MotionEvent ev) {
-		float d = spacing(ev);
-		
-		if(d > MIN_DIST) {
-			finalDistance = d;
-		}
-	}
-	
-	public void setMidPoint(MotionEvent event) 
-	{
-	    float x = ( event.getX(0) + event.getX(1) ) / 2;
-	    float y = ( event.getY(0) + event.getY(1) ) / 2;
-	    mid.set((int)x, (int)y);
-	}
-	
-	private float spacing(MotionEvent ev) {
-	    float x = ev.getX(0) - ev.getX(1);
-	    float y = ev.getY(0) - ev.getY(1);
-	    return (float) Math.sqrt(x * x + y * y);
-	}
+ 
 
 }
