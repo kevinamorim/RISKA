@@ -1,14 +1,18 @@
-package feup.lpoo.riska;
+package feup.lpoo.riska.logic;
 
+import org.andengine.entity.scene.IOnSceneTouchListener;
+import org.andengine.entity.scene.Scene;
 import org.andengine.entity.scene.background.SpriteBackground;
 import org.andengine.entity.scene.menu.MenuScene;
 import org.andengine.entity.scene.menu.MenuScene.IOnMenuItemClickListener;
 import org.andengine.entity.scene.menu.item.IMenuItem;
 import org.andengine.entity.sprite.Sprite;
+import org.andengine.input.touch.TouchEvent;
 
 import android.graphics.Point;
+import android.util.Log;
 
-public class GameScene extends MenuScene implements IOnMenuItemClickListener {
+public class GameScene extends Scene {
 	
 	MainActivity activity;
 	SceneManager instance;
@@ -23,7 +27,7 @@ public class GameScene extends MenuScene implements IOnMenuItemClickListener {
 	
 	public GameScene() {
 		
-		super(MainActivity.getSharedInstance().mCamera);
+		//super(MainActivity.getSharedInstance().mCamera);
 		
 		activity = MainActivity.getSharedInstance();
 		instance = SceneManager.getSharedInstance();
@@ -36,19 +40,45 @@ public class GameScene extends MenuScene implements IOnMenuItemClickListener {
 				instance.mapTextureRegion, activity.getVertexBufferObjectManager()));
 		
 		setBackground(background);
-		
+				
 		setRegionButtons();
 		
-		setOnMenuItemClickListener(this);
+		Sprite logoSprite;
+		
+		logoSprite = new Sprite(MainActivity.CAMERA_WIDTH/2, MainActivity.CAMERA_HEIGHT/2, 50, 100, 
+				instance.logoTextureRegion, activity.getVertexBufferObjectManager());
 	
+		
+		attachChild(logoSprite);
+		
+		//setOnMenuItemClickListener(this);
+		setOnSceneTouchListener(new IOnSceneTouchListener() {
+			@Override
+			public boolean onSceneTouchEvent(final Scene pScene, final TouchEvent pSceneTouchEvent) {
+				switch(pSceneTouchEvent.getAction()) {
+				case TouchEvent.ACTION_DOWN:
+					activity.mCamera.setCenter(pSceneTouchEvent.getX(), pSceneTouchEvent.getY());
+					activity.mCamera.setZoomFactor(5.0f);
+					break;
+				case TouchEvent.ACTION_UP:
+					activity.mCamera.setCenter(0, 0);
+					activity.mCamera.setZoomFactor(1.0f);
+					break;
+				}
+				
+				return true;
+			}
+		});
+		
 	}
 
-	@Override
-	public boolean onMenuItemClicked(MenuScene pMenuScene, IMenuItem pMenuItem,
-			float pMenuItemLocalX, float pMenuItemLocalY) {
-		// TODO Auto-generated method stub
-		return false;
-	}
+
+//	@Override
+//	public boolean onMenuItemClicked(MenuScene pMenuScene, IMenuItem pMenuItem,
+//			float pMenuItemLocalX, float pMenuItemLocalY) {
+//		// TODO Auto-generated method stub
+//		return false;
+//	}
 	
 	private void setRegionButtons() {
 		
@@ -65,7 +95,7 @@ public class GameScene extends MenuScene implements IOnMenuItemClickListener {
 			//regionButtons[i].setSize((float)regionButtons[i].getWidth()*0.5, (float)regionButtons[i].getHeight()*0.5);
 			regionButtons[i].setScale((float) 0.5);
 			
-			addMenuItem(regionButtons[i]);
+			//addMenuItem(regionButtons[i]);
 			
 		}
 	

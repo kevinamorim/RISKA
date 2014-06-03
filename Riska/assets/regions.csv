@@ -1,18 +1,18 @@
-Country;%X;%Y;Continent;X;Y
-Alaska;7;18;North & Central America
-Northwest America;16;19;North & Central America
-Groenland;39;12;North & Central America
-Alberta;17;27;North & Central America
-Ontario;24;29;North & Central America
-Quebec;31;28;North & Central America
-West USA;18;37;North & Central America
-East USA;25;39;North & Central America
-Central America;19;49;North & Central America
-Venezuela;23;58;South America
-Peru;22;70;South America
-Brasil;30;68;South America
-Argentina;25;83;South America
-Scandinavia & Iceland;47;24;Europe
+Country;%X;%Y;Continent
+Alaska;7;82;North & Central America
+Northwest America;16;81;North & Central America
+Greenland;39;88;North & Central America
+Alberta;17;73;North & Central America
+Ontario;24;71;North & Central America
+Quebec;31;72;North & Central America
+West USA;18;63;North & Central America
+East USA;25;61;North & Central America
+Central America;19;51;North & Central America
+Venezuela;23;42;South America
+Peru;22;30;South America
+Brasil;30;32;South America
+Argentina;25;17;South America
+Scandinavia & Iceland;47;76;Europe
 Great Britain;43;68;Europe
 West Europe;42;57;Europe
 Northern Europe;48;66;Europe
@@ -25,15 +25,15 @@ East Africa;55;34;Africa
 South Africa & Madagascar;50;14;Africa
 Ural;67;73;Asia
 Siberia;73;78;Asia
-Yakutsk;48;80;Asia
+Yakutsk;83;80;Asia
 Kamchatka;93;81;Asia
 Irkutsk;80;71;Asia
-Mongolia & Japan;82;63;Asia;
+Mongolia & Japan;82;63;Asia
 Afghanistan;65;62;Asia
 China;76;55;Asia
 Middle East;58;51;Asia
 India;69;46;Asia
 Siam;76;44;Asia
 North Oceania;81;33;Oceania
-East Oceania;79;16;Oceania;
+East Oceania;79;16;Oceania
 West Oceania;88;17;Oceania

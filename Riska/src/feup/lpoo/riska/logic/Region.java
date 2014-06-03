@@ -1,4 +1,4 @@
-package feup.lpoo.riska;
+package feup.lpoo.riska.logic;
 
 import android.graphics.Point;
 

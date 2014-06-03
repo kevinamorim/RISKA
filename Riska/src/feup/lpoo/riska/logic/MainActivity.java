@@ -1,7 +1,7 @@
-package feup.lpoo.riska;
+package feup.lpoo.riska.logic;
 import java.io.IOException;
 
-import org.andengine.engine.camera.Camera;
+import org.andengine.engine.camera.SmoothCamera;
 import org.andengine.engine.handler.timer.ITimerCallback;
 import org.andengine.engine.handler.timer.TimerHandler;
 import org.andengine.engine.options.EngineOptions;
@@ -9,17 +9,8 @@ import org.andengine.engine.options.ScreenOrientation;
 import org.andengine.engine.options.resolutionpolicy.RatioResolutionPolicy;
 import org.andengine.entity.scene.Scene;
 import org.andengine.opengl.font.Font;
-import org.andengine.opengl.font.FontFactory;
-import org.andengine.opengl.texture.TextureOptions;
-import org.andengine.opengl.texture.atlas.bitmap.BitmapTextureAtlas;
-import org.andengine.opengl.texture.atlas.bitmap.BitmapTextureAtlasTextureRegionFactory;
-import org.andengine.opengl.texture.region.ITextureRegion;
 import org.andengine.ui.activity.BaseGameActivity;
-import org.andengine.ui.activity.SimpleBaseGameActivity;
-import org.andengine.util.adt.color.Color;
-
-import feup.lpoo.riska.SceneManager.SceneType;
-import android.graphics.Typeface;
+import feup.lpoo.riska.logic.SceneManager.SceneType;
 
 public class MainActivity extends BaseGameActivity {	
 	
@@ -27,7 +18,7 @@ public class MainActivity extends BaseGameActivity {
 	final static int CAMERA_HEIGHT = 480;
 	
 	public Font mFont;
-	public Camera mCamera;
+	public SmoothCamera  mCamera;
 	
 	public Scene mCurrentScene;
 	public static MainActivity instance;
@@ -39,7 +30,7 @@ public class MainActivity extends BaseGameActivity {
 		
 		instance = this;
 		
-		mCamera = new Camera(0, 0, CAMERA_WIDTH, CAMERA_HEIGHT);
+		mCamera = new SmoothCamera (0, 0, CAMERA_WIDTH, CAMERA_HEIGHT, 100, 100, 3.0f);
 		
 		return new EngineOptions(true, ScreenOrientation.LANDSCAPE_SENSOR, 
 				new RatioResolutionPolicy(CAMERA_WIDTH, CAMERA_HEIGHT), mCamera);

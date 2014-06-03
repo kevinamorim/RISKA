@@ -1,4 +1,4 @@
-package feup.lpoo.riska;
+package feup.lpoo.riska.logic;
 
 import org.andengine.entity.scene.background.SpriteBackground;
 import org.andengine.entity.scene.menu.MenuScene;
@@ -6,7 +6,7 @@ import org.andengine.entity.scene.menu.item.IMenuItem;
 import org.andengine.entity.scene.menu.MenuScene.IOnMenuItemClickListener;
 import org.andengine.entity.sprite.Sprite;
 
-import feup.lpoo.riska.SceneManager.SceneType;
+import feup.lpoo.riska.logic.SceneManager.SceneType;
 
 public class MainMenuScene extends MenuScene implements IOnMenuItemClickListener {
 	

@@ -6,8 +6,8 @@ import java.io.FileInputStream;
 import java.io.InputStreamReader;
 
 import android.util.Log;
-import feup.lpoo.riska.MainActivity;
 import feup.lpoo.riska.R;
+import feup.lpoo.riska.logic.MainActivity;
 
 public class FileRead {
 	
