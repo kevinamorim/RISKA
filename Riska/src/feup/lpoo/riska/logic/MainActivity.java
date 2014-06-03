@@ -35,7 +35,6 @@ public class MainActivity extends BaseGameActivity {
 		
 		mCamera.setBounds(0, 0, CAMERA_WIDTH, CAMERA_HEIGHT);
 		mCamera.setBoundsEnabled(true);
-		mCamera.setMaxZoomFactorChange(5.0f);
 		
 		return new EngineOptions(true, ScreenOrientation.LANDSCAPE_SENSOR, 
 				new RatioResolutionPolicy(CAMERA_WIDTH, CAMERA_HEIGHT), mCamera);

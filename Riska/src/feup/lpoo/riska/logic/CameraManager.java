@@ -15,6 +15,8 @@ public class CameraManager {
 	protected static final int MODE_ZOOM = 2;
 	
 	protected static final float MIN_DIST = 5.0f;
+	protected static final float MAX_ZOOM_FACTOR = 5.0f;
+	protected static final float MIN_ZOOM_FACTOR = 1.0f;
 	
 	protected float initialDistance;
 	protected float finalDistance;
@@ -44,7 +46,12 @@ public class CameraManager {
 	public void zoom() {
 		float factor = (finalDistance / initialDistance) * activity.mCamera.getZoomFactor();
 		
-		if(factor < 1.0f) factor = 1.0f;
+		if(factor < MIN_ZOOM_FACTOR) {
+			factor = MIN_ZOOM_FACTOR;
+		}
+		else if(factor > MAX_ZOOM_FACTOR) {
+			factor = MAX_ZOOM_FACTOR;
+		}
 		
 		activity.mCamera.setCenter(mid.x, mid.y);
 		activity.mCamera.setZoomFactor(factor);
