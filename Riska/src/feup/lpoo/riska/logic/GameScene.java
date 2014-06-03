@@ -6,13 +6,14 @@ import org.andengine.entity.sprite.Sprite;
 import org.andengine.input.touch.TouchEvent;
 
 import android.graphics.Point;
-import android.util.Log;
 import android.view.MotionEvent;
 
 public class GameScene extends Scene {
 
 	MainActivity activity;
 	SceneManager instance;
+	
+	GameHUD hud;
 
 	CameraManager cameraManager;
 
@@ -47,8 +48,9 @@ public class GameScene extends Scene {
 
 		attachChild(map);
 		
-		Log.d("Map","Map dimensions: " + map.getWidth()+ "x" + map.getHeight());
-
+		hud = new GameHUD();
+		activity.mCamera.setHUD(hud);
+		
 		setRegionButtons();
 
 		//setOnMenuItemClickListener(this);
@@ -56,8 +58,6 @@ public class GameScene extends Scene {
 
 			@Override
 			public boolean onSceneTouchEvent(final Scene scene, final TouchEvent ev) {
-				
-				Log.d("Map","Event: " + ev.getX() + ", " + ev.getY());
 				
 				float x = ev.getX();
 				float y = ev.getY();
@@ -67,12 +67,22 @@ public class GameScene extends Scene {
 				switch (action) 
 				{
 				case MotionEvent.ACTION_UP: // first finger up
-					cameraManager.setStartPoint(x, y);
+					//cameraManager.setStartPoint(x, y);
 					cameraManager.panToStart();
 					break;
 				case MotionEvent.ACTION_DOWN: // first finger down
 					
 					cameraManager.setStartPoint(x, y);
+					//cameraManager.panToStart();
+					break;
+				case MotionEvent.ACTION_MOVE:
+					
+					cameraManager.setPoint(x, y);
+					
+					if(cameraManager.pointsNotNear()) {	
+						cameraManager.setStartPoint(x, y);
+						cameraManager.panToStart();
+					}
 					break;
 				default:
 					break;

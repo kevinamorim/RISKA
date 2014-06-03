@@ -1,12 +1,10 @@
 package feup.lpoo.riska.logic;
 
 import android.graphics.Point;
-import android.util.Log;
-import android.view.MotionEvent;
 
 public class CameraManager {
 
-	Point start, mid, temp;
+	Point start, mid, temp, center;
 	
 	MainActivity activity;
 
@@ -17,7 +15,7 @@ public class CameraManager {
 	protected static final float MIN_DIST = 5.0f;
 	protected static final float MAX_ZOOM_FACTOR = 5.0f;
 	protected static final float MIN_ZOOM_FACTOR = 1.0f;
-	protected static final int NEAR_DIST = 10;
+	protected static final int NEAR_DIST = 5;
 	
 	protected float initialDistance;
 	protected float finalDistance;
@@ -27,13 +25,19 @@ public class CameraManager {
 	
 	static CameraManager instance;
 	
-	public CameraManager(MainActivity activity) {
+	public CameraManager() {
 		instance = this;
 		
-		this.activity = activity;
+		this.activity = MainActivity.getSharedInstance();
+		
 		this.start = new Point();
 		this.mid = new Point();
 		this.temp = new Point();
+		this.center = new Point();
+		
+		center.set(MainActivity.CAMERA_WIDTH / 2, MainActivity.CAMERA_HEIGHT / 2);
+		
+		this.zoomFactor = 1.0f;
 	}
 	
 	public void setStartPoint(float x, float y) {
@@ -45,13 +49,32 @@ public class CameraManager {
 	}
 	
 	public void setZoomFactor(float factor) {
+		factor = checkFactor(factor);
+		
+		if(factor < zoomFactor) {
+			panTo(center);
+		}
+		
 		activity.mCamera.setZoomFactor(factor);
 		zoomFactor = factor;
 	}
 	
-	public void panToStart() {
+	public void setZoomFactorFromPerc(float perc) {
+		float factor = perc * MAX_ZOOM_FACTOR;
+			
+		setZoomFactor(factor);
+	}
 
+	public void panToStart() {
 		activity.mCamera.setCenter(start.x, start.y);
+	}
+	
+	public void panToCenter() {
+		activity.mCamera.setCenter(center.x, center.y);
+	}
+	
+	public void panTo(Point p) {
+		activity.mCamera.setCenter(p.x, p.y);
 	}
 
 	public static CameraManager getSharedInstance() {
@@ -68,6 +91,14 @@ public class CameraManager {
 		
 		return(Math.sqrt(x * x + y * y) > NEAR_DIST);
 	}
+	
+	public float getZoomFactorPercentage() {
+		return ((zoomFactor - MIN_ZOOM_FACTOR)/ MAX_ZOOM_FACTOR);
+	}
  
+	private float checkFactor(float factor) {
+		return Math.min(MAX_ZOOM_FACTOR, Math.max(MIN_ZOOM_FACTOR, factor));
+	}
+	
 
 }

@@ -26,7 +26,7 @@ public class SceneManager {
 	
 	public static SceneManager instance;
 	
-	/* Everytime a new scene is created, a new entry is also added. */
+	/* Every time a new scene is created, a new entry is also added. */
 	public enum SceneType {
 		SPLASH, 
 		MENU,
@@ -66,6 +66,11 @@ public class SceneManager {
 	
 	protected BitmapTextureAtlas regionButtonTextureAtlas;
 	protected TiledTextureRegion regionButtonTiledTextureRegion;
+	
+	protected BitmapTextureAtlas zoomSliderTextureAtlas;
+	protected BitmapTextureAtlas zoomButtonTextureAtlas;
+	protected ITextureRegion zoomSliderTextureRegion;
+	protected ITextureRegion zoomButtonTextureRegion;
 	
 	protected BitmapTextureAtlas mapTextureAtlas;
 	protected ITextureRegion mapTextureRegion;
@@ -166,18 +171,32 @@ public class SceneManager {
 	
 	public void loadGameSceneResources() {
 		
+		// LOADS MAP TEXTURE
 		mapTextureAtlas = new BitmapTextureAtlas(activity.getTextureManager(), 4096, 2048, TextureOptions.DEFAULT);
 		mapTextureRegion = BitmapTextureAtlasTextureRegionFactory.createFromAsset(mapTextureAtlas, activity, "map.png", 0, 0);
 		
 		mapTextureAtlas.load();
 		
+		// LOADS REGION CIRCULAR BUTTON
 		regionButtonTextureAtlas = new BitmapTextureAtlas(activity.getTextureManager(), 128, 256, TextureOptions.DEFAULT);
 		regionButtonTiledTextureRegion = BitmapTextureAtlasTextureRegionFactory.createTiledFromAsset(regionButtonTextureAtlas, 
 	    		activity.getAssets(), "region_button.png", 0, 0, 1, 2);
 		
 		regionButtonTextureAtlas.load();
+
+		// LOADS ZOOM SLIDER BUTTON
+		zoomButtonTextureAtlas = new BitmapTextureAtlas(activity.getTextureManager(), 64, 64, TextureOptions.DEFAULT);
+		zoomButtonTextureRegion = BitmapTextureAtlasTextureRegionFactory.createFromAsset(zoomButtonTextureAtlas, 
+				activity.getAssets(), "zoom_hinge.png", 0, 0);
 		
-		cameraManager = new CameraManager(activity);
+		zoomButtonTextureAtlas.load();
+		
+		zoomSliderTextureAtlas = new BitmapTextureAtlas(activity.getTextureManager(), 64, 256, TextureOptions.DEFAULT);
+		zoomSliderTextureRegion = BitmapTextureAtlasTextureRegionFactory.createFromAsset(zoomSliderTextureAtlas,
+				activity.getAssets(), "zoom_slider.png", 0, 0);
+		zoomSliderTextureAtlas.load();
+		
+		cameraManager = new CameraManager();
 		
 		String filename = "regions.csv";
 		String[] mapData = new String[VALUES * NUMBER_OF_REGIONS];
