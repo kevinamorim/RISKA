@@ -31,7 +31,7 @@ public class MainActivity extends BaseGameActivity {
 		
 		instance = this;
 		
-		mCamera = new SmoothCamera(0, 0, CAMERA_WIDTH, CAMERA_HEIGHT, 230.0f, 230.0f, 3.0f);
+		mCamera = new SmoothCamera(0, 0, CAMERA_WIDTH, CAMERA_HEIGHT, 350.0f, 350.0f, 3.0f);
 		
 		mCamera.setBounds(0, 0, CAMERA_WIDTH, CAMERA_HEIGHT);
 		mCamera.setBoundsEnabled(true);

@@ -6,10 +6,9 @@ import org.andengine.entity.sprite.Sprite;
 import org.andengine.input.touch.TouchEvent;
 
 import android.graphics.Point;
-import android.util.Log;
 import android.view.MotionEvent;
 
-public class GameScene extends Scene {
+public class GameScene extends Scene implements IOnSceneTouchListener {
 
 	MainActivity activity;
 	SceneManager instance;
@@ -21,9 +20,6 @@ public class GameScene extends Scene {
 	protected Point touchPoint;
 	protected Sprite background;
 
-	private int regionButtonID[];
-	private AnimatedTextButtonSpriteMenuItem regionButtons[];
-
 	protected Map map; /* Not used for now */
 
 	public GameScene() {
@@ -32,16 +28,6 @@ public class GameScene extends Scene {
 		instance = SceneManager.getSharedInstance();
 		
 		cameraManager = instance.cameraManager;
-		//cameraManager.setZoomFactor(2.0f);
-		
-		regionButtonID = new int[instance.NUMBER_OF_REGIONS];
-		regionButtons = new AnimatedTextButtonSpriteMenuItem[instance.NUMBER_OF_REGIONS];
-
-//		SpriteBackground background = new SpriteBackground(new Sprite(MainActivity.CAMERA_WIDTH/2, MainActivity.CAMERA_HEIGHT/2,
-//				MainActivity.CAMERA_WIDTH, MainActivity.CAMERA_HEIGHT,
-//				instance.mapTextureRegion, activity.getVertexBufferObjectManager()));
-//
-//		setBackground(background);
 
 		Sprite map = new Sprite(MainActivity.CAMERA_WIDTH/2, MainActivity.CAMERA_HEIGHT/2,
 				MainActivity.CAMERA_WIDTH, MainActivity.CAMERA_HEIGHT,
@@ -52,9 +38,10 @@ public class GameScene extends Scene {
 		hud = new GameHUD();
 		activity.mCamera.setHUD(hud);
 		
+		setOnSceneTouchListener(this);
+		
 		setRegionButtons();
 
-		//setOnMenuItemClickListener(this);
 		this.setOnSceneTouchListener(new IOnSceneTouchListener() {
 
 			@Override
@@ -71,13 +58,11 @@ public class GameScene extends Scene {
 				switch (action) 
 				{
 				case MotionEvent.ACTION_UP: // first finger up
-					//cameraManager.setStartPoint(p.x, p.y);
 					cameraManager.panToStart();
 					break;
 				case MotionEvent.ACTION_DOWN: // first finger down
 					
 					cameraManager.setStartPoint(p.x, p.y);
-					//cameraManager.panToStart();
 					break;
 				case MotionEvent.ACTION_MOVE:
 					
@@ -98,35 +83,25 @@ public class GameScene extends Scene {
 		});
 	}
 
-
-	//	@Override
-	//	public boolean onMenuItemClicked(MenuScene pMenuScene, IMenuItem pMenuItem,
-	//			float pMenuItemLocalX, float pMenuItemLocalY) {
-	//		// TODO Auto-generated method stub
-	//		return false;
-	//	}
-
 	private void setRegionButtons() {
 
 		for(int i = 0; i < instance.NUMBER_OF_REGIONS; i++) {
 
-			regionButtons[i] = new AnimatedTextButtonSpriteMenuItem(regionButtonID[i], 
-					instance.regionButtonTiledTextureRegion.getWidth(), 
-					instance.regionButtonTiledTextureRegion.getHeight(), instance.regionButtonTiledTextureRegion, 
-					activity.getVertexBufferObjectManager(), "1", instance.mFont);
-
 			int x = (instance.regions[i].getStratCenter().x * MainActivity.CAMERA_WIDTH)/100;
 			int y = (instance.regions[i].getStratCenter().y * MainActivity.CAMERA_HEIGHT)/100;
-			regionButtons[i].setPosition(x, y);
-			//regionButtons[i].setSize((float)regionButtons[i].getWidth()*0.5, (float)regionButtons[i].getHeight()*0.5);
-			regionButtons[i].setScale((float) 0.5);
-
-			//addMenuItem(regionButtons[i]);
+			instance.regions[i].button.setPosition(x, y);
+			instance.regions[i].button.setScale((float) 0.5);
+			attachChild(instance.regions[i].button);
+			registerTouchArea(instance.regions[i].button);
 
 		}
 
-
 	}
 
+	@Override
+	public boolean onSceneTouchEvent(Scene pScene, TouchEvent pSceneTouchEvent) {
+		// TODO Auto-generated method stub
+		return false;
+	}
 
 }

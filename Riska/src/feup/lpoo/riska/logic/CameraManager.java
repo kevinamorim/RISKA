@@ -26,6 +26,7 @@ public class CameraManager {
 	static CameraManager instance;
 	
 	public CameraManager() {
+		
 		instance = this;
 		
 		this.activity = MainActivity.getSharedInstance();
@@ -38,6 +39,7 @@ public class CameraManager {
 		center.set(MainActivity.CAMERA_WIDTH / 2, MainActivity.CAMERA_HEIGHT / 2);
 		
 		this.zoomFactor = 1.0f;
+		
 	}
 	
 	public void setStartPoint(float x, float y) {
@@ -76,6 +78,10 @@ public class CameraManager {
 	
 	public void panTo(Point p) {
 		activity.mCamera.setCenter(p.x, p.y);
+	}
+	
+	public void jumpTo(Point p) {
+		activity.mCamera.setCenterDirect(p.x, p.y);
 	}
 
 	public static CameraManager getSharedInstance() {
