@@ -58,6 +58,9 @@ public class SceneManager {
 	protected BitmapTextureAtlas mFontTexture;
 	protected Font mFont;
 	
+	protected BitmapTextureAtlas mLeftPanelTextureAtlas;
+	protected ITextureRegion mLeftPanelTextureRegion;
+	
 	
 	/* =============================
 	 *           MAP
@@ -220,6 +223,13 @@ public class SceneManager {
 			regionsCreated++;
 			
 		}
+		
+		
+		mLeftPanelTextureAtlas = new BitmapTextureAtlas(activity.getTextureManager(), 2048, 1024, TextureOptions.DEFAULT);
+		mLeftPanelTextureRegion = BitmapTextureAtlasTextureRegionFactory.createFromAsset(mLeftPanelTextureAtlas, 
+				activity, "panel_left.png", 0, 0);
+		
+		mLeftPanelTextureAtlas.load();
 		
 	}
 	

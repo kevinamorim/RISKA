@@ -106,5 +106,15 @@ public class CameraManager {
 		return Math.min(MAX_ZOOM_FACTOR, Math.max(MIN_ZOOM_FACTOR, factor));
 	}
 	
+	public void setAutomaticZoom(Point p) {
+		if(activity.mCamera.getZoomFactor() == 1.0f) {
+			activity.mCamera.setZoomFactor(2.0f);
+			panTo(p);
+		} else {
+			activity.mCamera.setZoomFactor(1.0f);
+			panTo(center);
+		}
+	}
+	
 
 }

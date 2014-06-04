@@ -107,6 +107,8 @@ public class Region {
 						((stratCenter.y * MainActivity.CAMERA_HEIGHT)/100));
 				instance.cameraManager.panTo(center);
 				
+				((GameScene) instance.getGameScene()).onRegionSelected();
+				
 			} 
 			
 		}

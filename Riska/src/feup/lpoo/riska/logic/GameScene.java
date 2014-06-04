@@ -2,6 +2,7 @@ package feup.lpoo.riska.logic;
 
 import org.andengine.entity.scene.IOnSceneTouchListener;
 import org.andengine.entity.scene.Scene;
+import org.andengine.entity.scene.background.SpriteBackground;
 import org.andengine.entity.sprite.Sprite;
 import org.andengine.input.touch.TouchEvent;
 import org.andengine.input.touch.detector.ScrollDetector;
@@ -17,6 +18,8 @@ public class GameScene extends Scene implements IOnSceneTouchListener, IScrollDe
 	// CONSTANTS
 	// ======================================================
 	private final int MIN_SCROLLING_DIST = 30; /* Bigger the number, slower the scrolling. */
+	private static final long MIN_TOUCH_INTERVAL = 70;
+	private static final long MAX_TOUCH_INTERVAL = 400;
 	
 	// ======================================================
 	// SINGLETONS
@@ -37,6 +40,12 @@ public class GameScene extends Scene implements IOnSceneTouchListener, IScrollDe
 	protected Map map; /* Not used for now */
 	
 	private ScrollDetector scrollDetector;
+	private Scene leftPanelScene;
+	
+	// ======================================================
+	// DOUBLE TAP
+	// ======================================================
+	private long lastTouchTime;
 
 	public GameScene() {
 
@@ -44,6 +53,20 @@ public class GameScene extends Scene implements IOnSceneTouchListener, IScrollDe
 		instance = SceneManager.getSharedInstance();
 		
 		cameraManager = instance.cameraManager;
+		
+		leftPanelScene = new Scene();
+		
+		Sprite panel = new Sprite(MainActivity.CAMERA_WIDTH/2, MainActivity.CAMERA_HEIGHT/2,
+				MainActivity.CAMERA_WIDTH, MainActivity.CAMERA_HEIGHT,
+				instance.mLeftPanelTextureRegion, activity.getVertexBufferObjectManager());
+		
+		leftPanelScene.setBackgroundEnabled(false);
+		
+		leftPanelScene.attachChild(panel);
+		
+		this.setChildScene(leftPanelScene);
+
+		lastTouchTime = 0;
 
 		Sprite map = new Sprite(MainActivity.CAMERA_WIDTH/2, MainActivity.CAMERA_HEIGHT/2,
 				MainActivity.CAMERA_WIDTH, MainActivity.CAMERA_HEIGHT,
@@ -82,8 +105,42 @@ public class GameScene extends Scene implements IOnSceneTouchListener, IScrollDe
 	
 	@Override
 	public boolean onSceneTouchEvent(Scene pScene, TouchEvent pSceneTouchEvent) {
+		
+		switch(pSceneTouchEvent.getMotionEvent().getActionMasked()) {
+		case TouchEvent.ACTION_UP:
+			
+			if( ((System.currentTimeMillis() - lastTouchTime) >  MIN_TOUCH_INTERVAL) &&
+					((System.currentTimeMillis() - lastTouchTime) < MAX_TOUCH_INTERVAL) ) {
+				
+				/* Double tap */
+				cameraManager.setAutomaticZoom(new Point((int) pSceneTouchEvent.getX(), 
+						(int) pSceneTouchEvent.getY()));
+				
+			}
+			
+			if((System.currentTimeMillis() - lastTouchTime) >  MIN_TOUCH_INTERVAL)
+			{
+				lastTouchTime = System.currentTimeMillis();
+			}
+
+			
+			break;
+			
+		}
+		
 		scrollDetector.onTouchEvent(pSceneTouchEvent);
+		
 		return true;
+	}
+	
+	public void onRegionSelected() {
+		
+		for(Region region : instance.regions) {
+			if(!region.isSelected()) {
+				unregisterTouchArea(region.button);
+				detachChild(region.button);
+			}
+		}
 	}
 	
 	
