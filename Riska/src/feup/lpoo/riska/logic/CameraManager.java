@@ -15,7 +15,7 @@ public class CameraManager {
 	protected static final float MIN_DIST = 5.0f;
 	protected static final float MAX_ZOOM_FACTOR = 5.0f;
 	protected static final float MIN_ZOOM_FACTOR = 1.0f;
-	protected static final int NEAR_DIST = 50;
+	protected static final int NEAR_DIST = 5;
 	
 	protected float initialDistance;
 	protected float finalDistance;

@@ -4,15 +4,29 @@ import org.andengine.entity.scene.IOnSceneTouchListener;
 import org.andengine.entity.scene.Scene;
 import org.andengine.entity.sprite.Sprite;
 import org.andengine.input.touch.TouchEvent;
+import org.andengine.input.touch.detector.ScrollDetector;
+import org.andengine.input.touch.detector.ScrollDetector.IScrollDetectorListener;
+import org.andengine.input.touch.detector.SurfaceScrollDetector;
 
 import android.graphics.Point;
-import android.view.MotionEvent;
+import android.util.Log;
 
-public class GameScene extends Scene implements IOnSceneTouchListener {
-
+public class GameScene extends Scene implements IOnSceneTouchListener, IScrollDetectorListener {
+	
+	// ======================================================
+	// CONSTANTS
+	// ======================================================
+	private final int MIN_SCROLLING_DIST = 90; /* Bigger the number, slower the scrolling. */
+	
+	// ======================================================
+	// SINGLETONS
+	// ======================================================
 	MainActivity activity;
 	SceneManager instance;
 	
+	// ======================================================
+	// FIELDS
+	// ======================================================
 	GameHUD hud;
 
 	CameraManager cameraManager;
@@ -21,6 +35,8 @@ public class GameScene extends Scene implements IOnSceneTouchListener {
 	protected Sprite background;
 
 	protected Map map; /* Not used for now */
+	
+	private ScrollDetector scrollDetector;
 
 	public GameScene() {
 
@@ -38,49 +54,15 @@ public class GameScene extends Scene implements IOnSceneTouchListener {
 		hud = new GameHUD();
 		activity.mCamera.setHUD(hud);
 		
+		createScrollDetector();
+		
 		setOnSceneTouchListener(this);
 		
-		setRegionButtons();
+		//setRegionButtons();
 
-		this.setOnSceneTouchListener(new IOnSceneTouchListener() {
+		setTouchAreaBindingOnActionDownEnabled(true);
+		setOnSceneTouchListener(this);
 
-			@Override
-			public boolean onSceneTouchEvent(final Scene scene, final TouchEvent ev) {
-				
-				float x = ev.getX();
-				float y = ev.getY();
-				
-				Point p = new Point();
-				p.set((int)x, (int)y);
-				
-				final int action = ev.getMotionEvent().getActionMasked();
-				
-				switch (action) 
-				{
-				case MotionEvent.ACTION_UP: // first finger up
-					cameraManager.panToStart();
-					break;
-				case MotionEvent.ACTION_DOWN: // first finger down
-					
-					cameraManager.setStartPoint(p.x, p.y);
-					break;
-				case MotionEvent.ACTION_MOVE:
-					
-					cameraManager.setPoint(p.x, p.y);
-					
-					if(cameraManager.pointsNotNear()) {	
-						cameraManager.setStartPoint(p.x, p.y);
-						cameraManager.panToStart();
-					}
-					break;
-				default:
-					break;
-				}
-
-				return true;
-			}
-
-		});
 	}
 
 	private void setRegionButtons() {
@@ -97,11 +79,57 @@ public class GameScene extends Scene implements IOnSceneTouchListener {
 		}
 
 	}
-
+	
 	@Override
 	public boolean onSceneTouchEvent(Scene pScene, TouchEvent pSceneTouchEvent) {
-		// TODO Auto-generated method stub
-		return false;
+		scrollDetector.onTouchEvent(pSceneTouchEvent);
+		return true;
+	}
+	
+	
+	// ======================================================
+	// SCROLL DETECTOR
+	// ======================================================
+	private void createScrollDetector() {
+		
+		scrollDetector = new SurfaceScrollDetector(this);
+		scrollDetector.setTriggerScrollMinimumDistance(MIN_SCROLLING_DIST);
+		scrollDetector.setEnabled(true);
+		
+	}
+
+	@Override
+	public void onScrollStarted(ScrollDetector pScollDetector, int pPointerID,
+			float pDistanceX, float pDistanceY) {
+		
+		Log.d("ScrollDetector", "Scrolling started");
+		
+	}
+
+	@Override
+	public void onScroll(ScrollDetector pScollDetector, int pPointerID,
+			float pDistanceX, float pDistanceY) {
+		
+		Log.d("ScrollDetector", "Scrolling");
+		
+		Point p = new Point((int)(activity.mCamera.getCenterX() - pDistanceX),
+				
+				(int)(activity.mCamera.getCenterY() + pDistanceY));
+		cameraManager.jumpTo(p);
+		
+	}
+
+	@Override
+	public void onScrollFinished(ScrollDetector pScollDetector, int pPointerID,
+			float pDistanceX, float pDistanceY) {
+		
+		Log.d("ScrollDetector", "Scrolling finished.");
+		
+		Point p = new Point((int)(activity.mCamera.getCenterX() - pDistanceX),
+				
+				(int)(activity.mCamera.getCenterY() + pDistanceY));
+		cameraManager.jumpTo(p);
+		
 	}
 
 }
