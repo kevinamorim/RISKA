@@ -16,7 +16,7 @@ public class GameScene extends Scene implements IOnSceneTouchListener, IScrollDe
 	// ======================================================
 	// CONSTANTS
 	// ======================================================
-	private final int MIN_SCROLLING_DIST = 90; /* Bigger the number, slower the scrolling. */
+	private final int MIN_SCROLLING_DIST = 30; /* Bigger the number, slower the scrolling. */
 	
 	// ======================================================
 	// SINGLETONS
@@ -58,7 +58,7 @@ public class GameScene extends Scene implements IOnSceneTouchListener, IScrollDe
 		
 		setOnSceneTouchListener(this);
 		
-		//setRegionButtons();
+		setRegionButtons();
 
 		setTouchAreaBindingOnActionDownEnabled(true);
 		setOnSceneTouchListener(this);
@@ -104,6 +104,10 @@ public class GameScene extends Scene implements IOnSceneTouchListener, IScrollDe
 		
 		Log.d("ScrollDetector", "Scrolling started");
 		
+		for(Region region : instance.regions) {
+			unregisterTouchArea(region.button);
+		}
+		
 	}
 
 	@Override
@@ -129,6 +133,10 @@ public class GameScene extends Scene implements IOnSceneTouchListener, IScrollDe
 				
 				(int)(activity.mCamera.getCenterY() + pDistanceY));
 		cameraManager.jumpTo(p);
+		
+		for(Region region : instance.regions) {
+			registerTouchArea(region.button);
+		}
 		
 	}
 

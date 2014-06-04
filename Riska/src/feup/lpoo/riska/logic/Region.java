@@ -16,6 +16,7 @@ public class Region {
 	// ======================================================
 	// CONSTANTS
 	// ======================================================
+	private static final long MIN_TOUCH_INTERVAL = 30;
 	
 	// ======================================================
 	// SINGLETONS
@@ -37,15 +38,14 @@ public class Region {
 	
 	protected ButtonSprite button;
 	
-	private Time lastTimeTouched;
+	private long lastTimeTouched;
 	
 	public Region(String name, Point stratCenter, String continent) {
 		
 		activity = MainActivity.getSharedInstance();
 		instance = SceneManager.getSharedInstance();
-		
-		lastTimeTouched = new Time();
-		lastTimeTouched.setToNow();
+
+		lastTimeTouched = System.currentTimeMillis();
 		
 		this.name = name;
 		this.stratCenter = stratCenter;
@@ -58,17 +58,17 @@ public class Region {
 			public boolean onAreaTouched(TouchEvent pSceneTouchEvent, 
 					float pTouchAreaLocalX, float pTouchAreaLocalY) {
 
-				switch(pSceneTouchEvent.getAction()) {
-				case MotionEvent.ACTION_DOWN:
-					pressedRegionButton();
-					break;
-				case MotionEvent.ACTION_UP:
-					releasedRegionButton();
-					break;
-				default:
-					releasedRegionButton();
-					break;
-				}
+					switch(pSceneTouchEvent.getAction()) {
+					case MotionEvent.ACTION_DOWN:
+						pressedRegionButton();
+						break;
+					case MotionEvent.ACTION_UP:
+						releasedRegionButton();
+						break;
+					case MotionEvent.ACTION_OUTSIDE:
+						releasedRegionButton();
+						break;
+					}
 
 				return true;
 			}
@@ -83,23 +83,22 @@ public class Region {
 		
 	}
 
-	public void pressedRegionButton() {
-		
-		button.setCurrentTileIndex(1);	
+	public void pressedRegionButton() {	
+
+			button.setCurrentTileIndex(1);	
 
 	}
 	
 	public void releasedRegionButton() {
 		
-		Time now = new Time();
-		now.setToNow();
+		long now = System.currentTimeMillis();
 		
-		if(Time.compare(now, lastTimeTouched) != 0) {
+		if((now - lastTimeTouched) > MIN_TOUCH_INTERVAL) {
 			
 			button.setCurrentTileIndex(0);
 			selected = !selected;
 			
-			Log.d("Region", "Released: " + selected + " "+ Time.compare(now, lastTimeTouched));
+			Log.d("Region", "Released: " + selected);
 			
 			if(selected) {
 				
@@ -108,17 +107,12 @@ public class Region {
 						((stratCenter.y * MainActivity.CAMERA_HEIGHT)/100));
 				instance.cameraManager.panTo(center);
 				
-			} else {
-				
-				instance.cameraManager.setZoomFactor(1.0f);
-				
-			}	
+			} 
 			
 		}
 		
-		lastTimeTouched.setToNow();
-		
 
+		lastTimeTouched = System.currentTimeMillis();
 
 	}
 	
