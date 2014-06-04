@@ -102,14 +102,19 @@ public class Region {
 			
 			if(selected) {
 				
-				instance.cameraManager.setZoomFactor(3.0f);
+				instance.cameraManager.zoomIn();
 				Point center = new Point(((stratCenter.x * MainActivity.CAMERA_WIDTH)/100),
 						((stratCenter.y * MainActivity.CAMERA_HEIGHT)/100));
 				instance.cameraManager.panTo(center);
 				
 				((GameScene) instance.getGameScene()).onRegionSelected();
 				
-			} 
+			} else {
+				
+				instance.cameraManager.zoomOut();
+				instance.cameraManager.panToCenter();
+				((GameScene) instance.getGameScene()).onRegionUnselected(this);
+			}
 			
 		}
 		

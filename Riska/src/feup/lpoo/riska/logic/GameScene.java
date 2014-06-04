@@ -64,7 +64,7 @@ public class GameScene extends Scene implements IOnSceneTouchListener, IScrollDe
 		
 		leftPanelScene.attachChild(panel);
 		
-		this.setChildScene(leftPanelScene);
+		//this.setChildScene(leftPanelScene);
 
 		lastTouchTime = 0;
 
@@ -143,6 +143,19 @@ public class GameScene extends Scene implements IOnSceneTouchListener, IScrollDe
 		}
 	}
 	
+	public void onRegionUnselected(Region pRegion) {
+		
+		unregisterTouchArea(pRegion.button);
+		detachChild(pRegion.button);
+		
+		for(Region region : instance.regions) {
+		
+			registerTouchArea(region.button);
+			attachChild(region.button);
+			
+		}
+		
+	}
 	
 	// ======================================================
 	// SCROLL DETECTOR
@@ -196,5 +209,7 @@ public class GameScene extends Scene implements IOnSceneTouchListener, IScrollDe
 		}
 		
 	}
+
+
 
 }
