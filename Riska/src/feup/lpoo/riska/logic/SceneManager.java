@@ -70,11 +70,6 @@ public class SceneManager {
 	protected BitmapTextureAtlas regionButtonTextureAtlas;
 	protected TiledTextureRegion regionButtonTiledTextureRegion;
 	
-	protected BitmapTextureAtlas zoomSliderTextureAtlas;
-	protected BitmapTextureAtlas zoomButtonTextureAtlas;
-	protected ITextureRegion zoomSliderTextureRegion;
-	protected ITextureRegion zoomButtonTextureRegion;
-	
 	protected BitmapTextureAtlas mapTextureAtlas;
 	protected ITextureRegion mapTextureRegion;
 	
@@ -186,18 +181,6 @@ public class SceneManager {
 	    		activity.getAssets(), "region_button.png", 0, 0, 1, 2);
 		
 		regionButtonTextureAtlas.load();
-
-		// LOADS ZOOM SLIDER BUTTON
-		zoomButtonTextureAtlas = new BitmapTextureAtlas(activity.getTextureManager(), 64, 64, TextureOptions.DEFAULT);
-		zoomButtonTextureRegion = BitmapTextureAtlasTextureRegionFactory.createFromAsset(zoomButtonTextureAtlas, 
-				activity.getAssets(), "zoom_hinge.png", 0, 0);
-		
-		zoomButtonTextureAtlas.load();
-		
-		zoomSliderTextureAtlas = new BitmapTextureAtlas(activity.getTextureManager(), 64, 256, TextureOptions.DEFAULT);
-		zoomSliderTextureRegion = BitmapTextureAtlasTextureRegionFactory.createFromAsset(zoomSliderTextureAtlas,
-				activity.getAssets(), "zoom_slider.png", 0, 0);
-		zoomSliderTextureAtlas.load();
 		
 		cameraManager = new CameraManager();
 		
