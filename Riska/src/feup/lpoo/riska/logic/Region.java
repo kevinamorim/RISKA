@@ -1,6 +1,7 @@
 package feup.lpoo.riska.logic;
 
 import org.andengine.entity.sprite.ButtonSprite;
+import org.andengine.entity.sprite.Sprite;
 import org.andengine.entity.text.Text;
 import org.andengine.input.touch.TouchEvent;
 import org.andengine.opengl.texture.region.ITextureRegion;
@@ -40,6 +41,8 @@ public class Region {
 	
 	private long lastTimeTouched;
 	
+	private Sprite flag;
+	
 	public Region(String name, Point stratCenter, String continent) {
 		
 		activity = MainActivity.getSharedInstance();
@@ -50,6 +53,7 @@ public class Region {
 		this.name = name;
 		this.stratCenter = stratCenter;
 		this.continent = continent;
+		this.flag = new Sprite(0, 0, 240, 150, instance.mFlagsTextureRegion, activity.getVertexBufferObjectManager());
 		
 		button = new ButtonSprite(stratCenter.x, stratCenter.y, instance.regionButtonTiledTextureRegion, 
 				activity.getVertexBufferObjectManager()) {
@@ -185,6 +189,11 @@ public class Region {
 	 */
 	public void setOwned(boolean owned) {
 		this.owned = owned;
+	}
+	
+	public Sprite getFlag(float pX, float pY) {
+		flag.setPosition(pX, pY);
+		return flag;
 	}
 
 

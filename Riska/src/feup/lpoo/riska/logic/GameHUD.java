@@ -2,20 +2,34 @@ package feup.lpoo.riska.logic;
 
 import org.andengine.engine.camera.hud.HUD;
 import org.andengine.entity.scene.Scene;
+import org.andengine.entity.scene.menu.MenuScene;
 import org.andengine.entity.sprite.Sprite;
 import org.andengine.entity.text.Text;
 import org.andengine.opengl.font.Font;
 
+import android.graphics.Point;
 import android.util.Log;
 
 public class GameHUD extends HUD {
+	
+	// ======================================================
+	// CONSTANTS
+	// ======================================================
+	private final Point FLAG_POS = new Point((int)(MainActivity.CAMERA_WIDTH/4), (int)(MainActivity.CAMERA_HEIGHT/2));
+	private final int PANEL_CENTER_X = MainActivity.CAMERA_WIDTH/4;
+	private final int ATTACK_ID = 1;
 	
 	MainActivity activity;
 	SceneManager instance;
 	CameraManager cameraManager;
 	
+	private MenuScene menuScene;
+	
 	private Sprite panel;
 	private Text countryName;
+	private Sprite countryFlag;
+	
+	private AnimatedTextButtonSpriteMenuItem attackButton;
 	
 	public GameHUD() {
 		
@@ -29,10 +43,22 @@ public class GameHUD extends HUD {
 		
 		countryName = new Text(0, 0, instance.mGameFont, "COUNTRY", 1000, activity.getVertexBufferObjectManager());
 		
-		countryName.setPosition(countryName.getWidth()/2, 
+		countryName.setPosition(PANEL_CENTER_X, 
 				MainActivity.CAMERA_HEIGHT - countryName.getHeight());
 		
 		panel.attachChild(countryName);
+		
+		menuScene = new MenuScene(activity.mCamera);
+		
+		attackButton = new AnimatedTextButtonSpriteMenuItem(ATTACK_ID, instance.mStartButtonTiledTextureRegion.getWidth(), 
+				instance.mStartButtonTiledTextureRegion.getHeight(), instance.mStartButtonTiledTextureRegion, 
+				activity.getVertexBufferObjectManager(), "ATTACK!", instance.mFont);
+		
+		attackButton.setPosition(PANEL_CENTER_X, MainActivity.CAMERA_HEIGHT/5);
+		menuScene.addMenuItem(attackButton);
+		menuScene.setBackgroundEnabled(false);
+		
+		setChildScene(menuScene);
 		
 		attachChild(panel);	
 		
@@ -40,8 +66,15 @@ public class GameHUD extends HUD {
 	
 	public void updateHUD(Region pRegion) {
 		countryName.setText(wrapText(instance.mGameFont, pRegion.getName(), panel.getWidth()/2));
-		countryName.setPosition(countryName.getWidth()/2, 
+		countryName.setPosition(PANEL_CENTER_X, 
 				MainActivity.CAMERA_HEIGHT - countryName.getHeight());
+		
+		if(countryFlag != null) {
+			panel.detachChild(countryFlag);
+		} 
+		
+		countryFlag = pRegion.getFlag(FLAG_POS.x, FLAG_POS.y);
+		panel.attachChild(countryFlag);
 	}
 	
 	private String wrapText(Font pFont, String pString, float maxWidth) {

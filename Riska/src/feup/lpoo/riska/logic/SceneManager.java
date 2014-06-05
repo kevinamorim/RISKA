@@ -64,6 +64,9 @@ public class SceneManager {
 	protected BitmapTextureAtlas mLeftPanelTextureAtlas;
 	protected ITextureRegion mLeftPanelTextureRegion;
 	
+	protected BitmapTextureAtlas mFlagsTextureAtlas;
+	protected ITextureRegion mFlagsTextureRegion;
+	
 	
 	/* =============================
 	 *           MAP
@@ -187,6 +190,12 @@ public class SceneManager {
 		
 		cameraManager = new CameraManager();
 		
+		// Loads flags. 
+		mFlagsTextureAtlas = new BitmapTextureAtlas(activity.getTextureManager(), 512, 256, TextureOptions.DEFAULT);
+		mFlagsTextureRegion = BitmapTextureAtlasTextureRegionFactory.createFromAsset(mFlagsTextureAtlas, activity, "flags.png", 0, 0);
+		
+		mFlagsTextureAtlas.load();
+		
 		String filename = "regions.csv";
 		String[] mapData = new String[VALUES * NUMBER_OF_REGIONS];
 		
@@ -226,6 +235,7 @@ public class SceneManager {
 	            Color.WHITE); /* Load the font in white, so setColor() works. */
 		
 		mGameFont.load();
+
 		
 	}
 	
