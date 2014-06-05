@@ -58,6 +58,9 @@ public class SceneManager {
 	protected BitmapTextureAtlas mFontTexture;
 	protected Font mFont;
 	
+	protected BitmapTextureAtlas mGameFontTexture;
+	protected Font mGameFont;
+	
 	protected BitmapTextureAtlas mLeftPanelTextureAtlas;
 	protected ITextureRegion mLeftPanelTextureRegion;
 	
@@ -130,11 +133,11 @@ public class SceneManager {
 		FontFactory.setAssetBasePath("fonts/");
 		
 		mFont = FontFactory.createFromAsset(engine.getFontManager(),
-				engine.getTextureManager(), 256, 256, TextureOptions.BILINEAR,
+				engine.getTextureManager(), 256, 512, TextureOptions.BILINEAR,
 	            activity.getAssets(), "reprise.ttf", 125f, true,
 	            Color.WHITE); /* Load the font in white, so setColor() works. */
 		
-	    mFont.load();
+		mFont.load();
 	    
 	    // LOADS START BUTTON
 	    mStartButtonTextureAtlas = new BitmapTextureAtlas(activity.getTextureManager(), 512, 512, TextureOptions.DEFAULT);
@@ -213,6 +216,16 @@ public class SceneManager {
 				activity, "panel_left.png", 0, 0);
 		
 		mLeftPanelTextureAtlas.load();
+		
+		// LOADS FONT
+		FontFactory.setAssetBasePath("fonts/");
+		
+		mGameFont = FontFactory.createFromAsset(engine.getFontManager(),
+				engine.getTextureManager(), 256, 512, TextureOptions.BILINEAR,
+	            activity.getAssets(), "reprise.ttf", 48f, true,
+	            Color.WHITE); /* Load the font in white, so setColor() works. */
+		
+		mGameFont.load();
 		
 	}
 	

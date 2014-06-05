@@ -40,9 +40,18 @@ public class OptionsScene extends MenuScene implements IOnMenuItemClickListener 
 				(float) 0.3*instance.mSliderButtonTiledTextureRegion.getHeight(), instance.mSliderButtonTiledTextureRegion, 
 				activity.getVertexBufferObjectManager());
 		
-		final Text music_text = new Text(0, 0, instance.mFont, "MUSIC", 1000, activity.getVertexBufferObjectManager());
-		/* There is a minimun length for the text. lol */
-		final Text sfx_text = new Text(0, 0, instance.mFont, "MUSIC", 1000, activity.getVertexBufferObjectManager());
+		
+		
+		final Text music_text = new Text(0, 0, instance.mFont, "MUSIC", activity.getVertexBufferObjectManager());
+		music_text.setPosition(MainActivity.CAMERA_WIDTH/2 - (float) 0.75*music_text.getWidth(), 
+				(float) 0.5*MainActivity.CAMERA_HEIGHT);
+		music_text.setColor(Color.BLACK);
+		
+		final Text sfx_text = new Text(0, 0, instance.mFont, "SFX", activity.getVertexBufferObjectManager());
+		sfx_text.setPosition(MainActivity.CAMERA_WIDTH/2 - (float) 0.75*sfx_text.getWidth(),
+				(float) 0.75*MainActivity.CAMERA_HEIGHT);
+		sfx_text.setColor(Color.BLACK);
+	
 		
 		button_return.setPosition(button_return.getWidth()/2, button_return.getHeight()/2);
 		
@@ -50,15 +59,6 @@ public class OptionsScene extends MenuScene implements IOnMenuItemClickListener 
 				(float) 0.75*MainActivity.CAMERA_HEIGHT);
 		button_slider_music.setPosition(MainActivity.CAMERA_WIDTH/2 + button_slider_music.getWidth()/2, 
 				(float) 0.5*MainActivity.CAMERA_HEIGHT);
-		
-		music_text.setPosition(MainActivity.CAMERA_WIDTH/2 - (float) 0.75*music_text.getWidth(), 
-				(float) 0.5*MainActivity.CAMERA_HEIGHT);
-		music_text.setColor(Color.BLACK);
-		
-		//sfx_text.setText("SOUND");
-		sfx_text.setPosition(MainActivity.CAMERA_WIDTH/2 - (float) 0.75*sfx_text.getWidth(),
-				(float) 0.75*MainActivity.CAMERA_HEIGHT);
-		sfx_text.setColor(Color.BLACK);
 		
 		setBackground(background);
 		

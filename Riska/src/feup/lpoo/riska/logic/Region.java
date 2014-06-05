@@ -102,10 +102,7 @@ public class Region {
 			
 			if(selected) {
 				
-				instance.cameraManager.zoomIn();
-				Point center = new Point(((stratCenter.x * MainActivity.CAMERA_WIDTH)/100),
-						((stratCenter.y * MainActivity.CAMERA_HEIGHT)/100));
-				instance.cameraManager.panTo(center);
+				instance.cameraManager.focusOnRegion(this);
 				
 				((GameScene) instance.getGameScene()).onRegionSelected();
 				
