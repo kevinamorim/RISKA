@@ -2,6 +2,7 @@ package feup.lpoo.riska.io;
 
 import java.io.BufferedReader;
 import java.io.InputStreamReader;
+import java.util.ArrayList;
 
 import android.util.Log;
 import feup.lpoo.riska.R;
@@ -11,7 +12,7 @@ public class FileRead {
 	
 	MainActivity activity;
 
-	public FileRead(String filename, String[] data) {
+	public FileRead(String filename, ArrayList<String> data) {
 
 		try {
 			
@@ -27,21 +28,17 @@ public class FileRead {
 
 			// Read file line by line.
 			br.readLine();
-			int i = 0;
 			while((strLine = br.readLine()) != null) {
 
 				String[] split = strLine.split(csvSplitBy);
 				
 				for(String s : split) {
-					data[i] = s;
-					i++;
+					data.add(s);
 				}
 				
-				if(i >= data.length) {
-					break;
-				}
+				data.add("#");
 
-			}			
+			}		
 
 			br.close();
 

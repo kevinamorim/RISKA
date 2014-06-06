@@ -7,16 +7,22 @@ import org.andengine.engine.handler.timer.ITimerCallback;
 import org.andengine.engine.handler.timer.TimerHandler;
 import org.andengine.engine.options.EngineOptions;
 import org.andengine.engine.options.ScreenOrientation;
+import org.andengine.engine.options.resolutionpolicy.FillResolutionPolicy;
 import org.andengine.engine.options.resolutionpolicy.RatioResolutionPolicy;
 import org.andengine.entity.scene.Scene;
 import org.andengine.opengl.font.Font;
 import org.andengine.ui.activity.BaseGameActivity;
+
 import feup.lpoo.riska.logic.SceneManager.SceneType;
 
 public class MainActivity extends BaseGameActivity {	
 	
+	// ======================================================
+	// CONSTANTS
+	// ======================================================
 	final static int CAMERA_WIDTH = 854;
 	final static int CAMERA_HEIGHT = 480;
+	private final float MAX_VELOCITY = 700f;
 	
 	public Font mFont;
 	public SmoothCamera  mCamera;
@@ -31,15 +37,15 @@ public class MainActivity extends BaseGameActivity {
 		
 		instance = this;
 		
-		mCamera = new SmoothCamera(0, 0, CAMERA_WIDTH, CAMERA_HEIGHT, 350.0f, 350.0f, 3.0f);
-		
+		mCamera = new SmoothCamera(0, 0, CAMERA_WIDTH, CAMERA_HEIGHT, MAX_VELOCITY, MAX_VELOCITY, 3.0f);
+
 		mCamera.setBounds(0, 0, CAMERA_WIDTH, CAMERA_HEIGHT);
 		mCamera.setBoundsEnabled(true);
-		
-		return new EngineOptions(true, ScreenOrientation.LANDSCAPE_SENSOR, 
-				new RatioResolutionPolicy(CAMERA_WIDTH, CAMERA_HEIGHT), mCamera);
+		EngineOptions engineOptions = new EngineOptions(true, ScreenOrientation.LANDSCAPE_SENSOR, new FillResolutionPolicy(), mCamera);
+		engineOptions.getAudioOptions().setNeedsMusic(true);
+		return engineOptions;
 	}
-	
+
 	@Override
 	public void onCreateResources(
 			OnCreateResourcesCallback pOnCreateResourcesCallback)

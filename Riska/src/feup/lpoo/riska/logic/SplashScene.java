@@ -28,8 +28,8 @@ public class SplashScene extends Scene {
 		logoSprite = new Sprite(MainActivity.CAMERA_WIDTH/2, MainActivity.CAMERA_HEIGHT/2, 
 				instance.logoTextureRegion, activity.getVertexBufferObjectManager());
 		
-		logoSprite.setBlendFunction(GLES20.GL_SRC_ALPHA, GLES20.GL_ONE_MINUS_SRC_ALPHA);
-		logoSprite.registerEntityModifier(new AlphaModifier(6f, 0f, 1f));
+		//logoSprite.setBlendFunction(GLES20.GL_SRC_ALPHA, GLES20.GL_ONE_MINUS_SRC_ALPHA);
+		//logoSprite.registerEntityModifier(new AlphaModifier(6f, 0f, 1f));
 		
 		attachChild(logoSprite);
 		
@@ -39,7 +39,7 @@ public class SplashScene extends Scene {
 
 	private void loadResources() {
 		
-		DelayModifier delayModifier = new DelayModifier(4) {
+		DelayModifier delayModifier = new DelayModifier(2) {
 			
 			@Override
 			protected void onModifierFinished(IEntity pItem) {

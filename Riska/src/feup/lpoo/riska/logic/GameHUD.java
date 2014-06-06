@@ -109,4 +109,14 @@ public class GameHUD extends HUD {
 		return wrappedText;
 		
 	}
+	
+	public void hide() {
+		setVisible(false);
+		menuScene.unregisterTouchArea(attackButton);
+	}
+	
+	public void show() {
+		setVisible(true);
+		menuScene.registerTouchArea(attackButton);
+	}
 }

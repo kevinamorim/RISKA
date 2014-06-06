@@ -1,5 +1,7 @@
 package feup.lpoo.riska.logic;
 
+import java.util.ArrayList;
+
 import org.andengine.entity.sprite.ButtonSprite;
 import org.andengine.entity.sprite.Sprite;
 import org.andengine.entity.text.Text;
@@ -28,6 +30,7 @@ public class Region {
 	// ======================================================
 	// FIELDS
 	// ======================================================
+	private final int id;
 	protected Point stratCenter;
 
 	protected String name;
@@ -43,10 +46,16 @@ public class Region {
 	
 	private Sprite flag;
 	
-	public Region(String name, Point stratCenter, String continent) {
+	private ArrayList<Region> neighbours;
+	
+	public Region(final int id, String name, Point stratCenter, String continent) {
+		
+		this.id = id;
 		
 		activity = MainActivity.getSharedInstance();
 		instance = SceneManager.getSharedInstance();
+		
+		neighbours = new ArrayList<Region>();
 
 		lastTimeTouched = System.currentTimeMillis();
 		
@@ -195,7 +204,23 @@ public class Region {
 		flag.setPosition(pX, pY);
 		return flag;
 	}
+	
+	public void addNeighbour(Region region) {
+		neighbours.add(region);
+	}
 
+	/**
+	 * @return the id
+	 */
+	public int getId() {
+		return id;
+	}
 
+	/**
+	 * @return the neighbours
+	 */
+	public ArrayList<Region> getNeighbours() {
+		return neighbours;
+	}
 
 }

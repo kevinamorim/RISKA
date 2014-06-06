@@ -1,5 +1,10 @@
 package feup.lpoo.riska.logic;
 
+import java.io.IOException;
+import java.util.ArrayList;
+
+import org.andengine.audio.music.Music;
+import org.andengine.audio.music.MusicFactory;
 import org.andengine.engine.Engine;
 import org.andengine.engine.camera.Camera;
 import org.andengine.entity.scene.Scene;
@@ -14,6 +19,7 @@ import org.andengine.opengl.texture.region.TiledTextureRegion;
 import feup.lpoo.riska.io.FileRead;
 import android.graphics.Color;
 import android.graphics.Point;
+import android.util.Log;
 
 public class SceneManager {
 	
@@ -67,7 +73,6 @@ public class SceneManager {
 	protected BitmapTextureAtlas mFlagsTextureAtlas;
 	protected ITextureRegion mFlagsTextureRegion;
 	
-	
 	/* =============================
 	 *           MAP
 	 * =============================
@@ -83,13 +88,18 @@ public class SceneManager {
 	protected final int NUMBER_OF_REGIONS = 38;
 	private int regionsCreated = 0;
 	
-	protected Region regions[];
+	protected Map map;
 	
 	protected CameraManager cameraManager;
+	
+	protected BitmapTextureAtlas mSeaTextureAtlas;
+	protected TiledTextureRegion mSeaTiledTextureRegion;
 	
 	/*=============================
 	 * =============================
 	 */
+	
+	protected Music music;
 	
 	
 	public SceneManager(MainActivity activity, Engine engine, Camera camera) {
@@ -196,30 +206,20 @@ public class SceneManager {
 		
 		mFlagsTextureAtlas.load();
 		
+		
+		// =================================================================================
+		// REGIONS 
+		// ================================================================================= 
 		String filename = "regions.csv";
-		String[] mapData = new String[VALUES * NUMBER_OF_REGIONS];
-		
-		new FileRead(filename, mapData);
-		
-		regions = new Region[NUMBER_OF_REGIONS];
 
-		for(int i = 0; i < mapData.length; i++) {
-			
-			String name = mapData[i];
-			i++;
-			int x = Integer.parseInt(mapData[i]);
-			i++;
-			int y = Integer.parseInt(mapData[i]);
-			i++;
-			String continent = mapData[i];
-			
-			Region newRegion = new Region(name, new Point(x, y), continent);
-			regions[regionsCreated] = newRegion;
-			regionsCreated++;
-			
-		}
+		map = new Map(readRegions(filename));
 		
+		filename = "neighbours.csv";
 		
+		readNeighbours(filename);
+		
+		map.printNeighbours();
+			
 		mLeftPanelTextureAtlas = new BitmapTextureAtlas(activity.getTextureManager(), 2048, 1024, TextureOptions.DEFAULT);
 		mLeftPanelTextureRegion = BitmapTextureAtlasTextureRegionFactory.createFromAsset(mLeftPanelTextureAtlas, 
 				activity, "panel_left.png", 0, 0);
@@ -235,10 +235,79 @@ public class SceneManager {
 	            Color.WHITE); /* Load the font in white, so setColor() works. */
 		
 		mGameFont.load();
+		
+		mSeaTextureAtlas = new BitmapTextureAtlas(activity.getTextureManager(), 4096, 512, TextureOptions.DEFAULT);
+		mSeaTiledTextureRegion = BitmapTextureAtlasTextureRegionFactory.createTiledFromAsset(mSeaTextureAtlas, 
+	    		activity.getAssets(), "sea_3.png", 0, 0, 6, 1);
+		
+		mSeaTextureAtlas.load();
+		
+		try
+		{
+		    music = MusicFactory.createMusicFromAsset(engine.getMusicManager(), activity, "sounds/music.mp3");
+		    music.setLooping(true);
+		    music.play();
+		}
+		catch (IOException e)
+		{
+		    e.printStackTrace();
+		}
 
 		
 	}
 	
+	private Region[] readRegions(String filename) {
+		ArrayList<String> mapData = new ArrayList<String>();
+		
+		new FileRead(filename, mapData);
+		
+		Region regions[];
+		regions = new Region[NUMBER_OF_REGIONS];
+
+		for(int i = 0; i < mapData.size(); i++) {
+			
+			int id = Integer.parseInt(mapData.get(i));
+			i++;
+			String name = mapData.get(i);
+			i++;
+			int x = Integer.parseInt(mapData.get(i));
+			i++;
+			int y = Integer.parseInt(mapData.get(i));
+			i++;
+			String continent = mapData.get(i);
+			i++;
+			
+			Region newRegion = new Region(id, name, new Point(x, y), continent);
+	
+			regions[regionsCreated] = newRegion;
+			regionsCreated++;
+			
+		}
+		
+		return regions;
+		
+	}
+
+	private void readNeighbours(String filename) {
+		
+		ArrayList<String> data = new ArrayList<String>();
+		new FileRead(filename, data);
+		
+		for(int i = 0; i < data.size(); i++) {
+			int id = Integer.parseInt(data.get(i));
+			Region region = map.getRegionById(id);
+			i++;
+			while(data.get(i) != "#") {
+				Region neighbour = map.getRegionById(Integer.parseInt(data.get(i)));
+				if(neighbour != null) {
+					region.addNeighbour(neighbour);
+				}
+				i++;
+			}
+		}
+		
+	}
+
 	public Scene createSplashScene() {
 		
 		splashScene = new SplashScene();
@@ -293,20 +362,5 @@ public class SceneManager {
 	public Scene getGameScene() {
 		return gameScene;
 	}
-	
-	
-	public void addRegion(Region region) {
-		
-		if(region.getName() != null && 
-				region.getName().length() > 0) {
-			
-			if(regionsCreated < NUMBER_OF_REGIONS) {
-				regions[regionsCreated] = region;
-				regionsCreated++;
-			}		
-		}
-		
-	}
-	
 
 }

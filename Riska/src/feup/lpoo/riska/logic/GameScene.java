@@ -3,7 +3,9 @@ package feup.lpoo.riska.logic;
 import org.andengine.entity.scene.IOnSceneTouchListener;
 import org.andengine.entity.scene.Scene;
 import org.andengine.entity.scene.background.Background;
+import org.andengine.entity.scene.background.IBackground;
 import org.andengine.entity.scene.background.SpriteBackground;
+import org.andengine.entity.sprite.AnimatedSprite;
 import org.andengine.entity.sprite.Sprite;
 import org.andengine.input.touch.TouchEvent;
 import org.andengine.input.touch.detector.ScrollDetector;
@@ -37,15 +39,13 @@ public class GameScene extends Scene implements IOnSceneTouchListener, IScrollDe
 	CameraManager cameraManager;
 
 	protected Point touchPoint;
-	protected Sprite background;
-
-	protected Map map; /* Not used for now */
 	
 	private ScrollDetector scrollDetector;
 	
 	// ======================================================
 	// DOUBLE TAP
 	// ======================================================
+	private boolean doubleTapAllowed = true;
 	private long lastTouchTime;
 
 	public GameScene() {
@@ -60,21 +60,25 @@ public class GameScene extends Scene implements IOnSceneTouchListener, IScrollDe
 		Sprite map = new Sprite(MainActivity.CAMERA_WIDTH/2, MainActivity.CAMERA_HEIGHT/2,
 				MainActivity.CAMERA_WIDTH, MainActivity.CAMERA_HEIGHT,
 				instance.mapTextureRegion, activity.getVertexBufferObjectManager());
-
+		
+		AnimatedSprite background = new AnimatedSprite(MainActivity.CAMERA_WIDTH/2, MainActivity.CAMERA_HEIGHT/2, 
+				instance.mSeaTiledTextureRegion, 
+				activity.getVertexBufferObjectManager());
+		background.setScale(2f);
+		long duration[] = { 1000, 1000, 1000, 1000, 1000, 1000 };
+		background.animate(duration, 0, 5, true);
+		attachChild(background);
+		
 		attachChild(map);
 		
 		hud = new GameHUD();
 		activity.mCamera.setHUD(hud);
 		
-		hud.setVisible(false);
+		hud.hide();
 		
 		createScrollDetector();
 		
-		setOnSceneTouchListener(this);
-		
 		setRegionButtons();
-		
-		setBackground(new Background(Color.WHITE));
 
 		setTouchAreaBindingOnActionDownEnabled(true);
 		setOnSceneTouchListener(this);
@@ -85,12 +89,12 @@ public class GameScene extends Scene implements IOnSceneTouchListener, IScrollDe
 
 		for(int i = 0; i < instance.NUMBER_OF_REGIONS; i++) {
 
-			int x = (instance.regions[i].getStratCenter().x * MainActivity.CAMERA_WIDTH)/100;
-			int y = (instance.regions[i].getStratCenter().y * MainActivity.CAMERA_HEIGHT)/100;
-			instance.regions[i].button.setPosition(x, y);
-			instance.regions[i].button.setScale((float) 0.5);
-			attachChild(instance.regions[i].button);
-			registerTouchArea(instance.regions[i].button);
+			int x = (instance.map.getRegions()[i].getStratCenter().x * MainActivity.CAMERA_WIDTH)/100;
+			int y = (instance.map.getRegions()[i].getStratCenter().y * MainActivity.CAMERA_HEIGHT)/100;
+			instance.map.getRegions()[i].button.setPosition(x, y);
+			instance.map.getRegions()[i].button.setScale((float) 0.5);
+			attachChild(instance.map.getRegions()[i].button);
+			registerTouchArea(instance.map.getRegions()[i].button);
 
 		}
 
@@ -103,7 +107,7 @@ public class GameScene extends Scene implements IOnSceneTouchListener, IScrollDe
 		case TouchEvent.ACTION_UP:
 			
 			if( ((System.currentTimeMillis() - lastTouchTime) >  MIN_TOUCH_INTERVAL) &&
-					((System.currentTimeMillis() - lastTouchTime) < MAX_TOUCH_INTERVAL) ) {
+					((System.currentTimeMillis() - lastTouchTime) < MAX_TOUCH_INTERVAL) && doubleTapAllowed ) {
 				
 				/* Double tap */
 				cameraManager.setAutomaticZoom(new Point((int) pSceneTouchEvent.getX(), 
@@ -128,7 +132,7 @@ public class GameScene extends Scene implements IOnSceneTouchListener, IScrollDe
 	
 	public void onRegionSelected() {
 		
-		for(Region region : instance.regions) {
+		for(Region region : instance.map.getRegions()) {
 			if(!region.isSelected()) {
 				unregisterTouchArea(region.button);
 				detachChild(region.button);
@@ -137,8 +141,9 @@ public class GameScene extends Scene implements IOnSceneTouchListener, IScrollDe
 			}
 		}
 		
+		doubleTapAllowed = false;
 		scrollDetector.setEnabled(false);
-		hud.setVisible(true);
+		hud.show();
 	}
 	
 	public void onRegionUnselected(Region pRegion) {
@@ -146,15 +151,16 @@ public class GameScene extends Scene implements IOnSceneTouchListener, IScrollDe
 		unregisterTouchArea(pRegion.button);
 		detachChild(pRegion.button);
 		
-		for(Region region : instance.regions) {
+		for(Region region : instance.map.getRegions()) {
 		
 			registerTouchArea(region.button);
 			attachChild(region.button);
 			
 		}
 		
+		doubleTapAllowed = true;
 		scrollDetector.setEnabled(true);
-		hud.setVisible(false);
+		hud.hide();
 
 		
 	}
@@ -176,7 +182,7 @@ public class GameScene extends Scene implements IOnSceneTouchListener, IScrollDe
 		
 		Log.d("ScrollDetector", "Scrolling started");
 		
-		for(Region region : instance.regions) {
+		for(Region region : instance.map.getRegions()) {
 			unregisterTouchArea(region.button);
 		}
 		
@@ -206,7 +212,7 @@ public class GameScene extends Scene implements IOnSceneTouchListener, IScrollDe
 				(int)(activity.mCamera.getCenterY() + pDistanceY));
 		cameraManager.jumpTo(p);
 		
-		for(Region region : instance.regions) {
+		for(Region region : instance.map.getRegions()) {
 			registerTouchArea(region.button);
 		}
 		
