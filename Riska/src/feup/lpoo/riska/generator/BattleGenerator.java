@@ -3,19 +3,28 @@ package feup.lpoo.riska.generator;
 import java.util.ArrayList;
 import java.util.Random;
 
-import feup.lpoo.riska.elements.Element;
+import feup.lpoo.riska.elements.Region;
 import feup.lpoo.riska.elements.Unit;
 
-public class BattleGenerator extends Element {
+public class BattleGenerator {
+	
+	private static BattleGenerator instance;
 	
 	protected int attackerPoints;
 	protected int defenderPoints;
+	
+	protected Region attacker, defensor;
 
-	public BattleGenerator(int x, int y) {
-		super(x, y, null);
+	public BattleGenerator() {
 		
+		instance = this;
+
 		this.attackerPoints = 0;
 		this.defenderPoints = 0;
+	}
+	
+	public static BattleGenerator getSharedInstance() {
+		return instance;
 	}
 	
 	/**
@@ -92,6 +101,11 @@ public class BattleGenerator extends Element {
 	 */
 	public int getDefenderPoints() {
 		return defenderPoints;
+	}
+
+	public void createBattleRegions(Region attacker, Region defensor) {
+		this.attacker = attacker;
+		this.defensor = defensor;
 	}
 	
 }

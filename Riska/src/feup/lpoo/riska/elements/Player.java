@@ -7,23 +7,20 @@ public class Player {
 	// ======================================================
 	// CONSTANTS
 	// ======================================================
-	private enum PlayerType {
-		PLAYER,
-		CPU
-	};
 	
 	// ======================================================
 	// FIELDS
 	// ======================================================
-	private int playerType;
+	private boolean isCPU;
+	
 	private ArrayList<Region> regions;
 	private Region regionSelected;
 	private Region regionToAttack;
 	
 	
-	public Player(int pPlayerType) {
+	public Player(boolean isCPU) {
 		
-		playerType = pPlayerType;
+		this.isCPU = isCPU;
 		
 		regions = new ArrayList<Region>();
 		regionSelected = null;
@@ -66,6 +63,10 @@ public class Player {
 			}
 		}	
 		return false;
+	}
+	
+	public boolean isCPU() {
+		return isCPU;
 	}
 
 }

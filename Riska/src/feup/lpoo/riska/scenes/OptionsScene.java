@@ -31,6 +31,10 @@ public class OptionsScene extends MenuScene implements IOnMenuItemClickListener 
 		sceneManager = SceneManager.getSharedInstance();
 		resources = ResourceCache.getSharedInstance();
 		
+		createDisplay();	
+	}
+
+	private void createDisplay() {
 		SpriteBackground background = new SpriteBackground(new Sprite(MainActivity.CAMERA_WIDTH/2, MainActivity.CAMERA_HEIGHT/2, 
 				resources.getMenuBackgroundTexture(), activity.getVertexBufferObjectManager()));
 		
@@ -78,7 +82,6 @@ public class OptionsScene extends MenuScene implements IOnMenuItemClickListener 
 		attachChild(sfx_text);
 		
 		setOnMenuItemClickListener(this);	
-		
 	}
 
 	@Override

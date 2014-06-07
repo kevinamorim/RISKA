@@ -1,14 +1,18 @@
 package feup.lpoo.riska.HUD;
 
 import org.andengine.engine.camera.hud.HUD;
+import org.andengine.entity.scene.ITouchArea;
 import org.andengine.entity.scene.Scene;
 import org.andengine.entity.scene.menu.MenuScene;
 import org.andengine.entity.scene.menu.item.IMenuItem;
 import org.andengine.entity.sprite.ButtonSprite;
+import org.andengine.entity.sprite.ButtonSprite.State;
 import org.andengine.entity.sprite.Sprite;
 import org.andengine.entity.text.Text;
+import org.andengine.input.touch.TouchEvent;
 import org.andengine.opengl.font.Font;
 
+import feup.lpoo.riska.elements.Player;
 import feup.lpoo.riska.elements.Region;
 import feup.lpoo.riska.logic.MainActivity;
 import feup.lpoo.riska.resources.ResourceCache;
@@ -16,31 +20,54 @@ import feup.lpoo.riska.scenes.CameraManager;
 import feup.lpoo.riska.scenes.SceneManager;
 import android.graphics.Point;
 import android.util.Log;
+import android.view.MotionEvent;
 
 public class GameHUD extends HUD {
 
 	// ======================================================
 	// CONSTANTS
 	// ======================================================
+	private static final long MIN_TOUCH_INTERVAL = 30;
+
 	private final Point FLAG_POS = new Point((int)(MainActivity.CAMERA_WIDTH/4), (int)(MainActivity.CAMERA_HEIGHT/2));
 	private final int PANEL_CENTER_X = MainActivity.CAMERA_WIDTH/4;
 
+	// ======================================================
+	// SINGLETONS
+	// ======================================================
 	MainActivity activity;
 	SceneManager sceneManager;
 	CameraManager cameraManager;
 	ResourceCache resources;
 
+	// ======================================================
+	// FIELDS
+	// ======================================================
 	private Sprite panel;
 	private Text countryName;
 	private Sprite countryFlag;
 
+	protected ButtonSprite hudButton;
+	private Text hudButtonText;
+
+	private long lastTimeTouched;
+
+
+
+
 	public GameHUD() {
+		
+		lastTimeTouched = 0;
 
 		activity = MainActivity.getSharedInstance();
 		sceneManager = SceneManager.getSharedInstance();
 		cameraManager = CameraManager.getSharedInstance();
 		resources = ResourceCache.getSharedInstance();
-
+		
+		createDisplay();
+	}
+	
+	private void createDisplay() {
 		panel = new Sprite(MainActivity.CAMERA_WIDTH/2, MainActivity.CAMERA_HEIGHT/2,
 				MainActivity.CAMERA_WIDTH, MainActivity.CAMERA_HEIGHT,
 				resources.getHUDPanelTexture(), activity.getVertexBufferObjectManager());
@@ -50,36 +77,79 @@ public class GameHUD extends HUD {
 		countryName.setPosition(PANEL_CENTER_X, 
 				MainActivity.CAMERA_HEIGHT - countryName.getHeight());
 
+		hudButton = new ButtonSprite(MainActivity.CAMERA_WIDTH/4, MainActivity.CAMERA_HEIGHT/5, resources.getStartButtonTexture(),
+				activity.getVertexBufferObjectManager()) {
+
+			@Override
+			public boolean onAreaTouched(TouchEvent pSceneTouchEvent, 
+					float pTouchAreaLocalX, float pTouchAreaLocalY) {
+				switch(pSceneTouchEvent.getAction()) {
+				case MotionEvent.ACTION_DOWN:
+					pressedConfirmationButton();
+					break;
+				case MotionEvent.ACTION_UP:
+					releasedConfirmationButton();
+					break;
+				case MotionEvent.ACTION_OUTSIDE:
+					releasedConfirmationButton();
+					break;
+				default:
+					break;
+				}
+				return true;
+			}
+		};
+		
+		hudButtonText = new Text(hudButton.getWidth()/2, hudButton.getHeight()/2, 
+				resources.getFont(), "DEFAULT", activity.getVertexBufferObjectManager());
+		hudButton.attachChild(hudButtonText);
+		
+		
 		panel.attachChild(countryName);
 
 		attachChild(panel);	
-
 	}
 
-	/* TODO: Move this to the updateHUD method. */
-	public void updateButtonText(boolean owned) {
-		if(owned) {
-			//attackButton.setText("CHOOSE");
-		} else {
-			//attackButton.setText("ATTACK!");
-		}
-	}
-
-	public void updateHUD(Region pRegion) {
-			
-		countryName.setText(wrapText(resources.getGameFont(), pRegion.getName(), panel.getWidth()/2));
-		countryName.setPosition(PANEL_CENTER_X, 
-				MainActivity.CAMERA_HEIGHT - countryName.getHeight());
-
-		if(countryFlag != null) {
-			panel.detachChild(countryFlag);
-		} 
-
-		countryFlag = pRegion.getFlag(FLAG_POS.x, FLAG_POS.y);
+	public void pressedConfirmationButton() {
 		
-		panel.attachChild(countryName);
-		panel.attachChild(countryFlag);
-		panel.attachChild(pRegion.getHudButton());
+		hudButton.setCurrentTileIndex(1);	
+	}
+	
+	public void releasedConfirmationButton() {
+		
+		long now = System.currentTimeMillis();
+		
+		if((now - lastTimeTouched) > MIN_TOUCH_INTERVAL) {
+			
+			hudButton.setCurrentTileIndex(0);
+			sceneManager.getGameScene().onRegionConfirmed();	
+		}
+		
+		lastTimeTouched = System.currentTimeMillis();
+		
+	}
+
+	public void update(String regionName, String hudText, boolean enabled) {
+		
+		hudButton.setEnabled(enabled);
+		hudButtonText.setText(hudText);
+			
+		countryName.setText(wrapText(resources.getGameFont(), regionName, panel.getWidth()/2));
+		countryName.setPosition(PANEL_CENTER_X, MainActivity.CAMERA_HEIGHT - countryName.getHeight());
+
+//		if(countryFlag != null) { 
+//			panel.detachChild(countryFlag);
+//		} 
+//
+//		countryFlag = hudButtonText2.getFlag(FLAG_POS.x, FLAG_POS.y);
+
+		//panel.attachChild(countryFlag);
+		panel.attachChild(countryName);	
+		panel.attachChild(hudButton);
+
+		if(hudButton.isEnabled()) {
+			registerTouchArea(hudButton);
+		}
 	}
 
 	private String wrapText(Font pFont, String pString, float maxWidth) {
@@ -117,11 +187,21 @@ public class GameHUD extends HUD {
 
 	public void hide() {
 		panel.detachChildren();
+		unregisterTouchArea(hudButton);
+		
 		setVisible(false);
 	}
 
 	public void show() {
+		//attachChild(panel);	
+		//attachChild(hudButton);
+		//registerTouchArea(hudButton);
+		
 		setVisible(true);
+	}
+
+	public ButtonSprite getHudButton() {
+		return this.hudButton;
 	}
 
 

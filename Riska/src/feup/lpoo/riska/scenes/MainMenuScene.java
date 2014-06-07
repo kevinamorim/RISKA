@@ -37,6 +37,11 @@ public class MainMenuScene extends MenuScene implements IOnMenuItemClickListener
 		
 		conductor.playBackgroundMusic();
 		
+		createDisplay();
+	}
+	
+
+	private void createDisplay() {
 		SpriteBackground background = new SpriteBackground(new Sprite(MainActivity.CAMERA_WIDTH/2, MainActivity.CAMERA_HEIGHT/2, 
 				resources.getMenuBackgroundTexture(), activity.getVertexBufferObjectManager()));
 		
@@ -63,7 +68,7 @@ public class MainMenuScene extends MenuScene implements IOnMenuItemClickListener
 		
 		setOnMenuItemClickListener(this);
 	}
-	
+
 
 	@Override
 	public boolean onMenuItemClicked(MenuScene pMenuScene, IMenuItem pMenuItem,

@@ -8,11 +8,10 @@ import feup.lpoo.riska.logic.MainActivity;
 public class SceneManager {
 	
 	private SceneType currentScene;
-	private MainActivity activity;
 	private Engine engine;
 	
 	private Scene splashScene, mainMenuScene, optionsScene, 
-		loadMapScene, gameScene; /* Create more scene if needed, like gameScene. */
+		loadMapScene, gameScene, battleScene; /* Create more scene if needed, like gameScene. */
 	
 	public static SceneManager instance;
 	
@@ -23,11 +22,11 @@ public class SceneManager {
 		OPTIONS,
 		LOAD_MAP,
 		GAME,
+		BATTLE,
 		GAME_OVER
 	};
 	
 	public SceneManager(MainActivity activity, Engine engine, Camera camera) {
-		this.activity = activity;
 		this.engine = engine;
 		instance = this;
 	}
@@ -49,6 +48,7 @@ public class SceneManager {
 		optionsScene = new OptionsScene();
 		//loadMapScene = new LoadMapScene();
 		gameScene = new GameScene();
+		battleScene = new BattleScene();
 	}
 	
 	public SceneType getCurrentScene() {
@@ -74,6 +74,9 @@ public class SceneManager {
 		case GAME:
 			engine.setScene(gameScene);
 			break;
+		case BATTLE:
+			engine.setScene(battleScene);
+			break;
 		default:
 				break;
 		}
@@ -87,7 +90,7 @@ public class SceneManager {
 		 */
 	}
 	
-	public Scene getGameScene() {
-		return gameScene;
+	public GameScene getGameScene() {
+		return ((GameScene) gameScene);
 	}
 }

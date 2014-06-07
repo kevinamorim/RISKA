@@ -18,18 +18,17 @@ import android.util.Log;
 import android.view.MotionEvent;
 
 public class Region {
-	
+
 	// ======================================================
 	// CONSTANTS
 	// ======================================================
 	private static final long MIN_TOUCH_INTERVAL = 30;
-	
+
 	// ======================================================
 	// SINGLETONS
 	// ======================================================
 	private MainActivity activity;
 	private SceneManager sceneManager;
-	private CameraManager cameraManager;
 	private ResourceCache resources;
 
 	// ======================================================
@@ -37,23 +36,20 @@ public class Region {
 	// ======================================================
 	private final int id;
 	protected Point stratCenter;
+	protected int soldiers;
 
 	protected String name;
 	protected String continent;
 
 	protected boolean selected;
-
-	protected boolean owned;
-	
-	protected ButtonSprite button;
-	protected ButtonSprite hudButton;
-	private Text hudButtonText;
 	
 	private long lastTimeTouched;
 	
+	protected ButtonSprite button;	
 	private Sprite flag;
 	
 	private ArrayList<Region> neighbours;
+	private Player owner;
 	
 	public Region(final int id, String name, Point stratCenter, String continent) {
 		
@@ -61,16 +57,20 @@ public class Region {
 		
 		activity = MainActivity.getSharedInstance();
 		sceneManager = SceneManager.getSharedInstance();
-		cameraManager = CameraManager.getSharedInstance();
+		CameraManager.getSharedInstance();
 		resources = ResourceCache.getSharedInstance();
 		
 		neighbours = new ArrayList<Region>();
-
+		
 		lastTimeTouched = System.currentTimeMillis();
 		
 		this.name = name;
 		this.stratCenter = stratCenter;
 		this.continent = continent;
+		this.soldiers = 0;
+		this.owner = null;
+		this.selected = false;
+		
 		this.flag = new Sprite(0, 0, 240, 150, resources.getRegionFlags(), activity.getVertexBufferObjectManager());
 		
 		button = new ButtonSprite(stratCenter.x, stratCenter.y, resources.getRegionButtonTexture(), 
@@ -101,69 +101,15 @@ public class Region {
 		buttonText.setScale((float) 0.5);
 		buttonText.setPosition(button.getWidth()/2, button.getHeight()/2);
 		button.attachChild(buttonText);
-
-		hudButton = new ButtonSprite(MainActivity.CAMERA_WIDTH/4, MainActivity.CAMERA_HEIGHT/5, resources.getStartButtonTexture(),
-				activity.getVertexBufferObjectManager()) {
-			
-			@Override
-			public boolean onAreaTouched(TouchEvent pSceneTouchEvent, 
-					float pTouchAreaLocalX, float pTouchAreaLocalY) {
-				switch(pSceneTouchEvent.getAction()) {
-				case MotionEvent.ACTION_DOWN:
-					pressedConfirmationButton();
-					break;
-				case MotionEvent.ACTION_UP:
-					releasedConfirmationButton();
-					break;
-				case MotionEvent.ACTION_OUTSIDE:
-					releasedConfirmationButton();
-					break;
-				default:
-					break;
-				}
-				return true;
-			}
-		};
-		
-		hudButtonText = new Text(hudButton.getWidth()/2, hudButton.getHeight()/2, 
-				resources.getFont(), "DEFAULT", activity.getVertexBufferObjectManager());
-		hudButton.attachChild(hudButtonText);
 		
 	}
 	
-	public void updateHudButtonText(Player player) {
-		if(player.ownsRegion(this)) {
-			hudButtonText.setText("CHOOSE");
-		} else {
-			hudButtonText.setText("ATTACK!");
-		}
-	}
-	
-	public void pressedConfirmationButton() {
-		
-		hudButton.setCurrentTileIndex(1);
-		
-	}
-	
-	public void releasedConfirmationButton() {
-		
-		long now = System.currentTimeMillis();
-		
-		if((now - lastTimeTouched) > MIN_TOUCH_INTERVAL) {
-			
-			hudButton.setCurrentTileIndex(0);
-			((GameScene) sceneManager.getGameScene()).onRegionConfirmed(this);
-			
-		}
-		
-		lastTimeTouched = System.currentTimeMillis();
-		
+	public boolean playerIsOwner(Player player) {
+		return (owner == player);
 	}
 
 	public void pressedRegionButton() {	
-
 			button.setCurrentTileIndex(1);	
-
 	}
 	
 	public void releasedRegionButton() {
@@ -178,27 +124,18 @@ public class Region {
 			Log.d("Region", "Released: " + selected);
 			
 			if(selected) {
-				
-				cameraManager.focusOnRegion(this);
-				
-				((GameScene) sceneManager.getGameScene()).onRegionSelected();
+
+				sceneManager.getGameScene().onRegionSelected(this);
 				
 			} else {
 				
-				cameraManager.zoomOut();
-				cameraManager.panToCenter();
-				((GameScene) sceneManager.getGameScene()).onRegionUnselected(this);
+				sceneManager.getGameScene().onRegionUnselected(this);
 			}
 			
 		}
-		
 
 		lastTimeTouched = System.currentTimeMillis();
-
 	}
-	
-	
-	
 	
 	/* ======================================================================
 	 * ======================================================================    
@@ -249,19 +186,17 @@ public class Region {
 	public void setSelected(boolean selected) {
 		this.selected = selected;
 	}
-
-	/**
-	 * @return the owned
-	 */
-	public boolean isOwned() {
-		return owned;
+	
+	public int getNumberOfSoldiers() {
+		return soldiers;
 	}
 
-	/**
-	 * @param owned the owned to set
-	 */
-	public void setOwned(boolean owned) {
-		this.owned = owned;
+	public void setNumberOfSoldiers(int soldiers) {
+		this.soldiers = soldiers;
+	}
+	
+	public void addSoldiers(int value) {
+		soldiers += value;
 	}
 	
 	public Sprite getFlag(float pX, float pY) {
@@ -287,16 +222,23 @@ public class Region {
 		return neighbours;
 	}
 	
-	public ButtonSprite getHudButton() {
-		return hudButton;
-	}
-	
 	public ButtonSprite getButton() {
 		return button;
 	}
 
-	public void changeButtonColor(Color color) {
+	public void setColor(Color color) {
 		this.button.setColor(color);
 	}
+	
+	public void setOwner(Player player) {
+		this.owner = player;
+	}
+	
+	public Player getOwner() {
+		return this.owner;
+	}
 
+	public boolean isNeighbourOf(Region focusedRegion) {
+		return neighbours.contains(focusedRegion);
+	}
 }
