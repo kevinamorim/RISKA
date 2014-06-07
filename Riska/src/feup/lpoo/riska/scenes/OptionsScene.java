@@ -6,16 +6,19 @@ import org.andengine.entity.scene.menu.MenuScene.IOnMenuItemClickListener;
 import org.andengine.entity.scene.menu.item.IMenuItem;
 import org.andengine.entity.sprite.Sprite;
 import org.andengine.entity.text.Text;
+import org.andengine.opengl.texture.region.TiledTextureRegion;
 
 import android.graphics.Color;
 import feup.lpoo.riska.gameInterface.AnimatedButtonSpriteMenuItem;
 import feup.lpoo.riska.logic.MainActivity;
+import feup.lpoo.riska.resources.ResourceCache;
 import feup.lpoo.riska.scenes.SceneManager.SceneType;
 
 public class OptionsScene extends MenuScene implements IOnMenuItemClickListener {
 	
 	MainActivity activity; 
-	SceneManager instance;
+	SceneManager sceneManager;
+	ResourceCache resources;
 	
 	final int RETURN = 0;
 	final int SFX = 1;
@@ -25,31 +28,34 @@ public class OptionsScene extends MenuScene implements IOnMenuItemClickListener 
 		super(MainActivity.getSharedInstance().mCamera);
 		
 		activity = MainActivity.getSharedInstance();
-		instance = SceneManager.getSharedInstance();
+		sceneManager = SceneManager.getSharedInstance();
+		resources = ResourceCache.getSharedInstance();
 		
 		SpriteBackground background = new SpriteBackground(new Sprite(MainActivity.CAMERA_WIDTH/2, MainActivity.CAMERA_HEIGHT/2, 
-				instance.mMenuBackgroundTextureRegion, activity.getVertexBufferObjectManager()));
+				resources.getMenuBackgroundTexture(), activity.getVertexBufferObjectManager()));
 		
-		final AnimatedButtonSpriteMenuItem button_return = new AnimatedButtonSpriteMenuItem(RETURN, (float) 0.3*instance.mReturnButtonTiledTextureRegion.getWidth(), 
-				(float) 0.3*instance.mReturnButtonTiledTextureRegion.getHeight(), instance.mReturnButtonTiledTextureRegion, 
+		TiledTextureRegion button = resources.getReturnButtonTexture();
+		
+		final AnimatedButtonSpriteMenuItem button_return = new AnimatedButtonSpriteMenuItem(RETURN, (float) 0.3*button.getWidth(), 
+				(float) 0.3*button.getHeight(), button, 
 				activity.getVertexBufferObjectManager());
 		
-		final AnimatedButtonSpriteMenuItem button_slider_sfx = new AnimatedButtonSpriteMenuItem(SFX, (float) 0.3*instance.mSliderButtonTiledTextureRegion.getWidth(),
-				(float) 0.3*instance.mSliderButtonTiledTextureRegion.getHeight(), instance.mSliderButtonTiledTextureRegion, 
-				activity.getVertexBufferObjectManager());
+		button = resources.getSliderButtonTexture();
 		
-		final AnimatedButtonSpriteMenuItem button_slider_music = new AnimatedButtonSpriteMenuItem(MUSIC, (float) 0.3*instance.mSliderButtonTiledTextureRegion.getWidth(),
-				(float) 0.3*instance.mSliderButtonTiledTextureRegion.getHeight(), instance.mSliderButtonTiledTextureRegion, 
-				activity.getVertexBufferObjectManager());
+		final AnimatedButtonSpriteMenuItem button_slider_sfx = new AnimatedButtonSpriteMenuItem(SFX, (float) 0.3*button.getWidth(),
+				(float) 0.3*button.getHeight(), button, activity.getVertexBufferObjectManager());
+		
+		final AnimatedButtonSpriteMenuItem button_slider_music = new AnimatedButtonSpriteMenuItem(MUSIC, (float) 0.3*button.getWidth(),
+				(float) 0.3*button.getHeight(), button, activity.getVertexBufferObjectManager());
 		
 		
 		
-		final Text music_text = new Text(0, 0, instance.mFont, "MUSIC", activity.getVertexBufferObjectManager());
+		final Text music_text = new Text(0, 0, resources.getFont(), "MUSIC", activity.getVertexBufferObjectManager());
 		music_text.setPosition(MainActivity.CAMERA_WIDTH/2 - (float) 0.75*music_text.getWidth(), 
 				(float) 0.5*MainActivity.CAMERA_HEIGHT);
 		music_text.setColor(Color.BLACK);
 		
-		final Text sfx_text = new Text(0, 0, instance.mFont, "SFX", activity.getVertexBufferObjectManager());
+		final Text sfx_text = new Text(0, 0, resources.getFont(), "SFX", activity.getVertexBufferObjectManager());
 		sfx_text.setPosition(MainActivity.CAMERA_WIDTH/2 - (float) 0.75*sfx_text.getWidth(),
 				(float) 0.75*MainActivity.CAMERA_HEIGHT);
 		sfx_text.setColor(Color.BLACK);
@@ -82,7 +88,7 @@ public class OptionsScene extends MenuScene implements IOnMenuItemClickListener 
 		switch(pMenuItem.getID()) {
 		case RETURN:
 			// TODO: Save configurations.
-			instance.setCurrentScene(SceneType.MENU);
+			sceneManager.setCurrentScene(SceneType.MENU);
 			break;
 		case SFX:
 			break;

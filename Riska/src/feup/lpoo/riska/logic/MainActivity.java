@@ -8,11 +8,11 @@ import org.andengine.engine.handler.timer.TimerHandler;
 import org.andengine.engine.options.EngineOptions;
 import org.andengine.engine.options.ScreenOrientation;
 import org.andengine.engine.options.resolutionpolicy.FillResolutionPolicy;
-import org.andengine.engine.options.resolutionpolicy.RatioResolutionPolicy;
 import org.andengine.entity.scene.Scene;
 import org.andengine.opengl.font.Font;
 import org.andengine.ui.activity.BaseGameActivity;
 
+import feup.lpoo.riska.resources.ResourceCache;
 import feup.lpoo.riska.scenes.SceneManager;
 import feup.lpoo.riska.scenes.SceneManager.SceneType;
 
@@ -32,6 +32,7 @@ public class MainActivity extends BaseGameActivity {
 	public static MainActivity instance;
 	
 	protected SceneManager sceneManager;
+	protected ResourceCache resources;
 
 	@Override
 	public EngineOptions onCreateEngineOptions() {
@@ -53,7 +54,10 @@ public class MainActivity extends BaseGameActivity {
 			throws IOException {
 		
 		sceneManager = new SceneManager(this, mEngine, mCamera);
-		sceneManager.loadSplashSceneResources();
+		
+		resources = new ResourceCache(this, mEngine, mCamera);	
+		resources.loadSplashSceneResources();
+		resources.loadMusic();
 		
 		pOnCreateResourcesCallback.onCreateResourcesFinished();
 		
@@ -78,8 +82,8 @@ public class MainActivity extends BaseGameActivity {
 				
 				mEngine.unregisterUpdateHandler(pTimerHandler);
 				
-				sceneManager.loadMainMenuResources();
-				sceneManager.loadGameSceneResources();
+				resources.loadMainMenuResources();
+				resources.loadGameSceneResources();
 				sceneManager.createGameScenes();
 				sceneManager.setCurrentScene(SceneType.MENU);
 				

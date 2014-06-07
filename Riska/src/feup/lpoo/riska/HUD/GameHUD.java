@@ -11,6 +11,7 @@ import org.andengine.opengl.font.Font;
 
 import feup.lpoo.riska.elements.Region;
 import feup.lpoo.riska.logic.MainActivity;
+import feup.lpoo.riska.resources.ResourceCache;
 import feup.lpoo.riska.scenes.CameraManager;
 import feup.lpoo.riska.scenes.SceneManager;
 import android.graphics.Point;
@@ -25,31 +26,29 @@ public class GameHUD extends HUD {
 	private final int PANEL_CENTER_X = MainActivity.CAMERA_WIDTH/4;
 
 	MainActivity activity;
-	SceneManager instance;
+	SceneManager sceneManager;
 	CameraManager cameraManager;
+	ResourceCache resources;
 
 	private Sprite panel;
 	private Text countryName;
 	private Sprite countryFlag;
-	
-	private ButtonSprite regionButton;
 
 	public GameHUD() {
 
 		activity = MainActivity.getSharedInstance();
-		instance = SceneManager.getSharedInstance();
+		sceneManager = SceneManager.getSharedInstance();
 		cameraManager = CameraManager.getSharedInstance();
+		resources = ResourceCache.getSharedInstance();
 
 		panel = new Sprite(MainActivity.CAMERA_WIDTH/2, MainActivity.CAMERA_HEIGHT/2,
 				MainActivity.CAMERA_WIDTH, MainActivity.CAMERA_HEIGHT,
-				instance.getHUDTextureRegion(), activity.getVertexBufferObjectManager());
+				resources.getHUDPanelTexture(), activity.getVertexBufferObjectManager());
 
-		countryName = new Text(0, 0, instance.getGameFont(), "COUNTRY", 1000, activity.getVertexBufferObjectManager());
+		countryName = new Text(0, 0, resources.getGameFont(), "COUNTRY", 1000, activity.getVertexBufferObjectManager());
 
 		countryName.setPosition(PANEL_CENTER_X, 
 				MainActivity.CAMERA_HEIGHT - countryName.getHeight());
-		
-		regionButton = null;
 
 		panel.attachChild(countryName);
 
@@ -68,7 +67,7 @@ public class GameHUD extends HUD {
 
 	public void updateHUD(Region pRegion) {
 			
-		countryName.setText(wrapText(instance.getGameFont(), pRegion.getName(), panel.getWidth()/2));
+		countryName.setText(wrapText(resources.getGameFont(), pRegion.getName(), panel.getWidth()/2));
 		countryName.setPosition(PANEL_CENTER_X, 
 				MainActivity.CAMERA_HEIGHT - countryName.getHeight());
 

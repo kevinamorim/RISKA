@@ -6,15 +6,14 @@ import org.andengine.entity.sprite.ButtonSprite;
 import org.andengine.entity.sprite.Sprite;
 import org.andengine.entity.text.Text;
 import org.andengine.input.touch.TouchEvent;
-import org.andengine.opengl.texture.region.ITextureRegion;
-import org.andengine.opengl.vbo.VertexBufferObjectManager;
 
 import feup.lpoo.riska.logic.MainActivity;
+import feup.lpoo.riska.resources.ResourceCache;
 import feup.lpoo.riska.scenes.CameraManager;
 import feup.lpoo.riska.scenes.GameScene;
 import feup.lpoo.riska.scenes.SceneManager;
+
 import android.graphics.Point;
-import android.text.format.Time;
 import android.util.Log;
 import android.view.MotionEvent;
 
@@ -29,8 +28,9 @@ public class Region {
 	// SINGLETONS
 	// ======================================================
 	private MainActivity activity;
-	private SceneManager instance;
+	private SceneManager sceneManager;
 	private CameraManager cameraManager;
+	private ResourceCache resources;
 
 	// ======================================================
 	// FIELDS
@@ -60,8 +60,9 @@ public class Region {
 		this.id = id;
 		
 		activity = MainActivity.getSharedInstance();
-		instance = SceneManager.getSharedInstance();
+		sceneManager = SceneManager.getSharedInstance();
 		cameraManager = CameraManager.getSharedInstance();
+		resources = ResourceCache.getSharedInstance();
 		
 		neighbours = new ArrayList<Region>();
 
@@ -70,9 +71,9 @@ public class Region {
 		this.name = name;
 		this.stratCenter = stratCenter;
 		this.continent = continent;
-		this.flag = new Sprite(0, 0, 240, 150, instance.getRegionFlag(), activity.getVertexBufferObjectManager());
+		this.flag = new Sprite(0, 0, 240, 150, resources.getRegionFlags(), activity.getVertexBufferObjectManager());
 		
-		button = new ButtonSprite(stratCenter.x, stratCenter.y, instance.getRegionButtonTextureRegion(), 
+		button = new ButtonSprite(stratCenter.x, stratCenter.y, resources.getRegionButtonTexture(), 
 				activity.getVertexBufferObjectManager()) {
 
 			@Override
@@ -95,13 +96,13 @@ public class Region {
 			}
 		};
 		
-		Text buttonText = new Text(0, 0, instance.getFont() , "10",
+		Text buttonText = new Text(0, 0, resources.getFont() , "10",
 				activity.getVertexBufferObjectManager());
 		buttonText.setScale((float) 0.5);
 		buttonText.setPosition(button.getWidth()/2, button.getHeight()/2);
 		button.attachChild(buttonText);
 
-		hudButton = new ButtonSprite(MainActivity.CAMERA_WIDTH/4, MainActivity.CAMERA_HEIGHT/5, instance.getStartButtonTextureRegion(),
+		hudButton = new ButtonSprite(MainActivity.CAMERA_WIDTH/4, MainActivity.CAMERA_HEIGHT/5, resources.getStartButtonTexture(),
 				activity.getVertexBufferObjectManager()) {
 			@Override
 			public boolean onAreaTouched(TouchEvent pSceneTouchEvent, 
@@ -123,7 +124,7 @@ public class Region {
 			}
 		};
 		hudButtonText = new Text(hudButton.getWidth()/2, hudButton.getHeight()/2, 
-				instance.getFont(), "DEFAULT", activity.getVertexBufferObjectManager());
+				resources.getFont(), "DEFAULT", activity.getVertexBufferObjectManager());
 		hudButton.attachChild(hudButtonText);
 		
 	}
@@ -149,7 +150,7 @@ public class Region {
 		if((now - lastTimeTouched) > MIN_TOUCH_INTERVAL) {
 			
 			hudButton.setCurrentTileIndex(0);
-			((GameScene) instance.getGameScene()).onRegionConfirmed(this);
+			((GameScene) sceneManager.getGameScene()).onRegionConfirmed(this);
 			
 		}
 		
@@ -178,13 +179,13 @@ public class Region {
 				
 				cameraManager.focusOnRegion(this);
 				
-				((GameScene) instance.getGameScene()).onRegionSelected();
+				((GameScene) sceneManager.getGameScene()).onRegionSelected();
 				
 			} else {
 				
 				cameraManager.zoomOut();
 				cameraManager.panToCenter();
-				((GameScene) instance.getGameScene()).onRegionUnselected(this);
+				((GameScene) sceneManager.getGameScene()).onRegionUnselected(this);
 			}
 			
 		}

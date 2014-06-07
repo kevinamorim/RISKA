@@ -19,6 +19,7 @@ import feup.lpoo.riska.HUD.GameHUD;
 import feup.lpoo.riska.elements.Player;
 import feup.lpoo.riska.elements.Region;
 import feup.lpoo.riska.logic.MainActivity;
+import feup.lpoo.riska.resources.ResourceCache;
 import android.graphics.Point;
 import android.util.Log;
 
@@ -35,15 +36,15 @@ public class GameScene extends Scene implements IOnSceneTouchListener, IScrollDe
 	// SINGLETONS
 	// ======================================================
 	MainActivity activity;
-	SceneManager instance;
+	SceneManager sceneManager;
+	CameraManager cameraManager;
+	ResourceCache resources;
 	
 	// ======================================================
 	// FIELDS
 	// ======================================================
 	GameHUD hud;
-
-	CameraManager cameraManager;
-
+	
 	protected Point touchPoint;
 	
 	private ScrollDetector scrollDetector;
@@ -59,18 +60,18 @@ public class GameScene extends Scene implements IOnSceneTouchListener, IScrollDe
 	public GameScene() {
 		
 		activity = MainActivity.getSharedInstance();
-		instance = SceneManager.getSharedInstance();
-		
-		cameraManager = instance.cameraManager;
+		sceneManager = SceneManager.getSharedInstance();	
+		cameraManager = CameraManager.getSharedInstance();
+		resources = ResourceCache.getSharedInstance();
 
 		lastTouchTime = 0;
 
 		Sprite map = new Sprite(MainActivity.CAMERA_WIDTH/2, MainActivity.CAMERA_HEIGHT/2,
 				MainActivity.CAMERA_WIDTH, MainActivity.CAMERA_HEIGHT,
-				instance.mapTextureRegion, activity.getVertexBufferObjectManager());
+				resources.getMapTexture(), activity.getVertexBufferObjectManager());
 		
 		AnimatedSprite background = new AnimatedSprite(MainActivity.CAMERA_WIDTH/2, MainActivity.CAMERA_HEIGHT/2, 
-				instance.mSeaTiledTextureRegion, 
+				resources.getSeaTexture(), 
 				activity.getVertexBufferObjectManager());
 		background.setScale(2f);
 		long duration[] = { 750, 750, 750, 750, 750, 750, 750, 750, };
@@ -99,7 +100,7 @@ public class GameScene extends Scene implements IOnSceneTouchListener, IScrollDe
 		player = new Player(0);
 		
 		boolean toPlayer = true; /* Is next region to be given to the player. */
-		for(Region region : instance.map.getRegions()) {
+		for(Region region : resources.getMap().getRegions()) {
 			if(toPlayer) {
 				player.addRegion(region);
 			}
@@ -111,17 +112,17 @@ public class GameScene extends Scene implements IOnSceneTouchListener, IScrollDe
 
 	private void setRegionButtons() {
 
-		for(int i = 0; i < instance.NUMBER_OF_REGIONS; i++) {
+		for(Region region : resources.getMap().getRegions()) {
 
-			int x = (instance.map.getRegions()[i].getStratCenter().x * MainActivity.CAMERA_WIDTH)/100;
-			int y = (instance.map.getRegions()[i].getStratCenter().y * MainActivity.CAMERA_HEIGHT)/100;
-			instance.map.getRegions()[i].getHudButton().setPosition(x, y);
-			instance.map.getRegions()[i].getHudButton().setScale((float) 0.5);
-			attachChild(instance.map.getRegions()[i].getHudButton());
-			registerTouchArea(instance.map.getRegions()[i].getHudButton());
-
+			int x = (region.getStratCenter().x * MainActivity.CAMERA_WIDTH)/100;
+			int y = (region.getStratCenter().y * MainActivity.CAMERA_HEIGHT)/100;
+			
+			region.getHudButton().setPosition(x, y);
+			region.getHudButton().setScale((float) 0.5);
+			
+			attachChild(region.getHudButton());
+			registerTouchArea(region.getHudButton());
 		}
-
 	}
 	
 	@Override
@@ -156,7 +157,7 @@ public class GameScene extends Scene implements IOnSceneTouchListener, IScrollDe
 	
 	public void onRegionSelected() {
 		
-		for(Region region : instance.map.getRegions()) {
+		for(Region region : resources.getMap().getRegions()) {
 			if(!region.isSelected()) {
 				unregisterTouchArea(region.getHudButton());
 				detachChild(region.getHudButton());
@@ -176,7 +177,7 @@ public class GameScene extends Scene implements IOnSceneTouchListener, IScrollDe
 		unregisterTouchArea(pRegion.getHudButton());
 		detachChild(pRegion.getHudButton());
 		
-		for(Region region : instance.map.getRegions()) {
+		for(Region region : resources.getMap().getRegions()) {
 		
 			registerTouchArea(region.getHudButton());
 			attachChild(region.getHudButton());
@@ -219,7 +220,7 @@ public class GameScene extends Scene implements IOnSceneTouchListener, IScrollDe
 		
 		Log.d("ScrollDetector", "Scrolling started");
 		
-		for(Region region : instance.map.getRegions()) {
+		for(Region region : resources.getMap().getRegions()) {
 			unregisterTouchArea(region.getHudButton());
 		}
 		
@@ -249,7 +250,7 @@ public class GameScene extends Scene implements IOnSceneTouchListener, IScrollDe
 				(int)(activity.mCamera.getCenterY() + pDistanceY));
 		cameraManager.jumpTo(p);
 		
-		for(Region region : instance.map.getRegions()) {
+		for(Region region : resources.getMap().getRegions()) {
 			registerTouchArea(region.getHudButton());
 		}
 		
