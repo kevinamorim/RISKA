@@ -229,7 +229,7 @@ public class GameScene extends Scene implements IOnSceneTouchListener, IScrollDe
 		
 		focusedRegion = pRegion;
 	
-		if(focusedRegion.playerIsOwner(currentPlayer)) {
+		if(currentPlayer.isOwnerOf(focusedRegion)) {
 
 			if(focusedRegion == selectedRegion) {
 				hudButtonText = "UNSELECT";
@@ -270,20 +270,19 @@ public class GameScene extends Scene implements IOnSceneTouchListener, IScrollDe
 	
 	public void onRegionConfirmed() {	
 		
-		if(focusedRegion.playerIsOwner(currentPlayer)) {
+		if(currentPlayer.isOwnerOf(focusedRegion)) {
 			
 			focusedRegion.setSelected(focusedRegion.isSelected() ? false : true);
 			selectedRegion = (focusedRegion.isSelected() ? focusedRegion : null);
 			
-		} else {
+			Log.d("Regions","Confirmed");
+			Log.d("Regions","  > " + selectedRegion.getName());
 			
+		} else {		
 			targetedRegion = focusedRegion;
 			//onAttackRegion(selectedRegion, targetedRegion);
 			
 		}
-		
-		Log.d("Regions","Confirmed");
-		Log.d("Regions","  > " + selectedRegion.getName());
 	}
 	
 	

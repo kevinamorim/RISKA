@@ -68,5 +68,9 @@ public class Player {
 	public boolean isCPU() {
 		return isCPU;
 	}
+	
+	public boolean isOwnerOf(Region region) {
+		return regions.contains(region);
+	}
 
 }

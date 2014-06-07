@@ -187,7 +187,9 @@ public class GameHUD extends HUD {
 
 	public void hide() {
 		panel.detachChildren();
-		unregisterTouchArea(hudButton);
+		if(hudButton.isEnabled()) {
+			unregisterTouchArea(hudButton);
+		}
 		
 		setVisible(false);
 	}
