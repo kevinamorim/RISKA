@@ -8,6 +8,8 @@ import org.andengine.input.touch.TouchEvent;
 import org.andengine.input.touch.detector.ScrollDetector;
 import org.andengine.input.touch.detector.ScrollDetector.IScrollDetectorListener;
 import org.andengine.input.touch.detector.SurfaceScrollDetector;
+import org.andengine.util.adt.color.Color;
+
 import feup.lpoo.riska.HUD.GameHUD;
 import feup.lpoo.riska.elements.Player;
 import feup.lpoo.riska.elements.Region;
@@ -25,7 +27,7 @@ public class GameScene extends Scene implements IOnSceneTouchListener, IScrollDe
 	private static final long MIN_TOUCH_INTERVAL = 70;
 	private static final long MAX_TOUCH_INTERVAL = 400;
 	
-	private static final int ANIM = 100;
+	private static final int ANIM = 250;
 	
 	// ======================================================
 	// SINGLETONS
@@ -96,11 +98,21 @@ public class GameScene extends Scene implements IOnSceneTouchListener, IScrollDe
 		
 		boolean toPlayer = true; /* Is next region to be given to the player. */
 		for(Region region : resources.getMap().getRegions()) {
+			
 			if(toPlayer) {
 				player.addRegion(region);
+				// TODO remove this
+				region.changeButtonColor(Color.GREEN);
 			}
+			else {
+				// TODO remove this
+				region.changeButtonColor(Color.RED);
+			}
+			
 			toPlayer = !toPlayer;
 			region.updateHudButtonText(player);
+			
+			
 		}
 		
 	}

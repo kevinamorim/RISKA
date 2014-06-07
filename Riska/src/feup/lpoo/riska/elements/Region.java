@@ -6,13 +6,13 @@ import org.andengine.entity.sprite.ButtonSprite;
 import org.andengine.entity.sprite.Sprite;
 import org.andengine.entity.text.Text;
 import org.andengine.input.touch.TouchEvent;
+import org.andengine.util.adt.color.Color;
 
 import feup.lpoo.riska.logic.MainActivity;
 import feup.lpoo.riska.resources.ResourceCache;
 import feup.lpoo.riska.scenes.CameraManager;
 import feup.lpoo.riska.scenes.GameScene;
 import feup.lpoo.riska.scenes.SceneManager;
-
 import android.graphics.Point;
 import android.util.Log;
 import android.view.MotionEvent;
@@ -293,6 +293,10 @@ public class Region {
 	
 	public ButtonSprite getButton() {
 		return button;
+	}
+
+	public void changeButtonColor(Color color) {
+		this.button.setColor(color);
 	}
 
 }
