@@ -65,8 +65,8 @@ public class GameScene extends Scene implements IOnSceneTouchListener, IScrollDe
 				instance.mSeaTiledTextureRegion, 
 				activity.getVertexBufferObjectManager());
 		background.setScale(2f);
-		long duration[] = { 1000, 1000, 1000, 1000, 1000, 1000 };
-		background.animate(duration, 0, 5, true);
+		long duration[] = { 1000, 1000, 1000, 1000 };
+		background.animate(duration, 0, 3, true);
 		attachChild(background);
 		
 		attachChild(map);

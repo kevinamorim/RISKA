@@ -62,6 +62,8 @@ public class GameHUD extends HUD {
 		
 		attachChild(panel);	
 		
+		attackButton.setText("LOL");
+		
 	}
 	
 	public void updateHUD(Region pRegion) {

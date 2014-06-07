@@ -48,5 +48,9 @@ public class AnimatedTextButtonSpriteMenuItem extends AnimatedSpriteMenuItem {
 		super.onUnselected();
 		
 	}
+	
+	public void setText(String pText) {
+		buttonText.setText(pText);	
+	}
 
 }
