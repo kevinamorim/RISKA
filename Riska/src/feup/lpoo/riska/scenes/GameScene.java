@@ -1,4 +1,4 @@
-package feup.lpoo.riska.logic;
+package feup.lpoo.riska.scenes;
 
 import java.util.Random;
 
@@ -15,7 +15,10 @@ import org.andengine.input.touch.detector.ScrollDetector.IScrollDetectorListener
 import org.andengine.input.touch.detector.SurfaceScrollDetector;
 import org.andengine.util.adt.color.Color;
 
+import feup.lpoo.riska.HUD.GameHUD;
 import feup.lpoo.riska.elements.Player;
+import feup.lpoo.riska.elements.Region;
+import feup.lpoo.riska.logic.MainActivity;
 import android.graphics.Point;
 import android.util.Log;
 

@@ -1,4 +1,4 @@
-package feup.lpoo.riska.logic;
+package feup.lpoo.riska.scenes;
 
 import java.io.IOException;
 import java.util.ArrayList;
@@ -10,6 +10,7 @@ import org.andengine.engine.camera.Camera;
 import org.andengine.entity.scene.Scene;
 import org.andengine.opengl.font.Font;
 import org.andengine.opengl.font.FontFactory;
+import org.andengine.opengl.font.IFont;
 import org.andengine.opengl.texture.TextureOptions;
 import org.andengine.opengl.texture.atlas.bitmap.BitmapTextureAtlas;
 import org.andengine.opengl.texture.atlas.bitmap.BitmapTextureAtlasTextureRegionFactory;
@@ -17,10 +18,11 @@ import org.andengine.opengl.texture.region.ITextureRegion;
 import org.andengine.opengl.texture.region.TiledTextureRegion;
 
 import feup.lpoo.riska.elements.Map;
+import feup.lpoo.riska.elements.Region;
 import feup.lpoo.riska.io.FileRead;
+import feup.lpoo.riska.logic.MainActivity;
 import android.graphics.Color;
 import android.graphics.Point;
-import android.util.Log;
 
 public class SceneManager {
 	
@@ -366,5 +368,31 @@ public class SceneManager {
 	public Scene getGameScene() {
 		return gameScene;
 	}
+	
+	// TODO CHECK IF THESE METHODS ARE NEEDED
+	
 
+	public Font getGameFont() {
+		return this.mGameFont;
+	}
+	
+	public Font getFont() {
+		return this.mFont;
+	}
+	
+	public ITextureRegion getHUDTextureRegion() {
+		return this.mLeftPanelTextureRegion;
+	}
+	
+	public ITextureRegion getRegionFlag() {
+		return this.mFlagsTextureRegion;
+	}
+	
+	public TiledTextureRegion getRegionButtonTextureRegion() {
+		return this.regionButtonTiledTextureRegion;
+	}
+
+	public TiledTextureRegion getStartButtonTextureRegion() {
+		return this.mStartButtonTiledTextureRegion;
+	}
 }

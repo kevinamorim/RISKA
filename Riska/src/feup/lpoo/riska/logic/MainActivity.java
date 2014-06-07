@@ -13,15 +13,16 @@ import org.andengine.entity.scene.Scene;
 import org.andengine.opengl.font.Font;
 import org.andengine.ui.activity.BaseGameActivity;
 
-import feup.lpoo.riska.logic.SceneManager.SceneType;
+import feup.lpoo.riska.scenes.SceneManager;
+import feup.lpoo.riska.scenes.SceneManager.SceneType;
 
 public class MainActivity extends BaseGameActivity {	
 	
 	// ======================================================
 	// CONSTANTS
 	// ======================================================
-	final static int CAMERA_WIDTH = 854;
-	final static int CAMERA_HEIGHT = 480;
+	public final static int CAMERA_WIDTH = 854;
+	public final static int CAMERA_HEIGHT = 480;
 	private final float MAX_VELOCITY = 700f;
 	
 	public Font mFont;

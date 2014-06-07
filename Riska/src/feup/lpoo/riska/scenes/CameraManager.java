@@ -1,5 +1,7 @@
-package feup.lpoo.riska.logic;
+package feup.lpoo.riska.scenes;
 
+import feup.lpoo.riska.elements.Region;
+import feup.lpoo.riska.logic.MainActivity;
 import android.graphics.Point;
 
 public class CameraManager {

@@ -2,7 +2,6 @@ package feup.lpoo.riska.elements;
 
 import org.andengine.entity.sprite.Sprite;
 
-import feup.lpoo.riska.logic.Region;
 import android.util.Log;
 
 public class Map {

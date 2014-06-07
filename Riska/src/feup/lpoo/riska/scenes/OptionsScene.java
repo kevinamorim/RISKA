@@ -1,4 +1,4 @@
-package feup.lpoo.riska.logic;
+package feup.lpoo.riska.scenes;
 
 import org.andengine.entity.scene.background.SpriteBackground;
 import org.andengine.entity.scene.menu.MenuScene;
@@ -9,7 +9,8 @@ import org.andengine.entity.text.Text;
 
 import android.graphics.Color;
 import feup.lpoo.riska.gameInterface.AnimatedButtonSpriteMenuItem;
-import feup.lpoo.riska.logic.SceneManager.SceneType;
+import feup.lpoo.riska.logic.MainActivity;
+import feup.lpoo.riska.scenes.SceneManager.SceneType;
 
 public class OptionsScene extends MenuScene implements IOnMenuItemClickListener {
 	

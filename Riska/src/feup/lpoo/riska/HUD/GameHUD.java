@@ -1,4 +1,4 @@
-package feup.lpoo.riska.logic;
+package feup.lpoo.riska.HUD;
 
 import org.andengine.engine.camera.hud.HUD;
 import org.andengine.entity.scene.Scene;
@@ -9,6 +9,10 @@ import org.andengine.entity.sprite.Sprite;
 import org.andengine.entity.text.Text;
 import org.andengine.opengl.font.Font;
 
+import feup.lpoo.riska.elements.Region;
+import feup.lpoo.riska.logic.MainActivity;
+import feup.lpoo.riska.scenes.CameraManager;
+import feup.lpoo.riska.scenes.SceneManager;
 import android.graphics.Point;
 import android.util.Log;
 
@@ -38,9 +42,9 @@ public class GameHUD extends HUD {
 
 		panel = new Sprite(MainActivity.CAMERA_WIDTH/2, MainActivity.CAMERA_HEIGHT/2,
 				MainActivity.CAMERA_WIDTH, MainActivity.CAMERA_HEIGHT,
-				instance.mLeftPanelTextureRegion, activity.getVertexBufferObjectManager());
+				instance.getHUDTextureRegion(), activity.getVertexBufferObjectManager());
 
-		countryName = new Text(0, 0, instance.mGameFont, "COUNTRY", 1000, activity.getVertexBufferObjectManager());
+		countryName = new Text(0, 0, instance.getGameFont(), "COUNTRY", 1000, activity.getVertexBufferObjectManager());
 
 		countryName.setPosition(PANEL_CENTER_X, 
 				MainActivity.CAMERA_HEIGHT - countryName.getHeight());
@@ -64,7 +68,7 @@ public class GameHUD extends HUD {
 
 	public void updateHUD(Region pRegion) {
 			
-		countryName.setText(wrapText(instance.mGameFont, pRegion.getName(), panel.getWidth()/2));
+		countryName.setText(wrapText(instance.getGameFont(), pRegion.getName(), panel.getWidth()/2));
 		countryName.setPosition(PANEL_CENTER_X, 
 				MainActivity.CAMERA_HEIGHT - countryName.getHeight());
 

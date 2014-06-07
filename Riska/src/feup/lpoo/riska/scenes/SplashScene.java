@@ -1,4 +1,4 @@
-package feup.lpoo.riska.logic;
+package feup.lpoo.riska.scenes;
 
 import org.andengine.entity.IEntity;
 import org.andengine.entity.modifier.AlphaModifier;
@@ -8,7 +8,8 @@ import org.andengine.entity.scene.background.Background;
 import org.andengine.entity.sprite.Sprite;
 import org.andengine.util.adt.color.Color;
 
-import feup.lpoo.riska.logic.SceneManager.SceneType;
+import feup.lpoo.riska.logic.MainActivity;
+import feup.lpoo.riska.scenes.SceneManager.SceneType;
 import android.opengl.GLES20;
 
 public class SplashScene extends Scene {
