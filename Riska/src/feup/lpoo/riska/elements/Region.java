@@ -96,14 +96,15 @@ public class Region {
 			}
 		};
 		
-		Text buttonText = new Text(0, 0, resources.getFont() , "10",
-				activity.getVertexBufferObjectManager());
+		Text buttonText = new Text(0, 0, resources.getFont() , "10", activity.getVertexBufferObjectManager());
+		
 		buttonText.setScale((float) 0.5);
 		buttonText.setPosition(button.getWidth()/2, button.getHeight()/2);
 		button.attachChild(buttonText);
 
 		hudButton = new ButtonSprite(MainActivity.CAMERA_WIDTH/4, MainActivity.CAMERA_HEIGHT/5, resources.getStartButtonTexture(),
 				activity.getVertexBufferObjectManager()) {
+			
 			@Override
 			public boolean onAreaTouched(TouchEvent pSceneTouchEvent, 
 					float pTouchAreaLocalX, float pTouchAreaLocalY) {
@@ -123,6 +124,7 @@ public class Region {
 				return true;
 			}
 		};
+		
 		hudButtonText = new Text(hudButton.getWidth()/2, hudButton.getHeight()/2, 
 				resources.getFont(), "DEFAULT", activity.getVertexBufferObjectManager());
 		hudButton.attachChild(hudButtonText);
@@ -287,6 +289,10 @@ public class Region {
 	
 	public ButtonSprite getHudButton() {
 		return hudButton;
+	}
+	
+	public ButtonSprite getButton() {
+		return button;
 	}
 
 }

@@ -76,6 +76,7 @@ public class GameHUD extends HUD {
 		} 
 
 		countryFlag = pRegion.getFlag(FLAG_POS.x, FLAG_POS.y);
+		
 		panel.attachChild(countryName);
 		panel.attachChild(countryFlag);
 		panel.attachChild(pRegion.getHudButton());

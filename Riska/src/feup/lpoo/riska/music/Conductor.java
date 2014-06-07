@@ -16,13 +16,18 @@ public class Conductor {
 		this.currentMusic = null;
 	}
 	
+	public static Conductor getSharedInstance() {
+		return instance;
+	}
+	
+	
 	public void setBackgroundMusic(Music music) {
 		this.backgroundMusic = music;
 	}
 	
 	public void setCurrentMusic(Music music) {
 		
-		if(!(currentMusic == null)) {
+		if(currentMusic != null) {
 			if(currentMusic.isPlaying()) {
 				currentMusic.stop();
 			}
@@ -45,11 +50,13 @@ public class Conductor {
 	
 	public void playBackgroundMusic() {
 		setCurrentMusic(backgroundMusic);
+		setLooping(true);
 		play();
 	}
 	
-	public static Conductor getSharedInstance() {
-		return instance;
+	public void setLooping(boolean value) {
+		if(currentMusic != null) {
+			currentMusic.setLooping(value);
+		}
 	}
-	
 }

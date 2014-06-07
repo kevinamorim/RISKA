@@ -57,7 +57,6 @@ public class MainActivity extends BaseGameActivity {
 		
 		resources = new ResourceCache(this, mEngine, mCamera);	
 		resources.loadSplashSceneResources();
-		resources.loadMusic();
 		
 		pOnCreateResourcesCallback.onCreateResourcesFinished();
 		
@@ -84,6 +83,8 @@ public class MainActivity extends BaseGameActivity {
 				
 				resources.loadMainMenuResources();
 				resources.loadGameSceneResources();
+				resources.loadMusic();
+				
 				sceneManager.createGameScenes();
 				sceneManager.setCurrentScene(SceneType.MENU);
 				
