@@ -1,23 +1,21 @@
-package feup.lpoo.riska.logic;
+package feup.lpoo.riska.generator;
 
 import java.util.ArrayList;
 import java.util.Random;
 
-public class Dice extends Element {
+import feup.lpoo.riska.elements.Element;
+import feup.lpoo.riska.elements.Unit;
+
+public class BattleGenerator extends Element {
 	
-	protected int value;
+	protected int attackerPoints;
+	protected int defenderPoints;
 
-	public Dice(int x, int y) {
+	public BattleGenerator(int x, int y) {
 		super(x, y, null);
-		this.value = 0;
-	}
-
-	/**
-	 * @return the random value
-	 *
-	 */
-	public int getRandomValue() {
-		return value;
+		
+		this.attackerPoints = 0;
+		this.defenderPoints = 0;
 	}
 	
 	/**
@@ -43,18 +41,24 @@ public class Dice extends Element {
 	}
 	
 	/**
-	 *  Given two armies (an attacker and a defender), the method return whether the attacker was successful or not.
+	 *  Given two armies (an attacker and a defender), the method returns
+	 *    whether the attacker was successful or not.
+	 *    
+	 *  Note: the values for attacker and defender should be accessed using the methods getAttackerPoints() and getDefenderPoints().
+	 *  
 	 *  
 	 * @param attacker
 	 * @param defender
 	 * @return True if attacker won.
 	 */
-	public boolean isAttackSuccessful(ArrayList<Unit> attacker, ArrayList<Unit> defender) {
+	public boolean simulateAttack(ArrayList<Unit> attacker, ArrayList<Unit> defender) {
 		int sumAttacker, sumDefender;
 		
 		sumAttacker = getSum(attacker, true);
-		
 		sumDefender = getSum(defender, false);
+		
+		this.attackerPoints = sumAttacker;
+		this.defenderPoints = sumDefender;
 		
 		return (sumAttacker > sumDefender);
 	}
@@ -76,4 +80,18 @@ public class Dice extends Element {
 		return sum;
 	}
 
+	/**
+	 * @return The points of the attacker.
+	 */
+	public int getAttackerPoints() {
+		return attackerPoints;
+	}
+
+	/**
+	 * @return The points of the defender.
+	 */
+	public int getDefenderPoints() {
+		return defenderPoints;
+	}
+	
 }
