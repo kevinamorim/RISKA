@@ -41,6 +41,8 @@ public class Region {
 	protected boolean owned;
 	
 	protected ButtonSprite button;
+	protected ButtonSprite hudButton;
+	private Text hudButtonText;
 	
 	private long lastTimeTouched;
 	
@@ -91,8 +93,61 @@ public class Region {
 				activity.getVertexBufferObjectManager());
 		buttonText.setScale((float) 0.5);
 		buttonText.setPosition(button.getWidth()/2, button.getHeight()/2);
-		
 		button.attachChild(buttonText);
+
+		hudButton = new ButtonSprite(MainActivity.CAMERA_WIDTH/4, MainActivity.CAMERA_HEIGHT/5, instance.mStartButtonTiledTextureRegion,
+				activity.getVertexBufferObjectManager()) {
+			@Override
+			public boolean onAreaTouched(TouchEvent pSceneTouchEvent, 
+					float pTouchAreaLocalX, float pTouchAreaLocalY) {
+				switch(pSceneTouchEvent.getAction()) {
+				case MotionEvent.ACTION_DOWN:
+					pressedConfirmationButton();
+					break;
+				case MotionEvent.ACTION_UP:
+					releasedConfirmationButton();
+					break;
+				case MotionEvent.ACTION_OUTSIDE:
+					releasedConfirmationButton();
+					break;
+				default:
+					break;
+				}
+				return true;
+			}
+		};
+		hudButtonText = new Text(hudButton.getWidth()/2, hudButton.getHeight()/2, 
+				instance.mFont, "DEFAULT", activity.getVertexBufferObjectManager());
+		hudButton.attachChild(hudButtonText);
+		
+	}
+	
+	public void updateHudButtonText(Player player) {
+		if(player.ownsRegion(this)) {
+			hudButtonText.setText("CHOOSE");
+		} else {
+			hudButtonText.setText("ATTACK!");
+		}
+	}
+	
+	public void pressedConfirmationButton() {
+		
+		hudButton.setCurrentTileIndex(1);
+		
+	}
+	
+	public void releasedConfirmationButton() {
+		
+		long now = System.currentTimeMillis();
+		
+		if((now - lastTimeTouched) > MIN_TOUCH_INTERVAL) {
+			
+			hudButton.setCurrentTileIndex(0);
+			((GameScene) instance.getGameScene()).onRegionConfirmed(this);
+			
+		}
+		
+		lastTimeTouched = System.currentTimeMillis();
 		
 	}
 
@@ -221,6 +276,10 @@ public class Region {
 	 */
 	public ArrayList<Region> getNeighbours() {
 		return neighbours;
+	}
+	
+	public ButtonSprite getHudButton() {
+		return hudButton;
 	}
 
 }
