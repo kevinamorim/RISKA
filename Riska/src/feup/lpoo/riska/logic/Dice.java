@@ -1,11 +1,9 @@
 package feup.lpoo.riska.logic;
 
+import java.util.ArrayList;
 import java.util.Random;
 
 public class Dice extends Element {
-	
-	public static int MIN_VALUE = 1;
-	public static int MAX_VALUE = 6;
 	
 	protected int value;
 
@@ -15,21 +13,67 @@ public class Dice extends Element {
 	}
 
 	/**
-	 * @return the value
+	 * @return the random value
+	 *
 	 */
-	public int getValue() {
+	public int getRandomValue() {
 		return value;
 	}
 	
 	/**
-	 * Generates a new random value assigning it to the value attribute of the Dice.
+	 * @return random int in the interval [min, max].
 	 */
-	public void generateNewValue() {
+	public int generateNewRandomValueBetween(int min, int max) {
 		
 		Random random = new Random();
 		
-		this.value = random.nextInt(MAX_VALUE - MIN_VALUE + 1) + MIN_VALUE;
+		return random.nextInt(max - min + 1) + min;
+	}
+
+	/**
+	 * @return Random int in the interval [0, max].
+	 * 
+	 * @param max
+	 */
+	public int generateNewRandomValueBetween(int max) {
 		
+		Random random = new Random();
+		
+		return random.nextInt(max + 1);
+	}
+	
+	/**
+	 *  Given two armies (an attacker and a defender), the method return whether the attacker was successful or not.
+	 *  
+	 * @param attacker
+	 * @param defender
+	 * @return True if attacker won.
+	 */
+	public boolean isAttackSuccessful(ArrayList<Unit> attacker, ArrayList<Unit> defender) {
+		int sumAttacker, sumDefender;
+		
+		sumAttacker = getSum(attacker, true);
+		
+		sumDefender = getSum(defender, false);
+		
+		return (sumAttacker > sumDefender);
+	}
+
+	/**
+	 * Gets the sum of attacks or defenses of an army.
+	 * 
+	 * @param army
+	 * @param isAttacker
+	 * @return
+	 */
+	private int getSum(ArrayList<Unit> army, boolean isAttacker) {
+		int sum = 0;
+		
+		for(Unit unit : army) {
+			sum += this.generateNewRandomValueBetween(isAttacker ? unit.getAttack() : unit.getDefense());
+		}
+		
+		return sum;
 	}
 
 }

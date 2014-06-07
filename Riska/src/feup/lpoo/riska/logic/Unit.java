@@ -2,28 +2,28 @@ package feup.lpoo.riska.logic;
 
 public class Unit extends Element {
 	
-	protected float attack;
-	protected float defense;
+	protected int attack;
+	protected int defense;
 	
-	public Unit(int x, int y, float att, float def, String name) {
+	public Unit(int x, int y, int att, int def, String name) {
 		super(x,y, name);
 		this.attack = att;
 		this.defense = def;
 	}
 
-	public float getAttack() {
+	public int getAttack() {
 		return attack;
 	}
 
-	public void setAttack(float attack) {
+	public void setAttack(int attack) {
 		this.attack = attack;
 	}
 
-	public float getDefense() {
+	public int getDefense() {
 		return defense;
 	}
 
-	public void setDefense(float defense) {
+	public void setDefense(int defense) {
 		this.defense = defense;
 	}
 
