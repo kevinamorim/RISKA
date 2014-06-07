@@ -1,7 +1,8 @@
-package feup.lpoo.riska.logic;
+package feup.lpoo.riska.elements;
 
 import org.andengine.entity.sprite.Sprite;
 
+import feup.lpoo.riska.logic.Region;
 import android.util.Log;
 
 public class Map {
@@ -32,7 +33,7 @@ public class Map {
 	public void printNeighbours() {
 		for(Region region : regions) {
 			for(Region neighbour : region.getNeighbours()) {
-				Log.d("Region", "Region: " + region.getName() + " -> Neighbour: " + neighbour.name);
+				Log.d("Region", "Region: " + region.getName() + " -> Neighbour: " + neighbour.getName());
 			}
 		}
 	}

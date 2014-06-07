@@ -1,4 +1,4 @@
-package feup.lpoo.riska.logic;
+package feup.lpoo.riska.elements;
 
 public class Unit extends Element {
 	

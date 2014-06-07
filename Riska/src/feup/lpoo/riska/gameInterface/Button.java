@@ -1,6 +1,8 @@
-package feup.lpoo.riska.logic;
+package feup.lpoo.riska.gameInterface;
 
 import org.andengine.entity.sprite.Sprite;
+
+import feup.lpoo.riska.elements.Element;
 
 public class Button extends Element {
 	

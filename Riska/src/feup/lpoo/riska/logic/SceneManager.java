@@ -16,6 +16,7 @@ import org.andengine.opengl.texture.atlas.bitmap.BitmapTextureAtlasTextureRegion
 import org.andengine.opengl.texture.region.ITextureRegion;
 import org.andengine.opengl.texture.region.TiledTextureRegion;
 
+import feup.lpoo.riska.elements.Map;
 import feup.lpoo.riska.io.FileRead;
 import android.graphics.Color;
 import android.graphics.Point;

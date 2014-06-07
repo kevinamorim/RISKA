@@ -6,6 +6,8 @@ import org.andengine.entity.scene.menu.item.IMenuItem;
 import org.andengine.entity.scene.menu.MenuScene.IOnMenuItemClickListener;
 import org.andengine.entity.sprite.Sprite;
 
+import feup.lpoo.riska.gameInterface.AnimatedButtonSpriteMenuItem;
+import feup.lpoo.riska.gameInterface.AnimatedTextButtonSpriteMenuItem;
 import feup.lpoo.riska.logic.SceneManager.SceneType;
 
 public class MainMenuScene extends MenuScene implements IOnMenuItemClickListener {

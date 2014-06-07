@@ -1,6 +1,8 @@
-package feup.lpoo.riska.logic;
+package feup.lpoo.riska.elements;
 
 import java.util.ArrayList;
+
+import feup.lpoo.riska.logic.Region;
 
 public class Player {
 	

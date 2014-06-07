@@ -8,6 +8,7 @@ import org.andengine.entity.sprite.Sprite;
 import org.andengine.entity.text.Text;
 
 import android.graphics.Color;
+import feup.lpoo.riska.gameInterface.AnimatedButtonSpriteMenuItem;
 import feup.lpoo.riska.logic.SceneManager.SceneType;
 
 public class OptionsScene extends MenuScene implements IOnMenuItemClickListener {

@@ -127,8 +127,8 @@ public class CameraManager {
 	public void focusOnRegion(Region region) {
 		activity.mCamera.setBoundsEnabled(false);
 		activity.mCamera.setZoomFactor(MAX_ZOOM_FACTOR);
-		Point p = new Point((int) (((region.stratCenter.x * MainActivity.CAMERA_WIDTH)/100) - (MainActivity.CAMERA_HEIGHT * 0.25)),
-				((region.stratCenter.y * MainActivity.CAMERA_HEIGHT)/100));
+		Point p = new Point((int) (((region.getStratCenter().x * MainActivity.CAMERA_WIDTH)/100) - (MainActivity.CAMERA_HEIGHT * 0.25)),
+				((region.getStratCenter().y * MainActivity.CAMERA_HEIGHT)/100));
 		panTo(p);
 		//activity.mCamera.setBoundsEnabled(true);
 	}

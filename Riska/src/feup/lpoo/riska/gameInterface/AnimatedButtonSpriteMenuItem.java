@@ -1,4 +1,4 @@
-package feup.lpoo.riska.logic;
+package feup.lpoo.riska.gameInterface;
 
 import org.andengine.entity.scene.menu.item.AnimatedSpriteMenuItem;
 import org.andengine.opengl.texture.region.ITiledTextureRegion;

@@ -3,7 +3,7 @@ package feup.lpoo.riska.test;
 import java.util.Arrays;
 import java.util.List;
 
-import feup.lpoo.riska.logic.Dice;
+import feup.lpoo.riska.generator.BattleGenerator;
 import feup.lpoo.riska.logic.MainActivity;
 import junit.framework.Assert;
 import android.content.Intent;
@@ -104,24 +104,8 @@ public class MainTests extends ActivityUnitTestCase<MainActivity> {
 	/*
 	* Tests dice
 	*/
-	public void testDice() {
-		
-		int NUMBER_OF_TESTS = 5000;
-		
-		Dice dice = new Dice(0, 0);
-		
-		int[] values = new int[NUMBER_OF_TESTS];
-		
-		for(int i = 0; i < NUMBER_OF_TESTS; i++) {
-			dice.generateNewValue();
-			values[i] = dice.getValue();
-		}
-		
-		Arrays.sort(values);
-		
-		Assert.assertTrue(values[0] == Dice.MIN_VALUE);
-		Assert.assertTrue(values[values.length - 1] == Dice.MAX_VALUE);
-		
+	public void testBattleGenerator() {
+		// TODO
 	}
 	
 	/*
