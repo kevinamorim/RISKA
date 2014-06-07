@@ -26,6 +26,8 @@ public class Player {
 		playerType = pPlayerType;
 		
 		regions = new ArrayList<Region>();
+		regionSelected = null;
+		regionToAttack = null;
 		
 	}
 	

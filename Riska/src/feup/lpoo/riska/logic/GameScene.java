@@ -94,12 +94,13 @@ public class GameScene extends Scene implements IOnSceneTouchListener, IScrollDe
 	private void createPlayer() {
 		player = new Player(0);
 		
-		Random r = new Random();
-		
+		boolean toPlayer = true; /* Is next region to be given to the player. */
 		for(Region region : instance.map.getRegions()) {
-			if(r.nextBoolean()) {
+			if(toPlayer) {
 				player.addRegion(region);
 			}
+			toPlayer = !toPlayer;
+			region.updateHudButtonText(player);
 		}
 		
 	}
@@ -183,6 +184,18 @@ public class GameScene extends Scene implements IOnSceneTouchListener, IScrollDe
 		hud.hide();
 
 		
+	}
+	
+	public void onRegionConfirmed(Region pRegion) {
+		
+		if(player.ownsRegion(pRegion)) {
+			player.setRegionSelected(pRegion);
+			player.setRegionToAttack(null);
+		} else {
+			if(player.getRegionSelected() != null) {
+				player.setRegionToAttack(pRegion);
+			} 
+		}
 	}
 	
 	// ======================================================
