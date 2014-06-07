@@ -1,5 +1,7 @@
 package feup.lpoo.riska.logic;
 
+import java.util.Random;
+
 import org.andengine.entity.scene.IOnSceneTouchListener;
 import org.andengine.entity.scene.Scene;
 import org.andengine.entity.scene.background.Background;
@@ -42,6 +44,8 @@ public class GameScene extends Scene implements IOnSceneTouchListener, IScrollDe
 	
 	private ScrollDetector scrollDetector;
 	
+	private Player player;
+	
 	// ======================================================
 	// DOUBLE TAP
 	// ======================================================
@@ -65,8 +69,8 @@ public class GameScene extends Scene implements IOnSceneTouchListener, IScrollDe
 				instance.mSeaTiledTextureRegion, 
 				activity.getVertexBufferObjectManager());
 		background.setScale(2f);
-		long duration[] = { 1000, 1000, 1000, 1000 };
-		background.animate(duration, 0, 3, true);
+		long duration[] = { 750, 750, 750, 750, 750, 750, 750, 750, };
+		background.animate(duration, 0, 7, true);
 		attachChild(background);
 		
 		attachChild(map);
@@ -82,7 +86,22 @@ public class GameScene extends Scene implements IOnSceneTouchListener, IScrollDe
 
 		setTouchAreaBindingOnActionDownEnabled(true);
 		setOnSceneTouchListener(this);
+		
+		createPlayer();
 
+	}
+
+	private void createPlayer() {
+		player = new Player(0);
+		
+		Random r = new Random();
+		
+		for(Region region : instance.map.getRegions()) {
+			if(r.nextBoolean()) {
+				player.addRegion(region);
+			}
+		}
+		
 	}
 
 	private void setRegionButtons() {
@@ -137,6 +156,7 @@ public class GameScene extends Scene implements IOnSceneTouchListener, IScrollDe
 				unregisterTouchArea(region.button);
 				detachChild(region.button);
 			} else {
+				hud.updateButtonText(player.ownsRegion(region));
 				hud.updateHUD(region);
 			}
 		}

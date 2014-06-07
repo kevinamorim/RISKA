@@ -23,7 +23,8 @@ import android.util.Log;
 
 public class SceneManager {
 	
-	private final int SEA_LINES = 4;
+	private final int SEA_COLS = 4;
+	private final int SEA_LINES = 2;
 	
 	private SceneType currentScene;
 	private MainActivity activity;
@@ -238,9 +239,9 @@ public class SceneManager {
 		
 		mGameFont.load();
 		
-		mSeaTextureAtlas = new BitmapTextureAtlas(activity.getTextureManager(), 2048, 512, TextureOptions.DEFAULT);
+		mSeaTextureAtlas = new BitmapTextureAtlas(activity.getTextureManager(), 2048, 1024, TextureOptions.DEFAULT);
 		mSeaTiledTextureRegion = BitmapTextureAtlasTextureRegionFactory.createTiledFromAsset(mSeaTextureAtlas, 
-	    		activity.getAssets(), "sea.png", 0, 0, SEA_LINES, 1);
+	    		activity.getAssets(), "sea.png", 0, 0, SEA_COLS, SEA_LINES);
 		
 		mSeaTextureAtlas.load();
 		

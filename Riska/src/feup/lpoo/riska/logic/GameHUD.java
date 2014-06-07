@@ -66,6 +66,15 @@ public class GameHUD extends HUD {
 		
 	}
 	
+	/* TODO: Move this to the updateHUD method. */
+	public void updateButtonText(boolean owned) {
+		if(owned) {
+			attackButton.setText("CHOOSE");
+		} else {
+			attackButton.setText("ATTACK!");
+		}
+	}
+	
 	public void updateHUD(Region pRegion) {
 		countryName.setText(wrapText(instance.mGameFont, pRegion.getName(), panel.getWidth()/2));
 		countryName.setPosition(PANEL_CENTER_X, 
