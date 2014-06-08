@@ -195,49 +195,22 @@ public class GameScene extends Scene implements IOnSceneTouchListener, IScrollDe
 	// =================================================================================
 	// 
 	// =================================================================================
+	
 	public void onRegionTouched(Region pRegion) {
 		
 		switch(logic.getState()) {
+		
 		case DEPLOYMENT:
-			
-			if(logic.getCurrentPlayer().hasSoldiersLeftToDeploy()) {
-				
-				if(logic.getCurrentPlayer().ownsRegion(pRegion)) {
-					int deployed = logic.getCurrentPlayer().deploySoldiers(SOLDIER_INC);
-					pRegion.addSoldiers(deployed);
-					
-					hud.setInfoTabText(logic.getCurrentPlayer().getSoldiersToDeploy() + " left to deploy");
-				}
-				
-			}
-
+			onDeploymentHandler(pRegion);
 			break;
-		case PLAY:
-			if(!pRegion.isFocused()) {
-				
-				if(logic.getCurrentPlayer().ownsRegion(pRegion)) {
-					selectRegion(pRegion);
-				}
-				else {
-					targetRegion(pRegion);
-				}
-	
-			}
-			else {
-
-				if(logic.getCurrentPlayer().ownsRegion(pRegion)) {
-					unselectRegion(pRegion);
-				}
-				else {
-					untargetRegion(pRegion);
-				}
-				
-			}	
 			
+		case PLAY:
+			onPlayHandler(pRegion);
 			break;
 			
 		default:
 			break;
+			
 		}
 	}
 
@@ -316,10 +289,10 @@ public class GameScene extends Scene implements IOnSceneTouchListener, IScrollDe
 		pRegion.changeFocus(false);
 	}
 
-	
 	// ======================================================
 	// SCROLL DETECTOR
 	// ======================================================
+	
 	private void createScrollDetector() {
 		
 		scrollDetector = new SurfaceScrollDetector(this);
@@ -370,8 +343,17 @@ public class GameScene extends Scene implements IOnSceneTouchListener, IScrollDe
 		
 	}
 
+	// ======================================================
+	// ======================================================
+	
 	public void onAttack() {
-		battleScene = new BattleScene(selectedRegion, targetedRegion,
+		
+		Region tmpSelectedRegion = new Region(-1, selectedRegion.getName(), selectedRegion.getStratCenter(), "");
+		tmpSelectedRegion.setOwner(selectedRegion.getOwner());
+		Region tmpTargetedRegion = new Region(-1, targetedRegion.getName(), targetedRegion.getStratCenter(), "");;
+		tmpTargetedRegion.setOwner(targetedRegion.getOwner());
+		
+		battleScene = new BattleScene(tmpSelectedRegion, tmpTargetedRegion,
 				logic.attack(selectedRegion, targetedRegion));
 		
 		doubleTapAllowed = false;
@@ -397,8 +379,7 @@ public class GameScene extends Scene implements IOnSceneTouchListener, IScrollDe
 		targetedRegion = null;
 		
 		logic.turnDone = true;
-		
-		
+			
 	}
 
 	public void showInitialHUD() {
@@ -456,4 +437,50 @@ public class GameScene extends Scene implements IOnSceneTouchListener, IScrollDe
 	public Region getTargetedRegion() {
 		return targetedRegion;
 	}
+	
+	
+	// ======================================================
+	// onRegionTouch Handlers
+	// ======================================================
+	private void onDeploymentHandler(Region pRegion) {
+		
+		if(logic.getCurrentPlayer().hasSoldiersLeftToDeploy()) {
+			
+			if(logic.getCurrentPlayer().ownsRegion(pRegion)) {
+				int deployed = logic.getCurrentPlayer().deploySoldiers(SOLDIER_INC);
+				pRegion.addSoldiers(deployed);
+				
+				hud.setInfoTabText(logic.getCurrentPlayer().getSoldiersToDeploy() + " left to deploy");
+			}
+			
+		}
+		
+	}
+	
+	private void onPlayHandler(Region pRegion) {
+		
+		if(!pRegion.isFocused()) {
+			
+			if(logic.getCurrentPlayer().ownsRegion(pRegion)) {
+				selectRegion(pRegion);
+			}
+			else {
+				targetRegion(pRegion);
+			}
+
+		}
+		else {
+
+			if(logic.getCurrentPlayer().ownsRegion(pRegion)) {
+				unselectRegion(pRegion);
+			}
+			else {
+				untargetRegion(pRegion);
+			}
+			
+		}	
+		
+		
+	}
+	
 }

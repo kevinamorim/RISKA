@@ -5,6 +5,7 @@ import java.util.Random;
 
 import org.andengine.util.adt.color.Color;
 
+import android.util.Log;
 import feup.lpoo.riska.elements.Map;
 import feup.lpoo.riska.elements.Player;
 import feup.lpoo.riska.elements.Region;
@@ -14,6 +15,9 @@ import feup.lpoo.riska.scenes.SceneManager;
 
 public class GameLogic {
 	
+	// ======================================================
+	// SINGLETONS
+	// ======================================================
 	private MainActivity activity;
 	private ResourceCache resources;
 	private SceneManager sceneManager;
@@ -168,12 +172,15 @@ public class GameLogic {
 	
 	
 	private void automaticMove() {
-		
+
 		Random r = new Random();
 		
 		int selected = 0;
 		do {
+			
+			Log.d("AutomaticMove", "Choosing new selected region.");
 			selected = r.nextInt(currentPlayer.getRegions().size());
+			
 		} while(currentPlayer.getRegions().get(selected).getNumberOfSoldiers() <= 0);
 		
 		Region region1 = currentPlayer.getRegions().get(selected);
@@ -181,9 +188,9 @@ public class GameLogic {
 		ArrayList<Region> temp = currentPlayer.getRegions().get(selected).getNeighbours();
 				
 		int target = 0;
-		
 		do {
 			
+			Log.d("AutomaticMove", "Choosing new target region.");
 			target = r.nextInt(temp.size()); 
 			
 		} while(temp.get(target).getOwner().equals(currentPlayer));
@@ -214,6 +221,8 @@ public class GameLogic {
 		
 		boolean won = 
 				battleGenerator.simulateAttack(region1.getSoldiers(), region2.getSoldiers());
+		
+		
 		
 		if(won) {
 			playerWon(region1, region2);
