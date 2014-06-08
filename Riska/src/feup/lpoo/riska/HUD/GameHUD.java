@@ -107,9 +107,7 @@ public class GameHUD extends HUD {
 		// =================================
 		//  NEW ATTACK BUTTON
 		// =================================
-		attackButton = new ButtonSprite(
-				(MainActivity.CAMERA_WIDTH / 2),
-				resources.getAttackButtonTexture().getHeight() / 2,
+		attackButton = new ButtonSprite(0, 0,
 				resources.getAttackButtonTexture(),
 				activity.getVertexBufferObjectManager()) {
 
@@ -132,13 +130,19 @@ public class GameHUD extends HUD {
 				return true;
 			}
 		};
+		
+		attackButton.setScale(0.5f);
+		attackButton.setPosition(
+				attackButton.getScaleX() * attackButton.getWidth() / 2,
+				attackButton.getScaleY() * attackButton.getHeight() / 2);
+		
 
-		attackText = new Text(attackButton.getWidth() / 2,
-				attackButton.getHeight() / 2,
-				resources.getGameFont(), "ATTACK", 50, activity.getVertexBufferObjectManager());
-		attackText.setColor(Color.BLACK);
-
-		attackButton.attachChild(attackText);
+//		attackText = new Text(attackButton.getWidth() / 2,
+//				attackButton.getHeight() / 2,
+//				resources.getGameFont(), "ATTACK", 50, activity.getVertexBufferObjectManager());
+//		attackText.setColor(Color.BLACK);
+//
+//		attackButton.attachChild(attackText);
 
 		// =================================
 		//  NEW INFO TAB

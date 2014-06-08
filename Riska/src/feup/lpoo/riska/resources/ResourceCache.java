@@ -249,7 +249,7 @@ public class ResourceCache {
 		 */
 		attackButtonTextureAtlas = new BitmapTextureAtlas(activity.getTextureManager(), 512, 256, TextureOptions.DEFAULT);
 		attackButtonTiledTextureRegion = BitmapTextureAtlasTextureRegionFactory.createTiledFromAsset(attackButtonTextureAtlas, 
-				activity.getAssets(), "attack_button.png", 0, 0, 1, 2);
+				activity.getAssets(), "attack_button_1.png", 0, 0, 2, 1);
 		
 		attackButtonTextureAtlas.load();
 		
