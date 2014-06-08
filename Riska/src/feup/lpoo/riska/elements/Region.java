@@ -3,7 +3,6 @@ package feup.lpoo.riska.elements;
 import java.util.ArrayList;
 
 import org.andengine.entity.sprite.ButtonSprite;
-import org.andengine.entity.sprite.Sprite;
 import org.andengine.entity.text.Text;
 import org.andengine.input.touch.TouchEvent;
 import org.andengine.util.adt.color.Color;

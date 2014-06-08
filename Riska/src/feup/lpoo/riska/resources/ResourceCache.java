@@ -7,7 +7,6 @@ import org.andengine.audio.music.Music;
 import org.andengine.audio.music.MusicFactory;
 import org.andengine.engine.Engine;
 import org.andengine.engine.camera.Camera;
-import org.andengine.entity.scene.CameraScene;
 import org.andengine.opengl.font.Font;
 import org.andengine.opengl.font.FontFactory;
 import org.andengine.opengl.texture.TextureOptions;
@@ -53,9 +52,6 @@ public class ResourceCache {
 	protected BitmapTextureAtlas mGameFontTexture;
 	protected Font mGameFont;
 
-	protected BitmapTextureAtlas mLeftPanelTextureAtlas;
-	protected ITextureRegion mLeftPanelTextureRegion;
-
 	protected BitmapTextureAtlas mFlagsTextureAtlas;
 	protected ITextureRegion mFlagsTextureRegion;
 
@@ -66,8 +62,6 @@ public class ResourceCache {
 	protected BitmapTextureAtlas regionButtonTextureAtlas;
 	protected TiledTextureRegion regionButtonTiledTextureRegion;
 	
-	
-	
 	protected BitmapTextureAtlas attackButtonTextureAtlas;
 	protected TiledTextureRegion attackButtonTiledTextureRegion;
 	
@@ -77,19 +71,13 @@ public class ResourceCache {
 	protected BitmapTextureAtlas detailsButtonTextureAtlas;
 	protected TiledTextureRegion detailsButtonTiledTextureRegion;
 	
-	
+	protected BitmapTextureAtlas mSeaTextureAtlas;
+	protected TiledTextureRegion mSeaTiledTextureRegion;
 
 	protected BitmapTextureAtlas mapTextureAtlas;
 	protected ITextureRegion mapTextureRegion;
 
-	public final int NUMBER_OF_REGIONS = 38;
-	private int regionsCreated = 0;
-
 	protected Map map;
-
-	protected BitmapTextureAtlas mSeaTextureAtlas;
-	protected TiledTextureRegion mSeaTiledTextureRegion;
-
 	/*=============================
 	 * =============================
 	 */
@@ -230,14 +218,6 @@ public class ResourceCache {
 
 		readNeighbours(filename);
 
-		//map.printNeighbours();
-
-		mLeftPanelTextureAtlas = new BitmapTextureAtlas(activity.getTextureManager(), 2048, 1024, TextureOptions.DEFAULT);
-		mLeftPanelTextureRegion = BitmapTextureAtlasTextureRegionFactory.createFromAsset(mLeftPanelTextureAtlas, 
-				activity, "panel_left.png", 0, 0);
-
-		mLeftPanelTextureAtlas.load();
-
 		mSeaTextureAtlas = new BitmapTextureAtlas(activity.getTextureManager(), 2048, 1024, TextureOptions.DEFAULT);
 		mSeaTiledTextureRegion = BitmapTextureAtlasTextureRegionFactory.createTiledFromAsset(mSeaTextureAtlas, 
 				activity.getAssets(), "sea.png", 0, 0, SEA_COLS, SEA_LINES);
@@ -276,6 +256,7 @@ public class ResourceCache {
 			backgroundMusic = MusicFactory.createMusicFromAsset(engine.getMusicManager(), activity, "sounds/music.mp3");
 
 			conductor.setBackgroundMusic(backgroundMusic);
+			conductor.playBackgroundMusic();
 		}
 		catch (IOException e)
 		{
@@ -306,7 +287,6 @@ public class ResourceCache {
 			Region newRegion = new Region(id, name, new Point(x, y), continent);
 
 			regions.add(newRegion);
-			regionsCreated++;
 		}
 
 		return regions;
@@ -330,14 +310,6 @@ public class ResourceCache {
 				i++;
 			}
 		}	
-	}
-
-	/**
-	 * 
-	 * @return TextureRegion for the HUD panel.
-	 */
-	public ITextureRegion getHUDPanelTexture() {
-		return this.mLeftPanelTextureRegion;
 	}
 
 	public Font getGameFont() {

@@ -3,16 +3,20 @@ package feup.lpoo.riska.generator;
 import java.util.ArrayList;
 import java.util.Random;
 
-import feup.lpoo.riska.elements.Region;
 import feup.lpoo.riska.elements.Unit;
 
+/**
+ * Generates and resolves combats between armies.
+ */
 public class BattleGenerator {
 		
 	protected int attackerPoints;
 	protected int defenderPoints;
-	
-	protected Region attacker, defensor;
 
+	/**
+	 * Default constructor.
+	 * Initializes the class members.
+	 */
 	public BattleGenerator() {
 		
 		this.attackerPoints = 0;
@@ -93,11 +97,6 @@ public class BattleGenerator {
 	 */
 	public int getDefenderPoints() {
 		return defenderPoints;
-	}
-
-	public void createBattleRegions(Region attacker, Region defensor) {
-		this.attacker = attacker;
-		this.defensor = defensor;
 	}
 	
 }

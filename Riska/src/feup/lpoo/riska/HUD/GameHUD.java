@@ -5,17 +5,13 @@ import org.andengine.entity.sprite.ButtonSprite;
 import org.andengine.entity.sprite.Sprite;
 import org.andengine.entity.text.Text;
 import org.andengine.input.touch.TouchEvent;
-import org.andengine.opengl.font.Font;
 import org.andengine.util.adt.color.Color;
 
-import feup.lpoo.riska.elements.Player;
-import feup.lpoo.riska.elements.Region;
 import feup.lpoo.riska.logic.MainActivity;
 import feup.lpoo.riska.resources.ResourceCache;
-import feup.lpoo.riska.scenes.CameraManager;
 import feup.lpoo.riska.scenes.DetailScene;
+import feup.lpoo.riska.scenes.GameScene;
 import feup.lpoo.riska.scenes.SceneManager;
-import feup.lpoo.riska.scenes.SceneManager.SceneType;
 import android.view.MotionEvent;
 
 public class GameHUD extends HUD {
@@ -24,40 +20,44 @@ public class GameHUD extends HUD {
 	// CONSTANTS
 	// ======================================================
 	private static final long MIN_TOUCH_INTERVAL = 30;
-	private final int PANEL_CENTER_X = MainActivity.CAMERA_WIDTH/4;
 
 	// ======================================================
 	// SINGLETONS
 	// ======================================================
 	MainActivity activity;
 	SceneManager sceneManager;
-	CameraManager cameraManager;
 	ResourceCache resources;
 
 	// ======================================================
 	// FIELDS
-	// ======================================================		
+	// ======================================================
+	private long lastTimeTouched;
+	
 	private ButtonSprite attackButton;
+	private ButtonSprite detailsButton;
 	
 	private Sprite infoTab;
 	private Text infoTabText;
 	
-	private ButtonSprite detailsButton;
-
-	private long lastTimeTouched;
-
+	/**
+	 * Constructor for the game HUD.
+	 * <p>
+	 * Created the HUD display.
+	 */
 	public GameHUD() {
 		
 		lastTimeTouched = 0;
 
 		activity = MainActivity.getSharedInstance();
 		sceneManager = SceneManager.getSharedInstance();
-		cameraManager = CameraManager.getSharedInstance();
 		resources = ResourceCache.getSharedInstance();
 		
 		createDisplay();
 	}
 	
+	/**
+	 * Creates the display for the given scene.
+	 */
 	private void createDisplay() {
 		
 		// =================================
@@ -88,8 +88,7 @@ public class GameHUD extends HUD {
 		};
 		
 		attackButton.setScale(0.5f);
-		attackButton.setPosition(
-				attackButton.getScaleX() * attackButton.getWidth() / 2,
+		attackButton.setPosition(attackButton.getScaleX() * attackButton.getWidth() / 2,
 				attackButton.getScaleY() * attackButton.getHeight() / 2);
 		
 
@@ -146,39 +145,47 @@ public class GameHUD extends HUD {
 		
 	}
 	
+	/**
+	 * Handles the touch event for the details button.
+	 */
 	protected void touchedDetailsButton() {
 		
-		DetailScene details = sceneManager.getGameScene().getDetailScene();
+		GameScene gameScene = sceneManager.getGameScene();
+		DetailScene details = gameScene.getDetailScene();
 	
 		if(details.isVisible()) {
 			detailsButton.setCurrentTileIndex(0);
-			sceneManager.getGameScene().hideDetailPanel();
+			gameScene.hideDetailPanel();
 			details.setVisible(false);
 		}
 		else {
 		
-			if(sceneManager.getGameScene().getBattleScene() != null &&
-					sceneManager.getGameScene().getBattleScene().isVisible()) {
+			if(gameScene.getBattleScene() != null && gameScene.getBattleScene().isVisible()) {
 				detailsButton.setCurrentTileIndex(0);
-				sceneManager.getGameScene().hideBattleScene();
+				gameScene.hideBattleScene();
 			} else {
 				detailsButton.setCurrentTileIndex(1);
 				
-				details.setAttributes(sceneManager.getGameScene().getSelectedRegion(), 
-						sceneManager.getGameScene().getTargetedRegion());
+				details.setAttributes(gameScene.getSelectedRegion(), gameScene.getTargetedRegion());
 				details.updateDisplay();
-				sceneManager.getGameScene().showDetailPanel();
-				sceneManager.getGameScene().getCameraManager().setZoomFactor(1.0f);
+				gameScene.showDetailPanel();
+				gameScene.getCameraManager().zoomOut();
 				details.setVisible(true);
 			}
 
 		}
 	}
 
+	/**
+	 * Handles the release event for the attack button.
+	 */
 	protected void releasedAttackButton() {
 		attackButton.setCurrentTileIndex(0);
 	}
 
+	/**
+	 * Handles the touch event for the attack button.
+	 */
 	protected void touchedAttackButton() {
 		long now = System.currentTimeMillis();
 
@@ -190,28 +197,28 @@ public class GameHUD extends HUD {
 		lastTimeTouched = System.currentTimeMillis();
 	}
 
+	/**
+	 * Handles the pressed event for the attack button.
+	 */
 	protected void pressedAttackButton() {
 		attackButton.setCurrentTileIndex(1);
 		detailsButton.setCurrentTileIndex(1);
 	}
 
-	public void hide() {
-		setVisible(false);
-	}
-
-	public void show() {
-		setVisible(true);
-	}
-
+	/**
+	 * Displays the attack button.
+	 */
 	public void showAttackButton() {
 		
 		if(!attackButton.hasParent()) {
 			attachChild(attackButton);
 			registerTouchArea(attackButton);
 		}
-
 	}
 	
+	/**
+	 * Hides the attack button.
+	 */
 	public void hideAttackButton() {
 		
 		if(attackButton.hasParent()) {
@@ -221,40 +228,54 @@ public class GameHUD extends HUD {
 
 	}
 	
+	/**
+	 * Displays the game info tab.
+	 */
 	public void showInfoTab() {
-		attachChild(infoTab);
+		if(!infoTab.hasParent()) {
+			attachChild(infoTab);
+		}	
 	}
 	
+	/**
+	 * Hides the game info tab.
+	 */
 	public void hideInfoTab() {
-		detachChild(infoTab);
+		if(infoTab.hasParent()) {
+			detachChild(infoTab);
+		}
 	}
 
+	/**
+	 * Changes the text of the info tab.
+	 * 
+	 * @param info : new info to set
+	 */
 	public void setInfoTabText(String info) {
-		infoTab.detachChild(infoTabText);
 		infoTabText.setText(info);
-		infoTab.attachChild(infoTabText);
 	}
 
+	/**
+	 * Displays the details button.
+	 */
 	public void showDetailButton() {
 		
 		if(!detailsButton.hasParent()) {
-			
 			attachChild(detailsButton);
 			registerTouchArea(detailsButton);
-			
 		}
 		
 	}
 	
+	/**
+	 * Hides the details button.
+	 */
 	public void hideDetailButton() {
 		
 		if(detailsButton.hasParent()) {
-			
 			detachChild(detailsButton);
 			unregisterTouchArea(detailsButton);
-			
-		}	
-
+		}
 	}
 
 }
