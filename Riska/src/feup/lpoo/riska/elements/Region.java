@@ -48,6 +48,8 @@ public class Region {
 	Text buttonText;
 	private Sprite flag;
 	
+	private Color priColor, secColor;
+	
 	private ArrayList<Region> neighbours;
 	private Player owner;
 	
@@ -216,10 +218,6 @@ public class Region {
 		return button;
 	}
 
-	public void setColor(Color color) {
-		this.button.setColor(color);
-	}
-	
 	public void setOwner(Player player) {
 		this.owner = player;
 	}
@@ -237,5 +235,31 @@ public class Region {
 		button.detachChildren();
 		buttonText.setText("" + soldiers);
 		button.attachChild(buttonText);
+	}
+	
+	public void setColors(Color priColor, Color secColor) {
+		this.priColor = priColor;
+		this.secColor = secColor;
+		
+		updateButtonColors();
+	}
+
+	public void switchColors() {
+		Color temp = new Color(priColor);
+		
+		this.priColor = secColor;
+		this.secColor = temp;
+		
+		updateButtonColors();
+	}
+	
+	private void updateButtonColors() {
+		this.button.setColor(priColor);
+		this.buttonText.setColor(secColor);
+	}
+
+	public void changeFocus(boolean value) {
+		this.focused = value;
+		this.switchColors();
 	}
 }

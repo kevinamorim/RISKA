@@ -62,9 +62,18 @@ public class ResourceCache {
 	 *           MAP
 	 * =============================
 	 */
-
 	protected BitmapTextureAtlas regionButtonTextureAtlas;
 	protected TiledTextureRegion regionButtonTiledTextureRegion;
+	
+	
+	
+	protected BitmapTextureAtlas attackButtonTextureAtlas;
+	protected TiledTextureRegion attackButtonTiledTextureRegion;
+	
+	protected BitmapTextureAtlas infoTabTextureAtlas;
+	protected TiledTextureRegion infoTabTiledTextureRegion;
+	
+	
 
 	protected BitmapTextureAtlas mapTextureAtlas;
 	protected ITextureRegion mapTextureRegion;
@@ -230,6 +239,21 @@ public class ResourceCache {
 				activity.getAssets(), "sea.png", 0, 0, SEA_COLS, SEA_LINES);
 
 		mSeaTextureAtlas.load();
+		
+		/*
+		 * HUD
+		 */
+		attackButtonTextureAtlas = new BitmapTextureAtlas(activity.getTextureManager(), 512, 256, TextureOptions.DEFAULT);
+		attackButtonTiledTextureRegion = BitmapTextureAtlasTextureRegionFactory.createTiledFromAsset(attackButtonTextureAtlas, 
+				activity.getAssets(), "attack_button.png", 0, 0, 1, 2);
+		
+		attackButtonTextureAtlas.load();
+		
+		infoTabTextureAtlas = new BitmapTextureAtlas(activity.getTextureManager(), 512, 256, TextureOptions.DEFAULT);
+		infoTabTiledTextureRegion = BitmapTextureAtlasTextureRegionFactory.createTiledFromAsset(infoTabTextureAtlas, 
+				activity.getAssets(), "info_tab.png", 0, 0, 1, 2);
+		
+		infoTabTextureAtlas.load();
 	}
 
 	public void loadMusic() {
@@ -249,13 +273,12 @@ public class ResourceCache {
 		}
 	}
 
-	private Region[] readRegions(String filename) {
+	private ArrayList<Region> readRegions(String filename) {
 		ArrayList<String> mapData = new ArrayList<String>();
 
 		new FileRead(filename, mapData);
 
-		Region regions[];
-		regions = new Region[NUMBER_OF_REGIONS];
+		ArrayList<Region> regions = new ArrayList<Region>();
 
 		for(int i = 0; i < mapData.size(); i++) {
 
@@ -272,9 +295,8 @@ public class ResourceCache {
 
 			Region newRegion = new Region(id, name, new Point(x, y), continent);
 
-			regions[regionsCreated] = newRegion;
+			regions.add(newRegion);
 			regionsCreated++;
-
 		}
 
 		return regions;
@@ -360,5 +382,12 @@ public class ResourceCache {
 		return this.regionButtonTiledTextureRegion;
 	}
 
+	public TiledTextureRegion getAttackButtonTexture() {
+		return this.attackButtonTiledTextureRegion;
+	}
+	
 
+	public TiledTextureRegion getInfoTabTexture() {
+		return infoTabTiledTextureRegion;
+	}
 }

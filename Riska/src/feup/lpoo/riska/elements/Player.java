@@ -2,6 +2,8 @@ package feup.lpoo.riska.elements;
 
 import java.util.ArrayList;
 
+import org.andengine.util.adt.color.Color;
+
 public class Player {
 	
 	// ======================================================
@@ -19,13 +21,18 @@ public class Player {
 	
 	private int soldiersToDeploy;
 	
-	public Player(boolean isCPU) {
+	private Color priColor, secColor;
+	
+	public Player(boolean isCPU, Color primaryColor, Color secondaryColor) {
 		
 		this.isCPU = isCPU;
 		
-		regions = new ArrayList<Region>();
-		regionSelected = null;
-		regionToAttack = null;
+		this.regions = new ArrayList<Region>();
+		this.regionSelected = null;
+		this.regionToAttack = null;
+		
+		this.priColor = primaryColor;
+		this.secColor = secondaryColor;
 		
 	}
 	
@@ -74,20 +81,27 @@ public class Player {
 	}
 
 	public int deploySoldiers(int number) {
-		
 		int deployed = number;
-		
+
 		soldiersToDeploy -= number;
-		
+
 		if(soldiersToDeploy < 0) {
 			deployed = number + soldiersToDeploy;
 		}
-		
+
 		return deployed;
 	}
 
 	public boolean hasSoldiersLeftToDeploy() {
 		return (soldiersToDeploy > 0);
+	}
+	
+	public Color getPrimaryColor() {
+		return this.priColor;
+	}
+	
+	public Color getScondaryColor() {
+		return this.secColor;
 	}
 
 }

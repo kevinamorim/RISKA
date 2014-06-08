@@ -6,6 +6,7 @@ import org.andengine.entity.sprite.Sprite;
 import org.andengine.entity.text.Text;
 import org.andengine.input.touch.TouchEvent;
 import org.andengine.opengl.font.Font;
+import org.andengine.util.adt.color.Color;
 
 import feup.lpoo.riska.elements.Player;
 import feup.lpoo.riska.elements.Region;
@@ -38,13 +39,17 @@ public class GameHUD extends HUD {
 	// ======================================================
 	private Sprite panel;
 	private Text countryName;
-	protected ButtonSprite hudButton;
+	private ButtonSprite hudButton;
 	private Text hudButtonText;
+	
+	
+	private ButtonSprite attackButton;
+	private Text attackText;
+	
+	private Sprite infoTab;
+	private Text infoTabText;
 
 	private long lastTimeTouched;
-
-
-
 
 	public GameHUD() {
 		
@@ -91,14 +96,85 @@ public class GameHUD extends HUD {
 			}
 		};
 		
-		hudButtonText = new Text(hudButton.getWidth()/2, hudButton.getHeight()/2, 
+		hudButtonText = new Text(hudButton.getWidth() / 2, hudButton.getHeight() / 2, 
 				resources.getFont(), "DEFAULT", activity.getVertexBufferObjectManager());
 		hudButton.attachChild(hudButtonText);
 		
+		/* =================================
+		 *  NEW ATTACK BUTTON
+		 * ================================= */
+		attackButton = new ButtonSprite(MainActivity.CAMERA_WIDTH / 2,
+				resources.getAttackButtonTexture().getHeight() / 2,
+				resources.getAttackButtonTexture(),
+				activity.getVertexBufferObjectManager()) {
+
+			@Override
+			public boolean onAreaTouched(TouchEvent pSceneTouchEvent, 
+					float pTouchAreaLocalX, float pTouchAreaLocalY) {
+				switch(pSceneTouchEvent.getAction()) {
+				case MotionEvent.ACTION_DOWN:
+					pressedAttackButton();
+					break;
+				case MotionEvent.ACTION_UP:
+					touchedAttackButton();
+					break;
+				case MotionEvent.ACTION_OUTSIDE:
+					releasedAttackButton();
+					break;
+				default:
+					break;
+				}
+				return true;
+			}
+		};
+		
+		attackText = new Text(0, 0, resources.getGameFont(), "ATTACK", 50, activity.getVertexBufferObjectManager());
+		attackText.setColor(Color.BLACK);
+		
+		attackButton.attachChild(attackText);
+		
+		
+		infoTab = new Sprite(MainActivity.CAMERA_WIDTH / 2,
+				MainActivity.CAMERA_HEIGHT - resources.getInfoTabTexture().getHeight() / 2,
+				resources.getInfoTabTexture(),
+				activity.getVertexBufferObjectManager());
+		
+		infoTab.setScaleX(2.0f);
+		
+		infoTabText = new Text(infoTab.getWidth() / 2, infoTab.getHeight() / 2,
+				resources.getGameFont(), "NO INFO", 1000, activity.getVertexBufferObjectManager());
+		
+		infoTabText.setScale(0.6f);
+		infoTabText.setColor(Color.BLACK);
+		
+		infoTab.attachChild(infoTabText);
+		
+		/*
+		 * ==================================
+		 */
 		
 		panel.attachChild(countryName);
 
-		attachChild(panel);	
+		//attachChild(panel);
+	}
+
+	protected void releasedAttackButton() {
+		attackButton.setCurrentTileIndex(0);
+	}
+
+	protected void touchedAttackButton() {
+		long now = System.currentTimeMillis();
+
+		if((now - lastTimeTouched) > MIN_TOUCH_INTERVAL) {
+			attackButton.setCurrentTileIndex(0);
+			sceneManager.getGameScene().onAttack();
+		}
+
+		lastTimeTouched = System.currentTimeMillis();
+	}
+
+	protected void pressedAttackButton() {
+		attackButton.setCurrentTileIndex(1);
 	}
 
 	public void pressedConfirmationButton() {
@@ -154,11 +230,6 @@ public class GameHUD extends HUD {
 	}
 
 	public void hide() {
-		
-		panel.detachChildren();
-		
-		if(hudButton.isEnabled()) { unregisterTouchArea(hudButton); }
-		
 		setVisible(false);
 	}
 
@@ -221,6 +292,30 @@ public class GameHUD extends HUD {
 			panel.attachChild(hudButton);
 			registerTouchArea(hudButton);
 		}
+	}
+
+	public void showAttackButton() {
+		attachChild(attackButton);
+		registerTouchArea(attackButton);
+	}
+	
+	public void hideAttackButton() {
+		detachChild(attackButton);
+		unregisterTouchArea(attackButton);
+	}
+	
+	public void showInfoTab() {
+		attachChild(infoTab);
+	}
+	
+	public void hideInfoTab() {
+		detachChild(infoTab);
+	}
+
+	public void setInfoTabText(String info) {
+		infoTab.detachChild(infoTabText);
+		infoTabText.setText(info);
+		infoTab.attachChild(infoTabText);
 	}
 
 

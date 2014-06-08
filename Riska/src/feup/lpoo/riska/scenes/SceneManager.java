@@ -72,6 +72,7 @@ public class SceneManager {
 			engine.setScene(loadMapScene);
 			break;
 		case GAME:
+			((GameScene)gameScene).showInitialHUD();
 			engine.setScene(gameScene);
 			break;
 		case BATTLE:

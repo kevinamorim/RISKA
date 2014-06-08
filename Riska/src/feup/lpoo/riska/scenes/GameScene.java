@@ -1,6 +1,7 @@
 package feup.lpoo.riska.scenes;
 
 import java.util.ArrayList;
+import java.util.Random;
 
 import org.andengine.entity.scene.IOnSceneTouchListener;
 import org.andengine.entity.scene.Scene;
@@ -33,7 +34,7 @@ public class GameScene extends Scene implements IOnSceneTouchListener, IScrollDe
 	
 	private static final int ANIM = 250;
 	
-	private static final int INITIAL_SOLDIERS = 1;
+	private static final int INITIAL_SOLDIERS_IN_REGION = 1;
 	private static final int SOLDIER_INC = 1;
 	
 	private enum Fase {
@@ -55,6 +56,8 @@ public class GameScene extends Scene implements IOnSceneTouchListener, IScrollDe
 	// ======================================================
 	GameHUD hud;
 	
+	private int BONUS_FACTOR = 1;
+	
 	protected Point touchPoint;
 	
 	private ScrollDetector scrollDetector;
@@ -64,7 +67,7 @@ public class GameScene extends Scene implements IOnSceneTouchListener, IScrollDe
 	
 	private Region selectedRegion;
 	private Region focusedRegion;
-	//private Region targetedRegion;
+	private Region targetedRegion;
 	
 	private Fase fase;
 	
@@ -83,7 +86,7 @@ public class GameScene extends Scene implements IOnSceneTouchListener, IScrollDe
 	public GameScene() {	
 		this.selectedRegion = null;
 		this.focusedRegion = null;
-		//this.targetedRegion = null;
+		this.targetedRegion = null;
 		
 		activity = MainActivity.getSharedInstance();
 		sceneManager = SceneManager.getSharedInstance();	
@@ -94,11 +97,11 @@ public class GameScene extends Scene implements IOnSceneTouchListener, IScrollDe
 
 		lastTouchTime = 0;	
 		
-		createDisplay();
-		
 		createGameElements();
 		
 		fase = Fase.DEPLOYMENT;
+		
+		createDisplay();
 		
 		/*
 		 * Enter game loop
@@ -111,17 +114,18 @@ public class GameScene extends Scene implements IOnSceneTouchListener, IScrollDe
 		 * Gets the map
 		 */
 		map = resources.getMap();
+		int MAX_SOLDIERS_TO_DEPLOY = map.getNumberOfRegions() * BONUS_FACTOR;
 		
 		/*
 		 * Creates Players
 		 */
 		players = new ArrayList<Player>();
 		
-		Player player = createPlayer(false);
-		player.setSoldiersToDeploy(10);
+		Player player = createPlayer(false, new Color(0f, 0.6f, 0f), new Color(1f, 1f, 0f));
+		player.setSoldiersToDeploy(MAX_SOLDIERS_TO_DEPLOY);
 		
-		Player cpu = createPlayer(true);
-		cpu.setSoldiersToDeploy(10);
+		Player cpu = createPlayer(true, new Color(1f, 0f, 0f), new Color(1f, 1f, 0f));
+		cpu.setSoldiersToDeploy(MAX_SOLDIERS_TO_DEPLOY);
 		
 		players.add(player);
 		players.add(cpu);
@@ -132,6 +136,11 @@ public class GameScene extends Scene implements IOnSceneTouchListener, IScrollDe
 		 * Distributes the regions amongst the players
 		 */
 		handOutRegions();
+		
+		/*
+		 * Comences the game.
+		 */
+		gameLoop();
 	}
 
 	private void createDisplay() {
@@ -151,7 +160,8 @@ public class GameScene extends Scene implements IOnSceneTouchListener, IScrollDe
 		
 		hud = new GameHUD();
 		activity.mCamera.setHUD(hud);
-		hud.hide();
+		
+		hud.setInfoTabText(currentPlayer.getSoldiersToDeploy() + " left to deploy");
 		
 		createScrollDetector();
 		
@@ -162,32 +172,40 @@ public class GameScene extends Scene implements IOnSceneTouchListener, IScrollDe
 	}
 
 	private void gameLoop() {
-		// TODO : game loop - VERY IMPORTANT !! (no shit, sherlock)
+		// TODO : game loop - VERY IMPORTANT !! (no shit, Sherlock)
 	}
 
-	private Player createPlayer(boolean isCPU) {
-		return new Player(isCPU);
+	private Player createPlayer(boolean isCPU, Color priColor, Color secColor) {
+		return new Player(isCPU, priColor, secColor);
 	}
 	
 	private void handOutRegions() {
 		
+		ArrayList<Integer> indexes = new ArrayList<Integer>();
+		
+		Random random = new Random();
+		
+		while(indexes.size() < map.getNumberOfRegions()) {
+			int index = random.nextInt(map.getNumberOfRegions());
+			if(!indexes.contains(index)) {
+				indexes.add(index);
+			}
+		}
+		
 		int i = 0;
 		
-		for(Region region : map.getRegions()) {
+		for(Integer index : indexes) {
 			
-			players.get(i).addRegion(region);
+			Region region = map.getRegions().get(index);
+			Player player = players.get(i);
 			
-			region.setNumberOfSoldiers(INITIAL_SOLDIERS);
+			player.addRegion(region);
+			
+			region.setNumberOfSoldiers(INITIAL_SOLDIERS_IN_REGION);
 			region.updateSoldiers();
 			
-			region.setOwner(players.get(i));
-			
-			if(players.get(i).isCPU()) {
-				region.setColor(Color.RED);
-			}
-			else {
-				region.setColor(Color.GREEN);
-			}
+			region.setOwner(player);
+			region.setColors(player.getPrimaryColor(), player.getScondaryColor());
 			
 			i++;
 			i = i % players.size(); 
@@ -243,45 +261,117 @@ public class GameScene extends Scene implements IOnSceneTouchListener, IScrollDe
 		
 		switch(fase) {
 		case DEPLOYMENT:
-			if(currentPlayer.ownsRegion(pRegion) && currentPlayer.hasSoldiersLeftToDeploy()) {
-				int deployed = currentPlayer.deploySoldiers(SOLDIER_INC);
-				pRegion.addSoldiers(deployed);
-				pRegion.updateSoldiers();
+			
+			if(currentPlayer.hasSoldiersLeftToDeploy()) {
+				
+				if(currentPlayer.ownsRegion(pRegion)) {
+					int deployed = currentPlayer.deploySoldiers(SOLDIER_INC);
+					pRegion.addSoldiers(deployed);
+					pRegion.updateSoldiers();
+					
+					hud.setInfoTabText(currentPlayer.getSoldiersToDeploy() + " LEFT TO DEPLOY");
+				}
+				
+			}
+			else {
+				fase = Fase.PLAY;
 			}
 			break;
 		case PLAY:
 			if(!pRegion.isFocused()) {
 				
-				focusRegion(pRegion);
-				
-				Log.d("Regions","Region focused.");
-				Log.d("Regions","  > " + (focusedRegion != null ? focusedRegion.getName() : "null"));
+				if(currentPlayer.ownsRegion(pRegion)) {
+					selectRegion(pRegion);
+				}
+				else {
+					targetRegion(pRegion);
+				}
+					
+				//focusRegion(pRegion);
 			}
 			else {
-				Log.d("Regions","Region unselected.");
-				Log.d("Regions","  > " + (focusedRegion != null ? focusedRegion.getName() : "null"));
+
+				if(currentPlayer.ownsRegion(pRegion)) {
+					unselectRegion(pRegion);
+				}
+				else {
+					untargetRegion(pRegion);
+				}
 				
-				unfocusRegion(pRegion);
+				//unfocusRegion(pRegion);
 			}	
 			break;
 		}
 	}
 	
+	private void targetRegion(Region pRegion) {
+		if(selectedRegion != null) {
+			
+			if(pRegion.isNeighbourOf(selectedRegion)) {
+				
+				targetedRegion = pRegion;
+				
+				pRegion.changeFocus(true);
+				
+				hud.showAttackButton();
+				
+				Log.d("Regions", "Targeted: " + pRegion.getName());
+			}
+		}
+	}
+	
+	private void untargetRegion(Region pRegion) {
+		targetedRegion = null;
+		
+		pRegion.changeFocus(false);
+		
+		hud.hideAttackButton();
+	}
+
+	private void selectRegion(Region pRegion) {
+		
+		if(selectedRegion != null) {
+			selectedRegion.changeFocus(false);
+			selectedRegion = null;
+		}
+		
+		selectedRegion = pRegion;
+		
+		pRegion.changeFocus(true);
+		
+		Log.d("Regions", "Selected: " + pRegion.getName());
+	}
+	
+	
+	private void unselectRegion(Region pRegion) {	
+
+		if(targetedRegion != null) {
+			targetedRegion.changeFocus(false);
+			targetedRegion = null;
+			
+			hud.hide();
+		}
+		
+		selectedRegion = null;
+
+		pRegion.changeFocus(false);
+	}
+
 	public void onRegionConfirmed() {
 		
 		if(currentPlayer.ownsRegion(focusedRegion)) {
 
 			if(focusedRegion == selectedRegion) {
-				focusedRegion.setColor(Color.GREEN);
+				//focusedRegion.setColor(Color.GREEN);
 				selectedRegion = null;
 			}
 			else {
 				if(selectedRegion != null) {
-					selectedRegion.setColor(Color.GREEN);
+					//selectedRegion.setColor(Color.GREEN);
 				}
 				
 				selectedRegion = focusedRegion;
-				selectedRegion.setColor(Color.BLUE);
+				//selectedRegion.setColor(Color.BLUE);
 				
 				Log.d("Regions","Confirmed");
 				Log.d("Regions","  > " + selectedRegion.getName());
@@ -398,6 +488,14 @@ public class GameScene extends Scene implements IOnSceneTouchListener, IScrollDe
 			registerTouchArea(region.getButton());
 		}
 		
+	}
+
+	public void onAttack() {
+		// TODO Auto-generated method stub
+	}
+
+	public void showInitialHUD() {
+		hud.showInfoTab();
 	}
 
 
