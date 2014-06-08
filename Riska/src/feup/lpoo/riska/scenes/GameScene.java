@@ -355,6 +355,13 @@ public class GameScene extends Scene implements IOnSceneTouchListener, IScrollDe
 			
 			if(pRegion.isNeighbourOf(selectedRegion)) {
 				
+				if(targetedRegion != null) {
+					targetedRegion.changeFocus(false);
+					targetedRegion = null;
+					
+					hud.hideAttackButton();
+				}
+				
 				targetedRegion = pRegion;
 				
 				pRegion.changeFocus(true);
@@ -405,6 +412,8 @@ public class GameScene extends Scene implements IOnSceneTouchListener, IScrollDe
 		if(targetedRegion != null) {
 			targetedRegion.changeFocus(false);
 			targetedRegion = null;
+			
+			hud.hideAttackButton();
 		}
 		
 		detailScene.setAttributes(null, null);
