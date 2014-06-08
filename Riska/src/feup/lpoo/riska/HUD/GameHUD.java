@@ -13,7 +13,9 @@ import feup.lpoo.riska.elements.Region;
 import feup.lpoo.riska.logic.MainActivity;
 import feup.lpoo.riska.resources.ResourceCache;
 import feup.lpoo.riska.scenes.CameraManager;
+import feup.lpoo.riska.scenes.DetailScene;
 import feup.lpoo.riska.scenes.SceneManager;
+import feup.lpoo.riska.scenes.SceneManager.SceneType;
 import android.view.MotionEvent;
 
 public class GameHUD extends HUD {
@@ -39,15 +41,17 @@ public class GameHUD extends HUD {
 	// ======================================================
 	private Sprite panel;
 	private Text countryName;
+	
 	private ButtonSprite hudButton;
 	private Text hudButtonText;
-	
 	
 	private ButtonSprite attackButton;
 	private Text attackText;
 	
 	private Sprite infoTab;
 	private Text infoTabText;
+	
+	private ButtonSprite detailsButton;
 
 	private long lastTimeTouched;
 
@@ -100,10 +104,11 @@ public class GameHUD extends HUD {
 				resources.getFont(), "DEFAULT", activity.getVertexBufferObjectManager());
 		hudButton.attachChild(hudButtonText);
 		
-		/* =================================
-		 *  NEW ATTACK BUTTON
-		 * ================================= */
-		attackButton = new ButtonSprite(MainActivity.CAMERA_WIDTH / 2,
+		// =================================
+		//  NEW ATTACK BUTTON
+		// =================================
+		attackButton = new ButtonSprite(
+				(MainActivity.CAMERA_WIDTH / 2),
 				resources.getAttackButtonTexture().getHeight() / 2,
 				resources.getAttackButtonTexture(),
 				activity.getVertexBufferObjectManager()) {
@@ -127,13 +132,17 @@ public class GameHUD extends HUD {
 				return true;
 			}
 		};
-		
-		attackText = new Text(0, 0, resources.getGameFont(), "ATTACK", 50, activity.getVertexBufferObjectManager());
+
+		attackText = new Text(attackButton.getWidth() / 2,
+				attackButton.getHeight() / 2,
+				resources.getGameFont(), "ATTACK", 50, activity.getVertexBufferObjectManager());
 		attackText.setColor(Color.BLACK);
-		
+
 		attackButton.attachChild(attackText);
-		
-		
+
+		// =================================
+		//  NEW INFO TAB
+		// =================================
 		infoTab = new Sprite(MainActivity.CAMERA_WIDTH / 2,
 				MainActivity.CAMERA_HEIGHT - resources.getInfoTabTexture().getHeight() / 2,
 				resources.getInfoTabTexture(),
@@ -146,8 +155,38 @@ public class GameHUD extends HUD {
 		
 		infoTabText.setScale(0.6f);
 		infoTabText.setColor(Color.BLACK);
-		
+
 		infoTab.attachChild(infoTabText);
+
+		// =================================
+		//  NEW DETAILS BUTTON
+		// =================================
+		detailsButton = new ButtonSprite(
+				resources.getDetailsButtonTexture().getWidth() / 2,
+				MainActivity.CAMERA_HEIGHT / 2,
+				resources.getDetailsButtonTexture(),
+				activity.getVertexBufferObjectManager()) {
+			
+			@Override
+			public boolean onAreaTouched(TouchEvent pSceneTouchEvent, 
+					float pTouchAreaLocalX, float pTouchAreaLocalY) {
+				switch(pSceneTouchEvent.getAction()) {
+				case MotionEvent.ACTION_DOWN:
+					pressedDetailsButton();
+					break;
+				case MotionEvent.ACTION_UP:
+					touchedDetailsButton();
+					break;
+				case MotionEvent.ACTION_OUTSIDE:
+					releasedDetailsButton();
+					break;
+				default:
+					break;
+				}
+				return true;
+			}
+		};
+		detailsButton.setScale(0.3f);
 		
 		/*
 		 * ==================================
@@ -156,6 +195,29 @@ public class GameHUD extends HUD {
 		panel.attachChild(countryName);
 
 		//attachChild(panel);
+	}
+
+	protected void releasedDetailsButton() {
+		detailsButton.setCurrentTileIndex(0);
+	}
+
+	protected void pressedDetailsButton() {
+		detailsButton.setCurrentTileIndex(1);
+	}
+	
+	protected void touchedDetailsButton() {
+		detailsButton.setCurrentTileIndex(0);
+		
+		DetailScene details = sceneManager.getGameScene().getDetailScene();
+	
+		if(details.isVisible()) {
+			sceneManager.getGameScene().hideDetailPanel();
+			details.setVisible(false);
+		}
+		else {
+			sceneManager.getGameScene().showDetailPanel();
+			details.setVisible(true);
+		}
 	}
 
 	protected void releasedAttackButton() {
@@ -316,6 +378,16 @@ public class GameHUD extends HUD {
 		infoTab.detachChild(infoTabText);
 		infoTabText.setText(info);
 		infoTab.attachChild(infoTabText);
+	}
+
+	public void showDetailButton() {
+		attachChild(detailsButton);
+		registerTouchArea(detailsButton);
+	}
+	
+	public void hideDetailButton() {
+		detachChild(detailsButton);
+		unregisterTouchArea(detailsButton);
 	}
 
 

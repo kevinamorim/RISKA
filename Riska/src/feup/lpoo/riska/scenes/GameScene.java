@@ -58,8 +58,9 @@ public class GameScene extends Scene implements IOnSceneTouchListener, IScrollDe
 	// FIELDS
 	// ======================================================
 	GameHUD hud;
+	DetailScene detailScene;
 	
-	private int BONUS_FACTOR = 1;
+	private float BONUS_FACTOR = 0.1f;
 	
 	protected Point touchPoint;
 	
@@ -68,9 +69,10 @@ public class GameScene extends Scene implements IOnSceneTouchListener, IScrollDe
 	private ArrayList<Player> players;
 	private Player currentPlayer;
 	
-	private Region selectedRegion;
 	private Region focusedRegion;
-	private Region targetedRegion;
+	
+	protected Region selectedRegion;
+	protected Region targetedRegion;
 	
 	private Fase fase;
 	
@@ -97,6 +99,7 @@ public class GameScene extends Scene implements IOnSceneTouchListener, IScrollDe
 		resources = ResourceCache.getSharedInstance();
 		
 		battleGenerator = new BattleGenerator();
+		detailScene = new DetailScene();
 
 		lastTouchTime = 0;	
 		
@@ -125,7 +128,7 @@ public class GameScene extends Scene implements IOnSceneTouchListener, IScrollDe
 					hud.setInfoTabText("Wait for deployment");
 					
 					if(currentPlayer.isCPU()) {
-						currentPlayer.deploy();
+						currentPlayer.deploy(); // TODO
 					}
 				}
 			}
@@ -144,7 +147,7 @@ public class GameScene extends Scene implements IOnSceneTouchListener, IScrollDe
 		 * Gets the map
 		 */
 		map = resources.getMap();
-		int MAX_SOLDIERS_TO_DEPLOY = map.getNumberOfRegions() * BONUS_FACTOR;
+		int MAX_SOLDIERS_TO_DEPLOY = (int) (map.getNumberOfRegions() * BONUS_FACTOR);
 		
 		/*
 		 * Creates Players
@@ -193,7 +196,12 @@ public class GameScene extends Scene implements IOnSceneTouchListener, IScrollDe
 		setRegionButtons();
 
 		setTouchAreaBindingOnActionDownEnabled(true);
-		setOnSceneTouchListener(this);	
+		setOnSceneTouchListener(this);
+		
+		/*
+		 * Details Scene
+		 */
+		detailScene = new DetailScene();
 	}
 
 	private Player createPlayer(boolean isCPU, Color priColor, Color secColor) {
@@ -278,6 +286,9 @@ public class GameScene extends Scene implements IOnSceneTouchListener, IScrollDe
 		return true;
 	}
 	
+	// =================================================================================
+	//
+	// =================================================================================
 	public void onRegionTouched(Region pRegion) {
 		
 		switch(fase) {
@@ -347,10 +358,9 @@ public class GameScene extends Scene implements IOnSceneTouchListener, IScrollDe
 				targetedRegion = pRegion;
 				
 				pRegion.changeFocus(true);
-				
-				if(!currentPlayer.isCPU()) {
-					hud.showAttackButton();	
-				}
+
+				detailScene.setAttributes(selectedRegion, targetedRegion);
+				hud.showAttackButton();	
 				
 				Log.d("Regions", "Targeted: " + pRegion.getName());
 			}
@@ -362,9 +372,8 @@ public class GameScene extends Scene implements IOnSceneTouchListener, IScrollDe
 		
 		pRegion.changeFocus(false);
 		
-		if(!currentPlayer.isCPU()) {
-			hud.hideAttackButton();
-		}
+		detailScene.setAttributes(selectedRegion, null);
+		hud.hideAttackButton();
 	}
 
 	private void selectRegion(Region pRegion) {
@@ -372,15 +381,24 @@ public class GameScene extends Scene implements IOnSceneTouchListener, IScrollDe
 		if(selectedRegion != null) {
 			selectedRegion.changeFocus(false);
 			selectedRegion = null;
+			
+			if(targetedRegion != null) {
+				targetedRegion.changeFocus(false);
+				targetedRegion = null;
+			}
+			
+			hud.hideAttackButton();
 		}
 		
 		selectedRegion = pRegion;
+		
+		detailScene.setAttributes(selectedRegion, null);
+		hud.showDetailButton();
 		
 		pRegion.changeFocus(true);
 		
 		Log.d("Regions", "Selected: " + pRegion.getName());
 	}
-	
 	
 	private void unselectRegion(Region pRegion) {	
 
@@ -388,6 +406,9 @@ public class GameScene extends Scene implements IOnSceneTouchListener, IScrollDe
 			targetedRegion.changeFocus(false);
 			targetedRegion = null;
 		}
+		
+		detailScene.setAttributes(null, null);
+		hud.hideDetailButton();
 		
 		selectedRegion = null;
 
@@ -414,20 +435,21 @@ public class GameScene extends Scene implements IOnSceneTouchListener, IScrollDe
 				Log.d("Regions","  > " + selectedRegion.getName());
 			}
 
-			unfocusRegion(focusedRegion);
+			//unfocusRegion(focusedRegion);
 		} else {		
 			//targetedRegion = focusedRegion;
 			//onAttackRegion(selectedRegion, targetedRegion);
 		}
 	}
 	
-	
-	/*private void onAttackRegion(Region attacker, Region defensor) {
+	/*
+	private void onAttackRegion(Region attacker, Region defensor) {
 		
 		battleGenerator.createBattleRegions(attacker, defensor);
 		sceneManager.setCurrentScene(SceneType.BATTLE);
-	}*/
+	}
 
+	
 	private void focusRegion(Region pRegion) {
 		
 		pRegion.setFocused(true);
@@ -473,7 +495,8 @@ public class GameScene extends Scene implements IOnSceneTouchListener, IScrollDe
 		doubleTapAllowed = true;
 		scrollDetector.setEnabled(true);
 	}
-
+	*/
+	
 	// ======================================================
 	// SCROLL DETECTOR
 	// ======================================================
@@ -542,6 +565,33 @@ public class GameScene extends Scene implements IOnSceneTouchListener, IScrollDe
 	private Player getHumanPlayer() {
 		return players.get(0);
 	}
+	
+	public void showDetailPanel() {
+		doubleTapAllowed = false;
+		scrollDetector.setEnabled(false);
+		
+		if(targetedRegion != null) {
+			hud.hideAttackButton();
+		}
+		hud.hideInfoTab();
+		
+		attachChild(detailScene);
+	}
+	
+	public void hideDetailPanel() {
+		doubleTapAllowed = true;
+		scrollDetector.setEnabled(true);
+		
+		if(targetedRegion != null) {
+			hud.showAttackButton();
+		}
+		hud.showInfoTab();
+		
+		detachChild(detailScene);
+	}
 
+	public DetailScene getDetailScene() {
+		return detailScene;
+	}
 
 }

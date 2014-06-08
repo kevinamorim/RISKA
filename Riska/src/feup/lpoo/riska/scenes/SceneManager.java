@@ -3,6 +3,7 @@ package feup.lpoo.riska.scenes;
 import org.andengine.engine.Engine;
 import org.andengine.engine.camera.Camera;
 import org.andengine.entity.scene.Scene;
+
 import feup.lpoo.riska.logic.MainActivity;
 
 public class SceneManager {
@@ -23,7 +24,7 @@ public class SceneManager {
 		LOAD_MAP,
 		GAME,
 		BATTLE,
-		GAME_OVER
+		GAME_OVER,
 	};
 	
 	public SceneManager(MainActivity activity, Engine engine, Camera camera) {

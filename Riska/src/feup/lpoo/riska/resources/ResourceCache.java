@@ -7,6 +7,7 @@ import org.andengine.audio.music.Music;
 import org.andengine.audio.music.MusicFactory;
 import org.andengine.engine.Engine;
 import org.andengine.engine.camera.Camera;
+import org.andengine.entity.scene.CameraScene;
 import org.andengine.opengl.font.Font;
 import org.andengine.opengl.font.FontFactory;
 import org.andengine.opengl.texture.TextureOptions;
@@ -72,6 +73,9 @@ public class ResourceCache {
 	
 	protected BitmapTextureAtlas infoTabTextureAtlas;
 	protected TiledTextureRegion infoTabTiledTextureRegion;
+	
+	protected BitmapTextureAtlas detailsButtonTextureAtlas;
+	protected TiledTextureRegion detailsButtonTiledTextureRegion;
 	
 	
 
@@ -254,6 +258,12 @@ public class ResourceCache {
 				activity.getAssets(), "info_tab.png", 0, 0, 1, 2);
 		
 		infoTabTextureAtlas.load();
+		
+		detailsButtonTextureAtlas = new BitmapTextureAtlas(activity.getTextureManager(), 256, 256, TextureOptions.DEFAULT);
+		detailsButtonTiledTextureRegion = BitmapTextureAtlasTextureRegionFactory.createTiledFromAsset(detailsButtonTextureAtlas, 
+				activity.getAssets(), "details_button_1.png", 0, 0, 2, 1);
+		
+		detailsButtonTextureAtlas.load();
 	}
 
 	public void loadMusic() {
@@ -389,5 +399,9 @@ public class ResourceCache {
 
 	public TiledTextureRegion getInfoTabTexture() {
 		return infoTabTiledTextureRegion;
+	}
+
+	public TiledTextureRegion getDetailsButtonTexture() {
+		return detailsButtonTiledTextureRegion;
 	}
 }
