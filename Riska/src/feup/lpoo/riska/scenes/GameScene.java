@@ -59,8 +59,8 @@ public class GameScene extends Scene implements IOnSceneTouchListener, IScrollDe
 	
 	private ScrollDetector scrollDetector;
 	
-	protected Region selectedRegion;
-	protected Region targetedRegion;
+	public Region selectedRegion;
+	public Region targetedRegion;
 	
 	// ======================================================
 	// DOUBLE TAP
@@ -103,7 +103,7 @@ public class GameScene extends Scene implements IOnSceneTouchListener, IScrollDe
 			break;
 			
 		case PLAY:
-			logic.updateGame();
+			//logic.updateGame();
 			break;
 			
 		default:
@@ -111,7 +111,6 @@ public class GameScene extends Scene implements IOnSceneTouchListener, IScrollDe
 		}
 		
 	}
-
 
 	private void createDisplay() {
 		
@@ -348,13 +347,18 @@ public class GameScene extends Scene implements IOnSceneTouchListener, IScrollDe
 	
 	public void onAttack() {
 		
+		logic.attack(selectedRegion, targetedRegion);
+		
+	}
+	
+	public void showBattleScene(boolean result) {
+		
 		Region tmpSelectedRegion = new Region(-1, selectedRegion.getName(), selectedRegion.getStratCenter(), "");
 		tmpSelectedRegion.setOwner(selectedRegion.getOwner());
-		Region tmpTargetedRegion = new Region(-1, targetedRegion.getName(), targetedRegion.getStratCenter(), "");;
+		Region tmpTargetedRegion = new Region(-1, targetedRegion.getName(), targetedRegion.getStratCenter(), "");
 		tmpTargetedRegion.setOwner(targetedRegion.getOwner());
 		
-		battleScene = new BattleScene(tmpSelectedRegion, tmpTargetedRegion,
-				logic.attack(selectedRegion, targetedRegion));
+		battleScene = new BattleScene(tmpSelectedRegion, tmpTargetedRegion, result);
 		
 		doubleTapAllowed = false;
 		scrollDetector.setEnabled(false);
@@ -362,23 +366,28 @@ public class GameScene extends Scene implements IOnSceneTouchListener, IScrollDe
 		hud.hideInfoTab();
 		
 		attachChild(battleScene);
+		
 	}
 	
 	public void hideBattleScene() {
 		
-		doubleTapAllowed = true;
-		scrollDetector.setEnabled(true);
-		
-		hud.showInfoTab();
-		
 		detachChild(battleScene);
+	
+		hud.showInfoTab();		
 		hud.hideAttackButton();
+		
+		//selectedRegion.changeFocus(false);
+		//targetedRegion.changeFocus(false);
 		
 		battleScene = null;
 		selectedRegion = null;
 		targetedRegion = null;
 		
+		doubleTapAllowed = true;
+		scrollDetector.setEnabled(true);
+		
 		logic.turnDone = true;
+		logic.updateGame();
 			
 	}
 

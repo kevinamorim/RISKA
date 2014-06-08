@@ -278,7 +278,8 @@ public class Region {
 		soldiers.clear();
 		priColor = newOwner.getPrimaryColor();
 		secColor = newOwner.getScondaryColor();
-		changeFocus(false);
+		updateButtonColors();
+		focused = false;
 		updateSoldiers();
 	}
 }

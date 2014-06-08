@@ -149,7 +149,7 @@ public class GameLogic {
 	}
 
 	public void updateGame() {
-		
+				
 		if(checkGameOver()) {
 			
 			state = GAME_STATE.GAMEOVER;
@@ -163,42 +163,48 @@ public class GameLogic {
 			
 			if(currentPlayer.isCPU()) {
 				automaticMove();
-				turnDone = true;
 			}
 			
 		}	
 		
 	}
 	
-	
 	private void automaticMove() {
 
 		Random r = new Random();
 		
-		int selected = 0;
-		do {
-			
-			Log.d("AutomaticMove", "Choosing new selected region.");
-			selected = r.nextInt(currentPlayer.getRegions().size());
-			
-		} while(currentPlayer.getRegions().get(selected).getNumberOfSoldiers() <= 0);
+		boolean done = false; 
 		
-		Region region1 = currentPlayer.getRegions().get(selected);
-		
-		ArrayList<Region> temp = currentPlayer.getRegions().get(selected).getNeighbours();
+		while(!done) {
+			
+			int selected = 0;
+			do {
 				
-		int target = 0;
-		do {
+				selected = r.nextInt(currentPlayer.getRegions().size());
+				
+			} while(currentPlayer.getRegions().get(selected).getNumberOfSoldiers() <= 0);
 			
-			Log.d("AutomaticMove", "Choosing new target region.");
-			target = r.nextInt(temp.size()); 
+			Region region1 = currentPlayer.getRegions().get(selected);
 			
-		} while(temp.get(target).getOwner().equals(currentPlayer));
-		
-		Region region2 = temp.get(target);
-		
-		attack(region1, region2);
-		
+			ArrayList<Region> temp = currentPlayer.getRegions().get(selected).getNeighbours();
+					
+			Region region2 = null;
+			for(int target = 0; target < temp.size(); target++) {
+				if(!temp.get(target).getOwner().equals(currentPlayer)) {
+					region2 = temp.get(target);
+					break;
+				}
+			}
+			
+			if(region2 != null) {
+				done = true;
+				sceneManager.getGameScene().selectedRegion = region1;
+				sceneManager.getGameScene().targetedRegion = region2;
+				attack(region1, region2);
+			}
+			
+		}
+	
 	}
 	
 	private boolean checkGameOver() {
@@ -215,40 +221,38 @@ public class GameLogic {
 		
 	}
 
-	public boolean attack(Region region1, Region region2) {
+	public void attack(Region region1, Region region2) {
 		
 		BattleGenerator battleGenerator = new BattleGenerator();
 		
 		boolean won = 
 				battleGenerator.simulateAttack(region1.getSoldiers(), region2.getSoldiers());
 		
-		
-		
+		sceneManager.getGameScene().showBattleScene(won);
+				
 		if(won) {
-			playerWon(region1, region2);
+			attackerWon(region1, region2);
 		} else {
-			playerLost(region1);
+			defenderWon(region1);
 		}
-			
-		region1.changeFocus(false);
-		region2.changeFocus(false);
-		
-		return won;
 				
 	}
 	
-	
-	public void playerWon(Region region1, Region region2) {
+	public void attackerWon(Region region1, Region region2) {
 		
 		region2.changeOwner(region1.getOwner());
 		region2.addSoldiers(region1.getNumberOfSoldiers());
 		region1.clearSoldiers();
+		region1.addSoldiers(1);
 		
 	}
 	
 	
-	public void playerLost(Region region) {
-		region.clearSoldiers();
+	public void defenderWon(Region region1) {
+		
+		region1.clearSoldiers();
+		region1.addSoldiers(1);
+		
 	}
 	
 	
