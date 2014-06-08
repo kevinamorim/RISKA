@@ -23,6 +23,7 @@ public class Region {
 	// CONSTANTS
 	// ======================================================
 	private static final long MIN_TOUCH_INTERVAL = 30;
+	private static final int MAX_CHARS = 10;
 
 	// ======================================================
 	// SINGLETONS
@@ -46,6 +47,7 @@ public class Region {
 	private long lastTimeTouched;
 	
 	protected ButtonSprite button;	
+	Text buttonText;
 	private Sprite flag;
 	
 	private ArrayList<Region> neighbours;
@@ -96,9 +98,9 @@ public class Region {
 			}
 		};
 		
-		Text buttonText = new Text(0, 0, resources.getFont() , "" + soldiers, activity.getVertexBufferObjectManager());
+		buttonText = new Text(0, 0, resources.getGameFont() , "" + soldiers, MAX_CHARS, activity.getVertexBufferObjectManager());
 		
-		buttonText.setScale((float) 0.5);
+		buttonText.setScale((float) 1.4);
 		buttonText.setPosition(button.getWidth()/2, button.getHeight()/2);
 		button.attachChild(buttonText);
 		
@@ -119,19 +121,9 @@ public class Region {
 		if((now - lastTimeTouched) > MIN_TOUCH_INTERVAL) {
 			
 			button.setCurrentTileIndex(0);
-			focused = !focused;
-			
-			Log.d("Regions", "Focused: " + focused);
-			
-			if(focused) {
 
-				sceneManager.getGameScene().onRegionSelected(this);
-				
-			} else {
-				
-				sceneManager.getGameScene().onRegionUnselected(this);
-			}
-			
+			sceneManager.getGameScene().onRegionTouched(this);
+
 		}
 
 		lastTimeTouched = System.currentTimeMillis();
@@ -240,5 +232,12 @@ public class Region {
 
 	public boolean isNeighbourOf(Region focusedRegion) {
 		return neighbours.contains(focusedRegion);
+	}
+
+	public void updateSoldiers() {
+		
+		button.detachChildren();
+		buttonText.setText("" + soldiers);
+		button.attachChild(buttonText);
 	}
 }

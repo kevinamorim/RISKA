@@ -213,7 +213,7 @@ public class GameHUD extends HUD {
 		panel.detachChild(hudButton);
 		hudButton.setEnabled(false);
 		
-		if(player.isOwnerOf(focusedRegion)) {
+		if(player.ownsRegion(focusedRegion)) {
 			hudButtonText.setText(focusedRegion == selectedRegion ? "RESET" : "CHOOSE");
 			hudButton.setEnabled(true);
 		}

@@ -17,6 +17,7 @@ public class Player {
 	private Region regionSelected;
 	private Region regionToAttack;
 	
+	private int soldiersToDeploy;
 	
 	public Player(boolean isCPU) {
 		
@@ -56,21 +57,33 @@ public class Player {
 		return regionToAttack;
 	}
 	
-	public boolean ownsRegion(Region pRegion) {
-		for(Region region : regions) {
-			if(region.equals(pRegion)) {
-				return true;
-			}
-		}	
-		return false;
+	public boolean ownsRegion(Region region) {
+		return regions.contains(region);
 	}
 	
 	public boolean isCPU() {
 		return isCPU;
 	}
-	
-	public boolean isOwnerOf(Region region) {
-		return regions.contains(region);
+
+	public int getSoldiersToDeploy() {
+		return soldiersToDeploy;
+	}
+
+	public void setSoldiersToDeploy(int soldiersToDeploy) {
+		this.soldiersToDeploy = soldiersToDeploy;
+	}
+
+	public int deploySoldiers(int number) {
+		
+		int deployed = number;
+		
+		soldiersToDeploy -= number;
+		
+		if(soldiersToDeploy < 0) {
+			deployed = number + soldiersToDeploy;
+		}
+		
+		return deployed;
 	}
 
 }

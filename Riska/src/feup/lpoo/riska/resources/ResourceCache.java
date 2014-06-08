@@ -196,6 +196,16 @@ public class ResourceCache {
 
 		mFlagsTextureAtlas.load();
 
+		// LOADS FONT
+		FontFactory.setAssetBasePath("fonts/");
+
+		mGameFont = FontFactory.createFromAsset(engine.getFontManager(),
+				engine.getTextureManager(), 256, 512, TextureOptions.BILINEAR,
+				activity.getAssets(), "reprise.ttf", 48f, true,
+				Color.WHITE); /* Load the font in white, so setColor() works. */
+
+		mGameFont.load();
+
 
 		// =================================================================================
 		// MAP / REGIONS 
@@ -215,16 +225,6 @@ public class ResourceCache {
 				activity, "panel_left.png", 0, 0);
 
 		mLeftPanelTextureAtlas.load();
-
-		// LOADS FONT
-		FontFactory.setAssetBasePath("fonts/");
-
-		mGameFont = FontFactory.createFromAsset(engine.getFontManager(),
-				engine.getTextureManager(), 256, 512, TextureOptions.BILINEAR,
-				activity.getAssets(), "reprise.ttf", 48f, true,
-				Color.WHITE); /* Load the font in white, so setColor() works. */
-
-		mGameFont.load();
 
 		mSeaTextureAtlas = new BitmapTextureAtlas(activity.getTextureManager(), 2048, 1024, TextureOptions.DEFAULT);
 		mSeaTiledTextureRegion = BitmapTextureAtlasTextureRegionFactory.createTiledFromAsset(mSeaTextureAtlas, 

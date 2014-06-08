@@ -34,6 +34,14 @@ public class GameScene extends Scene implements IOnSceneTouchListener, IScrollDe
 	
 	private static final int ANIM = 250;
 	
+	private static final int INITIAL_SOLDIERS = 1;
+	private static final int SOLDIER_INC = 1;
+	
+	private enum Fase {
+		DEPLOYMENT,
+		PLAY
+	}
+	
 	// ======================================================
 	// SINGLETONS
 	// ======================================================
@@ -59,6 +67,8 @@ public class GameScene extends Scene implements IOnSceneTouchListener, IScrollDe
 	private Region focusedRegion;
 	private Region targetedRegion;
 	
+	private Fase fase;
+	
 	private Map map;
 	
 	// ======================================================
@@ -83,11 +93,13 @@ public class GameScene extends Scene implements IOnSceneTouchListener, IScrollDe
 		
 		battleGenerator = new BattleGenerator();
 
-		lastTouchTime = 0;
+		lastTouchTime = 0;	
 		
 		createDisplay();
 		
 		createGameElements();
+		
+		fase = Fase.DEPLOYMENT;
 		
 		/*
 		 * Enter game loop
@@ -107,7 +119,10 @@ public class GameScene extends Scene implements IOnSceneTouchListener, IScrollDe
 		players = new ArrayList<Player>();
 		
 		Player player = createPlayer(false);
+		player.setSoldiersToDeploy(10);
+		
 		Player cpu = createPlayer(true);
+		cpu.setSoldiersToDeploy(10);
 		
 		players.add(player);
 		players.add(cpu);
@@ -148,7 +163,7 @@ public class GameScene extends Scene implements IOnSceneTouchListener, IScrollDe
 	}
 
 	private void gameLoop() {
-		
+		// TODO : game loop - VERY IMPORTANT !! (no shit, sherlock)
 	}
 
 	private Player createPlayer(boolean isCPU) {
@@ -162,7 +177,10 @@ public class GameScene extends Scene implements IOnSceneTouchListener, IScrollDe
 		for(Region region : map.getRegions()) {
 			
 			players.get(i).addRegion(region);
-			region.setNumberOfSoldiers(1);
+			
+			region.setNumberOfSoldiers(INITIAL_SOLDIERS);
+			region.updateSoldiers();
+			
 			region.setOwner(players.get(i));
 			
 			if(players.get(i).isCPU()) {
@@ -222,25 +240,40 @@ public class GameScene extends Scene implements IOnSceneTouchListener, IScrollDe
 		return true;
 	}
 	
-	public void onRegionSelected(Region pRegion) {
+	public void onRegionTouched(Region pRegion) {
 		
-		isolateRegion(pRegion);
-		
-		Log.d("Regions","Region focused.");
-		Log.d("Regions","  > " + (focusedRegion != null ? focusedRegion.getName() : "null"));
-	}
-	
-	public void onRegionUnselected(Region pRegion) {
-		
-		Log.d("Regions","Region unselected.");
-		Log.d("Regions","  > " + (focusedRegion != null ? focusedRegion.getName() : "null"));
-			
-		deisolateRegion(pRegion);
+		switch(fase) {
+		case DEPLOYMENT:
+			if(currentPlayer.ownsRegion(pRegion) && currentPlayer.getSoldiersToDeploy() > 0) {
+				int deployed = currentPlayer.deploySoldiers(SOLDIER_INC);
+				pRegion.addSoldiers(deployed);
+				pRegion.updateSoldiers();
+			}
+			else {
+				// TODO : next player's fase of deployment
+			}
+			break;
+		case PLAY:
+			if(!pRegion.isFocused()) {
+				
+				focusRegion(pRegion);
+				
+				Log.d("Regions","Region focused.");
+				Log.d("Regions","  > " + (focusedRegion != null ? focusedRegion.getName() : "null"));
+			}
+			else {
+				Log.d("Regions","Region unselected.");
+				Log.d("Regions","  > " + (focusedRegion != null ? focusedRegion.getName() : "null"));
+				
+				unfocusRegion(pRegion);
+			}	
+			break;
+		}
 	}
 	
 	public void onRegionConfirmed() {
 		
-		if(currentPlayer.isOwnerOf(focusedRegion)) {
+		if(currentPlayer.ownsRegion(focusedRegion)) {
 
 			if(focusedRegion == selectedRegion) {
 				focusedRegion.setColor(Color.GREEN);
@@ -258,7 +291,7 @@ public class GameScene extends Scene implements IOnSceneTouchListener, IScrollDe
 				Log.d("Regions","  > " + selectedRegion.getName());
 			}
 
-			deisolateRegion(focusedRegion);
+			unfocusRegion(focusedRegion);
 		} else {		
 			targetedRegion = focusedRegion;
 			//onAttackRegion(selectedRegion, targetedRegion);
@@ -272,7 +305,7 @@ public class GameScene extends Scene implements IOnSceneTouchListener, IScrollDe
 		sceneManager.setCurrentScene(SceneType.BATTLE);
 	}
 
-	private void isolateRegion(Region pRegion) {
+	private void focusRegion(Region pRegion) {
 		
 		pRegion.setFocused(true);
 		
@@ -296,7 +329,7 @@ public class GameScene extends Scene implements IOnSceneTouchListener, IScrollDe
 		scrollDetector.setEnabled(false);	
 	}
 	
-	private void deisolateRegion(Region pRegion) {
+	private void unfocusRegion(Region pRegion) {
 		pRegion.setFocused(false);
 		
 		cameraManager.zoomOut();
