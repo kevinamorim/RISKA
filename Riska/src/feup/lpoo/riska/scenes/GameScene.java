@@ -472,4 +472,16 @@ public class GameScene extends Scene implements IOnSceneTouchListener, IScrollDe
 	public BattleScene getBattleScene() {
 		return battleScene;
 	}
+
+	public CameraManager getCameraManager() {
+		return cameraManager;
+	}
+
+	public Region getSelectedRegion() {
+		return selectedRegion;
+	}
+
+	public Region getTargetedRegion() {
+		return targetedRegion;
+	}
 }

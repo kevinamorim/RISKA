@@ -165,7 +165,12 @@ public class GameHUD extends HUD {
 				sceneManager.getGameScene().hideBattleScene();
 			} else {
 				detailsButton.setCurrentTileIndex(1);
+				
+				details.setAttributes(sceneManager.getGameScene().getSelectedRegion(), 
+						sceneManager.getGameScene().getTargetedRegion());
+				details.updateDisplay();
 				sceneManager.getGameScene().showDetailPanel();
+				sceneManager.getGameScene().getCameraManager().setZoomFactor(1.0f);
 				details.setVisible(true);
 			}
 
@@ -190,39 +195,6 @@ public class GameHUD extends HUD {
 	protected void pressedAttackButton() {
 		attackButton.setCurrentTileIndex(1);
 		detailsButton.setCurrentTileIndex(1);
-	}
-
-	private String wrapText(Font pFont, String pString, float maxWidth) {
-
-		Text pText = new Text(0, 0, pFont, pString, 1000, activity.getVertexBufferObjectManager());
-
-		if(pText.getWidth() < maxWidth) {
-			return pString;
-		}
-
-		// Split the entire string into separated words.
-		String[] words = pText.getText().toString().split(" ");
-
-		String wrappedText = ""; /* Final string. */
-		String line = ""; /* Temp variable */
-
-		for(String word : words) {
-
-			pText.setText(line + word);
-			if(pText.getWidth() > maxWidth) {			
-				wrappedText += line + "\n\n";
-				line = "";
-
-			}
-
-			line += word + " ";
-
-		}
-
-		wrappedText += line;
-
-		return wrappedText;
-
 	}
 
 	public void hide() {
