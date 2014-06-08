@@ -8,6 +8,7 @@ import org.andengine.util.adt.color.Color;
 import feup.lpoo.riska.elements.Map;
 import feup.lpoo.riska.elements.Player;
 import feup.lpoo.riska.elements.Region;
+import feup.lpoo.riska.generator.BattleGenerator;
 import feup.lpoo.riska.resources.ResourceCache;
 import feup.lpoo.riska.scenes.SceneManager;
 
@@ -140,9 +141,11 @@ public class GameLogic {
 		
 	}
 
-	public void attack(Region region1, Region region2) {
+	public boolean attack(Region region1, Region region2) {
 		
-		
+		BattleGenerator battleGenerator = new BattleGenerator();
+		return
+				battleGenerator.simulateAttack(region1.getSoldiers(), region2.getSoldiers());
 	}
 	
 	// ======================================================

@@ -127,13 +127,11 @@ public class GameHUD extends HUD {
 					float pTouchAreaLocalX, float pTouchAreaLocalY) {
 				switch(pSceneTouchEvent.getAction()) {
 				case MotionEvent.ACTION_DOWN:
-					pressedDetailsButton();
 					break;
 				case MotionEvent.ACTION_UP:
 					touchedDetailsButton();
 					break;
 				case MotionEvent.ACTION_OUTSIDE:
-					releasedDetailsButton();
 					break;
 				default:
 					break;
@@ -149,10 +147,6 @@ public class GameHUD extends HUD {
 		 */
 		
 	}
-
-	protected void releasedDetailsButton() { }
-
-	protected void pressedDetailsButton() { }
 	
 	protected void touchedDetailsButton() {
 		
@@ -164,9 +158,17 @@ public class GameHUD extends HUD {
 			details.setVisible(false);
 		}
 		else {
-			detailsButton.setCurrentTileIndex(1);
-			sceneManager.getGameScene().showDetailPanel();
-			details.setVisible(true);
+		
+			if(sceneManager.getGameScene().getBattleScene() != null &&
+					sceneManager.getGameScene().getBattleScene().isVisible()) {
+				detailsButton.setCurrentTileIndex(0);
+				sceneManager.getGameScene().hideBattleScene();
+			} else {
+				detailsButton.setCurrentTileIndex(1);
+				sceneManager.getGameScene().showDetailPanel();
+				details.setVisible(true);
+			}
+
 		}
 	}
 
@@ -187,6 +189,7 @@ public class GameHUD extends HUD {
 
 	protected void pressedAttackButton() {
 		attackButton.setCurrentTileIndex(1);
+		detailsButton.setCurrentTileIndex(1);
 	}
 
 	private String wrapText(Font pFont, String pString, float maxWidth) {

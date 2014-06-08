@@ -223,6 +223,10 @@ public class Region {
 		this.owner = player;
 	}
 	
+	public ArrayList<Unit> getSoldiers() {
+		return soldiers;
+	}
+
 	public Player getOwner() {
 		return this.owner;
 	}

@@ -37,9 +37,7 @@ public class GameScene extends Scene implements IOnSceneTouchListener, IScrollDe
 	private static final int ANIM = 250;
 	
 	private static final int SOLDIER_INC = 1;
-	
-	private static final int FIRST = 0;
-	
+
 	// ======================================================
 	// SINGLETONS
 	// ======================================================
@@ -48,7 +46,8 @@ public class GameScene extends Scene implements IOnSceneTouchListener, IScrollDe
 	SceneManager sceneManager;
 	CameraManager cameraManager;
 	ResourceCache resources;
-	BattleGenerator battleGenerator;
+	
+	BattleScene battleScene;
 	
 	// ======================================================
 	// FIELDS
@@ -85,8 +84,6 @@ public class GameScene extends Scene implements IOnSceneTouchListener, IScrollDe
 		sceneManager = SceneManager.getSharedInstance();	
 		cameraManager = CameraManager.getSharedInstance();
 		resources = ResourceCache.getSharedInstance();
-		
-		battleGenerator = new BattleGenerator();
 		detailScene = new DetailScene();
 
 		lastTouchTime = 0;	
@@ -402,7 +399,34 @@ public class GameScene extends Scene implements IOnSceneTouchListener, IScrollDe
 	}
 
 	public void onAttack() {
-		// TODO Auto-generated method stub
+		battleScene = new BattleScene(selectedRegion, targetedRegion,
+				logic.attack(selectedRegion, targetedRegion));
+		
+		doubleTapAllowed = false;
+		scrollDetector.setEnabled(false);
+		
+		if(targetedRegion != null) {
+			hud.hideAttackButton();
+		}
+		hud.hideInfoTab();
+		
+		attachChild(battleScene);
+	}
+	
+	public void hideBattleScene() {
+		
+		doubleTapAllowed = true;
+		scrollDetector.setEnabled(true);
+		
+		if(targetedRegion != null) {
+			hud.showAttackButton();
+		}
+		hud.showInfoTab();
+		
+		detachChild(battleScene);
+		
+		battleScene = null;
+		
 	}
 
 	public void showInitialHUD() {
@@ -442,5 +466,10 @@ public class GameScene extends Scene implements IOnSceneTouchListener, IScrollDe
 	// ======================================================
 	public void setInfoTabText(String pText) {
 		hud.setInfoTabText(pText);
+	}
+	
+
+	public BattleScene getBattleScene() {
+		return battleScene;
 	}
 }
