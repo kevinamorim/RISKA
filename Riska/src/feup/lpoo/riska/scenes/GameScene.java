@@ -18,6 +18,8 @@ import feup.lpoo.riska.elements.Map;
 import feup.lpoo.riska.elements.Player;
 import feup.lpoo.riska.elements.Region;
 import feup.lpoo.riska.generator.BattleGenerator;
+import feup.lpoo.riska.logic.GameLogic;
+import feup.lpoo.riska.logic.GameLogic.GAME_STATE;
 import feup.lpoo.riska.logic.MainActivity;
 import feup.lpoo.riska.resources.ResourceCache;
 import android.graphics.Point;
@@ -34,21 +36,15 @@ public class GameScene extends Scene implements IOnSceneTouchListener, IScrollDe
 	
 	private static final int ANIM = 250;
 	
-	private static final int INITIAL_SOLDIERS_IN_REGION = 1;
 	private static final int SOLDIER_INC = 1;
 	
 	private static final int FIRST = 0;
-	
-	private enum Fase {
-		NONE,
-		DEPLOYMENT,
-		PLAY
-	}
 	
 	// ======================================================
 	// SINGLETONS
 	// ======================================================
 	MainActivity activity;
+	GameLogic logic;
 	SceneManager sceneManager;
 	CameraManager cameraManager;
 	ResourceCache resources;
@@ -60,23 +56,14 @@ public class GameScene extends Scene implements IOnSceneTouchListener, IScrollDe
 	GameHUD hud;
 	DetailScene detailScene;
 	
-	private float BONUS_FACTOR = 0.1f;
-	
 	protected Point touchPoint;
 	
 	private ScrollDetector scrollDetector;
-	
-	private ArrayList<Player> players;
-	private Player currentPlayer;
 	
 	private Region focusedRegion;
 	
 	protected Region selectedRegion;
 	protected Region targetedRegion;
-	
-	private Fase fase;
-	
-	private Map map;
 	
 	// ======================================================
 	// DOUBLE TAP
@@ -84,16 +71,17 @@ public class GameScene extends Scene implements IOnSceneTouchListener, IScrollDe
 	private boolean doubleTapAllowed = true;
 	private long lastTouchTime;
 
-
 	// ====================================================== //
 	// ====================================================== //
 	// ====================================================== //
 	public GameScene() {	
+		
 		this.selectedRegion = null;
 		this.focusedRegion = null;
 		this.targetedRegion = null;
 		
 		activity = MainActivity.getSharedInstance();
+		logic = new GameLogic();
 		sceneManager = SceneManager.getSharedInstance();	
 		cameraManager = CameraManager.getSharedInstance();
 		resources = ResourceCache.getSharedInstance();
@@ -103,35 +91,19 @@ public class GameScene extends Scene implements IOnSceneTouchListener, IScrollDe
 
 		lastTouchTime = 0;	
 		
-		createGameElements();
-		
-		fase = Fase.NONE;
-		
 		createDisplay();
 	}
 	
 	@Override
 	protected void onManagedUpdate(float pSecondsElapsed) {
 		
-		switch(fase) {
-		case NONE:
-			fase = Fase.DEPLOYMENT;
+		switch(logic.getState()) {
+		case PAUSED:
+			logic.setState(GAME_STATE.DEPLOYMENT);
 			break;
 			
 		case DEPLOYMENT:
-			if(!currentPlayer.hasSoldiersLeftToDeploy()) {
-				if(chooseNextPlayer() == FIRST) {
-					fase = Fase.PLAY;
-				}
-				
-				if(currentPlayer != getHumanPlayer()) {
-					hud.setInfoTabText("Wait for deployment");
-					
-					if(currentPlayer.isCPU()) {
-						currentPlayer.deploy(); // TODO
-					}
-				}
-			}
+			logic.updateDeployment();
 			break;
 			
 		case PLAY:
@@ -142,36 +114,8 @@ public class GameScene extends Scene implements IOnSceneTouchListener, IScrollDe
 		}
 	}
 
-	private void createGameElements() {
-		/*
-		 * Gets the map
-		 */
-		map = resources.getMap();
-		int MAX_SOLDIERS_TO_DEPLOY = (int) (map.getNumberOfRegions() * BONUS_FACTOR);
-		
-		/*
-		 * Creates Players
-		 */
-		players = new ArrayList<Player>();
-		
-		Player player = createPlayer(false, new Color(0f, 0.6f, 0f), new Color(1f, 1f, 0f));
-		player.setSoldiersToDeploy(MAX_SOLDIERS_TO_DEPLOY);
-		
-		Player cpu = createPlayer(true, new Color(1f, 0f, 0f), new Color(1f, 1f, 0f));
-		cpu.setSoldiersToDeploy(MAX_SOLDIERS_TO_DEPLOY);
-		
-		players.add(player);
-		players.add(cpu);
-		
-		currentPlayer = player;
-		
-		/*
-		 * Distributes the regions amongst the players
-		 */
-		handOutRegions();
-	}
-
 	private void createDisplay() {
+		
 		Sprite mapSprite = new Sprite(MainActivity.CAMERA_WIDTH/2, MainActivity.CAMERA_HEIGHT/2,
 				MainActivity.CAMERA_WIDTH, MainActivity.CAMERA_HEIGHT,
 				resources.getMapTexture(), activity.getVertexBufferObjectManager());
@@ -189,7 +133,7 @@ public class GameScene extends Scene implements IOnSceneTouchListener, IScrollDe
 		hud = new GameHUD();
 		activity.mCamera.setHUD(hud);
 		
-		hud.setInfoTabText(currentPlayer.getSoldiersToDeploy() + " left to deploy");
+		hud.setInfoTabText(logic.getCurrentPlayer().getSoldiersToDeploy() + " left to deploy");
 		
 		createScrollDetector();
 		
@@ -203,44 +147,7 @@ public class GameScene extends Scene implements IOnSceneTouchListener, IScrollDe
 		 */
 		detailScene = new DetailScene();
 	}
-
-	private Player createPlayer(boolean isCPU, Color priColor, Color secColor) {
-		return new Player(isCPU, priColor, secColor);
-	}
 	
-	private void handOutRegions() {
-		
-		ArrayList<Integer> indexes = new ArrayList<Integer>();
-		
-		Random random = new Random();
-		
-		while(indexes.size() < map.getNumberOfRegions()) {
-			int index = random.nextInt(map.getNumberOfRegions());
-			if(!indexes.contains(index)) {
-				indexes.add(index);
-			}
-		}
-		
-		int i = 0;
-		
-		for(Integer index : indexes) {
-			
-			Region region = map.getRegions().get(index);
-			Player player = players.get(i);
-			
-			player.addRegion(region);
-			
-			region.setNumberOfSoldiers(INITIAL_SOLDIERS_IN_REGION);
-			region.updateSoldiers();
-			
-			region.setOwner(player);
-			region.setColors(player.getPrimaryColor(), player.getScondaryColor());
-			
-			i++;
-			i = i % players.size(); 
-		}
-	}
-
 	private void setRegionButtons() {
 
 		for(Region region : resources.getMap().getRegions()) {
@@ -291,16 +198,16 @@ public class GameScene extends Scene implements IOnSceneTouchListener, IScrollDe
 	// =================================================================================
 	public void onRegionTouched(Region pRegion) {
 		
-		switch(fase) {
+		switch(logic.getState()) {
 		case DEPLOYMENT:
 			
-			if(currentPlayer.hasSoldiersLeftToDeploy()) {
+			if(logic.getCurrentPlayer().hasSoldiersLeftToDeploy()) {
 				
-				if(currentPlayer.ownsRegion(pRegion)) {
-					int deployed = currentPlayer.deploySoldiers(SOLDIER_INC);
+				if(logic.getCurrentPlayer().ownsRegion(pRegion)) {
+					int deployed = logic.getCurrentPlayer().deploySoldiers(SOLDIER_INC);
 					pRegion.addSoldiers(deployed);
 					
-					hud.setInfoTabText(currentPlayer.getSoldiersToDeploy() + " left to deploy");
+					hud.setInfoTabText(logic.getCurrentPlayer().getSoldiersToDeploy() + " left to deploy");
 				}
 				
 			}
@@ -309,45 +216,30 @@ public class GameScene extends Scene implements IOnSceneTouchListener, IScrollDe
 		case PLAY:
 			if(!pRegion.isFocused()) {
 				
-				if(currentPlayer.ownsRegion(pRegion)) {
+				if(logic.getCurrentPlayer().ownsRegion(pRegion)) {
 					selectRegion(pRegion);
 				}
 				else {
 					targetRegion(pRegion);
 				}
-					
-				//focusRegion(pRegion);
+	
 			}
 			else {
 
-				if(currentPlayer.ownsRegion(pRegion)) {
+				if(logic.getCurrentPlayer().ownsRegion(pRegion)) {
 					unselectRegion(pRegion);
 				}
 				else {
 					untargetRegion(pRegion);
 				}
 				
-				//unfocusRegion(pRegion);
 			}	
+			
 			break;
+			
 		default:
 			break;
 		}
-	}
-	
-	private int chooseNextPlayer() {
-		
-		for(int i = 0; i < players.size(); i++) {
-			if(currentPlayer == getPlayer(i)) {
-				i++;
-				i = i % players.size();
-				currentPlayer = getPlayer(i);
-				
-				return i;
-			}
-		}
-		
-		return -1;
 	}
 
 	private void targetRegion(Region pRegion) {
@@ -395,6 +287,7 @@ public class GameScene extends Scene implements IOnSceneTouchListener, IScrollDe
 			}
 			
 			hud.hideAttackButton();
+			hud.hideDetailButton();
 		}
 		
 		selectedRegion = pRegion;
@@ -426,7 +319,7 @@ public class GameScene extends Scene implements IOnSceneTouchListener, IScrollDe
 
 	public void onRegionConfirmed() {
 		
-		if(currentPlayer.ownsRegion(focusedRegion)) {
+		if(logic.getCurrentPlayer().ownsRegion(focusedRegion)) {
 
 			if(focusedRegion == selectedRegion) {
 				//focusedRegion.setColor(Color.GREEN);
@@ -450,61 +343,6 @@ public class GameScene extends Scene implements IOnSceneTouchListener, IScrollDe
 			//onAttackRegion(selectedRegion, targetedRegion);
 		}
 	}
-	
-	/*
-	private void onAttackRegion(Region attacker, Region defensor) {
-		
-		battleGenerator.createBattleRegions(attacker, defensor);
-		sceneManager.setCurrentScene(SceneType.BATTLE);
-	}
-
-	
-	private void focusRegion(Region pRegion) {
-		
-		pRegion.setFocused(true);
-		
-		cameraManager.focusOnRegion(pRegion);
-		
-		for(Region region : resources.getMap().getRegions()) {
-			
-			if(region != pRegion) {
-				unregisterTouchArea(region.getButton());
-				detachChild(region.getButton());
-			}
-		}
-		
-		focusedRegion = pRegion;
-		
-		hud.updateCountry(focusedRegion);
-		hud.updateButton(focusedRegion, selectedRegion, currentPlayer);
-		hud.show();
-		
-		doubleTapAllowed = false;
-		scrollDetector.setEnabled(false);	
-	}
-	
-	private void unfocusRegion(Region pRegion) {
-		pRegion.setFocused(false);
-		
-		cameraManager.zoomOut();
-		cameraManager.panToCenter();
-		
-		for(Region region : resources.getMap().getRegions()) {
-		
-			if(region != pRegion) {
-				registerTouchArea(region.getButton());
-				attachChild(region.getButton());
-			}	
-		}
-		
-		focusedRegion = null;	
-
-		hud.hide();
-
-		doubleTapAllowed = true;
-		scrollDetector.setEnabled(true);
-	}
-	*/
 	
 	// ======================================================
 	// SCROLL DETECTOR
@@ -567,14 +405,6 @@ public class GameScene extends Scene implements IOnSceneTouchListener, IScrollDe
 		hud.showInfoTab();
 	}
 	
-	private Player getPlayer(int index) {
-		return players.get(index);
-	}
-
-	private Player getHumanPlayer() {
-		return players.get(0);
-	}
-	
 	public void showDetailPanel() {
 		doubleTapAllowed = false;
 		scrollDetector.setEnabled(false);
@@ -603,4 +433,10 @@ public class GameScene extends Scene implements IOnSceneTouchListener, IScrollDe
 		return detailScene;
 	}
 
+	// ======================================================
+	// HUD
+	// ======================================================
+	public void setInfoTabText(String pText) {
+		hud.setInfoTabText(pText);
+	}
 }

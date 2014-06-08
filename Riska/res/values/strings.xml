@@ -11,5 +11,7 @@
     <string name="start_button">START</string>
     
     <string name="csvSplitBy">;</string>
+    
+    <string name="waitingForDeployment"> Waiting for deployment! </string>
 
 </resources>
