@@ -230,7 +230,7 @@ public class ResourceCache {
 
 		readNeighbours(filename);
 
-		map.printNeighbours();
+		//map.printNeighbours();
 
 		mLeftPanelTextureAtlas = new BitmapTextureAtlas(activity.getTextureManager(), 2048, 1024, TextureOptions.DEFAULT);
 		mLeftPanelTextureRegion = BitmapTextureAtlasTextureRegionFactory.createFromAsset(mLeftPanelTextureAtlas, 

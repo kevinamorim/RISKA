@@ -10,73 +10,73 @@ import org.andengine.util.adt.color.Color;
 
 import feup.lpoo.riska.logic.MainActivity;
 import feup.lpoo.riska.resources.ResourceCache;
-import feup.lpoo.riska.scenes.CameraManager;
 import feup.lpoo.riska.scenes.SceneManager;
 import android.graphics.Point;
 import android.view.MotionEvent;
 
-public class Region {
+/**
+ * Represents any region.
+ * 
+ * @author Luís
+ *
+ */
+public class Region extends Element {
 
 	// ======================================================
 	// CONSTANTS
 	// ======================================================
-	private static final long MIN_TOUCH_INTERVAL = 30;
-	private static final int MAX_CHARS = 10;
-	private static final int SOLDIER_ATT = 10;
-	private static final int SOLDIER_DEF = 10;
+	protected static final long MIN_TOUCH_INTERVAL = 30;
+	protected static final int MAX_CHARS = 10;
+	protected static final int SOLDIER_ATT = 10;
+	protected static final int SOLDIER_DEF = 10;
 
 	// ======================================================
 	// SINGLETONS
 	// ======================================================
-	private MainActivity activity;
-	private SceneManager sceneManager;
-	private ResourceCache resources;
+	protected MainActivity activity;
+	protected SceneManager sceneManager;
+	protected ResourceCache resources;
 
 	// ======================================================
 	// FIELDS
 	// ======================================================
-	private final int id;
-	protected Point stratCenter;
+	protected final int id;
+	
+	protected long lastTimeTouched;
+	protected ButtonSprite button;
+	protected Text buttonText;
+	protected boolean focused;
+
+	protected Player owner;
+	protected String continent;
+	
+	protected Color priColor, secColor;
 	
 	protected ArrayList<Unit> soldiers;
-
-	protected String name;
-	protected String continent;
-
-	protected boolean focused;
+	protected ArrayList<Region> neighbours;
 	
-	private long lastTimeTouched;
-	
-	protected ButtonSprite button;	
-	Text buttonText;
-	private Sprite flag;
-	
-	private Color priColor, secColor;
-	
-	private ArrayList<Region> neighbours;
-	private Player owner;
-	
+	/**
+	 * Constructor for a region.
+	 * 
+	 * @param id : ID of this region
+	 * @param name : Name of the region
+	 * @param stratCenter : strategic center for this region
+	 * @param continent : continent this region belongs to in the map
+	 */
 	public Region(final int id, String name, Point stratCenter, String continent) {
 		
-		this.id = id;
+		super(stratCenter.x, stratCenter.y, name);
 		
 		activity = MainActivity.getSharedInstance();
 		sceneManager = SceneManager.getSharedInstance();
-		CameraManager.getSharedInstance();
 		resources = ResourceCache.getSharedInstance();
 		
-		neighbours = new ArrayList<Region>();
-		
-		lastTimeTouched = System.currentTimeMillis();
-		
-		this.name = name;
-		this.stratCenter = stratCenter;
+		this.id = id;
 		this.continent = continent;
-		this.soldiers = new ArrayList<Unit>();
 		this.owner = null;
 		this.focused = false;
-		
-		this.flag = new Sprite(0, 0, 240, 150, resources.getRegionFlags(), activity.getVertexBufferObjectManager());
+		this.soldiers = new ArrayList<Unit>();
+		this.neighbours = new ArrayList<Region>();
 		
 		button = new ButtonSprite(stratCenter.x, stratCenter.y, resources.getRegionButtonTexture(), 
 				activity.getVertexBufferObjectManager()) {
@@ -99,18 +99,14 @@ public class Region {
 
 				return true;
 			}
-		};
-		
-		buttonText = new Text(0, 0, resources.getGameFont() , "" + soldiers, MAX_CHARS, activity.getVertexBufferObjectManager());
-		
+		};	
+		buttonText = new Text(0, 0, resources.getGameFont() , "" + soldiers, MAX_CHARS, activity.getVertexBufferObjectManager());	
 		buttonText.setScale((float) 1.4);
 		buttonText.setPosition(button.getWidth()/2, button.getHeight()/2);
 		button.attachChild(buttonText);
 		
-	}
-	
-	public boolean playerIsOwner(Player player) {
-		return (owner == player);
+		
+		lastTimeTouched = 0;
 	}
 
 	public void pressedRegionButton() {	
@@ -126,7 +122,6 @@ public class Region {
 			button.setCurrentTileIndex(0);
 
 			sceneManager.getGameScene().onRegionTouched(this);
-
 		}
 
 		lastTimeTouched = System.currentTimeMillis();
@@ -139,53 +134,55 @@ public class Region {
 	 * ======================================================================    
 	 */
 
-
 	/**
-	 * @return the stratCenter
+	 * @return The strategic center of the region
 	 */
 	public Point getStratCenter() {
-		return stratCenter;
+		return this.position;
 	}
 
 	/**
-	 * @param stratCenter the stratCenter to set
+	 * @param stratCenter : the new strategic center to set
 	 */
 	public void setStratCenter(Point stratCenter) {
-		this.stratCenter = stratCenter;
+		this.position = stratCenter;
 	}
 
 	/**
-	 * @return the name
+	 * @return Name of the region
 	 */
 	public String getName() {
 		return name;
 	}
 
 	/**
-	 * @param name the name to set
-	 */
-	public void setName(String name) {
-		this.name = name;
-	}
-
-	/**
-	 * @return the selected
+	 * @return True if this region is focused/selected
 	 */
 	public boolean isFocused() {
 		return focused;
 	}
 
 	/**
-	 * @param value the selected value to set
+	 * Changes the focus of a region.
+	 * 
+	 * @param value : new value of the focus
 	 */
 	public void setFocused(boolean value) {
 		this.focused = value;
 	}
 	
+	/**
+	 * @return Number of soldiers stationed in this region
+	 */
 	public int getNumberOfSoldiers() {
 		return soldiers.size();
 	}
 	
+	/**
+	 * Adds a number of soldiers to a region.
+	 * 
+	 * @param value : number of soldiers to add
+	 */
 	public void addSoldiers(int value) {
 		for(int i = 0; i < value; i++) {
 			soldiers.add(new Unit(SOLDIER_ATT, SOLDIER_DEF));
@@ -193,53 +190,82 @@ public class Region {
 		updateSoldiers();
 	}
 	
-	public Sprite getFlag(float pX, float pY) {
-		flag.setPosition(pX, pY);
-		return flag;
-	}
-	
+	/**
+	 * Adds a region to the set of neighbours.
+	 * 
+	 * @param region : region to add
+	 */
 	public void addNeighbour(Region region) {
 		neighbours.add(region);
 	}
 
 	/**
-	 * @return the id
+	 * @return The ID of this region
 	 */
 	public int getId() {
 		return id;
 	}
 
 	/**
-	 * @return the neighbours
+	 * @return The set of neighbour regions
 	 */
 	public ArrayList<Region> getNeighbours() {
 		return neighbours;
 	}
 	
+	/**
+	 * @return The button associated with this region 
+	 */
 	public ButtonSprite getButton() {
 		return button;
 	}
 
+	/**
+	 * Changes the ownership for this region.
+	 * 
+	 * @param player : new owner
+	 */
 	public void setOwner(Player player) {
 		this.owner = player;
 	}
 	
+	/**
+	 * @return The set of soldiers stationed in this region
+	 */
 	public ArrayList<Unit> getSoldiers() {
 		return soldiers;
 	}
 
+	/**
+	 * @return The player that is currently owner of this region
+	 */
 	public Player getOwner() {
 		return this.owner;
 	}
 
-	public boolean isNeighbourOf(Region focusedRegion) {
-		return neighbours.contains(focusedRegion);
+	/**
+	 * Checks if the region is neighbour of a given region.
+	 * 
+	 * @param pRegion : region to check
+	 * @return True if is neighbour of pRegion
+	 */
+	public boolean isNeighbourOf(Region pRegion) {
+		return neighbours.contains(pRegion);
 	}
 
+	/**
+	 * Updates the number of soldiers shown in the region's button.
+	 */
 	public void updateSoldiers() {	
 		buttonText.setText("" + getNumberOfSoldiers());
 	}
 	
+	/**
+	 * Sets the primary and secondary color for the region.
+	 * 
+	 * @param priColor : primary color
+	 * @param secColor : secondary color
+	 */
 	public void setColors(Color priColor, Color secColor) {
 		this.priColor = priColor;
 		this.secColor = secColor;
@@ -247,6 +273,9 @@ public class Region {
 		updateButtonColors();
 	}
 
+	/**
+	 * Switches the primary color with the secondary one.
+	 */
 	public void switchColors() {
 		Color temp = new Color(priColor);
 		
@@ -256,28 +285,51 @@ public class Region {
 		updateButtonColors();
 	}
 	
+	/**
+	 * Updates the button and text colors with the region's colors
+	 */
 	private void updateButtonColors() {
 		this.button.setColor(priColor);
 		this.buttonText.setColor(secColor);
 	}
 
+	/**
+	 * Changes a region's focus.
+	 *  
+	 * @param value : new value for the region focus
+	 */
 	public void changeFocus(boolean value) {
 		this.focused = value;
 		this.switchColors();
 	}
 	
+	/**
+	 * Clears (erases) the set of soldiers in a region.
+	 */
 	public void clearSoldiers() {
 		soldiers.clear();
 		updateSoldiers();
 	}
 	
+	/**
+	 * Changes the ownership for this region.
+	 * Unlike setOwner(), this method updates every information regarding the new owner.
+	 * 
+	 * @param newOwner : new owner
+	 */
 	public void changeOwner(Player newOwner) {
-		owner.removeRegion(this);
+		if(owner != null) {
+			owner.removeRegion(this);
+		}
+		
 		owner = newOwner;
 		owner.addRegion(this);
+
 		soldiers.clear();
+		
 		priColor = newOwner.getPrimaryColor();
 		secColor = newOwner.getScondaryColor();
+		
 		changeFocus(false);
 		updateSoldiers();
 	}
