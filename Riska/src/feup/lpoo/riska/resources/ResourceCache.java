@@ -20,7 +20,6 @@ import android.graphics.Color;
 import android.graphics.Point;
 import feup.lpoo.riska.elements.Map;
 import feup.lpoo.riska.elements.Region;
-import feup.lpoo.riska.generator.BattleGenerator;
 import feup.lpoo.riska.io.FileRead;
 import feup.lpoo.riska.logic.MainActivity;
 import feup.lpoo.riska.music.Conductor;

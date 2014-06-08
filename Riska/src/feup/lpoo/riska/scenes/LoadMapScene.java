@@ -1,13 +1,9 @@
 package feup.lpoo.riska.scenes;
 
-import java.util.ArrayList;
-
 import org.andengine.entity.scene.Scene;
 import org.andengine.entity.scene.background.Background;
 import org.andengine.util.adt.color.Color;
 
-import android.graphics.Point;
-import feup.lpoo.riska.io.FileRead;
 import feup.lpoo.riska.logic.MainActivity;
 
 public class LoadMapScene extends Scene {

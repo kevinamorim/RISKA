@@ -19,7 +19,6 @@ import feup.lpoo.riska.elements.Region;
 import feup.lpoo.riska.generator.BattleGenerator;
 import feup.lpoo.riska.logic.MainActivity;
 import feup.lpoo.riska.resources.ResourceCache;
-import feup.lpoo.riska.scenes.SceneManager.SceneType;
 import android.graphics.Point;
 import android.util.Log;
 
@@ -65,7 +64,7 @@ public class GameScene extends Scene implements IOnSceneTouchListener, IScrollDe
 	
 	private Region selectedRegion;
 	private Region focusedRegion;
-	private Region targetedRegion;
+	//private Region targetedRegion;
 	
 	private Fase fase;
 	
@@ -84,7 +83,7 @@ public class GameScene extends Scene implements IOnSceneTouchListener, IScrollDe
 	public GameScene() {	
 		this.selectedRegion = null;
 		this.focusedRegion = null;
-		this.targetedRegion = null;
+		//this.targetedRegion = null;
 		
 		activity = MainActivity.getSharedInstance();
 		sceneManager = SceneManager.getSharedInstance();	
@@ -290,17 +289,17 @@ public class GameScene extends Scene implements IOnSceneTouchListener, IScrollDe
 
 			unfocusRegion(focusedRegion);
 		} else {		
-			targetedRegion = focusedRegion;
+			//targetedRegion = focusedRegion;
 			//onAttackRegion(selectedRegion, targetedRegion);
 		}
 	}
 	
 	
-	private void onAttackRegion(Region attacker, Region defensor) {
+	/*private void onAttackRegion(Region attacker, Region defensor) {
 		
 		battleGenerator.createBattleRegions(attacker, defensor);
 		sceneManager.setCurrentScene(SceneType.BATTLE);
-	}
+	}*/
 
 	private void focusRegion(Region pRegion) {
 		

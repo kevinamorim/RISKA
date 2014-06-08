@@ -1,12 +1,7 @@
 package feup.lpoo.riska.HUD;
 
 import org.andengine.engine.camera.hud.HUD;
-import org.andengine.entity.scene.ITouchArea;
-import org.andengine.entity.scene.Scene;
-import org.andengine.entity.scene.menu.MenuScene;
-import org.andengine.entity.scene.menu.item.IMenuItem;
 import org.andengine.entity.sprite.ButtonSprite;
-import org.andengine.entity.sprite.ButtonSprite.State;
 import org.andengine.entity.sprite.Sprite;
 import org.andengine.entity.text.Text;
 import org.andengine.input.touch.TouchEvent;
@@ -18,8 +13,6 @@ import feup.lpoo.riska.logic.MainActivity;
 import feup.lpoo.riska.resources.ResourceCache;
 import feup.lpoo.riska.scenes.CameraManager;
 import feup.lpoo.riska.scenes.SceneManager;
-import android.graphics.Point;
-import android.util.Log;
 import android.view.MotionEvent;
 
 public class GameHUD extends HUD {
@@ -29,7 +22,7 @@ public class GameHUD extends HUD {
 	// ======================================================
 	private static final long MIN_TOUCH_INTERVAL = 30;
 
-	private final Point FLAG_POS = new Point((int)(MainActivity.CAMERA_WIDTH/4), (int)(MainActivity.CAMERA_HEIGHT/2));
+	//private final Point FLAG_POS = new Point((int)(MainActivity.CAMERA_WIDTH/4), (int)(MainActivity.CAMERA_HEIGHT/2));
 	private final int PANEL_CENTER_X = MainActivity.CAMERA_WIDTH/4;
 
 	// ======================================================
@@ -45,8 +38,6 @@ public class GameHUD extends HUD {
 	// ======================================================
 	private Sprite panel;
 	private Text countryName;
-	private Sprite countryFlag;
-
 	protected ButtonSprite hudButton;
 	private Text hudButtonText;
 
