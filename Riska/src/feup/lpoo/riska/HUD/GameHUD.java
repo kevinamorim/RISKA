@@ -38,15 +38,8 @@ public class GameHUD extends HUD {
 
 	// ======================================================
 	// FIELDS
-	// ======================================================
-	private Sprite panel;
-	private Text countryName;
-	
-	private ButtonSprite hudButton;
-	private Text hudButtonText;
-	
+	// ======================================================		
 	private ButtonSprite attackButton;
-	private Text attackText;
 	
 	private Sprite infoTab;
 	private Text infoTabText;
@@ -68,41 +61,6 @@ public class GameHUD extends HUD {
 	}
 	
 	private void createDisplay() {
-		panel = new Sprite(MainActivity.CAMERA_WIDTH / 2, MainActivity.CAMERA_HEIGHT / 2,
-				MainActivity.CAMERA_WIDTH, MainActivity.CAMERA_HEIGHT,
-				resources.getHUDPanelTexture(), activity.getVertexBufferObjectManager());
-
-		countryName = new Text(0, 0, resources.getGameFont(), "COUNTRY", 1000, activity.getVertexBufferObjectManager());
-
-		countryName.setPosition(PANEL_CENTER_X, 
-				MainActivity.CAMERA_HEIGHT - countryName.getHeight());
-
-		hudButton = new ButtonSprite(MainActivity.CAMERA_WIDTH/4, MainActivity.CAMERA_HEIGHT/5, resources.getStartButtonTexture(),
-				activity.getVertexBufferObjectManager()) {
-
-			@Override
-			public boolean onAreaTouched(TouchEvent pSceneTouchEvent, 
-					float pTouchAreaLocalX, float pTouchAreaLocalY) {
-				switch(pSceneTouchEvent.getAction()) {
-				case MotionEvent.ACTION_DOWN:
-					pressedConfirmationButton();
-					break;
-				case MotionEvent.ACTION_UP:
-					releasedConfirmationButton();
-					break;
-				case MotionEvent.ACTION_OUTSIDE:
-					releasedConfirmationButton();
-					break;
-				default:
-					break;
-				}
-				return true;
-			}
-		};
-		
-		hudButtonText = new Text(hudButton.getWidth() / 2, hudButton.getHeight() / 2, 
-				resources.getFont(), "DEFAULT", activity.getVertexBufferObjectManager());
-		hudButton.attachChild(hudButtonText);
 		
 		// =================================
 		//  NEW ATTACK BUTTON
@@ -136,13 +94,6 @@ public class GameHUD extends HUD {
 				attackButton.getScaleX() * attackButton.getWidth() / 2,
 				attackButton.getScaleY() * attackButton.getHeight() / 2);
 		
-
-//		attackText = new Text(attackButton.getWidth() / 2,
-//				attackButton.getHeight() / 2,
-//				resources.getGameFont(), "ATTACK", 50, activity.getVertexBufferObjectManager());
-//		attackText.setColor(Color.BLACK);
-//
-//		attackButton.attachChild(attackText);
 
 		// =================================
 		//  NEW INFO TAB
@@ -197,9 +148,6 @@ public class GameHUD extends HUD {
 		 * ==================================
 		 */
 		
-		panel.attachChild(countryName);
-
-		//attachChild(panel);
 	}
 
 	protected void releasedDetailsButton() { }
@@ -241,25 +189,6 @@ public class GameHUD extends HUD {
 		attackButton.setCurrentTileIndex(1);
 	}
 
-	public void pressedConfirmationButton() {
-		
-		hudButton.setCurrentTileIndex(1);	
-	}
-	
-	public void releasedConfirmationButton() {
-		
-		long now = System.currentTimeMillis();
-		
-		if((now - lastTimeTouched) > MIN_TOUCH_INTERVAL) {
-			
-			hudButton.setCurrentTileIndex(0);
-			sceneManager.getGameScene().onRegionConfirmed();	
-		}
-		
-		lastTimeTouched = System.currentTimeMillis();
-		
-	}
-
 	private String wrapText(Font pFont, String pString, float maxWidth) {
 
 		Text pText = new Text(0, 0, pFont, pString, 1000, activity.getVertexBufferObjectManager());
@@ -299,63 +228,6 @@ public class GameHUD extends HUD {
 
 	public void show() {
 		setVisible(true);
-	}
-
-	public ButtonSprite getHudButton() {
-		return this.hudButton;
-	}
-
-/*	public void update(String regionName, String hudText, boolean enabled) {
-
-		hudButton.setEnabled(enabled);
-		hudButtonText.setText(hudText);
-
-		countryName.setText(wrapText(resources.getGameFont(), regionName, panel.getWidth()/2));
-		countryName.setPosition(PANEL_CENTER_X, MainActivity.CAMERA_HEIGHT - countryName.getHeight());
-
-		//		if(countryFlag != null) { 
-		//			panel.detachChild(countryFlag);
-		//		} 
-		//
-		//		countryFlag = hudButtonText2.getFlag(FLAG_POS.x, FLAG_POS.y);
-
-		//panel.attachChild(countryFlag);
-		panel.attachChild(countryName);	
-		panel.attachChild(hudButton);
-
-		if(hudButton.isEnabled()) {
-			registerTouchArea(hudButton);
-		}
-	}*/
-
-	public void updateCountry(Region focusedRegion) {
-		countryName.setText(wrapText(resources.getGameFont(), focusedRegion.getName(), panel.getWidth()/2));
-		countryName.setPosition(PANEL_CENTER_X, MainActivity.CAMERA_HEIGHT - countryName.getHeight());
-		panel.attachChild(countryName);	
-	}
-
-	public void updateButton(Region focusedRegion, Region selectedRegion, Player player) {
-		
-		panel.detachChild(hudButton);
-		hudButton.setEnabled(false);
-		
-		if(player.ownsRegion(focusedRegion)) {
-			hudButtonText.setText(focusedRegion == selectedRegion ? "RESET" : "CHOOSE");
-			hudButton.setEnabled(true);
-		}
-		else {
-			if(selectedRegion != null) {
-				if(focusedRegion.isNeighbourOf(selectedRegion)) {
-					hudButtonText.setText("ATTACK");		
-					hudButton.setEnabled(true);
-				}
-			}
-		}
-		
-		if(hudButton.isEnabled()) {
-			panel.attachChild(hudButton);
-			registerTouchArea(hudButton);
-		}
 	}
 
 	public void showAttackButton() {

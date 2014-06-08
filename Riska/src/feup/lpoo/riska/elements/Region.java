@@ -22,6 +22,8 @@ public class Region {
 	// ======================================================
 	private static final long MIN_TOUCH_INTERVAL = 30;
 	private static final int MAX_CHARS = 10;
+	private static final int SOLDIER_ATT = 1;
+	private static final int SOLDIER_DEF = 1;
 
 	// ======================================================
 	// SINGLETONS
@@ -35,7 +37,7 @@ public class Region {
 	// ======================================================
 	private final int id;
 	protected Point stratCenter;
-	protected int soldiers;
+	protected ArrayList<Unit> soldiers;
 
 	protected String name;
 	protected String continent;
@@ -69,7 +71,7 @@ public class Region {
 		this.name = name;
 		this.stratCenter = stratCenter;
 		this.continent = continent;
-		this.soldiers = 0;
+		this.soldiers = new ArrayList<Unit>();
 		this.owner = null;
 		this.focused = false;
 		
@@ -180,15 +182,13 @@ public class Region {
 	}
 	
 	public int getNumberOfSoldiers() {
-		return soldiers;
-	}
-
-	public void setNumberOfSoldiers(int soldiers) {
-		this.soldiers = soldiers;
+		return soldiers.size();
 	}
 	
 	public void addSoldiers(int value) {
-		soldiers += value;
+		for(int i = 0; i < value; i++) {
+			soldiers.add(new Unit(SOLDIER_ATT, SOLDIER_DEF));
+		}
 		updateSoldiers();
 	}
 	
@@ -234,7 +234,7 @@ public class Region {
 	public void updateSoldiers() {
 		
 		button.detachChildren();
-		buttonText.setText("" + soldiers);
+		buttonText.setText("" + getNumberOfSoldiers());
 		button.attachChild(buttonText);
 	}
 	

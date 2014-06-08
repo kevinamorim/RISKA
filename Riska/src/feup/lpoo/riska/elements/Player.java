@@ -87,6 +87,7 @@ public class Player {
 
 		if(soldiersToDeploy < 0) {
 			deployed = number + soldiersToDeploy;
+			
 		}
 
 		return deployed;

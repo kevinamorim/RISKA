@@ -5,8 +5,8 @@ public class Unit extends Element {
 	protected int attack;
 	protected int defense;
 	
-	public Unit(int x, int y, int att, int def, String name) {
-		super(x,y, name);
+	public Unit(int att, int def) {
+		super(0, 0, "");
 		this.attack = att;
 		this.defense = def;
 	}

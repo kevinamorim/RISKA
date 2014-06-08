@@ -93,9 +93,11 @@ public class GameScene extends Scene implements IOnSceneTouchListener, IScrollDe
 		
 		createDisplay();
 	}
-	
+
 	@Override
 	protected void onManagedUpdate(float pSecondsElapsed) {
+		
+		super.onManagedUpdate(pSecondsElapsed);
 		
 		switch(logic.getState()) {
 		case PAUSED:
@@ -112,7 +114,9 @@ public class GameScene extends Scene implements IOnSceneTouchListener, IScrollDe
 		default:
 			break;
 		}
+		
 	}
+
 
 	private void createDisplay() {
 		
@@ -194,7 +198,7 @@ public class GameScene extends Scene implements IOnSceneTouchListener, IScrollDe
 	}
 	
 	// =================================================================================
-	//
+	// 
 	// =================================================================================
 	public void onRegionTouched(Region pRegion) {
 		

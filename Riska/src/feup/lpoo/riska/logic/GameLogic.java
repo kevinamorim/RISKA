@@ -5,7 +5,6 @@ import java.util.Random;
 
 import org.andengine.util.adt.color.Color;
 
-import android.R;
 import feup.lpoo.riska.elements.Map;
 import feup.lpoo.riska.elements.Player;
 import feup.lpoo.riska.elements.Region;
@@ -14,7 +13,6 @@ import feup.lpoo.riska.scenes.SceneManager;
 
 public class GameLogic {
 	
-	//private static GameLogic instance;
 	private MainActivity activity;
 	private ResourceCache resources;
 	private SceneManager sceneManager;
@@ -49,7 +47,6 @@ public class GameLogic {
 	
 	public GameLogic() {
 		
-		//instance = this;
 		activity = MainActivity.getSharedInstance();
 		resources = ResourceCache.getSharedInstance();
 		sceneManager = SceneManager.getSharedInstance();
@@ -109,7 +106,7 @@ public class GameLogic {
 			
 			player.addRegion(region);
 			
-			region.setNumberOfSoldiers(INITIAL_SOLDIERS_IN_REGION);
+			region.addSoldiers(1);
 			region.updateSoldiers();
 			
 			region.setOwner(player);
@@ -142,10 +139,11 @@ public class GameLogic {
 		}
 		
 	}
-	
-//	public static GameLogic getSharedInstance() {
-//		return instance;
-//	}
+
+	public void attack(Region region1, Region region2) {
+		
+		
+	}
 	
 	// ======================================================
 	// GETTERS & SETTERS
@@ -158,8 +156,6 @@ public class GameLogic {
 	public void setState(GAME_STATE state) {
 		this.state = state;
 	}
-
-	
 
 	public Player getCurrentPlayer() {
 		return currentPlayer;

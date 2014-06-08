@@ -7,9 +7,7 @@ import feup.lpoo.riska.elements.Region;
 import feup.lpoo.riska.elements.Unit;
 
 public class BattleGenerator {
-	
-	private static BattleGenerator instance;
-	
+		
 	protected int attackerPoints;
 	protected int defenderPoints;
 	
@@ -17,16 +15,10 @@ public class BattleGenerator {
 
 	public BattleGenerator() {
 		
-		instance = this;
-
 		this.attackerPoints = 0;
 		this.defenderPoints = 0;
 	}
-	
-	public static BattleGenerator getSharedInstance() {
-		return instance;
-	}
-	
+
 	/**
 	 * @return random int in the interval [min, max].
 	 */

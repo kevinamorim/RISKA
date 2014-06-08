@@ -12,7 +12,7 @@ public class SceneManager {
 	private Engine engine;
 	
 	private Scene splashScene, mainMenuScene, optionsScene, 
-		loadMapScene, gameScene, battleScene; /* Create more scene if needed, like gameScene. */
+		loadMapScene, gameScene; /* Create more scene if needed, like gameScene. */
 	
 	public static SceneManager instance;
 	
@@ -23,7 +23,6 @@ public class SceneManager {
 		OPTIONS,
 		LOAD_MAP,
 		GAME,
-		BATTLE,
 		GAME_OVER,
 	};
 	
@@ -49,7 +48,6 @@ public class SceneManager {
 		optionsScene = new OptionsScene();
 		//loadMapScene = new LoadMapScene();
 		gameScene = new GameScene();
-		battleScene = new BattleScene();
 	}
 	
 	public SceneType getCurrentScene() {
@@ -75,10 +73,6 @@ public class SceneManager {
 		case GAME:
 			((GameScene)gameScene).showInitialHUD();
 			engine.setScene(gameScene);
-			//((GameScene)gameScene).gameLoop();
-			break;
-		case BATTLE:
-			engine.setScene(battleScene);
 			break;
 		default:
 				break;
