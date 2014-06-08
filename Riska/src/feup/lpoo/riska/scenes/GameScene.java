@@ -244,13 +244,10 @@ public class GameScene extends Scene implements IOnSceneTouchListener, IScrollDe
 		
 		switch(fase) {
 		case DEPLOYMENT:
-			if(currentPlayer.ownsRegion(pRegion) && currentPlayer.getSoldiersToDeploy() > 0) {
+			if(currentPlayer.ownsRegion(pRegion) && currentPlayer.hasSoldiersLeftToDeploy()) {
 				int deployed = currentPlayer.deploySoldiers(SOLDIER_INC);
 				pRegion.addSoldiers(deployed);
 				pRegion.updateSoldiers();
-			}
-			else {
-				// TODO : next player's fase of deployment
 			}
 			break;
 		case PLAY:

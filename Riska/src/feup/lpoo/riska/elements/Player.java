@@ -86,4 +86,8 @@ public class Player {
 		return deployed;
 	}
 
+	public boolean hasSoldiersLeftToDeploy() {
+		return (soldiersToDeploy > 0);
+	}
+
 }
