@@ -1,6 +1,7 @@
 package feup.lpoo.riska.elements;
 
 import java.util.ArrayList;
+import java.util.Random;
 
 import org.andengine.util.adt.color.Color;
 

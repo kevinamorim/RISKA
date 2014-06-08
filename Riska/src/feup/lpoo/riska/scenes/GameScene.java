@@ -103,6 +103,7 @@ public class GameScene extends Scene implements IOnSceneTouchListener, IScrollDe
 			break;
 			
 		case PLAY:
+			logic.updateGame();
 			break;
 			
 		default:
@@ -395,6 +396,7 @@ public class GameScene extends Scene implements IOnSceneTouchListener, IScrollDe
 		selectedRegion = null;
 		targetedRegion = null;
 		
+		logic.turnDone = true;
 		
 		
 	}

@@ -21,13 +21,15 @@ public class GameLogic {
 	// ======================================================
 	// CONSTANTS
 	// ======================================================
+	private final int MIN_PLAYERS_IN_GAME = 2;
 	private final float BONUS_FACTOR = 0.1f;
 	
 	public enum GAME_STATE {
 		
 		PAUSED,
 		DEPLOYMENT,
-		PLAY
+		PLAY,
+		GAMEOVER
 		
 	};
 	
@@ -44,6 +46,7 @@ public class GameLogic {
 
 	private Player currentPlayer;
 	
+	public boolean turnDone;
 	
 	public GameLogic() {
 		
@@ -59,6 +62,7 @@ public class GameLogic {
 		handOutRegions();
 		
 		state = GAME_STATE.PAUSED;
+		turnDone = false;
 		
 	}
 	
@@ -137,6 +141,70 @@ public class GameLogic {
 			
 			
 		}
+		
+	}
+
+	public void updateGame() {
+		
+		if(checkGameOver()) {
+			
+			state = GAME_STATE.GAMEOVER;
+			
+		} else {
+			
+			if(turnDone) {
+				currentPlayer = getNextPlayer();
+				turnDone = false;
+			}
+			
+			if(currentPlayer.isCPU()) {
+				automaticMove();
+				turnDone = true;
+			}
+			
+		}	
+		
+	}
+	
+	
+	private void automaticMove() {
+		
+		Random r = new Random();
+		
+		int selected = 0;
+		do {
+			selected = r.nextInt(currentPlayer.getRegions().size());
+		} while(currentPlayer.getRegions().get(selected).getNumberOfSoldiers() <= 0);
+		
+		Region region1 = currentPlayer.getRegions().get(selected);
+		
+		ArrayList<Region> temp = currentPlayer.getRegions().get(selected).getNeighbours();
+				
+		int target = 0;
+		
+		do {
+			
+			target = r.nextInt(temp.size()); 
+			
+		} while(temp.get(target).getOwner().equals(currentPlayer));
+		
+		Region region2 = temp.get(target);
+		
+		attack(region1, region2);
+		
+	}
+	
+	private boolean checkGameOver() {
+		
+		int remainingPlayers = players.size();
+		
+		for(Player player : players) {
+			if(player.getRegions().size() == 0) {
+				remainingPlayers--;
+			}
+		}
+		
+		return (remainingPlayers < MIN_PLAYERS_IN_GAME);
 		
 	}
 
