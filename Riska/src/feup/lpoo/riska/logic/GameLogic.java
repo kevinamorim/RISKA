@@ -22,7 +22,6 @@ public class GameLogic {
 	// CONSTANTS
 	// ======================================================
 	private final float BONUS_FACTOR = 0.1f;
-	private static final int INITIAL_SOLDIERS_IN_REGION = 1;
 	
 	public enum GAME_STATE {
 		
@@ -144,9 +143,37 @@ public class GameLogic {
 	public boolean attack(Region region1, Region region2) {
 		
 		BattleGenerator battleGenerator = new BattleGenerator();
-		return
+		
+		boolean won = 
 				battleGenerator.simulateAttack(region1.getSoldiers(), region2.getSoldiers());
+		
+		if(won) {
+			playerWon(region1, region2);
+		} else {
+			playerLost(region1);
+		}
+			
+		region1.changeFocus(false);
+		region2.changeFocus(false);
+		
+		return won;
+				
 	}
+	
+	
+	public void playerWon(Region region1, Region region2) {
+		
+		region2.changeOwner(region1.getOwner());
+		region2.addSoldiers(region1.getNumberOfSoldiers());
+		region1.clearSoldiers();
+		
+	}
+	
+	
+	public void playerLost(Region region) {
+		region.clearSoldiers();
+	}
+	
 	
 	// ======================================================
 	// GETTERS & SETTERS

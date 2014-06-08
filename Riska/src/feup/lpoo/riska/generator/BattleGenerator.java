@@ -34,7 +34,7 @@ public class BattleGenerator {
 	 * 
 	 * @param max
 	 */
-	public int generateNewRandomValueBetween(int max) {
+	public int generateNewRandomValue(int max) {
 		
 		Random random = new Random();
 		
@@ -75,7 +75,7 @@ public class BattleGenerator {
 		int sum = 0;
 		
 		for(Unit unit : army) {
-			sum += this.generateNewRandomValueBetween(isAttacker ? unit.getAttack() : unit.getDefense());
+			sum += this.generateNewRandomValue(isAttacker ? unit.getAttack() : unit.getDefense());
 		}
 		
 		return sum;

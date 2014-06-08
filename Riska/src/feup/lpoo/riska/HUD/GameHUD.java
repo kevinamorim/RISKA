@@ -24,8 +24,6 @@ public class GameHUD extends HUD {
 	// CONSTANTS
 	// ======================================================
 	private static final long MIN_TOUCH_INTERVAL = 30;
-
-	//private final Point FLAG_POS = new Point((int)(MainActivity.CAMERA_WIDTH/4), (int)(MainActivity.CAMERA_HEIGHT/2));
 	private final int PANEL_CENTER_X = MainActivity.CAMERA_WIDTH/4;
 
 	// ======================================================
@@ -206,13 +204,21 @@ public class GameHUD extends HUD {
 	}
 
 	public void showAttackButton() {
-		attachChild(attackButton);
-		registerTouchArea(attackButton);
+		
+		if(!attackButton.hasParent()) {
+			attachChild(attackButton);
+			registerTouchArea(attackButton);
+		}
+
 	}
 	
 	public void hideAttackButton() {
-		detachChild(attackButton);
-		unregisterTouchArea(attackButton);
+		
+		if(attackButton.hasParent()) {
+			detachChild(attackButton);
+			unregisterTouchArea(attackButton);
+		}
+
 	}
 	
 	public void showInfoTab() {
@@ -230,14 +236,25 @@ public class GameHUD extends HUD {
 	}
 
 	public void showDetailButton() {
-		attachChild(detailsButton);
-		registerTouchArea(detailsButton);
+		
+		if(!detailsButton.hasParent()) {
+			
+			attachChild(detailsButton);
+			registerTouchArea(detailsButton);
+			
+		}
+		
 	}
 	
 	public void hideDetailButton() {
-		detachChild(detailsButton);
-		unregisterTouchArea(detailsButton);
-	}
+		
+		if(detailsButton.hasParent()) {
+			
+			detachChild(detailsButton);
+			unregisterTouchArea(detailsButton);
+			
+		}	
 
+	}
 
 }

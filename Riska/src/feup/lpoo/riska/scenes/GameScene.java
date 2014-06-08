@@ -59,8 +59,6 @@ public class GameScene extends Scene implements IOnSceneTouchListener, IScrollDe
 	
 	private ScrollDetector scrollDetector;
 	
-	private Region focusedRegion;
-	
 	protected Region selectedRegion;
 	protected Region targetedRegion;
 	
@@ -76,7 +74,6 @@ public class GameScene extends Scene implements IOnSceneTouchListener, IScrollDe
 	public GameScene() {	
 		
 		this.selectedRegion = null;
-		this.focusedRegion = null;
 		this.targetedRegion = null;
 		
 		activity = MainActivity.getSharedInstance();
@@ -318,32 +315,6 @@ public class GameScene extends Scene implements IOnSceneTouchListener, IScrollDe
 		pRegion.changeFocus(false);
 	}
 
-	public void onRegionConfirmed() {
-		
-		if(logic.getCurrentPlayer().ownsRegion(focusedRegion)) {
-
-			if(focusedRegion == selectedRegion) {
-				//focusedRegion.setColor(Color.GREEN);
-				selectedRegion = null;
-			}
-			else {
-				if(selectedRegion != null) {
-					//selectedRegion.setColor(Color.GREEN);
-				}
-				
-				selectedRegion = focusedRegion;
-				//selectedRegion.setColor(Color.BLUE);
-				
-				Log.d("Regions","Confirmed");
-				Log.d("Regions","  > " + selectedRegion.getName());
-			}
-
-			//unfocusRegion(focusedRegion);
-		} else {		
-			//targetedRegion = focusedRegion;
-			//onAttackRegion(selectedRegion, targetedRegion);
-		}
-	}
 	
 	// ======================================================
 	// SCROLL DETECTOR
@@ -405,9 +376,6 @@ public class GameScene extends Scene implements IOnSceneTouchListener, IScrollDe
 		doubleTapAllowed = false;
 		scrollDetector.setEnabled(false);
 		
-		if(targetedRegion != null) {
-			hud.hideAttackButton();
-		}
 		hud.hideInfoTab();
 		
 		attachChild(battleScene);
@@ -418,14 +386,16 @@ public class GameScene extends Scene implements IOnSceneTouchListener, IScrollDe
 		doubleTapAllowed = true;
 		scrollDetector.setEnabled(true);
 		
-		if(targetedRegion != null) {
-			hud.showAttackButton();
-		}
 		hud.showInfoTab();
 		
 		detachChild(battleScene);
+		hud.hideAttackButton();
 		
 		battleScene = null;
+		selectedRegion = null;
+		targetedRegion = null;
+		
+		
 		
 	}
 

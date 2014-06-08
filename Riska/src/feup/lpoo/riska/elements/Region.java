@@ -22,8 +22,8 @@ public class Region {
 	// ======================================================
 	private static final long MIN_TOUCH_INTERVAL = 30;
 	private static final int MAX_CHARS = 10;
-	private static final int SOLDIER_ATT = 1;
-	private static final int SOLDIER_DEF = 1;
+	private static final int SOLDIER_ATT = 10;
+	private static final int SOLDIER_DEF = 10;
 
 	// ======================================================
 	// SINGLETONS
@@ -37,6 +37,7 @@ public class Region {
 	// ======================================================
 	private final int id;
 	protected Point stratCenter;
+	
 	protected ArrayList<Unit> soldiers;
 
 	protected String name;
@@ -235,11 +236,8 @@ public class Region {
 		return neighbours.contains(focusedRegion);
 	}
 
-	public void updateSoldiers() {
-		
-		button.detachChildren();
+	public void updateSoldiers() {	
 		buttonText.setText("" + getNumberOfSoldiers());
-		button.attachChild(buttonText);
 	}
 	
 	public void setColors(Color priColor, Color secColor) {
@@ -266,5 +264,21 @@ public class Region {
 	public void changeFocus(boolean value) {
 		this.focused = value;
 		this.switchColors();
+	}
+	
+	public void clearSoldiers() {
+		soldiers.clear();
+		updateSoldiers();
+	}
+	
+	public void changeOwner(Player newOwner) {
+		owner.removeRegion(this);
+		owner = newOwner;
+		owner.addRegion(this);
+		soldiers.clear();
+		priColor = newOwner.getPrimaryColor();
+		secColor = newOwner.getScondaryColor();
+		changeFocus(false);
+		updateSoldiers();
 	}
 }

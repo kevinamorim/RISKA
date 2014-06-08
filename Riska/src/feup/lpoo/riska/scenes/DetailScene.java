@@ -1,12 +1,10 @@
 package feup.lpoo.riska.scenes;
 
 import org.andengine.entity.scene.Scene;
-import org.andengine.entity.scene.background.SpriteBackground;
 import org.andengine.entity.sprite.Sprite;
 import org.andengine.entity.text.Text;
 import org.andengine.opengl.font.Font;
 
-import android.util.Log;
 import feup.lpoo.riska.elements.Region;
 import feup.lpoo.riska.logic.MainActivity;
 import feup.lpoo.riska.resources.ResourceCache;
@@ -77,15 +75,14 @@ public class DetailScene extends Scene {
 
 	public void updateDisplay() {
 		
-		if(playerRegion != null && enemyRegion != null) {
+
+		playerRegionName.setText(wrapText(resources.getGameFont(), 
+				(playerRegion != null) ? playerRegion.getName() : "", this.getWidth()/2));
+		
+		enemyRegionName.setText(wrapText(resources.getGameFont(), 
+				(enemyRegion != null) ? enemyRegion.getName() : "", this.getWidth()/2));
 			
-			playerRegionName.setText(wrapText(resources.getGameFont(), 
-					playerRegion.getName(), this.getWidth()/2));
 			
-			enemyRegionName.setText(wrapText(resources.getGameFont(), 
-					enemyRegion.getName(), this.getWidth()/2));
-			
-		}
 		
 	}
 	
