@@ -261,7 +261,7 @@ public class ResourceCache {
 		
 		detailsButtonTextureAtlas = new BitmapTextureAtlas(activity.getTextureManager(), 256, 256, TextureOptions.DEFAULT);
 		detailsButtonTiledTextureRegion = BitmapTextureAtlasTextureRegionFactory.createTiledFromAsset(detailsButtonTextureAtlas, 
-				activity.getAssets(), "details_button_1.png", 0, 0, 2, 1);
+				activity.getAssets(), "details_button_2.png", 0, 0, 2, 1);
 		
 		detailsButtonTextureAtlas.load();
 	}

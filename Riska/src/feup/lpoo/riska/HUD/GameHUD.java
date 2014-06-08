@@ -68,7 +68,7 @@ public class GameHUD extends HUD {
 	}
 	
 	private void createDisplay() {
-		panel = new Sprite(MainActivity.CAMERA_WIDTH/2, MainActivity.CAMERA_HEIGHT/2,
+		panel = new Sprite(MainActivity.CAMERA_WIDTH / 2, MainActivity.CAMERA_HEIGHT / 2,
 				MainActivity.CAMERA_WIDTH, MainActivity.CAMERA_HEIGHT,
 				resources.getHUDPanelTexture(), activity.getVertexBufferObjectManager());
 
@@ -186,7 +186,8 @@ public class GameHUD extends HUD {
 				return true;
 			}
 		};
-		detailsButton.setScale(0.3f);
+		detailsButton.setScale(0.5f);
+		detailsButton.setPosition(detailsButton.getScaleX() * detailsButton.getWidth() / 2, detailsButton.getY());
 		
 		/*
 		 * ==================================
@@ -197,24 +198,21 @@ public class GameHUD extends HUD {
 		//attachChild(panel);
 	}
 
-	protected void releasedDetailsButton() {
-		detailsButton.setCurrentTileIndex(0);
-	}
+	protected void releasedDetailsButton() { }
 
-	protected void pressedDetailsButton() {
-		detailsButton.setCurrentTileIndex(1);
-	}
+	protected void pressedDetailsButton() { }
 	
 	protected void touchedDetailsButton() {
-		detailsButton.setCurrentTileIndex(0);
 		
 		DetailScene details = sceneManager.getGameScene().getDetailScene();
 	
 		if(details.isVisible()) {
+			detailsButton.setCurrentTileIndex(0);
 			sceneManager.getGameScene().hideDetailPanel();
 			details.setVisible(false);
 		}
 		else {
+			detailsButton.setCurrentTileIndex(1);
 			sceneManager.getGameScene().showDetailPanel();
 			details.setVisible(true);
 		}
