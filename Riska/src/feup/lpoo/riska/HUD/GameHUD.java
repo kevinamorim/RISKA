@@ -7,6 +7,7 @@ import org.andengine.entity.text.Text;
 import org.andengine.input.touch.TouchEvent;
 import org.andengine.util.adt.color.Color;
 
+import feup.lpoo.riska.interfaces.Displayable;
 import feup.lpoo.riska.logic.MainActivity;
 import feup.lpoo.riska.resources.ResourceCache;
 import feup.lpoo.riska.scenes.DetailScene;
@@ -14,7 +15,7 @@ import feup.lpoo.riska.scenes.GameScene;
 import feup.lpoo.riska.scenes.SceneManager;
 import android.view.MotionEvent;
 
-public class GameHUD extends HUD {
+public class GameHUD extends HUD implements Displayable {
 
 	// ======================================================
 	// CONSTANTS
@@ -58,7 +59,7 @@ public class GameHUD extends HUD {
 	/**
 	 * Creates the display for the given scene.
 	 */
-	private void createDisplay() {
+	public void createDisplay() {
 		
 		// =================================
 		//  NEW ATTACK BUTTON
