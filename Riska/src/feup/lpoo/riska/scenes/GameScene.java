@@ -224,64 +224,44 @@ public class GameScene extends Scene implements IOnSceneTouchListener, IScrollDe
 	
 	public void onRegionSelected(Region pRegion) {
 		
-		String hudButtonText;
-		boolean enabled = true;
-		
-		focusedRegion = pRegion;
-	
-		if(currentPlayer.isOwnerOf(focusedRegion)) {
-
-			if(focusedRegion == selectedRegion) {
-				hudButtonText = "UNSELECT";
-			}
-			else {
-				hudButtonText = "SELECT";
-			}
-		}
-		else {
-			hudButtonText = "ATTACK";
-
-			if(selectedRegion != null && selectedRegion.isNeighbourOf(focusedRegion)) {
-				enabled = false;
-			}
-		}
-
-		hud.update(focusedRegion.getName(), hudButtonText, enabled);
-		
 		isolateRegion(pRegion);
 		
-		doubleTapAllowed = false;
-		scrollDetector.setEnabled(false);
-		hud.show();
+		Log.d("Regions","Region focused.");
+		Log.d("Regions","  > " + (focusedRegion != null ? focusedRegion.getName() : "null"));
 	}
 	
 	public void onRegionUnselected(Region pRegion) {
 		
-		focusedRegion = null;
-		
-		deisolateRegion(pRegion);
-		
-		doubleTapAllowed = true;
-		scrollDetector.setEnabled(true);
-		hud.hide();
-		
 		Log.d("Regions","Region unselected.");
+		Log.d("Regions","  > " + (focusedRegion != null ? focusedRegion.getName() : "null"));
+			
+		deisolateRegion(pRegion);
 	}
 	
-	public void onRegionConfirmed() {	
+	public void onRegionConfirmed() {
 		
 		if(currentPlayer.isOwnerOf(focusedRegion)) {
-			
-			focusedRegion.setSelected(focusedRegion.isSelected() ? false : true);
-			selectedRegion = (focusedRegion.isSelected() ? focusedRegion : null);
-			
-			Log.d("Regions","Confirmed");
-			Log.d("Regions","  > " + selectedRegion.getName());
-			
+
+			if(focusedRegion == selectedRegion) {
+				focusedRegion.setColor(Color.GREEN);
+				selectedRegion = null;
+			}
+			else {
+				if(selectedRegion != null) {
+					selectedRegion.setColor(Color.GREEN);
+				}
+				
+				selectedRegion = focusedRegion;
+				selectedRegion.setColor(Color.BLUE);
+				
+				Log.d("Regions","Confirmed");
+				Log.d("Regions","  > " + selectedRegion.getName());
+			}
+
+			deisolateRegion(focusedRegion);
 		} else {		
 			targetedRegion = focusedRegion;
 			//onAttackRegion(selectedRegion, targetedRegion);
-			
 		}
 	}
 	
@@ -293,7 +273,11 @@ public class GameScene extends Scene implements IOnSceneTouchListener, IScrollDe
 	}
 
 	private void isolateRegion(Region pRegion) {
+		
+		pRegion.setFocused(true);
+		
 		cameraManager.focusOnRegion(pRegion);
+		
 		for(Region region : resources.getMap().getRegions()) {
 			
 			if(region != pRegion) {
@@ -301,9 +285,20 @@ public class GameScene extends Scene implements IOnSceneTouchListener, IScrollDe
 				detachChild(region.getButton());
 			}
 		}
+		
+		focusedRegion = pRegion;
+		
+		hud.updateCountry(focusedRegion);
+		hud.updateButton(focusedRegion, selectedRegion, currentPlayer);
+		hud.show();
+		
+		doubleTapAllowed = false;
+		scrollDetector.setEnabled(false);	
 	}
 	
 	private void deisolateRegion(Region pRegion) {
+		pRegion.setFocused(false);
+		
 		cameraManager.zoomOut();
 		cameraManager.panToCenter();
 		
@@ -314,8 +309,15 @@ public class GameScene extends Scene implements IOnSceneTouchListener, IScrollDe
 				attachChild(region.getButton());
 			}	
 		}
+		
+		focusedRegion = null;	
+
+		hud.hide();
+
+		doubleTapAllowed = true;
+		scrollDetector.setEnabled(true);
 	}
-	
+
 	// ======================================================
 	// SCROLL DETECTOR
 	// ======================================================

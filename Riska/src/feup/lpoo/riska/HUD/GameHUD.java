@@ -129,29 +129,6 @@ public class GameHUD extends HUD {
 		
 	}
 
-	public void update(String regionName, String hudText, boolean enabled) {
-		
-		hudButton.setEnabled(enabled);
-		hudButtonText.setText(hudText);
-			
-		countryName.setText(wrapText(resources.getGameFont(), regionName, panel.getWidth()/2));
-		countryName.setPosition(PANEL_CENTER_X, MainActivity.CAMERA_HEIGHT - countryName.getHeight());
-
-//		if(countryFlag != null) { 
-//			panel.detachChild(countryFlag);
-//		} 
-//
-//		countryFlag = hudButtonText2.getFlag(FLAG_POS.x, FLAG_POS.y);
-
-		//panel.attachChild(countryFlag);
-		panel.attachChild(countryName);	
-		panel.attachChild(hudButton);
-
-		if(hudButton.isEnabled()) {
-			registerTouchArea(hudButton);
-		}
-	}
-
 	private String wrapText(Font pFont, String pString, float maxWidth) {
 
 		Text pText = new Text(0, 0, pFont, pString, 1000, activity.getVertexBufferObjectManager());
@@ -186,24 +163,73 @@ public class GameHUD extends HUD {
 	}
 
 	public void hide() {
+		
 		panel.detachChildren();
-		if(hudButton.isEnabled()) {
-			unregisterTouchArea(hudButton);
-		}
+		
+		if(hudButton.isEnabled()) { unregisterTouchArea(hudButton); }
 		
 		setVisible(false);
 	}
 
 	public void show() {
-		//attachChild(panel);	
-		//attachChild(hudButton);
-		//registerTouchArea(hudButton);
-		
 		setVisible(true);
 	}
 
 	public ButtonSprite getHudButton() {
 		return this.hudButton;
+	}
+
+/*	public void update(String regionName, String hudText, boolean enabled) {
+
+		hudButton.setEnabled(enabled);
+		hudButtonText.setText(hudText);
+
+		countryName.setText(wrapText(resources.getGameFont(), regionName, panel.getWidth()/2));
+		countryName.setPosition(PANEL_CENTER_X, MainActivity.CAMERA_HEIGHT - countryName.getHeight());
+
+		//		if(countryFlag != null) { 
+		//			panel.detachChild(countryFlag);
+		//		} 
+		//
+		//		countryFlag = hudButtonText2.getFlag(FLAG_POS.x, FLAG_POS.y);
+
+		//panel.attachChild(countryFlag);
+		panel.attachChild(countryName);	
+		panel.attachChild(hudButton);
+
+		if(hudButton.isEnabled()) {
+			registerTouchArea(hudButton);
+		}
+	}*/
+
+	public void updateCountry(Region focusedRegion) {
+		countryName.setText(wrapText(resources.getGameFont(), focusedRegion.getName(), panel.getWidth()/2));
+		countryName.setPosition(PANEL_CENTER_X, MainActivity.CAMERA_HEIGHT - countryName.getHeight());
+		panel.attachChild(countryName);	
+	}
+
+	public void updateButton(Region focusedRegion, Region selectedRegion, Player player) {
+		
+		panel.detachChild(hudButton);
+		hudButton.setEnabled(false);
+		
+		if(player.isOwnerOf(focusedRegion)) {
+			hudButtonText.setText(focusedRegion == selectedRegion ? "RESET" : "CHOOSE");
+			hudButton.setEnabled(true);
+		}
+		else {
+			if(selectedRegion != null) {
+				if(focusedRegion.isNeighbourOf(selectedRegion)) {
+					hudButtonText.setText("ATTACK");		
+					hudButton.setEnabled(true);
+				}
+			}
+		}
+		
+		if(hudButton.isEnabled()) {
+			panel.attachChild(hudButton);
+			registerTouchArea(hudButton);
+		}
 	}
 
 

@@ -41,7 +41,7 @@ public class Region {
 	protected String name;
 	protected String continent;
 
-	protected boolean selected;
+	protected boolean focused;
 	
 	private long lastTimeTouched;
 	
@@ -69,7 +69,7 @@ public class Region {
 		this.continent = continent;
 		this.soldiers = 0;
 		this.owner = null;
-		this.selected = false;
+		this.focused = false;
 		
 		this.flag = new Sprite(0, 0, 240, 150, resources.getRegionFlags(), activity.getVertexBufferObjectManager());
 		
@@ -96,7 +96,7 @@ public class Region {
 			}
 		};
 		
-		Text buttonText = new Text(0, 0, resources.getFont() , "10", activity.getVertexBufferObjectManager());
+		Text buttonText = new Text(0, 0, resources.getFont() , "" + soldiers, activity.getVertexBufferObjectManager());
 		
 		buttonText.setScale((float) 0.5);
 		buttonText.setPosition(button.getWidth()/2, button.getHeight()/2);
@@ -119,11 +119,11 @@ public class Region {
 		if((now - lastTimeTouched) > MIN_TOUCH_INTERVAL) {
 			
 			button.setCurrentTileIndex(0);
-			selected = !selected;
+			focused = !focused;
 			
-			Log.d("Region", "Released: " + selected);
+			Log.d("Regions", "Focused: " + focused);
 			
-			if(selected) {
+			if(focused) {
 
 				sceneManager.getGameScene().onRegionSelected(this);
 				
@@ -176,15 +176,15 @@ public class Region {
 	/**
 	 * @return the selected
 	 */
-	public boolean isSelected() {
-		return selected;
+	public boolean isFocused() {
+		return focused;
 	}
 
 	/**
-	 * @param selected the selected to set
+	 * @param value the selected value to set
 	 */
-	public void setSelected(boolean selected) {
-		this.selected = selected;
+	public void setFocused(boolean value) {
+		this.focused = value;
 	}
 	
 	public int getNumberOfSoldiers() {
