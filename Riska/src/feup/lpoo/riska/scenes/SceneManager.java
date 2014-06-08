@@ -74,6 +74,7 @@ public class SceneManager {
 		case GAME:
 			((GameScene)gameScene).showInitialHUD();
 			engine.setScene(gameScene);
+			//((GameScene)gameScene).gameLoop();
 			break;
 		case BATTLE:
 			engine.setScene(battleScene);

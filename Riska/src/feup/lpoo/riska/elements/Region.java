@@ -189,6 +189,7 @@ public class Region {
 	
 	public void addSoldiers(int value) {
 		soldiers += value;
+		updateSoldiers();
 	}
 	
 	public Sprite getFlag(float pX, float pY) {

@@ -104,4 +104,12 @@ public class Player {
 		return this.secColor;
 	}
 
+	/**
+	 * Called only with non-human players
+	 */
+	public void deploy() {
+		// TODO Deployment for CPU players
+		
+	}
+
 }

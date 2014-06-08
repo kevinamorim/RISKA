@@ -24,7 +24,7 @@ import android.graphics.Point;
 import android.util.Log;
 
 public class GameScene extends Scene implements IOnSceneTouchListener, IScrollDetectorListener {
-	
+
 	// ======================================================
 	// CONSTANTS
 	// ======================================================
@@ -37,7 +37,10 @@ public class GameScene extends Scene implements IOnSceneTouchListener, IScrollDe
 	private static final int INITIAL_SOLDIERS_IN_REGION = 1;
 	private static final int SOLDIER_INC = 1;
 	
+	private static final int FIRST = 0;
+	
 	private enum Fase {
+		NONE,
 		DEPLOYMENT,
 		PLAY
 	}
@@ -99,14 +102,41 @@ public class GameScene extends Scene implements IOnSceneTouchListener, IScrollDe
 		
 		createGameElements();
 		
-		fase = Fase.DEPLOYMENT;
+		fase = Fase.NONE;
 		
 		createDisplay();
+	}
+	
+	@Override
+	protected void onManagedUpdate(float pSecondsElapsed) {
 		
-		/*
-		 * Enter game loop
-		 */
-		gameLoop();
+		switch(fase) {
+		case NONE:
+			fase = Fase.DEPLOYMENT;
+			break;
+			
+		case DEPLOYMENT:
+			if(!currentPlayer.hasSoldiersLeftToDeploy()) {
+				if(chooseNextPlayer() == FIRST) {
+					fase = Fase.PLAY;
+				}
+				
+				if(currentPlayer != getHumanPlayer()) {
+					hud.setInfoTabText("Wait for deployment");
+					
+					if(currentPlayer.isCPU()) {
+						currentPlayer.deploy();
+					}
+				}
+			}
+			break;
+			
+		case PLAY:
+			break;
+			
+		default:
+			break;
+		}
 	}
 
 	private void createGameElements() {
@@ -136,11 +166,6 @@ public class GameScene extends Scene implements IOnSceneTouchListener, IScrollDe
 		 * Distributes the regions amongst the players
 		 */
 		handOutRegions();
-		
-		/*
-		 * Comences the game.
-		 */
-		gameLoop();
 	}
 
 	private void createDisplay() {
@@ -169,10 +194,6 @@ public class GameScene extends Scene implements IOnSceneTouchListener, IScrollDe
 
 		setTouchAreaBindingOnActionDownEnabled(true);
 		setOnSceneTouchListener(this);	
-	}
-
-	private void gameLoop() {
-		// TODO : game loop - VERY IMPORTANT !! (no shit, Sherlock)
 	}
 
 	private Player createPlayer(boolean isCPU, Color priColor, Color secColor) {
@@ -267,15 +288,12 @@ public class GameScene extends Scene implements IOnSceneTouchListener, IScrollDe
 				if(currentPlayer.ownsRegion(pRegion)) {
 					int deployed = currentPlayer.deploySoldiers(SOLDIER_INC);
 					pRegion.addSoldiers(deployed);
-					pRegion.updateSoldiers();
 					
-					hud.setInfoTabText(currentPlayer.getSoldiersToDeploy() + " LEFT TO DEPLOY");
+					hud.setInfoTabText(currentPlayer.getSoldiersToDeploy() + " left to deploy");
 				}
 				
 			}
-			else {
-				fase = Fase.PLAY;
-			}
+
 			break;
 		case PLAY:
 			if(!pRegion.isFocused()) {
@@ -301,9 +319,26 @@ public class GameScene extends Scene implements IOnSceneTouchListener, IScrollDe
 				//unfocusRegion(pRegion);
 			}	
 			break;
+		default:
+			break;
 		}
 	}
 	
+	private int chooseNextPlayer() {
+		
+		for(int i = 0; i < players.size(); i++) {
+			if(currentPlayer == getPlayer(i)) {
+				i++;
+				i = i % players.size();
+				currentPlayer = getPlayer(i);
+				
+				return i;
+			}
+		}
+		
+		return -1;
+	}
+
 	private void targetRegion(Region pRegion) {
 		if(selectedRegion != null) {
 			
@@ -313,7 +348,9 @@ public class GameScene extends Scene implements IOnSceneTouchListener, IScrollDe
 				
 				pRegion.changeFocus(true);
 				
-				hud.showAttackButton();
+				if(!currentPlayer.isCPU()) {
+					hud.showAttackButton();	
+				}
 				
 				Log.d("Regions", "Targeted: " + pRegion.getName());
 			}
@@ -325,7 +362,9 @@ public class GameScene extends Scene implements IOnSceneTouchListener, IScrollDe
 		
 		pRegion.changeFocus(false);
 		
-		hud.hideAttackButton();
+		if(!currentPlayer.isCPU()) {
+			hud.hideAttackButton();
+		}
 	}
 
 	private void selectRegion(Region pRegion) {
@@ -348,8 +387,6 @@ public class GameScene extends Scene implements IOnSceneTouchListener, IScrollDe
 		if(targetedRegion != null) {
 			targetedRegion.changeFocus(false);
 			targetedRegion = null;
-			
-			hud.hide();
 		}
 		
 		selectedRegion = null;
@@ -497,7 +534,14 @@ public class GameScene extends Scene implements IOnSceneTouchListener, IScrollDe
 	public void showInitialHUD() {
 		hud.showInfoTab();
 	}
+	
+	private Player getPlayer(int index) {
+		return players.get(index);
+	}
 
+	private Player getHumanPlayer() {
+		return players.get(0);
+	}
 
 
 }
