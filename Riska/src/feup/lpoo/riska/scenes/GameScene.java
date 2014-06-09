@@ -362,6 +362,7 @@ public class GameScene extends Scene implements IOnSceneTouchListener, IScrollDe
 	public void showBattleScene(boolean result) {
 		
 		hud.hideAttackButton();
+		hud.changeDetailButton();
 		
 		Region tmpSelectedRegion = new Region(-1, selectedRegion.getName(), selectedRegion.getStratCenter(), "");
 		tmpSelectedRegion.setOwner(selectedRegion.getOwner());
@@ -389,6 +390,8 @@ public class GameScene extends Scene implements IOnSceneTouchListener, IScrollDe
 		battleScene = null;
 		selectedRegion = null;
 		targetedRegion = null;
+		
+		setInfoTabToChooseOwnRegion();
 		
 		doubleTapAllowed = true;
 		scrollDetector.setEnabled(true);

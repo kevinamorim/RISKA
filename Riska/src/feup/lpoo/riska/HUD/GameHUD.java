@@ -164,9 +164,7 @@ public class GameHUD extends HUD implements Displayable {
 			if(gameScene.getBattleScene() != null && gameScene.getBattleScene().isVisible()) {
 				detailsButton.setCurrentTileIndex(0);
 				gameScene.hideBattleScene();
-			} else {
-				detailsButton.setCurrentTileIndex(1);
-				
+			} else {				
 				details.setAttributes(gameScene.getSelectedRegion(), gameScene.getTargetedRegion());
 				details.updateDisplay();
 				gameScene.showDetailPanel();
@@ -203,7 +201,6 @@ public class GameHUD extends HUD implements Displayable {
 	 */
 	protected void pressedAttackButton() {
 		attackButton.setCurrentTileIndex(1);
-		detailsButton.setCurrentTileIndex(1);
 	}
 
 	/**
