@@ -88,8 +88,8 @@ public class GameHUD extends HUD implements Displayable {
 			}
 		};
 		
-		attackButton.setScale(0.5f);
-		attackButton.setPosition(attackButton.getScaleX() * attackButton.getWidth() / 2,
+		attackButton.setScale(0.3f);
+		attackButton.setPosition((MainActivity.CAMERA_WIDTH/2),
 				attackButton.getScaleY() * attackButton.getHeight() / 2);
 		
 
@@ -279,4 +279,12 @@ public class GameHUD extends HUD implements Displayable {
 		}
 	}
 
+	
+	public void changeDetailButton() {
+		if(detailsButton.getCurrentTileIndex() == 0) {
+			detailsButton.setCurrentTileIndex(1);
+		} else {
+			detailsButton.setCurrentTileIndex(0);
+		}
+	}
 }

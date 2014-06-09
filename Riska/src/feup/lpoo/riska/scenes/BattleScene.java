@@ -76,7 +76,8 @@ public class BattleScene extends Scene {
 	/* Assuming only two players for now. PlayerNum = 0 -> Left side, PlayerNum = 1 -> Right side */
 	private void displayRegionInfo(Region pRegion, boolean regionWon, int playerNum) {
 		
-		String regionName = ((playerNum == 0)? "(PLAYER) " : "(CPU) ") + pRegion.getName();
+		String typePlayer = ((playerNum == 0)? "(PLAYER)" : "(CPU)");
+		String regionName = pRegion.getName();
 		String resultStr = (regionWon)? "WON" : "LOSE";
 		
 		float x, y = 0.9f * MainActivity.CAMERA_HEIGHT;
@@ -85,6 +86,12 @@ public class BattleScene extends Scene {
 		} else {
 			x = MainActivity.CAMERA_WIDTH * 0.75f;
 		}
+		
+		Text typePlayerText = new Text(x - this.getWidth()/2, y,  resources.getGameFont(),
+				typePlayer, 10,  activity.getVertexBufferObjectManager());
+		typePlayerText.setScale(0.5f);
+		
+		y = 0.7f * MainActivity.CAMERA_HEIGHT;
 		
 		Text regionNameText = new Text(x - this.getWidth()/2, y,  resources.getGameFont(),
 				wrapText(resources.getGameFont(), regionName, this.getWidth()/2), 1000,  activity.getVertexBufferObjectManager());
@@ -102,9 +109,11 @@ public class BattleScene extends Scene {
 
 		}
 		
+		typePlayerText.setColor(textColor);
 		regionNameText.setColor(textColor);
 		resultText.setColor(textColor);	
 		
+		attachChild(typePlayerText);
 		attachChild(regionNameText);
 		attachChild(resultText);
 		
