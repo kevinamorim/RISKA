@@ -8,7 +8,10 @@ import org.andengine.entity.sprite.Sprite;
 import org.andengine.entity.text.Text;
 import org.andengine.opengl.texture.region.TiledTextureRegion;
 
+import android.content.SharedPreferences;
+import android.content.SharedPreferences.Editor;
 import android.graphics.Color;
+import android.preference.PreferenceManager;
 import feup.lpoo.riska.gameInterface.AnimatedButtonSpriteMenuItem;
 import feup.lpoo.riska.logic.MainActivity;
 import feup.lpoo.riska.music.Conductor;
@@ -38,6 +41,7 @@ public class OptionsScene extends MenuScene implements IOnMenuItemClickListener 
 		conductor = Conductor.getSharedInstance();
 		
 		createDisplay();	
+		loadConfig();
 	}
 
 	private void createDisplay() {
@@ -102,7 +106,7 @@ public class OptionsScene extends MenuScene implements IOnMenuItemClickListener 
 		
 		switch(pMenuItem.getID()) {
 		case RETURN:
-			// TODO: Save configurations.
+			saveConfig();
 			sceneManager.setCurrentScene(SceneType.MENU);
 			break;
 		case SFX:
@@ -120,6 +124,34 @@ public class OptionsScene extends MenuScene implements IOnMenuItemClickListener 
 				break;
 		}
 		return false;
+	}
+
+	private void saveConfig() {
+		
+		SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(activity);
+		Editor editor = prefs.edit();
+		
+		editor.putBoolean("musicOn", conductor.isMusicPlaying());
+		
+		editor.commit();
+		
+	}
+	
+	
+	private void loadConfig() {
+		
+		SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(activity);
+		
+		boolean music = prefs.getBoolean("musicOn", true);
+		
+		if(music) {
+			conductor.play();
+			button_slider_music.setCurrentTileIndex(0);
+		} else {
+			conductor.pause();
+			button_slider_music.setCurrentTileIndex(1);
+		}
+		
 	}
 
 }
