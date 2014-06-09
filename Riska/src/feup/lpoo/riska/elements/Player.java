@@ -146,7 +146,7 @@ public class Player extends Object {
 		int i = 0;
 		while(soldiersToDeploy > 0) {
 			regions.get(i).addSoldiers(1);
-			i++;
+			i = (i + 1) % regions.size();
 			soldiersToDeploy--;
 		}
 		
