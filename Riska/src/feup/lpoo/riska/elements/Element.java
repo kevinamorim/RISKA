@@ -1,41 +1,46 @@
 package feup.lpoo.riska.elements;
 
+import android.graphics.Point;
+
+/**
+ * References any element in the game.
+ * <p>
+ * An element is any entity that might have a position and a name.
+ *
+ */
 public class Element extends Object {
 	
 	protected String name;
-	protected int x;
-	protected int y;
+	protected Point position;
 	
-	// TODO private float depth;
-	
+	/**
+	 * Constructor for Element.
+	 * 
+	 * @param x : x coordinate for the element
+	 * @param y : y coordinate for the element
+	 * @param name : name of the element
+	 */
 	protected Element(int x, int y, String name) {
-		this.x = x;
-		this.y = y;
+		this.position = new Point(x, y);
 		this.name = name;
 	}
 	
-	public int getX() {
-		return x;
-	}
-	
-	public int getY() {
-		return y;
-	}
-	
-	public void setX(int x) {
-		this.x = x;
-	}
-	
-	public void setY(int y) {
-		this.y = y;
+	@Override
+	public String toString() {
+		return (name.length() > 0 ? name : "");
 	}
 
+	/**
+	 * @return name of the Element
+	 */
 	public String getName() {
 		return name;
 	}
-
-	public void setName(String name) {
-		this.name = name;
+	
+	/**
+	 * @return The element's position
+	 */
+	public Point getPosition() {
+		return position;
 	}
-
 }

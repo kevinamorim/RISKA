@@ -4,6 +4,11 @@ import org.andengine.entity.scene.menu.item.AnimatedSpriteMenuItem;
 import org.andengine.opengl.texture.region.ITiledTextureRegion;
 import org.andengine.opengl.vbo.VertexBufferObjectManager;
 
+/**
+ * Simple class that extends the AnimatedSpriteMenuItem class into tiled buttons.
+ * 
+ * @see AnimatedSpriteMenuItem
+ */
 public class AnimatedButtonSpriteMenuItem extends AnimatedSpriteMenuItem {
 	
 	public AnimatedButtonSpriteMenuItem(int pID, float pWidth, float pHeight, ITiledTextureRegion pTiledTextureRegion,

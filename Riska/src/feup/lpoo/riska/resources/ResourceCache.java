@@ -7,7 +7,6 @@ import org.andengine.audio.music.Music;
 import org.andengine.audio.music.MusicFactory;
 import org.andengine.engine.Engine;
 import org.andengine.engine.camera.Camera;
-import org.andengine.entity.scene.CameraScene;
 import org.andengine.opengl.font.Font;
 import org.andengine.opengl.font.FontFactory;
 import org.andengine.opengl.texture.TextureOptions;
@@ -26,21 +25,40 @@ import feup.lpoo.riska.logic.MainActivity;
 import feup.lpoo.riska.music.Conductor;
 import feup.lpoo.riska.scenes.CameraManager;
 
+/**
+ * Class that handles the loading of all of the game resources, storing them for future access.
+ */
 public class ResourceCache {
 
-	// Textures
-	protected BitmapTextureAtlas logoTexture;
-	protected ITextureRegion logoTextureRegion;
 
-	protected BitmapTextureAtlas mMenuBackground;
-	protected ITextureRegion mMenuBackgroundTextureRegion;
+	// ======================================================
+	// SINGLETONS
+	// ======================================================
 
+	private MainActivity activity;
+	private Engine engine;
+	private Conductor conductor;
+	
+	// ======================================================
+	// FIELDS
+	// ======================================================
+
+	// Logo texture used in the splash screen.
+	protected BitmapTextureAtlas mLogoTexture;
+	protected ITextureRegion mLogoTextureRegion;
+
+	// Texture used as the background in several menus and scenes.
+	protected BitmapTextureAtlas mBackgroundTexture;
+	protected ITextureRegion mBackgroundTextureRegion;
+
+	// Texure used in the start button
 	protected BitmapTextureAtlas mStartButtonTextureAtlas;
 	protected TiledTextureRegion mStartButtonTiledTextureRegion;
 
+	// Texture used in the options menu button
 	protected BitmapTextureAtlas mOptionsButtonTextureAtlas;
 	protected TiledTextureRegion mOptionsButtonTiledTextureRegion;
-
+	
 	protected BitmapTextureAtlas mReturnButtonTextureAtlas;
 	protected TiledTextureRegion mReturnButtonTiledTextureRegion;
 
@@ -53,20 +71,11 @@ public class ResourceCache {
 	protected BitmapTextureAtlas mGameFontTexture;
 	protected Font mGameFont;
 
-	protected BitmapTextureAtlas mLeftPanelTextureAtlas;
-	protected ITextureRegion mLeftPanelTextureRegion;
-
 	protected BitmapTextureAtlas mFlagsTextureAtlas;
 	protected ITextureRegion mFlagsTextureRegion;
 
-	/* =============================
-	 *           MAP
-	 * =============================
-	 */
 	protected BitmapTextureAtlas regionButtonTextureAtlas;
 	protected TiledTextureRegion regionButtonTiledTextureRegion;
-	
-	
 	
 	protected BitmapTextureAtlas attackButtonTextureAtlas;
 	protected TiledTextureRegion attackButtonTiledTextureRegion;
@@ -77,30 +86,18 @@ public class ResourceCache {
 	protected BitmapTextureAtlas detailsButtonTextureAtlas;
 	protected TiledTextureRegion detailsButtonTiledTextureRegion;
 	
-	
+	protected BitmapTextureAtlas mSeaTextureAtlas;
+	protected TiledTextureRegion mSeaTiledTextureRegion;
 
 	protected BitmapTextureAtlas mapTextureAtlas;
 	protected ITextureRegion mapTextureRegion;
 
-	public final int NUMBER_OF_REGIONS = 38;
-	private int regionsCreated = 0;
-
 	protected Map map;
 
-	protected BitmapTextureAtlas mSeaTextureAtlas;
-	protected TiledTextureRegion mSeaTiledTextureRegion;
-
-	/*=============================
-	 * =============================
-	 */
-
 	private final int SEA_COLS = 4;
-	private final int SEA_LINES = 2;
-
-	private MainActivity activity;
-	private Engine engine;
-	private Conductor conductor;
-
+	private final int SEA_LINES = 2;	
+	
+	
 	static ResourceCache instance;
 
 	public ResourceCache(MainActivity activity, Engine engine, Camera camera) {
@@ -122,11 +119,11 @@ public class ResourceCache {
 		BitmapTextureAtlasTextureRegionFactory.setAssetBasePath("gfx/");
 
 		// LOADS LOGO PIC
-		logoTexture = new BitmapTextureAtlas(activity.getTextureManager(), 512, 512, TextureOptions.DEFAULT);
+		mLogoTexture = new BitmapTextureAtlas(activity.getTextureManager(), 512, 512, TextureOptions.DEFAULT);
 
-		logoTextureRegion = BitmapTextureAtlasTextureRegionFactory.createFromAsset(logoTexture, activity, "logo.png", 0, 0);
+		mLogoTextureRegion = BitmapTextureAtlasTextureRegionFactory.createFromAsset(mLogoTexture, activity, "logo.png", 0, 0);
 
-		logoTexture.load();	
+		mLogoTexture.load();	
 
 	}
 
@@ -138,11 +135,11 @@ public class ResourceCache {
 		BitmapTextureAtlasTextureRegionFactory.setAssetBasePath("gfx/");
 
 		// LOADS MENU BACKGROUND
-		mMenuBackground = new BitmapTextureAtlas(activity.getTextureManager(), 2048, 2048, TextureOptions.DEFAULT);
-		mMenuBackgroundTextureRegion = BitmapTextureAtlasTextureRegionFactory.createFromAsset(mMenuBackground, 
+		mBackgroundTexture = new BitmapTextureAtlas(activity.getTextureManager(), 2048, 2048, TextureOptions.DEFAULT);
+		mBackgroundTextureRegion = BitmapTextureAtlasTextureRegionFactory.createFromAsset(mBackgroundTexture, 
 				activity, "background.png", 0, 0);
 
-		mMenuBackground.load();
+		mBackgroundTexture.load();
 
 		// LOADS FONT
 		FontFactory.setAssetBasePath("fonts/");
@@ -185,6 +182,9 @@ public class ResourceCache {
 
 	}
 
+	/**
+	 * Loads all game resources.
+	 */
 	public void loadGameSceneResources() {
 
 		// LOADS MAP TEXTURE
@@ -230,14 +230,6 @@ public class ResourceCache {
 
 		readNeighbours(filename);
 
-		map.printNeighbours();
-
-		mLeftPanelTextureAtlas = new BitmapTextureAtlas(activity.getTextureManager(), 2048, 1024, TextureOptions.DEFAULT);
-		mLeftPanelTextureRegion = BitmapTextureAtlasTextureRegionFactory.createFromAsset(mLeftPanelTextureAtlas, 
-				activity, "panel_left.png", 0, 0);
-
-		mLeftPanelTextureAtlas.load();
-
 		mSeaTextureAtlas = new BitmapTextureAtlas(activity.getTextureManager(), 2048, 1024, TextureOptions.DEFAULT);
 		mSeaTiledTextureRegion = BitmapTextureAtlasTextureRegionFactory.createTiledFromAsset(mSeaTextureAtlas, 
 				activity.getAssets(), "sea.png", 0, 0, SEA_COLS, SEA_LINES);
@@ -266,6 +258,9 @@ public class ResourceCache {
 		detailsButtonTextureAtlas.load();
 	}
 
+	/**
+	 * Loads all sound related resources and creates the conductor.
+	 */
 	public void loadMusic() {
 
 		conductor = new Conductor();
@@ -276,6 +271,7 @@ public class ResourceCache {
 			backgroundMusic = MusicFactory.createMusicFromAsset(engine.getMusicManager(), activity, "sounds/music.mp3");
 
 			conductor.setBackgroundMusic(backgroundMusic);
+			conductor.playBackgroundMusic();
 		}
 		catch (IOException e)
 		{
@@ -283,6 +279,12 @@ public class ResourceCache {
 		}
 	}
 
+	/**
+	 * Reads the regions file.
+	 * 
+	 * @param filename : file to read
+	 * @return The map regions
+	 */
 	private ArrayList<Region> readRegions(String filename) {
 		ArrayList<String> mapData = new ArrayList<String>();
 
@@ -306,13 +308,17 @@ public class ResourceCache {
 			Region newRegion = new Region(id, name, new Point(x, y), continent);
 
 			regions.add(newRegion);
-			regionsCreated++;
 		}
 
 		return regions;
 
 	}
 
+	/**
+	 * Reads the neighbours file.
+	 * 
+	 * @param filename : file to read
+	 */
 	private void readNeighbours(String filename) {
 
 		ArrayList<String> data = new ArrayList<String>();
@@ -330,14 +336,6 @@ public class ResourceCache {
 				i++;
 			}
 		}	
-	}
-
-	/**
-	 * 
-	 * @return TextureRegion for the HUD panel.
-	 */
-	public ITextureRegion getHUDPanelTexture() {
-		return this.mLeftPanelTextureRegion;
 	}
 
 	public Font getGameFont() {
@@ -361,7 +359,7 @@ public class ResourceCache {
 	}
 
 	public ITextureRegion getMenuBackgroundTexture() {
-		return this.mMenuBackgroundTextureRegion;
+		return this.mBackgroundTextureRegion;
 	}
 
 	public TiledTextureRegion getStartButtonTexture() {
@@ -381,7 +379,7 @@ public class ResourceCache {
 	}
 
 	public ITextureRegion getLogo() {
-		return this.logoTextureRegion;
+		return this.mLogoTextureRegion;
 	}
 
 	public ITextureRegion getRegionFlags() {

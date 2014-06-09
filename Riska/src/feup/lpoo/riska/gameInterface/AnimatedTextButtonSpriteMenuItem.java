@@ -8,6 +8,11 @@ import org.andengine.opengl.vbo.VertexBufferObjectManager;
 
 import android.graphics.Color;
 
+/**
+ * Simple class that extends the AnimatedSpriteMenuItem class into tiled buttons with text.
+ * 
+ * @see AnimatedSpriteMenuItem
+ */
 public class AnimatedTextButtonSpriteMenuItem extends AnimatedSpriteMenuItem {
 	
 	private float textX = 0;
