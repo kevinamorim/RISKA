@@ -50,11 +50,12 @@ public class LoadGame {
 		int size = prefs.getInt("cpuRegionsSize", 0);
 		for(int i = 0; i < size; i++) {
 			int id = prefs.getInt("cpuRegion_" + i, 0);
-			logic.getPlayers().get(1).addRegion(logic.getMap()
-					.getRegionById(id));
-			logic.getMap().getRegionById(id).setOwner(logic.getPlayers().get(1));
-			logic.getMap().getRegionById(id).setColors(logic.getPlayers().get(1).getPrimaryColor(),
-					logic.getPlayers().get(1).getScondaryColor());
+//			logic.getPlayers().get(1).addRegion(logic.getMap()
+//					.getRegionById(id));
+//			logic.getMap().getRegionById(id).setOwner(logic.getPlayers().get(1));
+//			logic.getMap().getRegionById(id).setColors(logic.getPlayers().get(1).getPrimaryColor(),
+//					logic.getPlayers().get(1).getScondaryColor());
+			logic.getMap().getRegionById(id).changeOwner(logic.getPlayers().get(1));
 		}
 		
 	}
@@ -64,11 +65,11 @@ public class LoadGame {
 		int size = prefs.getInt("playerRegionsSize", 0);
 		for(int i = 0; i < size; i++) {
 			int id = prefs.getInt("playerRegion_" + i, 0);
-			logic.getPlayers().get(0).addRegion(logic.getMap()
-					.getRegionById(id));
-			logic.getMap().getRegionById(id).setOwner(logic.getPlayers().get(0));
-			logic.getMap().getRegionById(id).setColors(logic.getPlayers().get(0).getPrimaryColor(),
-					logic.getPlayers().get(0).getScondaryColor());
+			//logic.getPlayers().get(0).addRegion(logic.getMap()
+					//.getRegionById(id));
+			logic.getMap().getRegionById(id).changeOwner(logic.getPlayers().get(0));
+			//logic.getMap().getRegionById(id).setColors(logic.getPlayers().get(0).getPrimaryColor(),
+					//logic.getPlayers().get(0).getScondaryColor());
 		}
 		
 	}
