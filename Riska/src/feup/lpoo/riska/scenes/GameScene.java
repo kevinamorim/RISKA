@@ -655,8 +655,6 @@ public class GameScene extends Scene implements IOnSceneTouchListener, IScrollDe
 		
 		load.load();
 		
-		hud.setInfoTabText("Loaded." + logic.getMap().getRegionById(0).getNumberOfSoldiers());
-		
 	}
 
 }

@@ -66,6 +66,15 @@ public class SceneManager {
 		case SPLASH: 
 			break;
 		case MENU:
+			
+			if(gameScene != null) {
+				
+				if(((GameScene) gameScene).hud.isVisible()) {
+					((GameScene) gameScene).hud.setVisible(false);
+				} 
+
+			}
+
 			engine.setScene(mainMenuScene);
 			break;
 		case OPTIONS:
@@ -80,6 +89,10 @@ public class SceneManager {
 				gameScene = new GameScene();
 				firstTime = false;
 			}
+			
+			if(!((GameScene) gameScene).hud.isVisible()) {
+				((GameScene) gameScene).hud.setVisible(true);
+			} 
 			
 			((GameScene)gameScene).showInitialHUD();
 			engine.setScene(gameScene);
