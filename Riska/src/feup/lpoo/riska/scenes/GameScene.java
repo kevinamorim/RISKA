@@ -3,10 +3,13 @@ package feup.lpoo.riska.scenes;
 import java.util.ArrayList;
 import java.util.Random;
 
+import org.andengine.entity.IEntity;
+import org.andengine.entity.modifier.DelayModifier;
 import org.andengine.entity.scene.IOnSceneTouchListener;
 import org.andengine.entity.scene.Scene;
 import org.andengine.entity.sprite.AnimatedSprite;
 import org.andengine.entity.sprite.Sprite;
+import org.andengine.entity.text.Text;
 import org.andengine.input.touch.TouchEvent;
 import org.andengine.input.touch.detector.ScrollDetector;
 import org.andengine.input.touch.detector.ScrollDetector.IScrollDetectorListener;
@@ -22,6 +25,7 @@ import feup.lpoo.riska.logic.GameLogic;
 import feup.lpoo.riska.logic.GameLogic.GAME_STATE;
 import feup.lpoo.riska.logic.MainActivity;
 import feup.lpoo.riska.resources.ResourceCache;
+import feup.lpoo.riska.scenes.SceneManager.SceneType;
 import android.graphics.Point;
 import android.util.Log;
 
@@ -61,6 +65,10 @@ public class GameScene extends Scene implements IOnSceneTouchListener, IScrollDe
 	
 	public Region selectedRegion;
 	public Region targetedRegion;
+	
+	private boolean touchLocked;
+	
+
 	
 	// ======================================================
 	// DOUBLE TAP
@@ -134,6 +142,7 @@ public class GameScene extends Scene implements IOnSceneTouchListener, IScrollDe
 		hud.setInfoTabText(logic.getCurrentPlayer().getSoldiersToDeploy() + " left to deploy");
 		
 		createScrollDetector();
+
 		
 		setRegionButtons();
 
@@ -144,6 +153,7 @@ public class GameScene extends Scene implements IOnSceneTouchListener, IScrollDe
 		 * Details Scene
 		 */
 		detailScene = new DetailScene();
+		
 	}
 	
 	private void setRegionButtons() {
@@ -163,6 +173,10 @@ public class GameScene extends Scene implements IOnSceneTouchListener, IScrollDe
 	
 	@Override
 	public boolean onSceneTouchEvent(Scene pScene, TouchEvent pSceneTouchEvent) {
+		
+		if(touchLocked) {
+			return false;
+		}
 		
 		switch(pSceneTouchEvent.getMotionEvent().getActionMasked()) {
 		case TouchEvent.ACTION_UP:
@@ -197,6 +211,10 @@ public class GameScene extends Scene implements IOnSceneTouchListener, IScrollDe
 	
 	public void onRegionTouched(Region pRegion) {
 		
+		if(touchLocked) {
+			return;
+		}
+		
 		switch(logic.getState()) {
 		
 		case DEPLOYMENT:
@@ -213,7 +231,7 @@ public class GameScene extends Scene implements IOnSceneTouchListener, IScrollDe
 		}
 	}
 
-	private void targetRegion(Region pRegion) {
+	public void targetRegion(Region pRegion) {
 		if(selectedRegion != null) {
 			
 			if(pRegion.isNeighbourOf(selectedRegion)) {
@@ -250,7 +268,7 @@ public class GameScene extends Scene implements IOnSceneTouchListener, IScrollDe
 		setInfoTabToChooseEnemyRegion();
 	}
 
-	private void selectRegion(Region pRegion) {
+	public void selectRegion(Region pRegion) {
 		
 		if(selectedRegion != null) {
 			selectedRegion.unfocus();
@@ -397,6 +415,7 @@ public class GameScene extends Scene implements IOnSceneTouchListener, IScrollDe
 		scrollDetector.setEnabled(true);
 		
 		logic.turnDone = true;
+		
 		logic.updateGame();
 			
 	}
@@ -516,4 +535,66 @@ public class GameScene extends Scene implements IOnSceneTouchListener, IScrollDe
 	public void setInfoTabToProceedToAttack() {
 		hud.setInfoTabText("Attack! Attack!");
 	}
+	
+	
+	public void simulateCPU(float pDelay, final Region pRegion1, final Region pRegion2) {
+		
+		lockUserInput();
+		hud.cpuPlayingMsg.setVisible(true);
+		
+		DelayModifier selectRegionMod = new DelayModifier(pDelay) {
+			
+			@Override
+			protected void onModifierFinished(IEntity pItem) {
+				selectRegion(pRegion1);
+			}
+			
+		};
+		
+		DelayModifier targetRegionMod = new DelayModifier(pDelay * 2) {
+			
+			@Override
+			protected void onModifierFinished(IEntity pItem) {
+				targetRegion(pRegion2);
+			}
+			
+		};
+		
+		DelayModifier attackMod = new DelayModifier(pDelay * 3) {
+			
+			@Override
+			protected void onModifierFinished(IEntity pItem) {
+				unlockUserInput();
+				hud.cpuPlayingMsg.setVisible(false);
+				logic.attack(pRegion1, pRegion2);
+			}
+			
+		};
+		
+		
+		registerEntityModifier(selectRegionMod);
+		registerEntityModifier(targetRegionMod);
+		registerEntityModifier(attackMod);
+
+		
+	}
+	
+	public void lockUserInput() {
+		
+		doubleTapAllowed = false;
+		scrollDetector.setEnabled(false);
+		touchLocked = true;
+		
+	}
+	
+	public void unlockUserInput() {
+		
+		doubleTapAllowed = true;
+		scrollDetector.setEnabled(true);
+		touchLocked = false;
+		
+	}
+
 }
+
+

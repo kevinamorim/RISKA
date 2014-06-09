@@ -2,9 +2,15 @@ package feup.lpoo.riska.logic;
 
 import java.util.ArrayList;
 import java.util.Random;
+import java.util.Timer;
 
+import org.andengine.engine.handler.timer.TimerHandler;
+import org.andengine.entity.IEntity;
+import org.andengine.entity.modifier.DelayModifier;
 import org.andengine.util.adt.color.Color;
+import org.andengine.util.modifier.IModifier;
 
+import android.net.wifi.p2p.WifiP2pManager.ActionListener;
 import android.util.Log;
 import feup.lpoo.riska.elements.Map;
 import feup.lpoo.riska.elements.Player;
@@ -12,6 +18,7 @@ import feup.lpoo.riska.elements.Region;
 import feup.lpoo.riska.generator.BattleGenerator;
 import feup.lpoo.riska.resources.ResourceCache;
 import feup.lpoo.riska.scenes.SceneManager;
+import feup.lpoo.riska.scenes.SceneManager.SceneType;
 
 public class GameLogic {
 	
@@ -27,6 +34,7 @@ public class GameLogic {
 	// ======================================================
 	private final int MIN_PLAYERS_IN_GAME = 2;
 	private final float BONUS_FACTOR = 0.1f;
+	private final float CPU_DELAY = 1.0f;
 	
 	public enum GAME_STATE {
 		
@@ -198,10 +206,14 @@ public class GameLogic {
 			}
 			
 			if(region2 != null) {
+				
 				done = true;
-				sceneManager.getGameScene().selectedRegion = region1;
-				sceneManager.getGameScene().targetedRegion = region2;
-				attack(region1, region2);
+				
+				//sceneManager.getGameScene().selectRegion(region1);
+				//sceneManager.getGameScene().targetRegion(region2);			
+				//attack(region1, region2);
+				sceneManager.getGameScene().simulateCPU(CPU_DELAY, region1, region2);
+				
 			}
 			
 		}

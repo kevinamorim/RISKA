@@ -34,6 +34,8 @@ public class GameHUD extends HUD implements Displayable {
 	// ======================================================
 	private long lastTimeTouched;
 	
+	public Text cpuPlayingMsg;
+	
 	private ButtonSprite attackButton;
 	private ButtonSprite detailsButton;
 	
@@ -60,6 +62,16 @@ public class GameHUD extends HUD implements Displayable {
 	 * Creates the display for the given scene.
 	 */
 	public void createDisplay() {
+		
+		String str = "WAIT FOR CPU TO FINISH";
+		
+		cpuPlayingMsg = new Text(MainActivity.CAMERA_WIDTH / 2, MainActivity.CAMERA_HEIGHT / 2,
+				resources.getGameFont(), str, activity.getVertexBufferObjectManager());
+		
+		cpuPlayingMsg.setColor(Color.RED);
+		cpuPlayingMsg.setScale(1.5f);
+		cpuPlayingMsg.setVisible(false);
+		attachChild(cpuPlayingMsg);
 		
 		// =================================
 		//  NEW ATTACK BUTTON
@@ -143,6 +155,10 @@ public class GameHUD extends HUD implements Displayable {
 		/*
 		 * ==================================
 		 */
+		
+		
+		
+
 		
 	}
 	
