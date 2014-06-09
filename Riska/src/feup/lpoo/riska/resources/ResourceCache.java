@@ -18,6 +18,7 @@ import org.andengine.opengl.texture.region.TiledTextureRegion;
 
 import android.graphics.Color;
 import android.graphics.Point;
+import android.graphics.Typeface;
 import feup.lpoo.riska.elements.Map;
 import feup.lpoo.riska.elements.Region;
 import feup.lpoo.riska.io.FileRead;
@@ -65,12 +66,6 @@ public class ResourceCache {
 	protected BitmapTextureAtlas mSliderButtonTextureAtlas;
 	protected TiledTextureRegion mSliderButtonTiledTextureRegion;
 
-	protected BitmapTextureAtlas mFontTexture;
-	protected Font mFont;
-
-	protected BitmapTextureAtlas mGameFontTexture;
-	protected Font mGameFont;
-
 	protected BitmapTextureAtlas mFlagsTextureAtlas;
 	protected ITextureRegion mFlagsTextureRegion;
 
@@ -91,6 +86,19 @@ public class ResourceCache {
 
 	protected BitmapTextureAtlas mapTextureAtlas;
 	protected ITextureRegion mapTextureRegion;
+	
+	// ======================================================
+	// FONTS
+	// ======================================================
+	protected BitmapTextureAtlas mFontTexture;
+	protected Font mFont;
+
+	protected BitmapTextureAtlas mGameFontTexture;
+	protected Font mGameFont;
+
+	public Font mInfoTabFont;
+	// ======================================================
+	// ======================================================
 
 	protected Map map;
 
@@ -217,6 +225,13 @@ public class ResourceCache {
 				Color.WHITE); /* Load the font in white, so setColor() works. */
 
 		mGameFont.load();
+		
+		/* TODO: Change info tab font. */
+		mInfoTabFont = FontFactory.create(engine.getFontManager(), 
+				engine.getTextureManager(), 512, 512, 
+				Typeface.create(Typeface.DEFAULT, Typeface.BOLD), 20);
+		
+		mInfoTabFont.load();
 
 
 		// =================================================================================

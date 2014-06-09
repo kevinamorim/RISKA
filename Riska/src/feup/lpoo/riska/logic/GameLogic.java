@@ -133,6 +133,7 @@ public class GameLogic {
 			currentPlayer = getNextPlayer();
 			
 			if(currentPlayer.equals(players.get(0))) { /* If all players have deployed their soldiers. */
+				sceneManager.getGameScene().setInfoTabToChooseOwnRegion();
 				state = GAME_STATE.PLAY;
 			} else {
 				

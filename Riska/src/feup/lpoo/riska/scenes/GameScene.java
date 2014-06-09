@@ -232,6 +232,8 @@ public class GameScene extends Scene implements IOnSceneTouchListener, IScrollDe
 				detailScene.setAttributes(selectedRegion, targetedRegion);
 				hud.showAttackButton();	
 				
+				setInfoTabToProceedToAttack();
+				
 				Log.d("Regions", "Targeted: " + pRegion.getName());
 			}
 		}
@@ -244,6 +246,8 @@ public class GameScene extends Scene implements IOnSceneTouchListener, IScrollDe
 		
 		detailScene.setAttributes(selectedRegion, null);
 		hud.hideAttackButton();
+		
+		setInfoTabToChooseEnemyRegion();
 	}
 
 	private void selectRegion(Region pRegion) {
@@ -268,6 +272,8 @@ public class GameScene extends Scene implements IOnSceneTouchListener, IScrollDe
 		
 		pRegion.focus();
 		
+		setInfoTabToChooseEnemyRegion();
+		
 		Log.d("Regions", "Selected: " + pRegion.getName());
 	}
 	
@@ -285,7 +291,9 @@ public class GameScene extends Scene implements IOnSceneTouchListener, IScrollDe
 		
 		selectedRegion = null;
 
-		pRegion.focus();
+		pRegion.unfocus();
+		
+		setInfoTabToChooseOwnRegion();
 	}
 
 	// ======================================================
@@ -427,7 +435,6 @@ public class GameScene extends Scene implements IOnSceneTouchListener, IScrollDe
 		hud.setInfoTabText(pText);
 	}
 	
-
 	public BattleScene getBattleScene() {
 		return battleScene;
 	}
@@ -489,4 +496,19 @@ public class GameScene extends Scene implements IOnSceneTouchListener, IScrollDe
 		
 	}
 	
+	
+	// ======================================================
+	// INFO TAB
+	// ======================================================
+	public void setInfoTabToChooseOwnRegion() {
+		hud.setInfoTabText("Tap a region to select.");
+	}
+	
+	public void setInfoTabToChooseEnemyRegion() {
+		hud.setInfoTabText("Tap an enemy neighbour.");
+	}
+	
+	public void setInfoTabToProceedToAttack() {
+		hud.setInfoTabText("Attack! Attack!");
+	}
 }

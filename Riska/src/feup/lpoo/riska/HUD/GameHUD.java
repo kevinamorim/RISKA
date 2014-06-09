@@ -101,12 +101,12 @@ public class GameHUD extends HUD implements Displayable {
 				resources.getInfoTabTexture(),
 				activity.getVertexBufferObjectManager());
 		
-		infoTab.setScaleX(2.0f);
+		infoTab.setScaleX(2.4f);
 		
 		infoTabText = new Text(infoTab.getWidth() / 2, infoTab.getHeight() / 2,
-				resources.getGameFont(), "NO INFO", 1000, activity.getVertexBufferObjectManager());
+				resources.mInfoTabFont, "NO INFO", 1000, activity.getVertexBufferObjectManager());
 		
-		infoTabText.setScale(0.6f);
+		//infoTabText.setScale(0.6f);
 		infoTabText.setColor(Color.BLACK);
 
 		infoTab.attachChild(infoTabText);
