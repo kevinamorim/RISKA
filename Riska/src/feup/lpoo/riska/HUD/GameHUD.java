@@ -88,7 +88,8 @@ public class GameHUD extends HUD implements Displayable {
 			}
 		};
 		
-		attackButton.setScale(0.3f);
+		attackButton.setScaleX(0.3f);
+		attackButton.setScaleY(0.2f);
 		attackButton.setPosition((MainActivity.CAMERA_WIDTH/2),
 				attackButton.getScaleY() * attackButton.getHeight() / 2);
 		
@@ -106,7 +107,6 @@ public class GameHUD extends HUD implements Displayable {
 		infoTabText = new Text(infoTab.getWidth() / 2, infoTab.getHeight() / 2,
 				resources.mInfoTabFont, "NO INFO", 1000, activity.getVertexBufferObjectManager());
 		
-		//infoTabText.setScale(0.6f);
 		infoTabText.setColor(Color.BLACK);
 
 		infoTab.attachChild(infoTabText);

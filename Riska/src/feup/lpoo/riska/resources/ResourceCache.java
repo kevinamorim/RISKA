@@ -229,7 +229,7 @@ public class ResourceCache {
 		/* TODO: Change info tab font. */
 		mInfoTabFont = FontFactory.create(engine.getFontManager(), 
 				engine.getTextureManager(), 512, 512, 
-				Typeface.create(Typeface.DEFAULT, Typeface.BOLD), 20);
+				Typeface.create(Typeface.DEFAULT, Typeface.BOLD), 28);
 		
 		mInfoTabFont.load();
 
