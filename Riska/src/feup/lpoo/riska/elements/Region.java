@@ -317,6 +317,7 @@ public class Region extends Element {
 	 * @param newOwner : new owner
 	 */
 	public void changeOwner(Player newOwner) {
+		
 		if(owner != null) {
 			owner.removeRegion(this);
 		}
@@ -330,9 +331,26 @@ public class Region extends Element {
 		secColor = newOwner.getScondaryColor();
 
 		updateButtonColors();
-		focused = false;
 		
-		changeFocus(false);
+		unfocus();
+		
 		updateSoldiers();
+	}
+	
+	
+	public void focus() {
+		
+		focused = true;
+		this.button.setColor(secColor);
+		this.buttonText.setColor(priColor);
+		
+	}
+	
+	public void unfocus() {
+		
+		focused = false;
+		this.button.setColor(priColor);
+		this.buttonText.setColor(secColor);
+		
 	}
 }

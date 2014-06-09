@@ -233,7 +233,7 @@ public class GameLogic {
 		if(won) {
 			attackerWon(region1, region2);
 		} else {
-			defenderWon(region1);
+			defenderWon(region1, region2);
 		}
 				
 	}
@@ -245,13 +245,18 @@ public class GameLogic {
 		region1.clearSoldiers();
 		region1.addSoldiers(1);
 		
+		region1.unfocus();
+		
 	}
 	
 	
-	public void defenderWon(Region region1) {
+	public void defenderWon(Region region1, Region region2) {
 		
 		region1.clearSoldiers();
 		region1.addSoldiers(1);
+		
+		region1.unfocus();
+		region2.unfocus();
 		
 	}
 	

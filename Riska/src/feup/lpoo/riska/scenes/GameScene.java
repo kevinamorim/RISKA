@@ -219,7 +219,7 @@ public class GameScene extends Scene implements IOnSceneTouchListener, IScrollDe
 			if(pRegion.isNeighbourOf(selectedRegion)) {
 				
 				if(targetedRegion != null) {
-					targetedRegion.changeFocus(false);
+					targetedRegion.unfocus();
 					targetedRegion = null;
 					
 					hud.hideAttackButton();
@@ -227,7 +227,7 @@ public class GameScene extends Scene implements IOnSceneTouchListener, IScrollDe
 				
 				targetedRegion = pRegion;
 				
-				pRegion.changeFocus(true);
+				pRegion.focus();
 
 				detailScene.setAttributes(selectedRegion, targetedRegion);
 				hud.showAttackButton();	
@@ -240,7 +240,7 @@ public class GameScene extends Scene implements IOnSceneTouchListener, IScrollDe
 	private void untargetRegion(Region pRegion) {
 		targetedRegion = null;
 		
-		pRegion.changeFocus(false);
+		pRegion.unfocus();
 		
 		detailScene.setAttributes(selectedRegion, null);
 		hud.hideAttackButton();
@@ -249,11 +249,11 @@ public class GameScene extends Scene implements IOnSceneTouchListener, IScrollDe
 	private void selectRegion(Region pRegion) {
 		
 		if(selectedRegion != null) {
-			selectedRegion.changeFocus(false);
+			selectedRegion.unfocus();
 			selectedRegion = null;
 			
 			if(targetedRegion != null) {
-				targetedRegion.changeFocus(false);
+				targetedRegion.unfocus();
 				targetedRegion = null;
 			}
 			
@@ -266,7 +266,7 @@ public class GameScene extends Scene implements IOnSceneTouchListener, IScrollDe
 		detailScene.setAttributes(selectedRegion, null);
 		hud.showDetailButton();
 		
-		pRegion.changeFocus(true);
+		pRegion.focus();
 		
 		Log.d("Regions", "Selected: " + pRegion.getName());
 	}
@@ -274,7 +274,7 @@ public class GameScene extends Scene implements IOnSceneTouchListener, IScrollDe
 	private void unselectRegion(Region pRegion) {	
 
 		if(targetedRegion != null) {
-			targetedRegion.changeFocus(false);
+			targetedRegion.unfocus();
 			targetedRegion = null;
 			
 			hud.hideAttackButton();
@@ -285,7 +285,7 @@ public class GameScene extends Scene implements IOnSceneTouchListener, IScrollDe
 		
 		selectedRegion = null;
 
-		pRegion.changeFocus(false);
+		pRegion.focus();
 	}
 
 	// ======================================================
@@ -375,9 +375,6 @@ public class GameScene extends Scene implements IOnSceneTouchListener, IScrollDe
 	
 		hud.showInfoTab();		
 		hud.hideAttackButton();
-		
-		//selectedRegion.changeFocus(false);
-		//targetedRegion.changeFocus(false);
 		
 		battleScene = null;
 		selectedRegion = null;
