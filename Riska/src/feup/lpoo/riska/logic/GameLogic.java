@@ -33,7 +33,7 @@ public class GameLogic {
 	// CONSTANTS
 	// ======================================================
 	private final int MIN_PLAYERS_IN_GAME = 2;
-	private final float BONUS_FACTOR = 1.0f;
+	private final float BONUS_FACTOR = 0.1f;
 	private final float CPU_DELAY = 1.0f;
 	
 	public enum GAME_STATE {
@@ -315,5 +315,8 @@ public class GameLogic {
 		
 	}
 	
+	public ArrayList<Player> getPlayers() {
+		return players;
+	}
 
 }

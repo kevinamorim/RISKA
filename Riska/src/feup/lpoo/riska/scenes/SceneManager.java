@@ -90,4 +90,5 @@ public class SceneManager {
 	public GameScene getGameScene() {
 		return ((GameScene) gameScene);
 	}
+	
 }

@@ -104,7 +104,28 @@ public class MainActivity extends BaseGameActivity {
 	 */
 	@Override
 	public void onBackPressed() {
-		this.finish();
+		switch(sceneManager.getCurrentScene()) {
+		case SPLASH:
+			break;
+		case MENU:		
+			this.finish();
+			break;
+		case OPTIONS:
+			sceneManager.setCurrentScene(SceneType.MENU);
+			break;
+		case LOAD_MAP:
+			break;
+		case GAME:
+			/* Save game */
+			sceneManager.getGameScene().saveGame();
+			sceneManager.setCurrentScene(SceneType.MENU);
+			break;
+		case GAME_OVER:
+			sceneManager.setCurrentScene(SceneType.MENU);
+			break;
+		default:
+			break;
+		}
 	}
 
 	public static MainActivity getSharedInstance() {

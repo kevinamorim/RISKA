@@ -21,6 +21,8 @@ import feup.lpoo.riska.elements.Map;
 import feup.lpoo.riska.elements.Player;
 import feup.lpoo.riska.elements.Region;
 import feup.lpoo.riska.generator.BattleGenerator;
+import feup.lpoo.riska.io.LoadGame;
+import feup.lpoo.riska.io.SaveGame;
 import feup.lpoo.riska.logic.GameLogic;
 import feup.lpoo.riska.logic.GameLogic.GAME_STATE;
 import feup.lpoo.riska.logic.MainActivity;
@@ -85,6 +87,7 @@ public class GameScene extends Scene implements IOnSceneTouchListener, IScrollDe
 		this.targetedRegion = null;
 		
 		activity = MainActivity.getSharedInstance();
+		
 		logic = new GameLogic();
 		sceneManager = SceneManager.getSharedInstance();	
 		cameraManager = CameraManager.getSharedInstance();
@@ -94,6 +97,14 @@ public class GameScene extends Scene implements IOnSceneTouchListener, IScrollDe
 		lastTouchTime = 0;	
 		
 		createDisplay();
+		
+		LoadGame load = new LoadGame(activity, logic);
+		
+		if(load.checkLoadGame()) {
+			hud.setInfoTabText("Existe um loading de merda");
+			load.load();
+		}
+		
 	}
 
 	@Override
@@ -602,6 +613,12 @@ public class GameScene extends Scene implements IOnSceneTouchListener, IScrollDe
 		doubleTapAllowed = true;
 		scrollDetector.setEnabled(true);
 		touchLocked = false;
+		
+	}
+
+	public void saveGame() {
+		
+		new SaveGame(activity, logic);
 		
 	}
 
