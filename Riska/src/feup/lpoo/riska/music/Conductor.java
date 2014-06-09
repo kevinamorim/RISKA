@@ -90,4 +90,8 @@ public class Conductor {
 			currentMusic.setLooping(value);
 		}
 	}
+	
+	public boolean isMusicPlaying() {
+		return currentMusic.isPlaying();
+	}
 }

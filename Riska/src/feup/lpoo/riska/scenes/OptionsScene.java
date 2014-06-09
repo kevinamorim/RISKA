@@ -11,6 +11,7 @@ import org.andengine.opengl.texture.region.TiledTextureRegion;
 import android.graphics.Color;
 import feup.lpoo.riska.gameInterface.AnimatedButtonSpriteMenuItem;
 import feup.lpoo.riska.logic.MainActivity;
+import feup.lpoo.riska.music.Conductor;
 import feup.lpoo.riska.resources.ResourceCache;
 import feup.lpoo.riska.scenes.SceneManager.SceneType;
 
@@ -19,6 +20,10 @@ public class OptionsScene extends MenuScene implements IOnMenuItemClickListener 
 	MainActivity activity; 
 	SceneManager sceneManager;
 	ResourceCache resources;
+	Conductor conductor;
+	
+	private AnimatedButtonSpriteMenuItem button_slider_sfx;
+	private AnimatedButtonSpriteMenuItem button_slider_music;
 	
 	final int RETURN = 0;
 	final int SFX = 1;
@@ -30,6 +35,7 @@ public class OptionsScene extends MenuScene implements IOnMenuItemClickListener 
 		activity = MainActivity.getSharedInstance();
 		sceneManager = SceneManager.getSharedInstance();
 		resources = ResourceCache.getSharedInstance();
+		conductor = Conductor.getSharedInstance();
 		
 		createDisplay();	
 	}
@@ -46,10 +52,10 @@ public class OptionsScene extends MenuScene implements IOnMenuItemClickListener 
 		
 		button = resources.getSliderButtonTexture();
 		
-		final AnimatedButtonSpriteMenuItem button_slider_sfx = new AnimatedButtonSpriteMenuItem(SFX, (float) 0.3*button.getWidth(),
+		button_slider_sfx = new AnimatedButtonSpriteMenuItem(SFX, (float) 0.3*button.getWidth(),
 				(float) 0.3*button.getHeight(), button, activity.getVertexBufferObjectManager());
 		
-		final AnimatedButtonSpriteMenuItem button_slider_music = new AnimatedButtonSpriteMenuItem(MUSIC, (float) 0.3*button.getWidth(),
+		button_slider_music = new AnimatedButtonSpriteMenuItem(MUSIC, (float) 0.3*button.getWidth(),
 				(float) 0.3*button.getHeight(), button, activity.getVertexBufferObjectManager());
 		
 		
@@ -81,6 +87,12 @@ public class OptionsScene extends MenuScene implements IOnMenuItemClickListener 
 		attachChild(music_text);
 		attachChild(sfx_text);
 		
+		if(conductor.isMusicPlaying()) {
+			button_slider_music.setCurrentTileIndex(0);
+		} else {
+			button_slider_music.setCurrentTileIndex(1);
+		}
+		
 		setOnMenuItemClickListener(this);	
 	}
 
@@ -96,6 +108,13 @@ public class OptionsScene extends MenuScene implements IOnMenuItemClickListener 
 		case SFX:
 			break;
 		case MUSIC:
+			if(conductor.isMusicPlaying()) {
+				conductor.pause();
+				button_slider_music.setCurrentTileIndex(1);
+			} else {
+				conductor.play();
+				button_slider_music.setCurrentTileIndex(0);
+			}
 			break;
 		default:
 				break;

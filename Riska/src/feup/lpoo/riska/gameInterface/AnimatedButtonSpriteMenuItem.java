@@ -20,7 +20,7 @@ public class AnimatedButtonSpriteMenuItem extends AnimatedSpriteMenuItem {
 	@Override
 	public void onSelected() {
 		
-		setCurrentTileIndex(1);
+		//setCurrentTileIndex(1);
 		super.onSelected();
 		
 	}
@@ -28,7 +28,7 @@ public class AnimatedButtonSpriteMenuItem extends AnimatedSpriteMenuItem {
 	@Override
 	public void onUnselected() {
 		
-		setCurrentTileIndex(0);
+		//setCurrentTileIndex(0);
 		super.onUnselected();
 		
 	}
