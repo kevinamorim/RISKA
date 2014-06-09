@@ -90,6 +90,8 @@ public class ResourceCache {
 	// ======================================================
 	// FONTS
 	// ======================================================
+	public Font mSplashFont;
+	
 	protected BitmapTextureAtlas mFontTexture;
 	protected Font mFont;
 
@@ -132,6 +134,15 @@ public class ResourceCache {
 		mLogoTextureRegion = BitmapTextureAtlasTextureRegionFactory.createFromAsset(mLogoTexture, activity, "logo.png", 0, 0);
 
 		mLogoTexture.load();	
+		
+		FontFactory.setAssetBasePath("fonts/");
+
+		mSplashFont = FontFactory.createFromAsset(engine.getFontManager(),
+				engine.getTextureManager(), 256, 512, TextureOptions.BILINEAR,
+				activity.getAssets(), "AlexisMarie.ttf", 50f, true,
+				Color.WHITE); /* Load the font in white, so setColor() works. */
+
+		mSplashFont.load();
 
 	}
 
