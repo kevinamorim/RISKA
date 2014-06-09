@@ -65,6 +65,14 @@ public class BattleScene extends Scene {
 		
 		setBackgroundEnabled(false);
 		attachChild(background);
+		
+		Text vsText = new Text(MainActivity.CAMERA_WIDTH/2, MainActivity.CAMERA_HEIGHT/2,
+				resources.getGameFont(), "VS", activity.getVertexBufferObjectManager());
+		
+		vsText.setColor(Color.RED);
+		vsText.setScale(2.0f);
+		
+		attachChild(vsText);
 	
 		int playerNum = (region1.getOwner().isCPU())? 1 : 0;
 		displayRegionInfo(region1, won, playerNum);
