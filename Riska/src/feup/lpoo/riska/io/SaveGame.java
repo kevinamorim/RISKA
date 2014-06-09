@@ -11,14 +11,18 @@ import feup.lpoo.riska.logic.MainActivity;
 public class SaveGame {
 	
 	private SharedPreferences prefs;
+	private GameLogic logic;
 	
 	public SaveGame(MainActivity activity, GameLogic logic) {
 		
 		prefs = PreferenceManager.getDefaultSharedPreferences(activity);
 		
+		this.logic = logic;
+		
 		saveGameState(logic.getState());
 		savePlayerRegions(logic.getPlayers().get(0));
 		saveCpuRegions(logic.getPlayers().get(1));
+		saveSoldiers();
 		
 	}
 
@@ -42,6 +46,20 @@ public class SaveGame {
 		editor.putInt("playerRegionsSize", player.getRegions().size());
 		for(int i = 0; i < player.getRegions().size(); i++) {
 			editor.putInt("playerRegion_" + i, player.getRegions().get(i).getId());
+		}
+		
+		editor.commit();
+		
+	}
+	
+	private void saveSoldiers() {
+		
+		Editor editor = prefs.edit();
+		
+		editor.putInt("totalRegions", logic.getMap().getNumberOfRegions());
+		
+		for(int i = 0; i < logic.getMap().getRegions().size(); i++) {
+			editor.putInt("soldiers_" + i, logic.getMap().getRegionById(i).getNumberOfSoldiers());
 		}
 		
 		editor.commit();

@@ -28,6 +28,9 @@ import feup.lpoo.riska.logic.GameLogic.GAME_STATE;
 import feup.lpoo.riska.logic.MainActivity;
 import feup.lpoo.riska.resources.ResourceCache;
 import feup.lpoo.riska.scenes.SceneManager.SceneType;
+import android.app.AlertDialog;
+import android.content.DialogInterface;
+import android.content.DialogInterface.OnClickListener;
 import android.graphics.Point;
 import android.util.Log;
 
@@ -96,14 +99,36 @@ public class GameScene extends Scene implements IOnSceneTouchListener, IScrollDe
 
 		lastTouchTime = 0;	
 		
-		createDisplay();
-		
 		LoadGame load = new LoadGame(activity, logic);
 		
 		if(load.checkLoadGame()) {
-			hud.setInfoTabText("Existe um loading de merda");
-			load.load();
+			
+			activity.runOnUiThread(new Runnable() {
+			     @Override
+			     public void run() {
+
+
+			         AlertDialog.Builder alert = new AlertDialog.Builder(activity);
+			         alert.setTitle("");
+			         alert.setMessage("Load previous game?");
+			         alert.setPositiveButton("Yes", new OnClickListener() {
+			                 @Override
+			                 public void onClick(DialogInterface arg0, int arg1) {
+			                	 loadGame();
+			                 }
+			         });
+			         
+			         alert.setNegativeButton("No", null);
+
+			         alert.show();
+			     }
+			    });
+			
 		}
+		
+		createDisplay();
+		
+
 		
 	}
 
@@ -618,7 +643,19 @@ public class GameScene extends Scene implements IOnSceneTouchListener, IScrollDe
 
 	public void saveGame() {
 		
-		new SaveGame(activity, logic);
+		if(logic.getState() != GAME_STATE.PAUSED && logic.getState() != GAME_STATE.DEPLOYMENT) {
+			new SaveGame(activity, logic);
+		}
+		
+	}
+	
+	public void loadGame() {
+		
+		LoadGame load = new LoadGame(activity, logic);
+		
+		load.load();
+		
+		hud.setInfoTabText("Loaded." + logic.getMap().getRegionById(0).getNumberOfSoldiers());
 		
 	}
 
