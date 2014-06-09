@@ -13,6 +13,8 @@ import org.andengine.entity.scene.Scene;
 import org.andengine.opengl.font.Font;
 import org.andengine.ui.activity.BaseGameActivity;
 
+import android.app.AlertDialog;
+import android.content.DialogInterface;
 import feup.lpoo.riska.resources.ResourceCache;
 import feup.lpoo.riska.scenes.SceneManager;
 import feup.lpoo.riska.scenes.SceneManager.SceneType;
@@ -108,7 +110,16 @@ public class MainActivity extends BaseGameActivity {
 		case SPLASH:
 			break;
 		case MENU:		
-			this.finish();
+			new AlertDialog.Builder(this)
+			.setMessage("Exit?")
+			.setCancelable(false)
+			.setPositiveButton("Yes", new DialogInterface.OnClickListener() {
+				public void onClick(DialogInterface dialog, int id) {
+					finish();
+				}
+			})
+			.setNegativeButton("No", null)
+			.show();
 			break;
 		case OPTIONS:
 			sceneManager.setCurrentScene(SceneType.MENU);
