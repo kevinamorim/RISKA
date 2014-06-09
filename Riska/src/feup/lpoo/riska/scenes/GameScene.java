@@ -361,6 +361,8 @@ public class GameScene extends Scene implements IOnSceneTouchListener, IScrollDe
 	
 	public void showBattleScene(boolean result) {
 		
+		hud.hideAttackButton();
+		
 		Region tmpSelectedRegion = new Region(-1, selectedRegion.getName(), selectedRegion.getStratCenter(), "");
 		tmpSelectedRegion.setOwner(selectedRegion.getOwner());
 		Region tmpTargetedRegion = new Region(-1, targetedRegion.getName(), targetedRegion.getStratCenter(), "");
