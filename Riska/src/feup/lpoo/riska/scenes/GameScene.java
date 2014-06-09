@@ -251,10 +251,9 @@ public class GameScene extends Scene implements IOnSceneTouchListener, IScrollDe
 				
 				if(!touchLocked) {
 					hud.showAttackButton();	
+					setInfoTabToProceedToAttack();
 				}
-				
-				setInfoTabToProceedToAttack();
-				
+					
 				Log.d("Regions", "Targeted: " + pRegion.getName());
 			}
 		}
@@ -292,13 +291,11 @@ public class GameScene extends Scene implements IOnSceneTouchListener, IScrollDe
 		
 		if(!touchLocked) {
 			hud.showDetailButton();
+			setInfoTabToChooseEnemyRegion();
 		}
 
-		
 		pRegion.focus();
-		
-		setInfoTabToChooseEnemyRegion();
-		
+			
 		Log.d("Regions", "Selected: " + pRegion.getName());
 	}
 	
@@ -545,12 +542,15 @@ public class GameScene extends Scene implements IOnSceneTouchListener, IScrollDe
 		hud.setInfoTabText("Attack! Attack!");
 	}
 	
+	public void setInfoTabToWait() {
+		hud.setInfoTabText("Wait...");
+	}
 	
 	public void simulateCPU(float pDelay, final Region pRegion1, final Region pRegion2) {
 		
 		lockUserInput();
-		hud.cpuPlayingMsg.setVisible(true);
 		hud.lockHUD();
+		setInfoTabToWait();
 		
 		DelayModifier selectRegionMod = new DelayModifier(pDelay) {
 			
@@ -575,7 +575,6 @@ public class GameScene extends Scene implements IOnSceneTouchListener, IScrollDe
 			@Override
 			protected void onModifierFinished(IEntity pItem) {
 				unlockUserInput();
-				hud.cpuPlayingMsg.setVisible(false);
 				hud.unlockHUD();
 				logic.attack(pRegion1, pRegion2);
 			}
