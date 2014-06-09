@@ -105,7 +105,6 @@ public class GameHUD extends HUD implements Displayable {
 		attackButton.setPosition((MainActivity.CAMERA_WIDTH/2),
 				attackButton.getScaleY() * attackButton.getHeight() / 2);
 		
-
 		// =================================
 		//  NEW INFO TAB
 		// =================================
@@ -165,16 +164,16 @@ public class GameHUD extends HUD implements Displayable {
 		
 		GameScene gameScene = sceneManager.getGameScene();
 		DetailScene details = gameScene.getDetailScene();
+		
+		changeDetailButton();
 	
 		if(details.isVisible()) {
-			detailsButton.setCurrentTileIndex(0);
 			gameScene.hideDetailPanel();
 			details.setVisible(false);
 		}
 		else {
 		
 			if(gameScene.getBattleScene() != null && gameScene.getBattleScene().isVisible()) {
-				detailsButton.setCurrentTileIndex(0);
 				gameScene.hideBattleScene();
 			} else {				
 				details.setAttributes(gameScene.getSelectedRegion(), gameScene.getTargetedRegion());
@@ -289,12 +288,31 @@ public class GameHUD extends HUD implements Displayable {
 		}
 	}
 
-	
 	public void changeDetailButton() {
 		if(detailsButton.getCurrentTileIndex() == 0) {
 			detailsButton.setCurrentTileIndex(1);
 		} else {
 			detailsButton.setCurrentTileIndex(0);
 		}
+	}
+	
+	/** 
+	 * Locks HUD so the user can't use it. 
+	 */
+	public void lockHUD() {
+		
+		detailsButton.setEnabled(false);
+		attackButton.setEnabled(false);
+		
+	}
+	
+	/** 
+	 * Unlocks HUD so the user can use it.
+	 */
+	public void unlockHUD() {
+		
+		detailsButton.setEnabled(true);
+		attackButton.setEnabled(true);
+		
 	}
 }
