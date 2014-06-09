@@ -156,10 +156,6 @@ public class GameHUD extends HUD implements Displayable {
 		 * ==================================
 		 */
 		
-		
-		
-
-		
 	}
 	
 	/**
@@ -207,6 +203,7 @@ public class GameHUD extends HUD implements Displayable {
 		if((now - lastTimeTouched) > MIN_TOUCH_INTERVAL) {
 			attackButton.setCurrentTileIndex(0);
 			sceneManager.getGameScene().onAttack();
+			sceneManager.getGameScene().getCameraManager().zoomOut();
 		}
 
 		lastTimeTouched = System.currentTimeMillis();
