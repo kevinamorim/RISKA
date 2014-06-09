@@ -592,7 +592,8 @@ public class GameScene extends Scene implements IOnSceneTouchListener, IScrollDe
 			
 			@Override
 			protected void onModifierFinished(IEntity pItem) {
-				selectRegion(pRegion1);
+				pRegion1.focus();
+				
 			}
 			
 		};
@@ -601,7 +602,7 @@ public class GameScene extends Scene implements IOnSceneTouchListener, IScrollDe
 			
 			@Override
 			protected void onModifierFinished(IEntity pItem) {
-				targetRegion(pRegion2);
+				pRegion2.focus();
 			}
 			
 		};
@@ -610,9 +611,16 @@ public class GameScene extends Scene implements IOnSceneTouchListener, IScrollDe
 			
 			@Override
 			protected void onModifierFinished(IEntity pItem) {
+				
+				selectRegion(pRegion1);
+				targetRegion(pRegion2);
+				
 				unlockUserInput();
 				hud.unlockHUD();
 				logic.attack(pRegion1, pRegion2);
+				
+				// untargetRegion(pRegion1);
+				// unselectRegion(pRegion1);
 			}
 			
 		};

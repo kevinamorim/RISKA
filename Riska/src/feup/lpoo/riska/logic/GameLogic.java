@@ -238,8 +238,7 @@ public class GameLogic {
 		
 		BattleGenerator battleGenerator = new BattleGenerator();
 		
-		boolean won = 
-				battleGenerator.simulateAttack(region1.getSoldiers(), region2.getSoldiers());
+		boolean won = battleGenerator.simulateAttack(region1.getSoldiers(), region2.getSoldiers());
 		
 		sceneManager.getGameScene().showBattleScene(won);
 				
@@ -247,8 +246,7 @@ public class GameLogic {
 			attackerWon(region1, region2);
 		} else {
 			defenderWon(region1, region2);
-		}
-				
+		}			
 	}
 	
 	public void attackerWon(Region region1, Region region2) {
