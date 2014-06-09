@@ -286,7 +286,6 @@ public class ResourceCache {
 			backgroundMusic = MusicFactory.createMusicFromAsset(engine.getMusicManager(), activity, "sounds/music.mp3");
 
 			conductor.setBackgroundMusic(backgroundMusic);
-			conductor.playBackgroundMusic();
 		}
 		catch (IOException e)
 		{
