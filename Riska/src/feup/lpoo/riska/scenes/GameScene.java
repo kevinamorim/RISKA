@@ -303,10 +303,10 @@ public class GameScene extends Scene implements IOnSceneTouchListener, IScrollDe
 
 	private void untargetRegion() {
 		
-		targetedRegion = null;
-		
 		targetedRegion.unfocus();
 		
+		targetedRegion = null;
+
 		detailScene.setAttributes(selectedRegion, null);
 		hud.hideAttackButton();
 		
