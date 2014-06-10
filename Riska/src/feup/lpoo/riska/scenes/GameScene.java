@@ -304,6 +304,10 @@ public class GameScene extends Scene implements IOnSceneTouchListener, IScrollDe
 		hud.hideAttackButton();
 		
 		setInfoTabToChooseEnemyRegion();
+		
+		for(int i = 0; i < logic.getMap().getRegions().size(); i++) {
+			showRegionButton(logic.getMap().getRegions().get(i));
+		}
 	}
 
 	public void selectRegion(Region pRegion) {
@@ -331,7 +335,20 @@ public class GameScene extends Scene implements IOnSceneTouchListener, IScrollDe
 		}
 
 		pRegion.focus();
-			
+
+		for(int i = 0; i < logic.getMap().getRegions().size(); i++) {
+
+			Region r = logic.getMap().getRegions().get(i);
+
+			if( (!pRegion.getNeighbours().contains(r) && !r.equals(selectedRegion))
+					|| (r.getOwner().equals(logic.getPlayers().get(0)) && !r.equals(selectedRegion))
+					) {
+
+				hideRegionButton(logic.getMap().getRegions().get(i));
+
+			}
+		}
+
 		Log.d("Regions", "Selected: " + pRegion.getName());
 	}
 	
@@ -350,6 +367,10 @@ public class GameScene extends Scene implements IOnSceneTouchListener, IScrollDe
 		selectedRegion = null;
 
 		pRegion.unfocus();
+		
+		for(int i = 0; i < logic.getMap().getRegions().size(); i++) {
+			showRegionButton(logic.getMap().getRegions().get(i));
+		}
 		
 		setInfoTabToChooseOwnRegion();
 	}
@@ -448,8 +469,9 @@ public class GameScene extends Scene implements IOnSceneTouchListener, IScrollDe
 		hud.hideAttackButton();
 		
 		battleScene = null;
-		selectedRegion = null;
-		targetedRegion = null;
+//		selectedRegion = null;
+//		targetedRegion = null;
+		unselectRegion(selectedRegion);
 		
 		setInfoTabToChooseOwnRegion();
 		
@@ -477,6 +499,7 @@ public class GameScene extends Scene implements IOnSceneTouchListener, IScrollDe
 		
 		attachChild(detailScene);
 	}
+	
 	
 	public void hideDetailPanel() {
 		doubleTapAllowed = true;
@@ -665,6 +688,36 @@ public class GameScene extends Scene implements IOnSceneTouchListener, IScrollDe
 		
 	}
 
+	// ======================================================
+	// REGION BUTTONS
+	// ======================================================
+	private void hideRegionButton(Region pRegion) {
+		
+		if(pRegion.getButton().isVisible()) {
+			
+			pRegion.getButton().setVisible(false);
+			
+			if(getTouchAreas().contains(pRegion.getButton())) {
+				unregisterTouchArea(pRegion.getButton());
+			}
+			
+		}	
+	}
+	
+	private void showRegionButton(Region pRegion) {
+		
+		if(!pRegion.getButton().isVisible()) {
+			
+			pRegion.getButton().setVisible(true);
+			
+			if(!getTouchAreas().contains(pRegion.getButton())) {
+				registerTouchArea(pRegion.getButton());
+			}
+		
+		}
+	}
+	
+	
 }
 
 
