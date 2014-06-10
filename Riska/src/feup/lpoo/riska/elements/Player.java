@@ -37,6 +37,7 @@ public class Player extends Object {
 		
 		this.priColor = primaryColor;
 		this.secColor = secondaryColor;
+		
 	}
 	
 	/**

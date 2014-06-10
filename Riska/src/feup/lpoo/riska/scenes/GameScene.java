@@ -321,17 +321,19 @@ public class GameScene extends Scene implements IOnSceneTouchListener, IScrollDe
 			unselectRegion();
 		}
 		
-		selectedRegion = pRegion;
-		selectedRegion.focus();
-		
-		detailScene.setAttributes(selectedRegion, null);
-		
-		hud.showDetailButton();
-		setInfoTabToChooseEnemyRegion();
+		if(pRegion.canAttack()) {
+			
+			selectedRegion = pRegion;
+			selectedRegion.focus();
+			
+			detailScene.setAttributes(selectedRegion, null);
+			
+			hud.showDetailButton();
+			setInfoTabToChooseEnemyRegion();
 
-		showOnlyNeighbourRegions(pRegion);
-
-		//Log.d("Regions", "Selected: " + selectedRegion.getName());
+			showOnlyNeighbourRegions(pRegion);
+			
+		}
 		
 	}
 	
