@@ -5,6 +5,7 @@ import java.util.Arrays;
 import org.andengine.entity.IEntity;
 import org.andengine.entity.modifier.DelayModifier;
 import org.andengine.entity.scene.IOnSceneTouchListener;
+import org.andengine.entity.scene.ITouchArea;
 import org.andengine.entity.scene.Scene;
 import org.andengine.entity.sprite.AnimatedSprite;
 import org.andengine.entity.sprite.Sprite;
@@ -64,8 +65,6 @@ public class GameScene extends Scene implements IOnSceneTouchListener, IScrollDe
 	
 	public Region selectedRegion;
 	public Region targetedRegion;
-	
-	private boolean touchLocked;
 	
 	private boolean doubleTapAllowed = true;
 	private long lastTouchTime;
@@ -228,11 +227,7 @@ public class GameScene extends Scene implements IOnSceneTouchListener, IScrollDe
 	
 	@Override
 	public boolean onSceneTouchEvent(Scene pScene, TouchEvent pSceneTouchEvent) {
-		
-		if(touchLocked) {
-			return false;
-		}
-		
+			
 		switch(pSceneTouchEvent.getMotionEvent().getActionMasked()) {
 		case TouchEvent.ACTION_UP:
 			
@@ -265,10 +260,6 @@ public class GameScene extends Scene implements IOnSceneTouchListener, IScrollDe
 	
 	public void onRegionTouched(Region pRegion) {
 		
-		if(touchLocked) {
-			return;
-		}
-		
 		switch(logic.getState()) {
 		
 		case DEPLOYMENT:
@@ -300,10 +291,8 @@ public class GameScene extends Scene implements IOnSceneTouchListener, IScrollDe
 
 				detailScene.setAttributes(selectedRegion, targetedRegion);
 				
-				if(!touchLocked) {
-					hud.showAttackButton();	
-					setInfoTabToProceedToAttack();
-				}
+				hud.showAttackButton();	
+				setInfoTabToProceedToAttack();
 					
 				//Log.d("Regions", "Targeted: " + pRegion.getName());
 			}
@@ -337,10 +326,8 @@ public class GameScene extends Scene implements IOnSceneTouchListener, IScrollDe
 		
 		detailScene.setAttributes(selectedRegion, null);
 		
-		if(!touchLocked) {
-			hud.showDetailButton();
-			setInfoTabToChooseEnemyRegion();
-		}
+		hud.showDetailButton();
+		setInfoTabToChooseEnemyRegion();
 
 		showOnlyNeighbourRegions(pRegion);
 
@@ -518,19 +505,9 @@ public class GameScene extends Scene implements IOnSceneTouchListener, IScrollDe
 		return battleScene;
 	}
 
-	public CameraManager getCameraManager() {
-		return cameraManager;
-	}
-
-	public Region getSelectedRegion() {
-		return selectedRegion;
-	}
-
-	public Region getTargetedRegion() {
-		return targetedRegion;
-	}
-	
-	
+	// ======================================================
+	// ======================================================
+		
 	// ======================================================
 	// onRegionTouch Handlers
 	// ======================================================
@@ -574,8 +551,7 @@ public class GameScene extends Scene implements IOnSceneTouchListener, IScrollDe
 		
 		
 	}
-	
-	
+
 	// ======================================================
 	// INFO TAB
 	// ======================================================
@@ -594,6 +570,9 @@ public class GameScene extends Scene implements IOnSceneTouchListener, IScrollDe
 	public void setInfoTabToWait() {
 		hud.setInfoTabText("Wait...");
 	}
+	
+	// ======================================================
+	// ======================================================
 	
 	public void simulateCPU(float pDelay, final Region pRegion1, final Region pRegion2) {
 		
@@ -650,7 +629,12 @@ public class GameScene extends Scene implements IOnSceneTouchListener, IScrollDe
 		
 		doubleTapAllowed = false;
 		scrollDetector.setEnabled(false);
-		touchLocked = true;
+		
+		for(Region region : logic.getMap().getRegions()) {
+			if(getTouchAreas().contains(region.getButton())) {
+				unregisterTouchArea(region.getButton());
+			}
+		}
 		
 	}
 	
@@ -658,7 +642,12 @@ public class GameScene extends Scene implements IOnSceneTouchListener, IScrollDe
 		
 		doubleTapAllowed = true;
 		scrollDetector.setEnabled(true);
-		touchLocked = false;
+		
+		for(Region region : logic.getMap().getRegions()) {
+			if(!getTouchAreas().contains(region.getButton())) {
+				registerTouchArea(region.getButton());
+			}
+		}
 		
 	}
 
@@ -731,6 +720,25 @@ public class GameScene extends Scene implements IOnSceneTouchListener, IScrollDe
 		}
 		
 	}
+	// ======================================================
+	// ======================================================
+	
+	// ======================================================
+	// GETTERS & SETTERS
+	// ======================================================
+	public CameraManager getCameraManager() {
+		return cameraManager;
+	}
+
+	public Region getSelectedRegion() {
+		return selectedRegion;
+	}
+
+	public Region getTargetedRegion() {
+		return targetedRegion;
+	}
+	// ======================================================
+	// ======================================================
 }
 
 
