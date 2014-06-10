@@ -1,6 +1,10 @@
 package feup.lpoo.riska.elements;
 
 import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Comparator;
+import java.util.Random;
+
 import org.andengine.util.adt.color.Color;
 
 /**
@@ -153,4 +157,32 @@ public class Player extends Object {
 		
 	}
 
+	/**
+	 * 
+	 * Randomly selects a region from the user that is able to attack. 
+	 * 		The chosen region should have at least one enemy neighbor. 
+	 * 		Regions with at least one enemy neighbor that has less soldiers have priority. 
+	 * 		The more soldiers a region has the more likely it is to be chosen.
+	 * @return Selected region.
+	 * 
+	 */
+	public Region selectRegion() {
+		
+		Collections.sort(regions, new Comparator<Region>() {
+			@Override
+			public int compare(Region region1, Region region2) {
+				return region1.getNumberOfSoldiers() - region2.getNumberOfSoldiers();
+			}
+		});
+		
+		for(Region region : regions) {
+			if(region.hasEnemyNeighbor() && region.canAttack()) {
+				return region;
+			}
+		}
+		
+		return null;
+		
+	}
+	
 }

@@ -1,6 +1,7 @@
 package feup.lpoo.riska.elements;
 
 import java.util.ArrayList;
+import java.util.Random;
 
 import org.andengine.entity.sprite.ButtonSprite;
 import org.andengine.entity.text.Text;
@@ -342,6 +343,27 @@ public class Region extends Element {
 		return getNumberOfSoldiers() > 1;
 	}
 	
+	public boolean hasEnemyNeighbor() {
+		for(Region region : neighbours) {
+			if(!region.getOwner().equals(owner)) {
+				return true;
+			}
+		}
+		return false;
+	}
+	
+	public ArrayList<Region> getEnemyNeighbours() {
+		ArrayList<Region> result = new ArrayList<Region>();
+		
+		for(Region region : neighbours) {
+			if(!region.getOwner().equals(owner)) {
+				result.add(region);
+			}
+		}
+		
+		return result;
+	}
+	
 	public void focus() {
 		
 		focused = true;
@@ -355,6 +377,19 @@ public class Region extends Element {
 		focused = false;
 		this.button.setColor(priColor);
 		this.buttonText.setColor(secColor);
+		
+	}
+	
+	public Region selectTargetRegion() {
+		
+		if(hasEnemyNeighbor()) {
+			ArrayList<Region> neighbours = getEnemyNeighbours();
+			Random r = new Random();
+			int i = r.nextInt(neighbours.size());
+			return neighbours.get(i);
+		}
+		
+		return null;
 		
 	}
 }

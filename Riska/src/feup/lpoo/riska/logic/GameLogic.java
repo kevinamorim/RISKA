@@ -179,43 +179,17 @@ public class GameLogic {
 	}
 	
 	private void automaticMove() {
-
-		Random r = new Random();
 		
-		boolean done = false; 
+		Region region1 = currentPlayer.selectRegion();
 		
-		while(!done) {
+		if(region1 != null) {
 			
-			int selected = 0;
-			do {
-				
-				selected = r.nextInt(currentPlayer.getRegions().size());
-				
-			} while(currentPlayer.getRegions().get(selected).getNumberOfSoldiers() <= 0);
-			
-			Region region1 = currentPlayer.getRegions().get(selected);
-			
-			ArrayList<Region> temp = currentPlayer.getRegions().get(selected).getNeighbours();
-					
-			Region region2 = null;
-			for(int target = 0; target < temp.size(); target++) {
-				if(!temp.get(target).getOwner().equals(currentPlayer)) {
-					region2 = temp.get(target);
-					break;
-				}
-			}
+			Region region2 = region1.selectTargetRegion();
 			
 			if(region2 != null) {
-				
-				done = true;
-				
-				//sceneManager.getGameScene().selectRegion(region1);
-				//sceneManager.getGameScene().targetRegion(region2);			
-				//attack(region1, region2);
 				sceneManager.getGameScene().simulateCPU(CPU_DELAY, region1, region2);
-				
 			}
-			
+
 		}
 	
 	}
