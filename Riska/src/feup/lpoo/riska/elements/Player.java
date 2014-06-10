@@ -7,6 +7,8 @@ import java.util.Random;
 
 import org.andengine.util.adt.color.Color;
 
+import android.util.Log;
+
 /**
  * Class that represents a player.
  */
@@ -185,4 +187,16 @@ public class Player extends Object {
 		
 	}
 	
+	public boolean hasPossibleMoves() {
+		
+		for(Region region : regions) {
+			if(region.hasEnemyNeighbor() && region.canAttack()) {
+				Log.d("Region", "True" + region.getName());
+				return true;
+			}
+		}
+		
+		return false;
+		
+	}
 }

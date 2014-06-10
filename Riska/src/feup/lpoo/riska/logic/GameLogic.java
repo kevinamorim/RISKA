@@ -170,6 +170,10 @@ public class GameLogic {
 				turnDone = false;
 			}
 			
+			if(!currentPlayer.hasPossibleMoves()) {		
+				currentPlayer = getNextPlayer();
+			}
+			
 			if(currentPlayer.isCPU()) {
 				automaticMove();
 			}
