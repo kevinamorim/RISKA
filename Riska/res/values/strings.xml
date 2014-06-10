@@ -13,5 +13,7 @@
     <string name="csvSplitBy">;</string>
     
     <string name="waitingForDeployment"> Waiting for deployment! </string>
+    
+    <string name="leftToDeploy">&#160;left to deploy</string>
 
 </resources>

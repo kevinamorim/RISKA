@@ -13,6 +13,7 @@ import org.andengine.entity.scene.Scene;
 import org.andengine.opengl.font.Font;
 import org.andengine.ui.activity.BaseGameActivity;
 
+import android.R;
 import android.app.AlertDialog;
 import android.content.DialogInterface;
 import feup.lpoo.riska.resources.ResourceCache;

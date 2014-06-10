@@ -1,7 +1,6 @@
 package feup.lpoo.riska.scenes;
 
-import java.util.ArrayList;
-import java.util.Random;
+import java.util.Arrays;
 
 import org.andengine.entity.IEntity;
 import org.andengine.entity.modifier.DelayModifier;
@@ -9,25 +8,20 @@ import org.andengine.entity.scene.IOnSceneTouchListener;
 import org.andengine.entity.scene.Scene;
 import org.andengine.entity.sprite.AnimatedSprite;
 import org.andengine.entity.sprite.Sprite;
-import org.andengine.entity.text.Text;
 import org.andengine.input.touch.TouchEvent;
 import org.andengine.input.touch.detector.ScrollDetector;
 import org.andengine.input.touch.detector.ScrollDetector.IScrollDetectorListener;
 import org.andengine.input.touch.detector.SurfaceScrollDetector;
-import org.andengine.util.adt.color.Color;
 
 import feup.lpoo.riska.HUD.GameHUD;
-import feup.lpoo.riska.elements.Map;
-import feup.lpoo.riska.elements.Player;
 import feup.lpoo.riska.elements.Region;
-import feup.lpoo.riska.generator.BattleGenerator;
 import feup.lpoo.riska.io.LoadGame;
 import feup.lpoo.riska.io.SaveGame;
 import feup.lpoo.riska.logic.GameLogic;
 import feup.lpoo.riska.logic.GameLogic.GAME_STATE;
 import feup.lpoo.riska.logic.MainActivity;
 import feup.lpoo.riska.resources.ResourceCache;
-import feup.lpoo.riska.scenes.SceneManager.SceneType;
+import feup.lpoo.riska.R;
 import android.app.AlertDialog;
 import android.content.DialogInterface;
 import android.content.DialogInterface.OnClickListener;
@@ -43,7 +37,7 @@ public class GameScene extends Scene implements IOnSceneTouchListener, IScrollDe
 	private static final long MIN_TOUCH_INTERVAL = 70;
 	private static final long MAX_TOUCH_INTERVAL = 400;
 	
-	private static final int ANIM = 250;
+	private static final int ANIM_DURATION = 250;
 	
 	private static final int SOLDIER_INC = 1;
 
@@ -73,17 +67,13 @@ public class GameScene extends Scene implements IOnSceneTouchListener, IScrollDe
 	
 	private boolean touchLocked;
 	
-
-	
-	// ======================================================
-	// DOUBLE TAP
-	// ======================================================
 	private boolean doubleTapAllowed = true;
 	private long lastTouchTime;
-
-	// ====================================================== //
-	// ====================================================== //
-	// ====================================================== //
+	
+	// ======================================================
+	// CONSTRUCTOR
+	// ======================================================
+	
 	public GameScene() {	
 		
 		this.selectedRegion = null;
@@ -128,10 +118,75 @@ public class GameScene extends Scene implements IOnSceneTouchListener, IScrollDe
 		
 		createDisplay();
 		
+	}
+	
+	// ======================================================
+	// CREATE DISPLAY
+	// ======================================================
+	
+	private void createDisplay() {
+		
+		createBackground();
+		
+		createMap();
+		
+		createHUD();
+		
+		createScrollDetector();
+	
+		setRegionButtons();
 
+		setTouchAreaBindingOnActionDownEnabled(true);
+		setOnSceneTouchListener(this);
+		
+		/*
+		 * Details Scene
+		 */
+		detailScene = new DetailScene();
 		
 	}
-
+	
+	private void createMap() {
+		
+		Sprite mapSprite = new Sprite(MainActivity.CAMERA_WIDTH/2, MainActivity.CAMERA_HEIGHT/2,
+				MainActivity.CAMERA_WIDTH, MainActivity.CAMERA_HEIGHT,
+				resources.getMapTexture(), activity.getVertexBufferObjectManager());
+		
+		attachChild(mapSprite);
+		
+	}
+	
+	private void createBackground() {
+		
+		int ANIMATION_TILES = 8;
+		
+		AnimatedSprite background = new AnimatedSprite(MainActivity.CAMERA_WIDTH/2, MainActivity.CAMERA_HEIGHT/2, 
+				resources.getSeaTexture(), activity.getVertexBufferObjectManager());
+		
+		background.setScale(2f);
+		
+		long duration[] = new long[ANIMATION_TILES];
+		Arrays.fill(duration, ANIM_DURATION);
+		
+		background.animate(duration, 0, (ANIMATION_TILES - 1), true);
+		
+		attachChild(background);
+		
+	}
+	
+	private void createHUD() {
+		
+		hud = new GameHUD();
+		activity.mCamera.setHUD(hud);
+		
+		hud.setInfoTabText(logic.getCurrentPlayer().getSoldiersToDeploy() 
+				+ activity.getResources().getString(R.string.leftToDeploy));
+		
+	}
+	
+	// ======================================================
+	// ======================================================
+	
 	@Override
 	protected void onManagedUpdate(float pSecondsElapsed) {
 		
@@ -153,42 +208,6 @@ public class GameScene extends Scene implements IOnSceneTouchListener, IScrollDe
 		default:
 			break;
 		}
-		
-	}
-
-	private void createDisplay() {
-		
-		Sprite mapSprite = new Sprite(MainActivity.CAMERA_WIDTH/2, MainActivity.CAMERA_HEIGHT/2,
-				MainActivity.CAMERA_WIDTH, MainActivity.CAMERA_HEIGHT,
-				resources.getMapTexture(), activity.getVertexBufferObjectManager());
-		
-		AnimatedSprite background = new AnimatedSprite(MainActivity.CAMERA_WIDTH/2, MainActivity.CAMERA_HEIGHT/2, 
-				resources.getSeaTexture(), activity.getVertexBufferObjectManager());
-		background.setScale(2f);
-		long duration[] = { ANIM, ANIM, ANIM, ANIM, ANIM, ANIM, ANIM, ANIM, };
-		background.animate(duration, 0, 7, true);
-		
-		attachChild(background);
-		
-		attachChild(mapSprite);
-		
-		hud = new GameHUD();
-		activity.mCamera.setHUD(hud);
-		
-		hud.setInfoTabText(logic.getCurrentPlayer().getSoldiersToDeploy() + " left to deploy");
-		
-		createScrollDetector();
-
-		
-		setRegionButtons();
-
-		setTouchAreaBindingOnActionDownEnabled(true);
-		setOnSceneTouchListener(this);
-		
-		/*
-		 * Details Scene
-		 */
-		detailScene = new DetailScene();
 		
 	}
 	
@@ -241,9 +260,8 @@ public class GameScene extends Scene implements IOnSceneTouchListener, IScrollDe
 		return true;
 	}
 	
-	// =================================================================================
-	// 
-	// =================================================================================
+	// ======================================================
+	// ======================================================
 	
 	public void onRegionTouched(Region pRegion) {
 		
@@ -268,20 +286,17 @@ public class GameScene extends Scene implements IOnSceneTouchListener, IScrollDe
 	}
 
 	public void targetRegion(Region pRegion) {
+		
 		if(selectedRegion != null) {
 			
 			if(pRegion.isNeighbourOf(selectedRegion)) {
 				
 				if(targetedRegion != null) {
-					targetedRegion.unfocus();
-					targetedRegion = null;
-					
-					hud.hideAttackButton();
+					untargetRegion();
 				}
 				
 				targetedRegion = pRegion;
-				
-				pRegion.focus();
+				targetedRegion.focus();
 
 				detailScene.setAttributes(selectedRegion, targetedRegion);
 				
@@ -290,42 +305,35 @@ public class GameScene extends Scene implements IOnSceneTouchListener, IScrollDe
 					setInfoTabToProceedToAttack();
 				}
 					
-				Log.d("Regions", "Targeted: " + pRegion.getName());
+				//Log.d("Regions", "Targeted: " + pRegion.getName());
 			}
+			
 		}
+		
 	}
-	
-	private void untargetRegion(Region pRegion) {
+
+	private void untargetRegion() {
+		
 		targetedRegion = null;
 		
-		pRegion.unfocus();
+		targetedRegion.unfocus();
 		
 		detailScene.setAttributes(selectedRegion, null);
 		hud.hideAttackButton();
 		
 		setInfoTabToChooseEnemyRegion();
-		
-		for(int i = 0; i < logic.getMap().getRegions().size(); i++) {
-			showRegionButton(logic.getMap().getRegions().get(i));
-		}
+
 	}
 
 	public void selectRegion(Region pRegion) {
 		
+		// Shouldn't happen. 
 		if(selectedRegion != null) {
-			selectedRegion.unfocus();
-			selectedRegion = null;
-			
-			if(targetedRegion != null) {
-				targetedRegion.unfocus();
-				targetedRegion = null;
-			}
-			
-			hud.hideAttackButton();
-			hud.hideDetailButton();
+			unselectRegion();
 		}
 		
 		selectedRegion = pRegion;
+		selectedRegion.focus();
 		
 		detailScene.setAttributes(selectedRegion, null);
 		
@@ -334,25 +342,13 @@ public class GameScene extends Scene implements IOnSceneTouchListener, IScrollDe
 			setInfoTabToChooseEnemyRegion();
 		}
 
-		pRegion.focus();
+		showOnlyNeighbourRegions(pRegion);
 
-		for(int i = 0; i < logic.getMap().getRegions().size(); i++) {
-
-			Region r = logic.getMap().getRegions().get(i);
-
-			if( (!pRegion.getNeighbours().contains(r) && !r.equals(selectedRegion))
-					|| (r.getOwner().equals(logic.getPlayers().get(0)) && !r.equals(selectedRegion))
-					) {
-
-				hideRegionButton(logic.getMap().getRegions().get(i));
-
-			}
-		}
-
-		Log.d("Regions", "Selected: " + pRegion.getName());
+		//Log.d("Regions", "Selected: " + selectedRegion.getName());
+		
 	}
 	
-	private void unselectRegion(Region pRegion) {	
+	private void unselectRegion() {	
 
 		if(targetedRegion != null) {
 			targetedRegion.unfocus();
@@ -364,13 +360,10 @@ public class GameScene extends Scene implements IOnSceneTouchListener, IScrollDe
 		detailScene.setAttributes(null, null);
 		hud.hideDetailButton();
 		
+		selectedRegion.unfocus();
 		selectedRegion = null;
-
-		pRegion.unfocus();
 		
-		for(int i = 0; i < logic.getMap().getRegions().size(); i++) {
-			showRegionButton(logic.getMap().getRegions().get(i));
-		}
+		showAllRegions();
 		
 		setInfoTabToChooseOwnRegion();
 	}
@@ -469,9 +462,7 @@ public class GameScene extends Scene implements IOnSceneTouchListener, IScrollDe
 		hud.hideAttackButton();
 		
 		battleScene = null;
-//		selectedRegion = null;
-//		targetedRegion = null;
-		unselectRegion(selectedRegion);
+		unselectRegion();
 		
 		setInfoTabToChooseOwnRegion();
 		
@@ -499,7 +490,6 @@ public class GameScene extends Scene implements IOnSceneTouchListener, IScrollDe
 		
 		attachChild(detailScene);
 	}
-	
 	
 	public void hideDetailPanel() {
 		doubleTapAllowed = true;
@@ -574,10 +564,10 @@ public class GameScene extends Scene implements IOnSceneTouchListener, IScrollDe
 		else {
 
 			if(logic.getCurrentPlayer().ownsRegion(pRegion)) {
-				unselectRegion(pRegion);
+				unselectRegion();
 			}
 			else {
-				untargetRegion(pRegion);
+				untargetRegion();
 			}
 			
 		}	
@@ -716,8 +706,31 @@ public class GameScene extends Scene implements IOnSceneTouchListener, IScrollDe
 		
 		}
 	}
+
+	private void showOnlyNeighbourRegions(Region pRegion) {
+		
+		for(int i = 0; i < logic.getMap().getRegions().size(); i++) {
+
+			Region r = logic.getMap().getRegions().get(i);
+
+			if( (!pRegion.getNeighbours().contains(r) && !r.equals(selectedRegion))
+					|| (r.getOwner().equals(logic.getPlayers().get(0)) && !r.equals(selectedRegion))
+					) {
+
+				hideRegionButton(logic.getMap().getRegions().get(i));
+
+			}
+		}
+		
+	}
 	
-	
+	private void showAllRegions() {
+		
+		for(int i = 0; i < logic.getMap().getRegions().size(); i++) {
+			showRegionButton(logic.getMap().getRegions().get(i));
+		}
+		
+	}
 }
 
 
