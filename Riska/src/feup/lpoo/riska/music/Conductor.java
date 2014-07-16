@@ -4,24 +4,23 @@ import java.util.ArrayList;
 
 import org.andengine.audio.music.Music;
 
+import android.util.Log;
+
 /**
  * Class that handles all sound related features.
  */
 public class Conductor {
 
-	private Music backgroundMusic;
-	private Music currentMusic;
-	
 	private ArrayList<Music> playlist;
+	private ArrayList<String> playlistNames;
 	
-	static Conductor instance;
+	private static Conductor instance;
 	
 	public Conductor() {
-		instance = this;	
-		
-		this.currentMusic = null;
+		instance = this;
 		
 		playlist = new ArrayList<Music>();
+		playlistNames = new ArrayList<String>();
 	}
 	
 	public static Conductor getSharedInstance() {
@@ -33,51 +32,113 @@ public class Conductor {
 	 * 
 	 * @param music : new background music.
 	 */
-	public void setBackgroundMusic(Music music) {
-		this.backgroundMusic = music;
-	}
-	
-	/**
-	 * Sets the current music to play.
-	 * 
-	 * @param music : new music to play
-	 */
-	public void setCurrentMusic(Music music) {
-		
-		if(currentMusic != null) {
-			if(currentMusic.isPlaying()) {
-				currentMusic.stop();
-			}
-		}
-		
-		this.currentMusic = music;
+	public void addMusic(Music music, String name) {
+		playlist.add(music);
+		playlistNames.add(name);
 	}
 	
 	/**
 	 * Plays the current music.
 	 */
-	public void play() {
-		if(!currentMusic.isPlaying()) {
-			currentMusic.play();
+	public void play(String musicName)
+	{
+		if(playlistNames.contains(musicName))
+		{
+			for(int i = 0; i < playlistNames.size(); i++)
+			{
+				if(playlistNames.get(i).equals(musicName))
+				{
+					Music music = playlist.get(i);
+					
+					if(!music.isPlaying())
+					{
+						music.play();
+					}
+					break;
+				}
+			}
+		}
+		else {
+			Log.e("Music", "Music requested for playing not in playlist. <" + musicName + ">");
 		}
 	}
 	
 	/**
-	 * Pauses the current music.
+	 * Plays all musics (not recomended with more than one music).
 	 */
-	public void pause() {
-		if(currentMusic.isPlaying()) {
-			currentMusic.pause();
+	public void play()
+	{
+		for(Music music : playlist)
+		{
+			if(!music.isPlaying())
+			{
+				music.play();
+			}
+			//break;
 		}
 	}
-	
+
 	/**
-	 * Plays the background music;
+	 * Pauses a music.
 	 */
-	public void playBackgroundMusic() {
-		setCurrentMusic(backgroundMusic);
-		setLooping(true);
-		play();
+	public void pause(String musicName)
+	{
+		if(playlistNames.contains(musicName))
+		{
+			for(int i = 0; i < playlistNames.size(); i++)
+			{
+				if(playlistNames.get(i).equals(musicName))
+				{
+					Music music = playlist.get(i);
+					
+					if(music.isPlaying())
+					{
+						music.pause();
+					}
+					break;
+				}
+			}
+		}
+		else {
+			Log.e("Music", "Music requested for pausing not in playlist. <" + musicName + ">");
+		}
+	}
+
+	/**
+	 * Pauses all music.
+	 */
+	public void pause()
+	{
+		for(Music m : playlist)
+		{
+			m.pause();
+		}
+	}
+
+	/**
+	 * Sets the loop parameter for a music.
+	 * 
+	 * @param music : music to change
+	 * @param value : loop value to set
+	 */
+	public void setLooping(String musicName, boolean value)
+	{
+		if(playlistNames.contains(musicName))
+		{
+			for(int i = 0; i < playlistNames.size(); i++)
+			{
+				if(playlistNames.get(i).equals(musicName))
+				{
+					Music music = playlist.get(i);
+					
+					music.setLooping(value);
+					break;
+				}
+			}
+		}
+		else {
+			Log.e("Music", "Music requested for looping not in playlist. <" + musicName + ">");
+		}
 	}
 	
 	/**
@@ -85,13 +146,28 @@ public class Conductor {
 	 * 
 	 * @param value : loop value to set
 	 */
-	public void setLooping(boolean value) {
-		if(currentMusic != null) {
-			currentMusic.setLooping(value);
+	public void setLooping(boolean value)
+	{
+		for(Music m : playlist)
+		{
+			m.setLooping(value);
 		}
 	}
 	
-	public boolean isMusicPlaying() {
-		return currentMusic.isPlaying();
+	/**
+	 * Sets the loop parameter for the current music.
+	 * 
+	 * @param value : loop value to set
+	 */
+	public boolean isMusicPlaying()
+	{
+		for(Music m : playlist)
+		{
+			if(m.isPlaying()) {
+				return true;
+			}
+		}
+		
+		return false;
 	}
 }

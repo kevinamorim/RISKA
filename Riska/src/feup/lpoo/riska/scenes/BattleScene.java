@@ -6,7 +6,6 @@ import org.andengine.entity.text.Text;
 import org.andengine.opengl.font.Font;
 import org.andengine.util.adt.color.Color;
 
-import feup.lpoo.riska.elements.Player;
 import feup.lpoo.riska.elements.Region;
 import feup.lpoo.riska.generator.BattleGenerator;
 import feup.lpoo.riska.logic.MainActivity;

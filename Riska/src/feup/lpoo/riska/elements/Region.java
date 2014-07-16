@@ -29,7 +29,7 @@ public class Region extends Element {
 	protected static final int MAX_CHARS = 10;
 	protected static final int SOLDIER_ATT = 10;
 	protected static final int SOLDIER_DEF = 10;
-	private static final int MIN_SOLDIERS_TO_ATTACK = 1;
+	//private static final int MIN_SOLDIERS_TO_ATTACK = 1;
 
 	// ======================================================
 	// SINGLETONS

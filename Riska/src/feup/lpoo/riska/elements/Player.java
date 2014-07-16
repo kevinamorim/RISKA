@@ -3,8 +3,6 @@ package feup.lpoo.riska.elements;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
-import java.util.Random;
-
 import org.andengine.util.adt.color.Color;
 
 import android.util.Log;

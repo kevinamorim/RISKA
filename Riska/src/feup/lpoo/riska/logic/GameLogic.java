@@ -2,30 +2,20 @@ package feup.lpoo.riska.logic;
 
 import java.util.ArrayList;
 import java.util.Random;
-import java.util.Timer;
-
-import org.andengine.engine.handler.timer.TimerHandler;
-import org.andengine.entity.IEntity;
-import org.andengine.entity.modifier.DelayModifier;
 import org.andengine.util.adt.color.Color;
-import org.andengine.util.modifier.IModifier;
-
-import android.net.wifi.p2p.WifiP2pManager.ActionListener;
-import android.util.Log;
 import feup.lpoo.riska.elements.Map;
 import feup.lpoo.riska.elements.Player;
 import feup.lpoo.riska.elements.Region;
 import feup.lpoo.riska.generator.BattleGenerator;
 import feup.lpoo.riska.resources.ResourceCache;
 import feup.lpoo.riska.scenes.SceneManager;
-import feup.lpoo.riska.scenes.SceneManager.SceneType;
 
 public class GameLogic {
 	
 	// ======================================================
 	// SINGLETONS
 	// ======================================================
-	private MainActivity activity;
+	//private MainActivity activity;
 	private ResourceCache resources;
 	private SceneManager sceneManager;
 	
@@ -62,7 +52,7 @@ public class GameLogic {
 	
 	public GameLogic() {
 		
-		activity = MainActivity.getSharedInstance();
+		//activity = MainActivity.getSharedInstance();
 		resources = ResourceCache.getSharedInstance();
 		sceneManager = SceneManager.getSharedInstance();
 		

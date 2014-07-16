@@ -35,7 +35,7 @@ public class MainMenuScene extends MenuScene implements IOnMenuItemClickListener
 		resources = ResourceCache.getSharedInstance();
 		conductor = Conductor.getSharedInstance();
 		
-		conductor.playBackgroundMusic();
+		conductor.play();
 		
 		createDisplay();
 	}
