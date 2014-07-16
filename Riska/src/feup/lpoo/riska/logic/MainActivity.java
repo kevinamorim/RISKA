@@ -88,7 +88,7 @@ public class MainActivity extends BaseGameActivity {
 				
 				resources.loadMainMenuResources();
 				resources.loadGameSceneResources();
-				resources.loadMusic();
+				resources.loadMusicResources();
 				
 				sceneManager.createGameScenes();
 				sceneManager.setCurrentScene(SceneType.MENU);

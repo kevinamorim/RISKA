@@ -33,8 +33,11 @@ public class Conductor {
 	 * @param music : new background music.
 	 */
 	public void addMusic(Music music, String name) {
-		playlist.add(music);
-		playlistNames.add(name);
+		if(music != null)
+		{
+			playlist.add(music);
+			playlistNames.add(name);
+		}
 	}
 	
 	/**

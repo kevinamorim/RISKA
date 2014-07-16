@@ -325,24 +325,40 @@ public class ResourceCache {
 	/**
 	 * Loads all sound related resources and creates the conductor.
 	 */
-	public void loadMusic() {
+	public void loadMusicResources() {
 
 		try
 		{
-			conductor = new Conductor();
-
+			
 			String musicBackground = activity.getResources().getString(R.string.path_music_background);
-
+			
 			MusicFactory.setAssetBasePath("sounds/");
-			Music backgroundMusic;
 
-			backgroundMusic = MusicFactory.createMusicFromAsset(engine.getMusicManager(), activity, musicBackground);
-
-			conductor.addMusic(backgroundMusic, activity.getResources().getString(R.string.background_music));
+			Music backgroundMusic = loadMusic(musicBackground);
+					
+			conductor = new Conductor();
+			conductor.addMusic(backgroundMusic, activity.getResources().getString(R.string.name_music_background));
+			
+		}
+		catch (Exception e)
+		{
+			e.printStackTrace();
+		}
+	}
+	
+	/**
+	 * Loads a music with the given filename.
+	 */
+	private Music loadMusic(String filename) {
+		
+		try
+		{
+			return MusicFactory.createMusicFromAsset(engine.getMusicManager(), activity, filename);
 		}
 		catch (IOException e)
 		{
 			e.printStackTrace();
+			return null;
 		}
 	}
 
