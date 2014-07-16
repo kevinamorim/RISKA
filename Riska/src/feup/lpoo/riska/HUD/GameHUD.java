@@ -22,6 +22,8 @@ public class GameHUD extends HUD implements Displayable {
 	// ======================================================
 	private static final long MIN_TOUCH_INTERVAL = 30;
 
+	private enum B {ATTACK, DETAILS};
+
 	// ======================================================
 	// SINGLETONS
 	// ======================================================
@@ -33,53 +35,56 @@ public class GameHUD extends HUD implements Displayable {
 	// FIELDS
 	// ======================================================
 	private long lastTimeTouched;
-	
+
 	private ButtonSprite attackButton;
 	private ButtonSprite detailsButton;
-	
+
 	private Sprite infoTab;
 	private Text infoTabText;
-	
+
 	/**
 	 * Constructor for the game HUD.
 	 * <p>
 	 * Created the HUD display.
 	 */
 	public GameHUD() {
-		
+
 		lastTimeTouched = 0;
 
 		activity = MainActivity.getSharedInstance();
 		sceneManager = SceneManager.getSharedInstance();
 		resources = ResourceCache.getSharedInstance();
-		
+
 		createDisplay();
 	}
-	
+
 	/**
 	 * Creates the display for the given scene.
 	 */
 	public void createDisplay() {	
-		
+
 		// =================================
 		//  NEW ATTACK BUTTON
 		// =================================
 		attackButton = new ButtonSprite(0, 0,
 				resources.getAttackButtonTexture(),
-				activity.getVertexBufferObjectManager()) {
+				activity.getVertexBufferObjectManager()) 
+		{
 
 			@Override
 			public boolean onAreaTouched(TouchEvent pSceneTouchEvent, 
-					float pTouchAreaLocalX, float pTouchAreaLocalY) {
-				switch(pSceneTouchEvent.getAction()) {
+					float pTouchAreaLocalX, float pTouchAreaLocalY)
+			{
+				switch(pSceneTouchEvent.getAction())
+				{
 				case MotionEvent.ACTION_DOWN:
-					pressedAttackButton();
+					pressed(B.ATTACK);
 					break;
 				case MotionEvent.ACTION_UP:
-					touchedAttackButton();
+					touched(B.ATTACK);
 					break;
 				case MotionEvent.ACTION_OUTSIDE:
-					releasedAttackButton();
+					released(B.ATTACK);
 					break;
 				default:
 					break;
@@ -87,12 +92,12 @@ public class GameHUD extends HUD implements Displayable {
 				return true;
 			}
 		};
-		
+
 		attackButton.setScaleX(0.3f);
 		attackButton.setScaleY(0.2f);
 		attackButton.setPosition((MainActivity.CAMERA_WIDTH/2),
 				attackButton.getScaleY() * attackButton.getHeight() / 2);
-		
+
 		// =================================
 		//  NEW INFO TAB
 		// =================================
@@ -100,12 +105,12 @@ public class GameHUD extends HUD implements Displayable {
 				MainActivity.CAMERA_HEIGHT - resources.getInfoTabTexture().getHeight() / 2,
 				resources.getInfoTabTexture(),
 				activity.getVertexBufferObjectManager());
-		
+
 		infoTab.setScaleX(2.4f);
-		
+
 		infoTabText = new Text(infoTab.getWidth() / 2, infoTab.getHeight() / 2,
 				resources.mInfoTabFont, "NO INFO", 1000, activity.getVertexBufferObjectManager());
-		
+
 		infoTabText.setColor(Color.BLACK);
 
 		infoTab.attachChild(infoTabText);
@@ -118,17 +123,21 @@ public class GameHUD extends HUD implements Displayable {
 				MainActivity.CAMERA_HEIGHT / 2,
 				resources.getDetailsButtonTexture(),
 				activity.getVertexBufferObjectManager()) {
-			
+
 			@Override
 			public boolean onAreaTouched(TouchEvent pSceneTouchEvent, 
-					float pTouchAreaLocalX, float pTouchAreaLocalY) {
-				switch(pSceneTouchEvent.getAction()) {
+					float pTouchAreaLocalX, float pTouchAreaLocalY)
+			{
+				switch(pSceneTouchEvent.getAction())
+				{
 				case MotionEvent.ACTION_DOWN:
+					pressed(B.DETAILS);
 					break;
 				case MotionEvent.ACTION_UP:
-					touchedDetailsButton();
+					touched(B.DETAILS);
 					break;
 				case MotionEvent.ACTION_OUTSIDE:
+					released(B.DETAILS);
 					break;
 				default:
 					break;
@@ -138,29 +147,29 @@ public class GameHUD extends HUD implements Displayable {
 		};
 		detailsButton.setScale(0.5f);
 		detailsButton.setPosition(detailsButton.getScaleX() * detailsButton.getWidth() / 2, detailsButton.getY());
-		
+
 		/*
 		 * ==================================
 		 */
-		
+
 	}
-	
+
 	/**
 	 * Handles the touch event for the details button.
 	 */
 	protected void touchedDetailsButton() {
-		
+
 		GameScene gameScene = sceneManager.getGameScene();
 		DetailScene details = gameScene.getDetailScene();
-		
+
 		changeDetailButton();
-	
+
 		if(details.isVisible()) {
 			gameScene.hideDetailPanel();
 			details.setVisible(false);
 		}
 		else {
-		
+
 			if(gameScene.getBattleScene() != null && gameScene.getBattleScene().isVisible()) {
 				gameScene.hideBattleScene();
 			} else {				
@@ -193,7 +202,7 @@ public class GameHUD extends HUD implements Displayable {
 			sceneManager.getGameScene().getCameraManager().zoomOut();
 		}
 
-		lastTimeTouched = System.currentTimeMillis();
+		lastTimeTouched = now;
 	}
 
 	/**
@@ -202,30 +211,75 @@ public class GameHUD extends HUD implements Displayable {
 	protected void pressedAttackButton() {
 		attackButton.setCurrentTileIndex(1);
 	}
-
+	
+	private void pressed(B current)
+	{
+		switch(current) {
+		case ATTACK:
+			attackButton.setCurrentTileIndex(1);
+			break;
+		case DETAILS:
+			// Do something
+			break;
+		default:
+			// Do nothing
+			break;
+		}
+	}
+	
+	private void touched(B current)
+	{
+		switch(current) {
+		case ATTACK:
+			pressedAttackButton();
+			break;
+		case DETAILS:
+			touchedDetailsButton();
+			break;
+		default:
+			// Do nothing
+			break;
+		}
+	}
+	
+	private void released(B current)
+	{
+		switch(current) {
+		case ATTACK:
+			releasedAttackButton();
+			break;
+		case DETAILS:
+			// Do something
+			break;
+		default:
+			// Do nothing
+			break;
+		}
+	}
+	
 	/**
 	 * Displays the attack button.
 	 */
 	public void showAttackButton() {
-		
+
 		if(!attackButton.hasParent()) {
 			attachChild(attackButton);
 			registerTouchArea(attackButton);
 		}
 	}
-	
+
 	/**
 	 * Hides the attack button.
 	 */
 	public void hideAttackButton() {
-		
+
 		if(attackButton.hasParent()) {
 			detachChild(attackButton);
 			unregisterTouchArea(attackButton);
 		}
 
 	}
-	
+
 	/**
 	 * Displays the game info tab.
 	 */
@@ -234,7 +288,7 @@ public class GameHUD extends HUD implements Displayable {
 			attachChild(infoTab);
 		}	
 	}
-	
+
 	/**
 	 * Hides the game info tab.
 	 */
@@ -257,19 +311,19 @@ public class GameHUD extends HUD implements Displayable {
 	 * Displays the details button.
 	 */
 	public void showDetailButton() {
-		
+
 		if(!detailsButton.hasParent()) {
 			attachChild(detailsButton);
 			registerTouchArea(detailsButton);
 		}
-		
+
 	}
-	
+
 	/**
 	 * Hides the details button.
 	 */
 	public void hideDetailButton() {
-		
+
 		if(detailsButton.hasParent()) {
 			detachChild(detailsButton);
 			unregisterTouchArea(detailsButton);
@@ -283,24 +337,24 @@ public class GameHUD extends HUD implements Displayable {
 			detailsButton.setCurrentTileIndex(0);
 		}
 	}
-	
+
 	/** 
 	 * Locks HUD so the user can't use it. 
 	 */
 	public void lockHUD() {
-		
+
 		detailsButton.setEnabled(false);
 		attackButton.setEnabled(false);
-		
+
 	}
-	
+
 	/** 
 	 * Unlocks HUD so the user can use it.
 	 */
 	public void unlockHUD() {
-		
+
 		detailsButton.setEnabled(true);
 		attackButton.setEnabled(true);
-		
+
 	}
 }
