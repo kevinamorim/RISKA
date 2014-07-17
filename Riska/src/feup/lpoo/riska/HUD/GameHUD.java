@@ -22,7 +22,7 @@ public class GameHUD extends HUD implements Displayable {
 	// ======================================================
 	private static final long MIN_TOUCH_INTERVAL = 30;
 
-	private enum B {ATTACK, DETAILS};
+	private enum B {ATTACK, DETAILS, AUTO_DEPLOY};
 
 	// ======================================================
 	// SINGLETONS
@@ -38,6 +38,8 @@ public class GameHUD extends HUD implements Displayable {
 
 	private ButtonSprite attackButton;
 	private ButtonSprite detailsButton;
+	//
+	private ButtonSprite autoDeployButton;
 
 	private Sprite infoTab;
 	private Text infoTabText;
@@ -147,6 +149,40 @@ public class GameHUD extends HUD implements Displayable {
 		};
 		detailsButton.setScale(0.5f);
 		detailsButton.setPosition(detailsButton.getScaleX() * detailsButton.getWidth() / 2, detailsButton.getY());
+		
+		// =================================
+				//  NEW DETAILS BUTTON
+				// =================================
+		autoDeployButton = new ButtonSprite(
+				MainActivity.CAMERA_WIDTH / 2,
+				MainActivity.CAMERA_HEIGHT / 2,
+				resources.getAutoDeployButtonTexture(),
+				activity.getVertexBufferObjectManager()) {
+			
+			@Override
+			public boolean onAreaTouched(TouchEvent pSceneTouchEvent, 
+					float pTouchAreaLocalX, float pTouchAreaLocalY)
+			{
+				switch(pSceneTouchEvent.getAction())
+				{
+				case MotionEvent.ACTION_DOWN:
+					pressed(B.AUTO_DEPLOY);
+					break;
+				case MotionEvent.ACTION_UP:
+					touched(B.AUTO_DEPLOY);
+					break;
+				case MotionEvent.ACTION_OUTSIDE:
+					released(B.AUTO_DEPLOY);
+					break;
+				default:
+					break;
+				}
+				return true;
+			}
+		};
+		
+		autoDeployButton.setScale(1f);
+		//autoDeployButton.setPosition(autoDeployButton.getScaleX() * autoDeployButton.getWidth() / 2, autoDeployButton.getY());
 
 		/*
 		 * ==================================
@@ -182,6 +218,72 @@ public class GameHUD extends HUD implements Displayable {
 
 		}
 	}
+	
+	private void pressed(B current)
+	{
+		switch(current) {
+		case ATTACK:
+			pressedAttackButton();
+			break;
+		case DETAILS:
+			// Do something
+			break;
+		case AUTO_DEPLOY:
+			pressedAutoDeployButton();
+			break;
+		default:
+			// Do nothing
+			break;
+		}
+	}
+	
+	private void touched(B current)
+	{
+		switch(current) {
+		case ATTACK:
+			touchedAttackButton();
+			break;
+		case DETAILS:
+			touchedDetailsButton();
+			break;
+		case AUTO_DEPLOY:
+			touchedAutoDeployButton();
+			break;
+		default:
+			// Do nothing
+			break;
+		}
+	}
+
+	private void released(B current)
+	{
+		switch(current) {
+		case ATTACK:
+			releasedAttackButton();
+			break;
+		case DETAILS:
+			// Do something
+			break;
+		case AUTO_DEPLOY:
+			releasedAutoDeployButton();
+			break;
+		default:
+			// Do nothing
+			break;
+		}
+	}
+	
+	private void pressedAutoDeployButton() {
+		autoDeployButton.setCurrentTileIndex(1);
+	}
+	
+	private void touchedAutoDeployButton() {
+		sceneManager.getGameScene().onAutoDeploy();
+	}
+	
+	private void releasedAutoDeployButton() {
+		autoDeployButton.setCurrentTileIndex(0);
+	}
 
 	/**
 	 * Handles the release event for the attack button.
@@ -210,51 +312,6 @@ public class GameHUD extends HUD implements Displayable {
 	 */
 	protected void pressedAttackButton() {
 		attackButton.setCurrentTileIndex(1);
-	}
-	
-	private void pressed(B current)
-	{
-		switch(current) {
-		case ATTACK:
-			attackButton.setCurrentTileIndex(1);
-			break;
-		case DETAILS:
-			// Do something
-			break;
-		default:
-			// Do nothing
-			break;
-		}
-	}
-	
-	private void touched(B current)
-	{
-		switch(current) {
-		case ATTACK:
-			pressedAttackButton();
-			break;
-		case DETAILS:
-			touchedDetailsButton();
-			break;
-		default:
-			// Do nothing
-			break;
-		}
-	}
-	
-	private void released(B current)
-	{
-		switch(current) {
-		case ATTACK:
-			releasedAttackButton();
-			break;
-		case DETAILS:
-			// Do something
-			break;
-		default:
-			// Do nothing
-			break;
-		}
 	}
 	
 	/**
@@ -327,6 +384,21 @@ public class GameHUD extends HUD implements Displayable {
 		if(detailsButton.hasParent()) {
 			detachChild(detailsButton);
 			unregisterTouchArea(detailsButton);
+		}
+	}
+	public void showAutoDeployButton() {
+
+		if(!autoDeployButton.hasParent()) {
+			attachChild(autoDeployButton);
+			registerTouchArea(autoDeployButton);
+		}
+
+	}
+	public void hideAutoDeployButton() {
+
+		if(autoDeployButton.hasParent()) {
+			detachChild(autoDeployButton);
+			unregisterTouchArea(autoDeployButton);
 		}
 	}
 

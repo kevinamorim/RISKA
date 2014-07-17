@@ -132,6 +132,7 @@ public class GameLogic {
 			
 			if(currentPlayer.equals(players.get(0))) { /* If all players have deployed their soldiers. */
 				sceneManager.getGameScene().setInfoTabToChooseOwnRegion();
+				sceneManager.getGameScene().hideAutoDeploy();
 				state = GAME_STATE.PLAY;
 			} else {
 				
@@ -238,6 +239,9 @@ public class GameLogic {
 		
 	}
 	
+	public void autoDeployment(Player player) {
+		player.deploy();
+	}
 	
 	// ======================================================
 	// GETTERS & SETTERS

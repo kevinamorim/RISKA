@@ -179,7 +179,6 @@ public class GameScene extends Scene implements IOnSceneTouchListener, IScrollDe
 		
 		hud.setInfoTabText(logic.getCurrentPlayer().getSoldiersToDeploy() 
 				+ activity.getResources().getString(R.string.leftToDeploy));
-		
 	}
 	
 	// ======================================================
@@ -193,6 +192,7 @@ public class GameScene extends Scene implements IOnSceneTouchListener, IScrollDe
 		switch(logic.getState()) {
 		case PAUSED:
 			logic.setState(GAME_STATE.DEPLOYMENT);
+			hud.showAutoDeployButton();
 			break;
 			
 		case DEPLOYMENT:
@@ -417,6 +417,11 @@ public class GameScene extends Scene implements IOnSceneTouchListener, IScrollDe
 		
 		logic.attack(selectedRegion, targetedRegion);
 		
+	}
+	
+	public void onAutoDeploy()
+	{
+		logic.autoDeployment(logic.getPlayers().get(0));
 	}
 	
 	public void showBattleScene(boolean result) {
@@ -740,6 +745,10 @@ public class GameScene extends Scene implements IOnSceneTouchListener, IScrollDe
 	}
 	// ======================================================
 	// ======================================================
+
+	public void hideAutoDeploy() {
+		hud.hideAutoDeployButton();
+	}
 }
 
 

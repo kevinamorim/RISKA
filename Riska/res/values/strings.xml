@@ -31,6 +31,7 @@
 	<string name="path_img_attack_button">attack_button_5.png</string>
 	<string name="path_img_info_tab">info_tab.png</string>
 	<string name="path_img_details_button">details_button_2.png</string>
+	<string name="path_img_auto_deploy_button">button.png</string>
 	
 	<string name="path_file_regions">regions.csv</string>
 	<string name="path_file_neighbours">neighbours.csv</string>

@@ -7,6 +7,7 @@ import org.andengine.audio.music.Music;
 import org.andengine.audio.music.MusicFactory;
 import org.andengine.engine.Engine;
 import org.andengine.engine.camera.Camera;
+import org.andengine.entity.scene.CameraScene;
 import org.andengine.opengl.font.Font;
 import org.andengine.opengl.font.FontFactory;
 import org.andengine.opengl.texture.TextureOptions;
@@ -80,6 +81,9 @@ public class ResourceCache {
 
 	protected BitmapTextureAtlas detailsButtonTextureAtlas;
 	protected TiledTextureRegion detailsButtonTiledTextureRegion;
+	
+	protected BitmapTextureAtlas autoDeployButtonTextureAtlas;
+	protected TiledTextureRegion autoDeployButtonTiledTextureRegion;
 
 	protected BitmapTextureAtlas mSeaTextureAtlas;
 	protected TiledTextureRegion mSeaTiledTextureRegion;
@@ -242,6 +246,7 @@ public class ResourceCache {
 			String imgAttackButton = activity.getResources().getString(R.string.path_img_attack_button);
 			String imgInfoTab = activity.getResources().getString(R.string.path_img_info_tab);
 			String imgDetailsButton = activity.getResources().getString(R.string.path_img_details_button);
+			String imgAutoDeployButton = activity.getResources().getString(R.string.path_img_auto_deploy_button);
 
 			// LOADS MAP TEXTURE
 			mapTextureAtlas = new BitmapTextureAtlas(activity.getTextureManager(), 4096, 2048, TextureOptions.DEFAULT);
@@ -288,6 +293,16 @@ public class ResourceCache {
 
 			mSeaTextureAtlas.load();
 
+			// =================================================================================
+			// MAP / REGIONS 
+			// ================================================================================= 
+			String regionsFile = activity.getResources().getString(R.string.path_file_regions);
+			String neighboursFile = activity.getResources().getString(R.string.path_file_neighbours);
+			
+			map = new Map(readRegions(regionsFile));
+			readNeighbours(neighboursFile);
+			
+
 			// HUD
 			attackButtonTextureAtlas = new BitmapTextureAtlas(activity.getTextureManager(), 1024, 1024, TextureOptions.DEFAULT);
 			attackButtonTiledTextureRegion = BitmapTextureAtlasTextureRegionFactory.createTiledFromAsset(attackButtonTextureAtlas, 
@@ -306,15 +321,13 @@ public class ResourceCache {
 					activity.getAssets(), imgDetailsButton, 0, 0, 2, 1);
 
 			detailsButtonTextureAtlas.load();
+			
+			autoDeployButtonTextureAtlas = new BitmapTextureAtlas(activity.getTextureManager(), 512, 512, TextureOptions.DEFAULT);
+			autoDeployButtonTiledTextureRegion = BitmapTextureAtlasTextureRegionFactory.createTiledFromAsset(autoDeployButtonTextureAtlas, 
+					activity.getAssets(), imgAutoDeployButton, 0, 0, 1, 2);
 
-			// =================================================================================
-			// MAP / REGIONS 
-			// ================================================================================= 
-			String regionsFile = activity.getResources().getString(R.string.path_file_regions);
-			String neighboursFile = activity.getResources().getString(R.string.path_file_neighbours);
+			autoDeployButtonTextureAtlas.load();
 
-			map = new Map(readRegions(regionsFile));
-			readNeighbours(neighboursFile);
 		}
 		catch (Exception e)
 		{
@@ -484,5 +497,9 @@ public class ResourceCache {
 
 	public TiledTextureRegion getDetailsButtonTexture() {
 		return detailsButtonTiledTextureRegion;
+	}
+
+	public TiledTextureRegion getAutoDeployButtonTexture() {
+		return autoDeployButtonTiledTextureRegion;
 	}
 }

@@ -23,9 +23,11 @@ public class FileRead {
 	 * @param data : container to store the data of the file
 	 */
 	public FileRead(String filename, ArrayList<String> data) {
+		
+		Log.d("File Read", "Filename: " + filename);
 
 		try {
-			
+
 			activity = MainActivity.getSharedInstance();
 
 			BufferedReader br = new BufferedReader(
