@@ -87,33 +87,6 @@ public class GameScene extends Scene implements IOnSceneTouchListener, IScrollDe
 
 		lastTouchTime = 0;	
 		
-		LoadGame load = new LoadGame(activity, logic);
-		
-		if(load.checkLoadGame()) {
-			
-			activity.runOnUiThread(new Runnable() {
-			     @Override
-			     public void run() {
-
-
-			         AlertDialog.Builder alert = new AlertDialog.Builder(activity);
-			         alert.setTitle("");
-			         alert.setMessage("Load previous game?");
-			         alert.setPositiveButton("Yes", new OnClickListener() {
-			                 @Override
-			                 public void onClick(DialogInterface arg0, int arg1) {
-			                	 loadGame();
-			                 }
-			         });
-			         
-			         alert.setNegativeButton("No", null);
-
-			         alert.show();
-			     }
-			    });
-			
-		}
-		
 		createDisplay();
 		
 	}
@@ -667,8 +640,8 @@ public class GameScene extends Scene implements IOnSceneTouchListener, IScrollDe
 	
 	public void loadGame() {
 		
-		LoadGame load = new LoadGame(activity, logic);
-		
+		LoadGame load = new LoadGame(activity);
+		load.setLogic(this.logic);
 		load.load();
 		
 	}

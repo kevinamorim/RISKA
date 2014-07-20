@@ -12,12 +12,13 @@ public class LoadGame {
 	private SharedPreferences prefs;
 	private GameLogic logic;
 	
-	public LoadGame(MainActivity activity, GameLogic logic) {
-		
+	public LoadGame(MainActivity activity) {
+		prefs = PreferenceManager.getDefaultSharedPreferences(activity);	
+	}
+	
+	public void setLogic(GameLogic logic)
+	{
 		this.logic = logic;
-		
-		prefs = PreferenceManager.getDefaultSharedPreferences(activity);
-		
 	}
 	
 	public boolean checkLoadGame() {

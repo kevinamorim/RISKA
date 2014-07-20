@@ -13,7 +13,7 @@ public class SceneManager {
 	
 	private boolean firstTime;
 	
-	private Scene splashScene, mainMenuScene, optionsScene, 
+	private Scene splashScene, mainMenuScene, startGameScene, optionsScene, 
 		loadMapScene, gameScene; /* Create more scene if needed, like gameScene. */
 	
 	public static SceneManager instance;
@@ -22,9 +22,12 @@ public class SceneManager {
 	public enum SceneType {
 		SPLASH, 
 		MENU,
+		STARTGAME,
 		OPTIONS,
 		LOAD_MAP,
 		GAME,
+		NEWGAME,
+		LOADGAME,
 		GAME_OVER,
 	};
 	
@@ -49,6 +52,7 @@ public class SceneManager {
 	public void createGameScenes() {
 		
 		mainMenuScene = new MainMenuScene();
+		startGameScene = new StartGameScene();
 		optionsScene = new OptionsScene();
 		//loadMapScene = new LoadMapScene();
 		//gameScene = new GameScene();
@@ -77,25 +81,27 @@ public class SceneManager {
 
 			engine.setScene(mainMenuScene);
 			break;
+		case STARTGAME:
+			engine.setScene(startGameScene);
+			break;
 		case OPTIONS:
 			engine.setScene(optionsScene);
 			break;
 		case LOAD_MAP:
 			engine.setScene(loadMapScene);
 			break;
-		case GAME:
-			
-			if(firstTime) {
-				gameScene = new GameScene();
-				firstTime = false;
-			}
-			
-			if(!((GameScene) gameScene).hud.isVisible()) {
-				((GameScene) gameScene).hud.setVisible(true);
-			} 
-			
+		case NEWGAME:
+			gameScene = new GameScene();
 			((GameScene)gameScene).showInitialHUD();
 			engine.setScene(gameScene);
+			currentScene = SceneType.GAME;
+			break;
+		case LOADGAME:
+			gameScene = new GameScene();
+			((GameScene)gameScene).loadGame();
+			((GameScene)gameScene).showInitialHUD();
+			engine.setScene(gameScene);
+			currentScene = SceneType.GAME;
 			break;
 		default:
 				break;

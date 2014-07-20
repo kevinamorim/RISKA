@@ -322,9 +322,9 @@ public class ResourceCache {
 
 			detailsButtonTextureAtlas.load();
 			
-			autoDeployButtonTextureAtlas = new BitmapTextureAtlas(activity.getTextureManager(), 512, 512, TextureOptions.DEFAULT);
+			autoDeployButtonTextureAtlas = new BitmapTextureAtlas(activity.getTextureManager(), 512, 256, TextureOptions.DEFAULT);
 			autoDeployButtonTiledTextureRegion = BitmapTextureAtlasTextureRegionFactory.createTiledFromAsset(autoDeployButtonTextureAtlas, 
-					activity.getAssets(), imgAutoDeployButton, 0, 0, 1, 2);
+					activity.getAssets(), imgAutoDeployButton, 0, 0, 2, 1);
 
 			autoDeployButtonTextureAtlas.load();
 

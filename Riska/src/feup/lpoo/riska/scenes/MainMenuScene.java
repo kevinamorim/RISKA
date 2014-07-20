@@ -75,7 +75,7 @@ public class MainMenuScene extends MenuScene implements IOnMenuItemClickListener
 			float pMenuItemLocalX, float pMenuItemLocalY) {
 		switch(pMenuItem.getID()) {
 		case MENU_START:
-			sceneManager.setCurrentScene(SceneType.GAME);
+			sceneManager.setCurrentScene(SceneType.STARTGAME);
 			break;
 		case MENU_OPTIONS:
 			sceneManager.setCurrentScene(SceneType.OPTIONS);

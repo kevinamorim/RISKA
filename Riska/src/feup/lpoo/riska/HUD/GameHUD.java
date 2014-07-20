@@ -7,6 +7,7 @@ import org.andengine.entity.text.Text;
 import org.andengine.input.touch.TouchEvent;
 import org.andengine.util.adt.color.Color;
 
+import feup.lpoo.riska.gameInterface.AnimatedTextButtonSpriteMenuItem;
 import feup.lpoo.riska.interfaces.Displayable;
 import feup.lpoo.riska.logic.MainActivity;
 import feup.lpoo.riska.resources.ResourceCache;
@@ -40,7 +41,7 @@ public class GameHUD extends HUD implements Displayable {
 	private ButtonSprite detailsButton;
 	//
 	private ButtonSprite autoDeployButton;
-
+	
 	private Sprite infoTab;
 	private Text infoTabText;
 
@@ -154,11 +155,11 @@ public class GameHUD extends HUD implements Displayable {
 				//  NEW DETAILS BUTTON
 				// =================================
 		autoDeployButton = new ButtonSprite(
-				MainActivity.CAMERA_WIDTH / 2,
-				MainActivity.CAMERA_HEIGHT / 2,
+				0f,
+				0f,
 				resources.getAutoDeployButtonTexture(),
 				activity.getVertexBufferObjectManager()) {
-			
+
 			@Override
 			public boolean onAreaTouched(TouchEvent pSceneTouchEvent, 
 					float pTouchAreaLocalX, float pTouchAreaLocalY)
@@ -181,8 +182,8 @@ public class GameHUD extends HUD implements Displayable {
 			}
 		};
 		
-		autoDeployButton.setScale(1f);
-		//autoDeployButton.setPosition(autoDeployButton.getScaleX() * autoDeployButton.getWidth() / 2, autoDeployButton.getY());
+		autoDeployButton.setScale(0.3f);
+		autoDeployButton.setPosition(0.66f * MainActivity.CAMERA_WIDTH, 0.18f * MainActivity.CAMERA_HEIGHT);
 
 		/*
 		 * ==================================
