@@ -94,7 +94,10 @@ public class SceneManager {
 			currentScene = SceneType.GAME;
 			break;
 		case LOADGAME:
-			//gameScene = new GameScene();
+			if(gameScene == null)
+			{
+				gameScene = new GameScene();
+			}
 			((GameScene)gameScene).hud.setVisible(true);
 			((GameScene)gameScene).loadGame();
 			engine.setScene(gameScene);

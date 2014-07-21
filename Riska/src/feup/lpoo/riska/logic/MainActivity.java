@@ -120,6 +120,9 @@ public class MainActivity extends BaseGameActivity {
 			.setNegativeButton("No", null)
 			.show();
 			break;
+		case STARTGAME:
+			sceneManager.setCurrentScene(SceneType.MENU);
+			break;
 		case OPTIONS:
 			sceneManager.setCurrentScene(SceneType.MENU);
 			break;
