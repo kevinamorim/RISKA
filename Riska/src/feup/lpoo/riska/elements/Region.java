@@ -191,6 +191,14 @@ public class Region extends Element {
 		updateSoldiers();
 	}
 	
+	public void setSoldiers(int value) {
+		soldiers.clear();
+		for(int i = 0; i < value; i++) {
+			soldiers.add(new Unit(SOLDIER_ATT, SOLDIER_DEF));
+		}
+		updateSoldiers();
+	}
+	
 	/**
 	 * Adds a region to the set of neighbours.
 	 * 

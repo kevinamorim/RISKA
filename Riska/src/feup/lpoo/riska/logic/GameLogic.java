@@ -83,8 +83,7 @@ public class GameLogic {
 		players.add(player);
 		players.add(cpu);
 		
-		currentPlayer = players.get(0);
-		
+		currentPlayer = players.get(0);	
 	}
 
 	private void handOutRegions() {
@@ -99,8 +98,7 @@ public class GameLogic {
 			
 			if(!indexes.contains(index)) {
 				indexes.add(index);
-			}
-			
+			}	
 		}
 		
 		int i = 0;
@@ -112,7 +110,7 @@ public class GameLogic {
 			
 			player.addRegion(region);
 			
-			region.addSoldiers(1);
+			region.setSoldiers(1);
 			region.updateSoldiers();
 			
 			region.setOwner(player);
@@ -258,6 +256,18 @@ public class GameLogic {
 	public Player getCurrentPlayer() {
 		return currentPlayer;
 	}
+	
+	public int getCurrentPlayerByIndex() {
+		for(int i = 0; i < players.size(); i++)
+		{
+			if(players.get(i) == currentPlayer)
+			{
+				return i;
+			}
+		}
+		
+		return -1;
+	}
 
 	public void setCurrentPlayer(Player currentPlayer) {
 		this.currentPlayer = currentPlayer;
@@ -286,6 +296,11 @@ public class GameLogic {
 	
 	public ArrayList<Player> getPlayers() {
 		return players;
+	}
+
+	public void setCurrentPlayerByIndex(int index)
+	{
+		this.setCurrentPlayer(players.get(index));
 	}
 
 }

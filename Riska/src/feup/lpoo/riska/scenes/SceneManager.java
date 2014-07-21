@@ -11,8 +11,6 @@ public class SceneManager {
 	private SceneType currentScene;
 	private Engine engine;
 	
-	private boolean firstTime;
-	
 	private Scene splashScene, mainMenuScene, startGameScene, optionsScene, 
 		loadMapScene, gameScene; /* Create more scene if needed, like gameScene. */
 	
@@ -34,8 +32,6 @@ public class SceneManager {
 	public SceneManager(MainActivity activity, Engine engine, Camera camera) {
 		this.engine = engine;
 		instance = this;
-		
-		firstTime = true;
 	}
 	
 	public static SceneManager getSharedInstance() {
@@ -92,14 +88,15 @@ public class SceneManager {
 			break;
 		case NEWGAME:
 			gameScene = new GameScene();
+			((GameScene)gameScene).hud.setVisible(true);
 			((GameScene)gameScene).showInitialHUD();
 			engine.setScene(gameScene);
 			currentScene = SceneType.GAME;
 			break;
 		case LOADGAME:
-			gameScene = new GameScene();
+			//gameScene = new GameScene();
+			((GameScene)gameScene).hud.setVisible(true);
 			((GameScene)gameScene).loadGame();
-			((GameScene)gameScene).showInitialHUD();
 			engine.setScene(gameScene);
 			currentScene = SceneType.GAME;
 			break;

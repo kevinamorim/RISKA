@@ -1,6 +1,5 @@
 package feup.lpoo.riska.scenes;
 
-import org.andengine.engine.camera.Camera;
 import org.andengine.entity.scene.background.SpriteBackground;
 import org.andengine.entity.scene.menu.MenuScene;
 import org.andengine.entity.scene.menu.MenuScene.IOnMenuItemClickListener;
@@ -8,14 +7,10 @@ import org.andengine.entity.scene.menu.item.IMenuItem;
 import org.andengine.entity.sprite.Sprite;
 import org.andengine.opengl.texture.region.TiledTextureRegion;
 
-import android.app.AlertDialog;
-import android.content.DialogInterface;
-import android.content.DialogInterface.OnClickListener;
-import feup.lpoo.riska.gameInterface.AnimatedButtonSpriteMenuItem;
+import android.util.Log;
 import feup.lpoo.riska.gameInterface.AnimatedTextButtonSpriteMenuItem;
 import feup.lpoo.riska.io.LoadGame;
 import feup.lpoo.riska.logic.MainActivity;
-import feup.lpoo.riska.music.Conductor;
 import feup.lpoo.riska.resources.ResourceCache;
 import feup.lpoo.riska.scenes.SceneManager.SceneType;
 
@@ -40,7 +35,6 @@ public class StartGameScene extends MenuScene implements IOnMenuItemClickListene
 		resources = ResourceCache.getSharedInstance();	
 
 		createDisplay();
-
 	}
 
 
@@ -55,7 +49,7 @@ public class StartGameScene extends MenuScene implements IOnMenuItemClickListene
 		final AnimatedTextButtonSpriteMenuItem newGameButton = new AnimatedTextButtonSpriteMenuItem(MENU_NEW_GAME, button.getWidth(), 
 				button.getHeight(), button, activity.getVertexBufferObjectManager(), "NEW", resources.getFont());
 
-		final AnimatedTextButtonSpriteMenuItem loadGameButton = new AnimatedTextButtonSpriteMenuItem(MENU_NEW_GAME, button.getWidth(), 
+		final AnimatedTextButtonSpriteMenuItem loadGameButton = new AnimatedTextButtonSpriteMenuItem(MENU_LOAD_GAME, button.getWidth(), 
 				button.getHeight(), button, activity.getVertexBufferObjectManager(), "LOAD", resources.getFont());
 
 		float centerX = MainActivity.CAMERA_WIDTH/2;
@@ -80,10 +74,13 @@ public class StartGameScene extends MenuScene implements IOnMenuItemClickListene
 			break;
 		case MENU_LOAD_GAME:
 			LoadGame load = new LoadGame(activity);
+			Log.d("Riska", "Checking load game...");
+			
 			if(load.checkLoadGame())
+			{
+				Log.d("Riska", "Loading game...");
 				sceneManager.setCurrentScene(SceneType.LOADGAME);
-			else
-				sceneManager.setCurrentScene(SceneType.NEWGAME);
+			}
 			break;
 		default:
 			break;

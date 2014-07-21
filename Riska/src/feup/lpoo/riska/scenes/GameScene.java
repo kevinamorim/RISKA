@@ -192,6 +192,11 @@ public class GameScene extends Scene implements IOnSceneTouchListener, IScrollDe
 			region.getButton().setPosition(x, y);
 			region.getButton().setScale((float) 0.5);
 			
+			if(region.getButton().hasParent())
+			{
+				region.getButton().detachSelf();
+			}
+			
 			attachChild(region.getButton());
 			registerTouchArea(region.getButton());
 		}
@@ -630,9 +635,13 @@ public class GameScene extends Scene implements IOnSceneTouchListener, IScrollDe
 		
 	}
 
-	public void saveGame() {
+	public void saveGame()
+	{
 		
 		if(logic.getState() != GAME_STATE.PAUSED && logic.getState() != GAME_STATE.DEPLOYMENT) {
+			
+			Log.d("Riska", "Will save the game.");
+			
 			new SaveGame(activity, logic);
 		}
 		

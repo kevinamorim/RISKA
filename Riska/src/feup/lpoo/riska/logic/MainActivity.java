@@ -108,7 +108,7 @@ public class MainActivity extends BaseGameActivity {
 		switch(sceneManager.getCurrentScene()) {
 		case SPLASH:
 			break;
-		case MENU:		
+		case MENU:
 			new AlertDialog.Builder(this)
 			.setMessage("Exit?")
 			.setCancelable(false)
