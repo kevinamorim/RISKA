@@ -18,6 +18,7 @@ public class GameLogic {
 	//private MainActivity activity;
 	private ResourceCache resources;
 	private SceneManager sceneManager;
+	private BattleGenerator battleGenerator;
 	
 	// ======================================================
 	// CONSTANTS
@@ -66,6 +67,7 @@ public class GameLogic {
 		state = GAME_STATE.PAUSED;
 		turnDone = false;
 		
+		battleGenerator = new BattleGenerator();
 	}
 	
 	private void createsPlayers() {
@@ -202,8 +204,6 @@ public class GameLogic {
 	}
 
 	public void attack(Region region1, Region region2) {
-		
-		BattleGenerator battleGenerator = new BattleGenerator();
 		
 		boolean won = battleGenerator.simulateAttack(region1.getSoldiers(), region2.getSoldiers());
 		

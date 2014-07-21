@@ -96,10 +96,16 @@ public class GameHUD extends HUD implements Displayable {
 			}
 		};
 
-		attackButton.setScaleX(0.3f);
-		attackButton.setScaleY(0.2f);
-		attackButton.setPosition((MainActivity.CAMERA_WIDTH/2),
-				attackButton.getScaleY() * attackButton.getHeight() / 2);
+//		attackButton.setScaleX(0.3f);
+//		attackButton.setScaleY(0.2f);
+//		attackButton.setPosition((MainActivity.CAMERA_WIDTH/2),
+//				attackButton.getScaleY() * attackButton.getHeight() / 2);
+		
+		attackButton.setScaleX(.5f);
+		attackButton.setScaleY(.6f);
+		attackButton.setPosition(
+				(MainActivity.CAMERA_WIDTH - (attackButton.getScaleX() * attackButton.getWidth() / 2f) + 4),
+				(MainActivity.CAMERA_HEIGHT / 2f));
 
 		// =================================
 		//  NEW INFO TAB

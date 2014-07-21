@@ -1,11 +1,13 @@
 package feup.lpoo.riska.scenes;
 
 import org.andengine.entity.scene.Scene;
+import org.andengine.entity.sprite.ButtonSprite;
 import org.andengine.entity.sprite.Sprite;
 import org.andengine.entity.text.Text;
 import org.andengine.opengl.font.Font;
 import org.andengine.util.adt.color.Color;
 
+import android.util.Log;
 import feup.lpoo.riska.elements.Region;
 import feup.lpoo.riska.generator.BattleGenerator;
 import feup.lpoo.riska.logic.MainActivity;
@@ -31,18 +33,18 @@ public class BattleScene extends Scene {
 	BattleGenerator battleGenerator;
 	Sprite background;
 	
-	Region region1, region2;
+	Region attacker, defender;
 	boolean won;
 
-	public BattleScene(Region region1, Region region2, boolean won) {
+	public BattleScene(Region attacker, Region defender, boolean won) {
 		
 		activity = MainActivity.getSharedInstance();
 		sceneManager = SceneManager.getSharedInstance();	
 		cameraManager = CameraManager.getSharedInstance();
 		resources = ResourceCache.getSharedInstance();
 		
-		this.region1 = region1;
-		this.region2 = region2;
+		this.attacker = attacker;
+		this.defender = defender;
 		this.won = won;
 		
 		createDisplay();
@@ -51,86 +53,118 @@ public class BattleScene extends Scene {
 
 	private void createDisplay() {
 		
-		float centerX = MainActivity.CAMERA_WIDTH / 2;
-		
-		background = new Sprite(centerX,
+		background = new Sprite(
+				MainActivity.CAMERA_WIDTH / 2,
 				MainActivity.CAMERA_HEIGHT / 2,
 				MainActivity.CAMERA_WIDTH,
 				MainActivity.CAMERA_HEIGHT,
-				resources.getMenuBackgroundTexture(),
+				resources.getWindowTexture(),
 				activity.getVertexBufferObjectManager());
 		
 		background.setScale(0.9f);
 		
 		setBackgroundEnabled(false);
-		attachChild(background);
 		
 		Text vsText = new Text(MainActivity.CAMERA_WIDTH/2, MainActivity.CAMERA_HEIGHT/2,
 				resources.getGameFont(), "VS", activity.getVertexBufferObjectManager());
 		
-		vsText.setColor(Color.RED);
+		vsText.setColor(Color.BLACK);
 		vsText.setScale(2.0f);
 		
 		attachChild(vsText);
 	
-		int playerNum = (region1.getOwner().isCPU())? 1 : 0;
-		displayRegionInfo(region1, won, playerNum);
-		playerNum = (region2.getOwner().isCPU())? 1 : 0;
-		displayRegionInfo(region2, !won, playerNum);
+		int playerNum = (attacker.getOwner().isCPU())? 1 : 0;
+		displayRegionInfo(attacker, won, playerNum);
 		
+		ButtonSprite result;
+		result = new ButtonSprite(
+				0.50f * background.getWidth(),
+				0.80f * background.getHeight(),
+				resources.getResultTexture(),
+				activity.getVertexBufferObjectManager());
+		
+		if(playerNum == 0)
+		{
+			if(!won)
+			{
+				result.setScale(-0.4f, 0.3f);
+			}
+		}
+		else
+		{
+			if(won)
+			{
+				result.setScale(-0.4f, 0.3f);
+			}
+		}
+		
+		background.attachChild(result);
+		
+		playerNum = (defender.getOwner().isCPU())? 1 : 0;
+		displayRegionInfo(defender, !won, playerNum);
+		
+		background.setAlpha(0.8f);
+		attachChild(background);
 	}
 	
 	/* Assuming only two players for now. PlayerNum = 0 -> Left side, PlayerNum = 1 -> Right side */
 	private void displayRegionInfo(Region pRegion, boolean regionWon, int playerNum) {
 		
-		String typePlayer = ((playerNum == 0)? "(PLAYER)" : "(CPU)");
+		Color textColor = Color.WHITE;
+		
+		String typePlayer = ((playerNum == 0)? "[PLAYER]" : "[CPU]");
 		String regionName = pRegion.getName();
 		String resultStr = (regionWon)? "WON" : "LOSE";
 		
-		float x, y = 0.9f * MainActivity.CAMERA_HEIGHT;
+		float halfWidth = getWidth()/2f;
+		
+		float x, y = 0.80f * MainActivity.CAMERA_HEIGHT;
+		
 		if(playerNum == 0) {
-			x = MainActivity.CAMERA_WIDTH / 4;
+			x = MainActivity.CAMERA_WIDTH * 0.25f;
 		} else {
 			x = MainActivity.CAMERA_WIDTH * 0.75f;
 		}
 		
 		Text typePlayerText = new Text(x - this.getWidth()/2, y,  resources.getGameFont(),
 				typePlayer, 10,  activity.getVertexBufferObjectManager());
-		typePlayerText.setScale(0.5f);
 		
-		y = 0.7f * MainActivity.CAMERA_HEIGHT;
+		typePlayerText.setScale(0.70f);
+		
+		y = 0.60f * MainActivity.CAMERA_HEIGHT;
 		
 		Text regionNameText = new Text(x - this.getWidth()/2, y,  resources.getGameFont(),
-				wrapText(resources.getGameFont(), regionName, this.getWidth()/2), 1000,  activity.getVertexBufferObjectManager());
+				wrapText(resources.getGameFont(), regionName, halfWidth), 1000,  activity.getVertexBufferObjectManager());
 		
-		y = 0.3f * MainActivity.CAMERA_HEIGHT;
+		y = 0.25f * MainActivity.CAMERA_HEIGHT;
 		
 		Text resultText =  new Text(x - this.getWidth()/2, y,  resources.getGameFont(),
 				resultStr, 4,  activity.getVertexBufferObjectManager());
 		
-		Color textColor;
-		if(regionWon) {
-			textColor = Color.GREEN;
-		} else {
-			textColor = Color.RED;
-
-		}
-		
 		typePlayerText.setColor(textColor);
 		regionNameText.setColor(textColor);
+		
+//		if(regionWon)
+//		{
+//			textColor = Color.GREEN;
+//		} else
+//		{
+//			textColor = Color.RED;
+//		}
+		
 		resultText.setColor(textColor);	
 		
 		attachChild(typePlayerText);
 		attachChild(regionNameText);
 		attachChild(resultText);
-		
-		
 	}
 	
 	private String wrapText(Font pFont, String pString, float maxWidth) {
 
 		Text pText = new Text(0, 0, pFont, pString, 1000, activity.getVertexBufferObjectManager());
-
+		
+		Log.d("Riska","Text width: " + pText.getWidth() + " of " + maxWidth);
+		
 		if(pText.getWidth() < maxWidth) {
 			return pString;
 		}
@@ -144,10 +178,12 @@ public class BattleScene extends Scene {
 		for(String word : words) {
 
 			pText.setText(line + word);
+			
+			Log.d("Riska","Text width: " + pText.getWidth() + " of " + maxWidth);
+			
 			if(pText.getWidth() > maxWidth) {			
 				wrappedText += line + "\n\n";
 				line = "";
-
 			}
 
 			line += word + " ";
@@ -159,6 +195,4 @@ public class BattleScene extends Scene {
 		return wrappedText;
 
 	}
-	
-	
 }

@@ -21,6 +21,7 @@ import feup.lpoo.riska.R;
 import android.graphics.Color;
 import android.graphics.Point;
 import android.graphics.Typeface;
+import android.util.Log;
 import feup.lpoo.riska.elements.Map;
 import feup.lpoo.riska.elements.Region;
 import feup.lpoo.riska.io.FileRead;
@@ -53,6 +54,14 @@ public class ResourceCache {
 	protected BitmapTextureAtlas mBackgroundTexture;
 	protected ITextureRegion mBackgroundTextureRegion;
 
+	// Texture used as the background
+	protected BitmapTextureAtlas mWindowTexture;
+	protected ITextureRegion mWindowTextureRegion;
+	
+	// Texture used as the result
+	protected BitmapTextureAtlas mResultTexture;
+	protected ITextureRegion mResultTextureRegion;
+
 	// Texure used in the start button
 	protected BitmapTextureAtlas mStartButtonTextureAtlas;
 	protected TiledTextureRegion mStartButtonTiledTextureRegion;
@@ -81,7 +90,7 @@ public class ResourceCache {
 
 	protected BitmapTextureAtlas detailsButtonTextureAtlas;
 	protected TiledTextureRegion detailsButtonTiledTextureRegion;
-	
+
 	protected BitmapTextureAtlas autoDeployButtonTextureAtlas;
 	protected TiledTextureRegion autoDeployButtonTiledTextureRegion;
 
@@ -110,12 +119,12 @@ public class ResourceCache {
 
 	private static int SEA_COLS = 4;
 	private static int SEA_LINES = 2;	
-	
+
 	private static ResourceCache instance;
 	// ======================================================
 	// ======================================================
-	
-	
+
+
 	public ResourceCache(MainActivity activity, Engine engine, Camera camera) {
 		instance = this;
 
@@ -247,6 +256,8 @@ public class ResourceCache {
 			String imgInfoTab = activity.getResources().getString(R.string.path_img_info_tab);
 			String imgDetailsButton = activity.getResources().getString(R.string.path_img_details_button);
 			String imgAutoDeployButton = activity.getResources().getString(R.string.path_img_auto_deploy_button);
+			String imgWindow = activity.getResources().getString(R.string.path_img_window);
+			String imgResult = activity.getResources().getString(R.string.path_img_result_button);
 
 			// LOADS MAP TEXTURE
 			mapTextureAtlas = new BitmapTextureAtlas(activity.getTextureManager(), 4096, 2048, TextureOptions.DEFAULT);
@@ -298,15 +309,21 @@ public class ResourceCache {
 			// ================================================================================= 
 			String regionsFile = activity.getResources().getString(R.string.path_file_regions);
 			String neighboursFile = activity.getResources().getString(R.string.path_file_neighbours);
-			
+
 			map = new Map(readRegions(regionsFile));
 			readNeighbours(neighboursFile);
-			
+
 
 			// HUD
-			attackButtonTextureAtlas = new BitmapTextureAtlas(activity.getTextureManager(), 1024, 1024, TextureOptions.DEFAULT);
+//			attackButtonTextureAtlas = new BitmapTextureAtlas(activity.getTextureManager(), 1024, 1024, TextureOptions.DEFAULT);
+//			attackButtonTiledTextureRegion = BitmapTextureAtlasTextureRegionFactory.createTiledFromAsset(attackButtonTextureAtlas, 
+//					activity.getAssets(), imgAttackButton, 0, 0, 1, 2);
+//
+//			attackButtonTextureAtlas.load();
+			
+			attackButtonTextureAtlas = new BitmapTextureAtlas(activity.getTextureManager(), 256, 256, TextureOptions.DEFAULT);
 			attackButtonTiledTextureRegion = BitmapTextureAtlasTextureRegionFactory.createTiledFromAsset(attackButtonTextureAtlas, 
-					activity.getAssets(), imgAttackButton, 0, 0, 1, 2);
+					activity.getAssets(), imgAttackButton, 0, 0, 2, 1);
 
 			attackButtonTextureAtlas.load();
 
@@ -321,12 +338,26 @@ public class ResourceCache {
 					activity.getAssets(), imgDetailsButton, 0, 0, 2, 1);
 
 			detailsButtonTextureAtlas.load();
-			
+
 			autoDeployButtonTextureAtlas = new BitmapTextureAtlas(activity.getTextureManager(), 512, 256, TextureOptions.DEFAULT);
 			autoDeployButtonTiledTextureRegion = BitmapTextureAtlasTextureRegionFactory.createTiledFromAsset(autoDeployButtonTextureAtlas, 
 					activity.getAssets(), imgAutoDeployButton, 0, 0, 2, 1);
 
 			autoDeployButtonTextureAtlas.load();
+
+			// LOADS WINDOW BACKGROUND
+			mWindowTexture = new BitmapTextureAtlas(activity.getTextureManager(), 512, 512, TextureOptions.DEFAULT);
+			mWindowTextureRegion = BitmapTextureAtlasTextureRegionFactory.createFromAsset(mWindowTexture, 
+					activity, imgWindow, 0, 0);
+
+			mWindowTexture.load();
+			
+			mResultTexture = new BitmapTextureAtlas(activity.getTextureManager(), 512, 512, TextureOptions.DEFAULT);
+			mResultTextureRegion = BitmapTextureAtlasTextureRegionFactory.createFromAsset(mResultTexture, 
+					activity, imgResult, 0, 0);
+
+			mResultTexture.load();
+
 
 		}
 		catch (Exception e)
@@ -342,28 +373,28 @@ public class ResourceCache {
 
 		try
 		{
-			
+
 			String musicBackground = activity.getResources().getString(R.string.path_music_background);
-			
+
 			MusicFactory.setAssetBasePath("sounds/");
 
 			Music backgroundMusic = loadMusic(musicBackground);
-					
+
 			conductor = new Conductor();
 			conductor.addMusic(backgroundMusic, activity.getResources().getString(R.string.name_music_background));
-			
+
 		}
 		catch (Exception e)
 		{
 			e.printStackTrace();
 		}
 	}
-	
+
 	/**
 	 * Loads a music with the given filename.
 	 */
 	private Music loadMusic(String filename) {
-		
+
 		try
 		{
 			return MusicFactory.createMusicFromAsset(engine.getMusicManager(), activity, filename);
@@ -431,7 +462,22 @@ public class ResourceCache {
 				}
 				i++;
 			}
-		}	
+		}
+		
+		checkNeighbours();
+	}
+
+	private void checkNeighbours() {
+		for(Region reg : map.getRegions())
+		{
+			for(Region region : reg.getNeighbours())
+			{
+				if(!region.getNeighbours().contains(reg))
+				{
+					Log.d("Regions","Region " + reg.getName() + " (" + reg.getId() + ") has neighbour " + region.getName() + " (" + region.getId() + ") but not vice-versa.");
+				}
+			}
+		}
 	}
 
 	public Font getGameFont() {
@@ -501,5 +547,14 @@ public class ResourceCache {
 
 	public TiledTextureRegion getAutoDeployButtonTexture() {
 		return autoDeployButtonTiledTextureRegion;
+	}
+
+	public ITextureRegion getWindowTexture() {
+		return mWindowTextureRegion;
+	}
+
+	public ITextureRegion getResultTexture()
+	{
+		return mResultTextureRegion;
 	}
 }

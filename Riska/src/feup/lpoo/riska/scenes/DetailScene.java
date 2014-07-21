@@ -49,7 +49,7 @@ public class DetailScene extends Scene {
 				MainActivity.CAMERA_HEIGHT / 2,
 				MainActivity.CAMERA_WIDTH,
 				MainActivity.CAMERA_HEIGHT,
-				resources.getMenuBackgroundTexture(),
+				resources.getWindowTexture(),
 				activity.getVertexBufferObjectManager());
 
 		setBackgroundEnabled(false);

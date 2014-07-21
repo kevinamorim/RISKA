@@ -390,7 +390,8 @@ public class Region extends Element {
 	
 	public Region selectTargetRegion() {
 		
-		if(hasEnemyNeighbor()) {
+		if(hasEnemyNeighbor())
+		{
 			ArrayList<Region> neighbours = getEnemyNeighbours();
 			Random r = new Random();
 			int i = r.nextInt(neighbours.size());
