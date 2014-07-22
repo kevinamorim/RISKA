@@ -62,6 +62,8 @@ public class BattleScene extends Scene {
 				activity.getVertexBufferObjectManager());
 		
 		background.setScale(0.9f);
+		background.setAlpha(1f);
+		attachChild(background);
 		
 		setBackgroundEnabled(false);
 		
@@ -76,43 +78,16 @@ public class BattleScene extends Scene {
 		int playerNum = (attacker.getOwner().isCPU())? 1 : 0;
 		displayRegionInfo(attacker, won, playerNum);
 		
-		ButtonSprite result;
-		result = new ButtonSprite(
-				0.50f * background.getWidth(),
-				0.80f * background.getHeight(),
-				resources.getResultTexture(),
-				activity.getVertexBufferObjectManager());
-		
-		if(playerNum == 0)
-		{
-			if(!won)
-			{
-				result.setScale(-0.4f, 0.3f);
-			}
-		}
-		else
-		{
-			if(won)
-			{
-				result.setScale(-0.4f, 0.3f);
-			}
-		}
-		
-		background.attachChild(result);
-		
 		playerNum = (defender.getOwner().isCPU())? 1 : 0;
 		displayRegionInfo(defender, !won, playerNum);
-		
-		background.setAlpha(0.8f);
-		attachChild(background);
 	}
 	
 	/* Assuming only two players for now. PlayerNum = 0 -> Left side, PlayerNum = 1 -> Right side */
 	private void displayRegionInfo(Region pRegion, boolean regionWon, int playerNum) {
 		
-		Color textColor = Color.WHITE;
+		Color textColor = Color.BLACK;
 		
-		String typePlayer = ((playerNum == 0)? "[PLAYER]" : "[CPU]");
+		String typePlayer = ((playerNum == 0)? "- PLAYER -" : "- CPU -");
 		String regionName = pRegion.getName();
 		String resultStr = (regionWon)? "WON" : "LOSE";
 		
@@ -144,19 +119,28 @@ public class BattleScene extends Scene {
 		typePlayerText.setColor(textColor);
 		regionNameText.setColor(textColor);
 		
-//		if(regionWon)
-//		{
-//			textColor = Color.GREEN;
-//		} else
-//		{
-//			textColor = Color.RED;
-//		}
+		ButtonSprite result;
+		result = new ButtonSprite(0,0,
+				resources.getRegionButtonTexture(),
+				activity.getVertexBufferObjectManager());
+		
+		if(regionWon)
+		{
+			result.setColor(Color.GREEN);
+		} else
+		{
+			result.setColor(Color.BLACK);
+		}
+		
+		result.setScale(0.7f);
+		result.setPosition(x, y);
+		attachChild(result);
 		
 		resultText.setColor(textColor);	
 		
 		attachChild(typePlayerText);
 		attachChild(regionNameText);
-		attachChild(resultText);
+		//attachChild(resultText);
 	}
 	
 	private String wrapText(Font pFont, String pString, float maxWidth) {
