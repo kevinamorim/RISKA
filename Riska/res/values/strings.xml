@@ -41,7 +41,7 @@
 	<string name="path_music_background">music.mp3</string>
 	
 	<string name="path_font_splash">AlexisMarie.ttf</string>
-	<string name="path_font_menu">Reprise.ttf</string>
-	<string name="path_font_game">Reprise.ttf</string>
+	<string name="path_font_menu">reprise.ttf</string>
+	<string name="path_font_game">reprise.ttf</string>
 
 </resources>
