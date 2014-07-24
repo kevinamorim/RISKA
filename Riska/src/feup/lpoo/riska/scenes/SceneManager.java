@@ -23,9 +23,9 @@ public class SceneManager {
 	private BaseScene splashScene;
 	private BaseScene loadingScene;
 	private BaseScene mainMenuScene;
+	private BaseScene optionsScene;
 	private BaseScene gameScene;
-	
-	private Scene optionsScene, loadMapScene;
+
 	
 	// ==================================================
 	// FIELDS
@@ -81,6 +81,19 @@ public class SceneManager {
 				ResourceCache.getSharedInstance().loadGameSceneResources();
 				gameScene = new GameScene();
 				setScene(gameScene);
+			}
+		}));
+	}
+	
+	public void createOptionsScene() {
+		setScene(loadingScene);
+		engine.registerUpdateHandler(new TimerHandler(MIN_LOAD_SECONDS, new ITimerCallback() {
+			@Override
+			public void onTimePassed(TimerHandler pTimerHandler) {
+				engine.unregisterUpdateHandler(pTimerHandler);
+				ResourceCache.getSharedInstance().loadOptionsMenuSceneResources();
+				optionsScene = new OptionsScene();
+				setScene(optionsScene);
 			}
 		}));
 	}

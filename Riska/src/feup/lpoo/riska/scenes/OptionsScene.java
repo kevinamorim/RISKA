@@ -13,54 +13,69 @@ import android.content.SharedPreferences.Editor;
 import android.graphics.Color;
 import android.preference.PreferenceManager;
 import feup.lpoo.riska.gameInterface.AnimatedButtonSpriteMenuItem;
+import feup.lpoo.riska.gameInterface.AnimatedTextButtonSpriteMenuItem;
 import feup.lpoo.riska.logic.MainActivity;
 import feup.lpoo.riska.music.Conductor;
 import feup.lpoo.riska.resources.ResourceCache;
 import feup.lpoo.riska.scenes.SceneManager.SceneType;
 
-public class OptionsScene extends MenuScene implements IOnMenuItemClickListener {
+public class OptionsScene extends BaseScene implements IOnMenuItemClickListener {
 	
-	MainActivity activity; 
-	SceneManager sceneManager;
-	ResourceCache resources;
-	Conductor conductor;
+	// ==================================================
+	// FIELDS
+	// ==================================================
+	private MenuScene optionsMenuChildScene;
+	private final int MENU_RETURN = 0;
+	private final int MENU_SFX = 1;
+	private final int MENU_MUSIC = 2;
 	
-	private AnimatedButtonSpriteMenuItem button_slider_sfx;
-	private AnimatedButtonSpriteMenuItem button_slider_music;
-	
-	final int RETURN = 0;
-	final int SFX = 1;
-	final int MUSIC = 2;
-	
-	public OptionsScene() {		
-		super(MainActivity.getSharedInstance().mCamera);
-		
-		activity = MainActivity.getSharedInstance();
-		sceneManager = SceneManager.getSharedInstance();
-		resources = ResourceCache.getSharedInstance();
-		conductor = Conductor.getSharedInstance();
-		
-		createDisplay();	
+	@Override
+	public void createScene() {
+		createDisplay();
+		createOptionsMenuChildScene();
 		loadConfig();
 	}
 
-	private void createDisplay() {
-		SpriteBackground background = new SpriteBackground(new Sprite(MainActivity.CAMERA_WIDTH/2, MainActivity.CAMERA_HEIGHT/2, 
-				resources.menuBackgroundRegion, activity.getVertexBufferObjectManager()));
+	@Override
+	public void onBackKeyPressed() {
+		// TODO Auto-generated method stub
+		
+	}
+
+	@Override
+	public SceneType getSceneType() {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	@Override
+	public void disposeScene() {
+		// TODO Auto-generated method stub
+		
+	}
+	
+	private void createOptionsMenuChildScene() {
+		
+		optionsMenuChildScene = new MenuScene(camera);
+		
 		
 		TiledTextureRegion button = resources.returnBtnRegion;
 		
-		final AnimatedButtonSpriteMenuItem button_return = new AnimatedButtonSpriteMenuItem(RETURN, (float) 0.3*button.getWidth(), 
+		final AnimatedButtonSpriteMenuItem button_return = new AnimatedButtonSpriteMenuItem(MENU_RETURN, (float) 0.3*button.getWidth(), 
 				(float) 0.3*button.getHeight(), button, 
 				activity.getVertexBufferObjectManager());
 		
 		button = resources.sliderBtnRegion;
 		
-		button_slider_sfx = new AnimatedButtonSpriteMenuItem(SFX, (float) 0.3*button.getWidth(),
-				(float) 0.3*button.getHeight(), button, activity.getVertexBufferObjectManager());
+		AnimatedButtonSpriteMenuItem button_slider_sfx = new AnimatedButtonSpriteMenuItem(MENU_SFX, 
+				(float) 0.3*button.getWidth(),
+				(float) 0.3*button.getHeight(), button, 
+				activity.getVertexBufferObjectManager());
 		
-		button_slider_music = new AnimatedButtonSpriteMenuItem(MUSIC, (float) 0.3*button.getWidth(),
-				(float) 0.3*button.getHeight(), button, activity.getVertexBufferObjectManager());
+		AnimatedButtonSpriteMenuItem button_slider_music = new AnimatedButtonSpriteMenuItem(MENU_MUSIC, 
+				(float) 0.3*button.getWidth(),
+				(float) 0.3*button.getHeight(), button, 
+				activity.getVertexBufferObjectManager());
 		
 		
 		
@@ -82,22 +97,26 @@ public class OptionsScene extends MenuScene implements IOnMenuItemClickListener 
 		button_slider_music.setPosition(MainActivity.CAMERA_WIDTH/2 + button_slider_music.getWidth()/2, 
 				(float) 0.5*MainActivity.CAMERA_HEIGHT);
 		
+		
+		
+		optionsMenuChildScene.addMenuItem(button_return);
+		optionsMenuChildScene.addMenuItem(button_slider_sfx);
+		optionsMenuChildScene.addMenuItem(button_slider_music);
+		
+		optionsMenuChildScene.attachChild(music_text);
+		optionsMenuChildScene.attachChild(sfx_text);
+		
+		optionsMenuChildScene.setOnMenuItemClickListener(this);	
+		optionsMenuChildScene.setBackgroundEnabled(false);
+		
+		setChildScene(optionsMenuChildScene);
+		
+	}
+
+	private void createDisplay() {
+		SpriteBackground background = new SpriteBackground(new Sprite(MainActivity.CAMERA_WIDTH/2, MainActivity.CAMERA_HEIGHT/2, 
+				resources.menuBackgroundRegion, activity.getVertexBufferObjectManager()));
 		setBackground(background);
-		
-		addMenuItem(button_return);
-		addMenuItem(button_slider_sfx);
-		addMenuItem(button_slider_music);
-		
-		attachChild(music_text);
-		attachChild(sfx_text);
-		
-		if(conductor.isMusicPlaying()) {
-			button_slider_music.setCurrentTileIndex(0);
-		} else {
-			button_slider_music.setCurrentTileIndex(1);
-		}
-		
-		setOnMenuItemClickListener(this);	
 	}
 
 	@Override
@@ -105,20 +124,13 @@ public class OptionsScene extends MenuScene implements IOnMenuItemClickListener 
 			float pMenuItemLocalX, float pMenuItemLocalY) {
 		
 		switch(pMenuItem.getID()) {
-		case RETURN:
+		case MENU_RETURN:
 			saveConfig();
 			//sceneManager.setCurrentScene(SceneType.MAIN_MENU);
 			break;
-		case SFX:
+		case MENU_SFX:
 			break;
-		case MUSIC:
-			if(conductor.isMusicPlaying()) {
-				conductor.pause();
-				button_slider_music.setCurrentTileIndex(1);
-			} else {
-				conductor.play();
-				button_slider_music.setCurrentTileIndex(0);
-			}
+		case MENU_MUSIC:
 			break;
 		default:
 				break;
@@ -131,7 +143,7 @@ public class OptionsScene extends MenuScene implements IOnMenuItemClickListener 
 		SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(activity);
 		Editor editor = prefs.edit();
 		
-		editor.putBoolean("musicOn", conductor.isMusicPlaying());
+		//editor.putBoolean("musicOn", conductor.isMusicPlaying());
 		
 		editor.commit();
 		
@@ -144,14 +156,8 @@ public class OptionsScene extends MenuScene implements IOnMenuItemClickListener 
 		
 		boolean music = prefs.getBoolean("musicOn", true);
 		
-		if(music) {
-			conductor.play();
-			button_slider_music.setCurrentTileIndex(0);
-		} else {
-			conductor.pause();
-			button_slider_music.setCurrentTileIndex(1);
-		}
-		
 	}
+
+
 
 }

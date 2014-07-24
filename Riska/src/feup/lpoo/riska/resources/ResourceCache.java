@@ -179,7 +179,7 @@ public class ResourceCache {
 		FontFactory.setAssetBasePath("fonts/");
 
 		mainMenuFont = FontFactory.createFromAsset(engine.getFontManager(),
-				engine.getTextureManager(), 256, 512, TextureOptions.BILINEAR,
+				engine.getTextureManager(), 512, 512, TextureOptions.BILINEAR,
 				activity.getAssets(), "reprise.ttf", 125f, true,
 				Color.WHITE);
 
