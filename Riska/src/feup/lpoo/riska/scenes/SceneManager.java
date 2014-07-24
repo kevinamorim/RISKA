@@ -77,6 +77,8 @@ public class SceneManager {
 	public void createGameScene() {
 		setScene(loadingScene);
 		ResourceCache.getSharedInstance().unloadMainMenuResources();
+		mainMenuScene.dispose();
+		mainMenuScene = null;
 		engine.registerUpdateHandler(new TimerHandler(MIN_LOAD_SECONDS, new ITimerCallback() {
 			@Override
 			public void onTimePassed(TimerHandler pTimerHandler) {
@@ -113,12 +115,6 @@ public class SceneManager {
 		
 		}));
 	}
-	
-	
-	public GameScene getGameScene() {
-		return ((GameScene) gameScene);
-	}
-	
 	
 	// ==================================================
 	// GETTERS & SETTERS
@@ -163,4 +159,8 @@ public class SceneManager {
 		return instance;
 	}
 	
+	public GameScene getGameScene() {
+		return ((GameScene) gameScene);
+	}
+
 }

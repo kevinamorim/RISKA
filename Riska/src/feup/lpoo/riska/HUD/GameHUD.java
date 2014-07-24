@@ -49,7 +49,6 @@ public class GameHUD extends HUD implements Displayable {
 		createDisplay();
 	}
 
-
 	public void createDisplay() {	
 
 		createAttackButton();

@@ -20,12 +20,8 @@ import feup.lpoo.riska.io.SaveGame;
 import feup.lpoo.riska.logic.GameLogic;
 import feup.lpoo.riska.logic.GameLogic.GAME_STATE;
 import feup.lpoo.riska.logic.MainActivity;
-import feup.lpoo.riska.resources.ResourceCache;
 import feup.lpoo.riska.scenes.SceneManager.SceneType;
 import feup.lpoo.riska.R;
-import android.app.AlertDialog;
-import android.content.DialogInterface;
-import android.content.DialogInterface.OnClickListener;
 import android.graphics.Point;
 import android.util.Log;
 
@@ -72,6 +68,7 @@ public class GameScene extends BaseScene implements IOnSceneTouchListener, IScro
 		this.targetedRegion = null;
 		logic = new GameLogic();
 		detailScene = new DetailScene();
+		cameraManager = CameraManager.getSharedInstance();
 		lastTouchTime = 0;	
 		createDisplay();
 	}
@@ -169,11 +166,11 @@ public class GameScene extends BaseScene implements IOnSceneTouchListener, IScro
 			break;
 			
 		case DEPLOYMENT:
-			//logic.updateDeployment();
+			logic.updateDeployment();
 			break;
 			
 		case PLAY:
-			//logic.updateGame();
+			logic.updateGame();
 			break;
 			
 		default:
@@ -271,7 +268,6 @@ public class GameScene extends BaseScene implements IOnSceneTouchListener, IScro
 				hud.showAttackButton();	
 				setInfoTabToProceedToAttack();
 					
-				//Log.d("Regions", "Targeted: " + pRegion.getName());
 			}
 			
 		}
