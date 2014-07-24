@@ -58,8 +58,6 @@ public class MainActivity extends BaseGameActivity {
 			OnCreateResourcesCallback pOnCreateResourcesCallback)
 			throws IOException {
 		
-		sceneManager = new SceneManager(this, mEngine, mCamera);
-		
 		ResourceCache.prepareManager(mEngine, this, mCamera, getVertexBufferObjectManager());	
 		ResourceCache.getSharedInstance().loadSplashSceneResources();
 		
@@ -70,9 +68,7 @@ public class MainActivity extends BaseGameActivity {
 	@Override
 	public void onCreateScene(OnCreateSceneCallback pOnCreateSceneCallback)
 			throws IOException {
-		
-		pOnCreateSceneCallback.onCreateSceneFinished(sceneManager.createSplashScene());
-		
+		SceneManager.getSharedInstance().createSplashScene(pOnCreateSceneCallback);
 	}
 
 	@Override
@@ -90,8 +86,8 @@ public class MainActivity extends BaseGameActivity {
 				ResourceCache.getSharedInstance().loadGameSceneResources();
 				ResourceCache.getSharedInstance().loadMusicResources();
 				
-				sceneManager.createGameScenes();
-				sceneManager.setCurrentScene(SceneType.MENU);
+				SceneManager.getSharedInstance().createGameScenes();
+				SceneManager.getSharedInstance().setCurrentScene(SceneType.MENU);
 				
 			}
 		}));
@@ -121,20 +117,20 @@ public class MainActivity extends BaseGameActivity {
 			.show();
 			break;
 		case STARTGAME:
-			sceneManager.setCurrentScene(SceneType.MENU);
+			SceneManager.getSharedInstance().setCurrentScene(SceneType.MENU);
 			break;
 		case OPTIONS:
-			sceneManager.setCurrentScene(SceneType.MENU);
+			SceneManager.getSharedInstance().setCurrentScene(SceneType.MENU);
 			break;
 		case LOAD_MAP:
 			break;
 		case GAME:
 			/* Save game */
-			sceneManager.getGameScene().saveGame();
-			sceneManager.setCurrentScene(SceneType.MENU);
+			SceneManager.getSharedInstance().getGameScene().saveGame();
+			SceneManager.getSharedInstance().setCurrentScene(SceneType.MENU);
 			break;
 		case GAME_OVER:
-			sceneManager.setCurrentScene(SceneType.MENU);
+			SceneManager.getSharedInstance().setCurrentScene(SceneType.MENU);
 			break;
 		default:
 			break;

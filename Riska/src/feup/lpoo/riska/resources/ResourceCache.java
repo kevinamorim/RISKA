@@ -131,6 +131,11 @@ public class ResourceCache {
 	public void loadSplashSceneResources() {
 		loadSplashGraphics();
 	}
+	
+	public void unloadSplashSceneResources() {
+		splashTextureAtlas.unload();
+		splashRegion = null;
+	}
 
 	private void loadSplashGraphics() {
 		

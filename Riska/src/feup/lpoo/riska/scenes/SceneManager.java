@@ -3,20 +3,29 @@ package feup.lpoo.riska.scenes;
 import org.andengine.engine.Engine;
 import org.andengine.engine.camera.Camera;
 import org.andengine.entity.scene.Scene;
+import org.andengine.ui.IGameInterface.OnCreateSceneCallback;
 
 import feup.lpoo.riska.logic.MainActivity;
+import feup.lpoo.riska.resources.ResourceCache;
 
 public class SceneManager {
 	
-	private SceneType currentScene;
-	private Engine engine;
+	// ==================================================
+	// SCENES
+	// ==================================================
+	private BaseScene splashScene;
 	
-	private Scene splashScene, mainMenuScene, startGameScene, optionsScene, 
+	private Scene mainMenuScene, startGameScene, optionsScene, 
 		loadMapScene, gameScene; /* Create more scene if needed, like gameScene. */
 	
-	public static SceneManager instance;
+	// ==================================================
+	// FIELDS
+	// ==================================================
+	public static SceneManager instance = new SceneManager();
+	private BaseScene currentBaseScene; // Change to currentScene
+	private SceneType currentScene;
+	private Engine engine = ResourceCache.getSharedInstance().engine;
 	
-	/* Every time a new scene is created, a new entry is also added. */
 	public enum SceneType {
 		SPLASH, 
 		MENU,
@@ -28,21 +37,21 @@ public class SceneManager {
 		LOADGAME,
 		GAME_OVER,
 	};
-	
-	public SceneManager(MainActivity activity, Engine engine, Camera camera) {
-		this.engine = engine;
-		instance = this;
-	}
-	
-	public static SceneManager getSharedInstance() {
-		return instance;
-	}
 
-	public Scene createSplashScene() {
+
+	public void createSplashScene(OnCreateSceneCallback pOnCreateSceneCallback) {
 		
+		ResourceCache.getSharedInstance().loadSplashSceneResources();
 		splashScene = new SplashScene();
-		return splashScene;
+		currentBaseScene = splashScene;
+		pOnCreateSceneCallback.onCreateSceneFinished(splashScene);
 		
+	}
+	
+	public void disposeSplashScene() {
+		ResourceCache.getSharedInstance().unloadSplashSceneResources();
+		splashScene.dispose();
+		splashScene = null;
 	}
 	
 	public void createGameScenes() {
@@ -118,6 +127,14 @@ public class SceneManager {
 	
 	public GameScene getGameScene() {
 		return ((GameScene) gameScene);
+	}
+	
+	
+	// ==================================================
+	// GETTERS & SETTERS
+	// ==================================================
+	public static SceneManager getSharedInstance() {
+		return instance;
 	}
 	
 }
