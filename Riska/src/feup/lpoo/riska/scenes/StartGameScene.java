@@ -42,15 +42,15 @@ public class StartGameScene extends MenuScene implements IOnMenuItemClickListene
 	{
 
 		SpriteBackground background = new SpriteBackground(new Sprite(MainActivity.CAMERA_WIDTH/2, MainActivity.CAMERA_HEIGHT/2, 
-				resources.getMenuBackgroundTexture(), activity.getVertexBufferObjectManager()));
+				resources.menuBackgroundRegion, activity.getVertexBufferObjectManager()));
 
-		TiledTextureRegion button = resources.getStartButtonTexture();
+		TiledTextureRegion button = resources.textBtnRegion;
 
 		final AnimatedTextButtonSpriteMenuItem newGameButton = new AnimatedTextButtonSpriteMenuItem(MENU_NEW_GAME, button.getWidth(), 
-				button.getHeight(), button, activity.getVertexBufferObjectManager(), "NEW", resources.getFont());
+				button.getHeight(), button, activity.getVertexBufferObjectManager(), "NEW", resources.mainMenuFont);
 
 		final AnimatedTextButtonSpriteMenuItem loadGameButton = new AnimatedTextButtonSpriteMenuItem(MENU_LOAD_GAME, button.getWidth(), 
-				button.getHeight(), button, activity.getVertexBufferObjectManager(), "LOAD", resources.getFont());
+				button.getHeight(), button, activity.getVertexBufferObjectManager(), "LOAD", resources.mainMenuFont);
 
 		float centerX = MainActivity.CAMERA_WIDTH/2;
 

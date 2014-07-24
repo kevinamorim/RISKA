@@ -14,21 +14,24 @@ public class SceneManager {
 	// SCENES
 	// ==================================================
 	private BaseScene splashScene;
+	private BaseScene loadingScene;
+	private BaseScene mainMenuScene;
 	
-	private Scene mainMenuScene, startGameScene, optionsScene, 
+	private Scene startGameScene, optionsScene, 
 		loadMapScene, gameScene; /* Create more scene if needed, like gameScene. */
 	
 	// ==================================================
 	// FIELDS
 	// ==================================================
 	public static SceneManager instance = new SceneManager();
-	private BaseScene currentBaseScene; // Change to currentScene
-	private SceneType currentScene;
+	private BaseScene currentScene;
+	private SceneType currentSceneType = SceneType.SPLASH;
 	private Engine engine = ResourceCache.getSharedInstance().engine;
 	
 	public enum SceneType {
 		SPLASH, 
-		MENU,
+		LOADING,
+		MAIN_MENU,
 		STARTGAME,
 		OPTIONS,
 		LOAD_MAP,
@@ -43,7 +46,7 @@ public class SceneManager {
 		
 		ResourceCache.getSharedInstance().loadSplashSceneResources();
 		splashScene = new SplashScene();
-		currentBaseScene = splashScene;
+		currentScene = splashScene;
 		pOnCreateSceneCallback.onCreateSceneFinished(splashScene);
 		
 	}
@@ -54,27 +57,35 @@ public class SceneManager {
 		splashScene = null;
 	}
 	
+	public void createMainMenuScene() {
+		ResourceCache.getSharedInstance().loadMainMenuResources();
+		mainMenuScene = new MainMenuScene();
+		loadingScene = new LoadingScene();
+		setScene(mainMenuScene);
+		disposeSplashScene();
+	}
+	
+	
+	
 	public void createGameScenes() {
 		
 		mainMenuScene = new MainMenuScene();
-		startGameScene = new StartGameScene();
-		optionsScene = new OptionsScene();
+		//startGameScene = new StartGameScene();
+		//optionsScene = new OptionsScene();
 		//loadMapScene = new LoadMapScene();
 		//gameScene = new GameScene();
 	}
 	
-	public SceneType getCurrentScene() {
-		return currentScene;
-	}
+
 	
 	public void setCurrentScene(SceneType scene) {
 		
-		currentScene = scene;
+		currentSceneType = scene;
 		
 		switch(scene) {
 		case SPLASH: 
 			break;
-		case MENU:
+		case MAIN_MENU:
 			
 			if(gameScene != null) {
 				
@@ -100,7 +111,7 @@ public class SceneManager {
 			((GameScene)gameScene).hud.setVisible(true);
 			((GameScene)gameScene).showInitialHUD();
 			engine.setScene(gameScene);
-			currentScene = SceneType.GAME;
+			currentSceneType = SceneType.GAME;
 			break;
 		case LOADGAME:
 			if(gameScene == null)
@@ -110,7 +121,7 @@ public class SceneManager {
 			((GameScene)gameScene).hud.setVisible(true);
 			((GameScene)gameScene).loadGame();
 			engine.setScene(gameScene);
-			currentScene = SceneType.GAME;
+			currentSceneType = SceneType.GAME;
 			break;
 		default:
 				break;
@@ -133,6 +144,20 @@ public class SceneManager {
 	// ==================================================
 	// GETTERS & SETTERS
 	// ==================================================
+	public SceneType getCurrentSceneType() {
+		return currentSceneType;
+	}
+	
+	public BaseScene getCurrentScene() {
+		return currentScene;
+	}
+	
+	public void setScene(BaseScene scene) {
+		engine.setScene(scene);
+		currentScene = scene;
+		currentSceneType = scene.getSceneType();
+	}
+	
 	public static SceneManager getSharedInstance() {
 		return instance;
 	}

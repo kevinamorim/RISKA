@@ -6,18 +6,21 @@ import java.util.ArrayList;
 import org.andengine.audio.music.Music;
 import org.andengine.audio.music.MusicFactory;
 import org.andengine.engine.Engine;
-import org.andengine.engine.camera.Camera;
 import org.andengine.engine.camera.SmoothCamera;
-import org.andengine.entity.scene.CameraScene;
 import org.andengine.opengl.font.Font;
 import org.andengine.opengl.font.FontFactory;
 import org.andengine.opengl.texture.TextureOptions;
 import org.andengine.opengl.texture.atlas.bitmap.BitmapTextureAtlas;
 import org.andengine.opengl.texture.atlas.bitmap.BitmapTextureAtlasTextureRegionFactory;
+import org.andengine.opengl.texture.atlas.bitmap.BuildableBitmapTextureAtlas;
+import org.andengine.opengl.texture.atlas.bitmap.source.IBitmapTextureAtlasSource;
+import org.andengine.opengl.texture.atlas.buildable.builder.BlackPawnTextureAtlasBuilder;
+import org.andengine.opengl.texture.atlas.buildable.builder.ITextureAtlasBuilder.TextureAtlasBuilderException;
 import org.andengine.opengl.texture.region.ITextureRegion;
 import org.andengine.opengl.texture.region.ITiledTextureRegion;
 import org.andengine.opengl.texture.region.TiledTextureRegion;
 import org.andengine.opengl.vbo.VertexBufferObjectManager;
+import org.andengine.util.debug.Debug;
 
 import feup.lpoo.riska.R;
 import android.graphics.Color;
@@ -31,9 +34,7 @@ import feup.lpoo.riska.logic.MainActivity;
 import feup.lpoo.riska.music.Conductor;
 import feup.lpoo.riska.scenes.CameraManager;
 
-/**
- * Class that handles the loading of all of the game resources, storing them for future access.
- */
+
 public class ResourceCache {
 
 	// ======================================================
@@ -50,11 +51,21 @@ public class ResourceCache {
 	// ==================================================
 	private BitmapTextureAtlas splashTextureAtlas;
 	public ITextureRegion splashRegion;
+	
+	// ==================================================
+	// MAIN MENU RESOURCES
+	// ==================================================
+	private BitmapTextureAtlas menuBackgroundTextureAtlas;
+	public ITextureRegion menuBackgroundRegion;
+	
+	private BuildableBitmapTextureAtlas mainMenuTextureAtlas;
+	public TiledTextureRegion textBtnRegion;
+	public TiledTextureRegion optionsBtnRegion;
 
-	// Texture used as the background in several menus and scenes.
-	protected BitmapTextureAtlas mBackgroundTexture;
-	protected ITextureRegion mBackgroundTextureRegion;
-
+	// ==================================================
+	// GAME RESOURCES
+	// ==================================================
+	
 	// Texture used as the background
 	protected BitmapTextureAtlas mWindowTexture;
 	protected ITextureRegion mWindowTextureRegion;
@@ -63,13 +74,7 @@ public class ResourceCache {
 	protected BitmapTextureAtlas mResultTexture;
 	protected ITextureRegion mResultTextureRegion;
 
-	// Texure used in the start button
-	protected BitmapTextureAtlas mStartButtonTextureAtlas;
-	protected TiledTextureRegion mStartButtonTiledTextureRegion;
 
-	// Texture used in the options menu button
-	protected BitmapTextureAtlas mOptionsButtonTextureAtlas;
-	protected TiledTextureRegion mOptionsButtonTiledTextureRegion;
 
 	protected BitmapTextureAtlas mReturnButtonTextureAtlas;
 	protected TiledTextureRegion mReturnButtonTiledTextureRegion;
@@ -105,6 +110,7 @@ public class ResourceCache {
 	// FONTS
 	// ======================================================
 	public Font mSplashFont;
+	public Font mainMenuFont;
 
 	protected BitmapTextureAtlas mFontTexture;
 	protected Font mFont;
@@ -125,9 +131,10 @@ public class ResourceCache {
 	// ======================================================
 	// ======================================================
 
-	/**
-	 * Loads all resources needed by our splash scene. 
-	 */
+	
+	// ==================================================
+	// SPLASH SCENE
+	// ==================================================
 	public void loadSplashSceneResources() {
 		loadSplashGraphics();
 	}
@@ -150,78 +157,65 @@ public class ResourceCache {
 		
 	}
 	
-	/**
-	 * Loads all resources needed by our main menu.
-	 */
+	// ==================================================
+	// MAIN MENU SCENE
+	// ==================================================
 	public void loadMainMenuResources() {
-
-		try
-		{
-			String fontPath = activity.getResources().getString(R.string.path_font_menu);
-
-			String imgBackground = activity.getResources().getString(R.string.path_img_background);
-			String imgStartButton = activity.getResources().getString(R.string.path_img_start_button);
-			String imgOptionsButton= activity.getResources().getString(R.string.path_img_options_button);
-			String imgReturnButton = activity.getResources().getString(R.string.path_img_return_button);
-			String imgSliderButton = activity.getResources().getString(R.string.path_img_slider_button);
-
-			BitmapTextureAtlasTextureRegionFactory.setAssetBasePath("gfx/");
-
-			// LOADS MENU BACKGROUND
-			mBackgroundTexture = new BitmapTextureAtlas(activity.getTextureManager(), 2048, 2048, TextureOptions.DEFAULT);
-			mBackgroundTextureRegion = BitmapTextureAtlasTextureRegionFactory.createFromAsset(mBackgroundTexture, 
-					activity, imgBackground, 0, 0);
-
-			mBackgroundTexture.load();
-
-			// LOADS FONT
-			FontFactory.setAssetBasePath("fonts/");
-
-			mFont = FontFactory.createFromAsset(engine.getFontManager(),
-					engine.getTextureManager(), 256, 512, TextureOptions.BILINEAR,
-					activity.getAssets(), fontPath, 125f, true,
-					Color.WHITE); /* Load the font in white, so setColor() works. */
-
-			mFont.load();
-
-			// LOADS START BUTTON
-			mStartButtonTextureAtlas = new BitmapTextureAtlas(activity.getTextureManager(), 512, 512, TextureOptions.DEFAULT);
-			mStartButtonTiledTextureRegion = BitmapTextureAtlasTextureRegionFactory.createTiledFromAsset(mStartButtonTextureAtlas, 
-					activity.getAssets(), imgStartButton, 0, 0, 1, 2);
-
-			mStartButtonTextureAtlas.load();
-
-			// LOADS OPTIONS BUTTON
-			mOptionsButtonTextureAtlas = new BitmapTextureAtlas(activity.getTextureManager(), 512, 1024, TextureOptions.DEFAULT);
-			mOptionsButtonTiledTextureRegion = BitmapTextureAtlasTextureRegionFactory.createTiledFromAsset(mOptionsButtonTextureAtlas, 
-					activity.getAssets(), imgOptionsButton, 0, 0, 1, 2);
-
-			mOptionsButtonTextureAtlas.load();
-
-			// LOADS RETURN BUTTON
-			mReturnButtonTextureAtlas = new BitmapTextureAtlas(activity.getTextureManager(), 512, 1024, TextureOptions.DEFAULT);
-			mReturnButtonTiledTextureRegion = BitmapTextureAtlasTextureRegionFactory.createTiledFromAsset(mReturnButtonTextureAtlas, 
-					activity.getAssets(), imgReturnButton, 0, 0, 1, 2);
-
-			mReturnButtonTextureAtlas.load();
-
-			// LOADS SLIDER BUTTON
-			mSliderButtonTextureAtlas = new BitmapTextureAtlas(activity.getTextureManager(), 1024, 1024, TextureOptions.DEFAULT);
-			mSliderButtonTiledTextureRegion = BitmapTextureAtlasTextureRegionFactory.createTiledFromAsset(mSliderButtonTextureAtlas, 
-					activity.getAssets(), imgSliderButton, 0, 0, 1, 2);
-
-			mSliderButtonTextureAtlas.load();
-
-		}
-		catch (Exception e)
-		{
-			e.printStackTrace();
-		}
+		loadMainMenuGraphics();
+		loadMainMenuFonts();
 	}
+	
+	private void loadMainMenuGraphics() {
+		
+		BitmapTextureAtlasTextureRegionFactory.setAssetBasePath("gfx/menu/");
+		
+		int bgTextureWidth = 2048, bgTextureHeight = 1024;
+		
+		menuBackgroundTextureAtlas = new BitmapTextureAtlas(activity.getTextureManager(), 
+				bgTextureWidth, bgTextureHeight, TextureOptions.DEFAULT);
+		menuBackgroundRegion = BitmapTextureAtlasTextureRegionFactory.createFromAsset(menuBackgroundTextureAtlas, 
+				activity, "background.png", 0, 0);
+		
+		menuBackgroundTextureAtlas.load();
+		
+		int mainTextureWidth = 512, mainTextureHeight = 2048;
+		
+		mainMenuTextureAtlas = new BuildableBitmapTextureAtlas(activity.getTextureManager(), 
+				mainTextureWidth, mainTextureHeight, TextureOptions.BILINEAR);
+		
+		textBtnRegion = BitmapTextureAtlasTextureRegionFactory.createTiledFromAsset(mainMenuTextureAtlas, activity, 
+				"button.png", 1, 2);
+		optionsBtnRegion = BitmapTextureAtlasTextureRegionFactory.createTiledFromAsset(mainMenuTextureAtlas, activity, 
+				"options.png", 1, 2); 
+			
+		try {
+			mainMenuTextureAtlas.build(
+					new BlackPawnTextureAtlasBuilder<IBitmapTextureAtlasSource, BitmapTextureAtlas>(0, 1, 0));
+			mainMenuTextureAtlas.load();
+		} catch(final TextureAtlasBuilderException e) {
+			Debug.e(e);
+		}	
+		
+	}
+	
+	private void loadMainMenuFonts() {
+		
+		FontFactory.setAssetBasePath("fonts/");
 
-	/**
-	 * Loads all game resources.
-	 */
+		mainMenuFont = FontFactory.createFromAsset(engine.getFontManager(),
+				engine.getTextureManager(), 256, 512, TextureOptions.BILINEAR,
+				activity.getAssets(), "reprise.ttf", 125f, true,
+				Color.WHITE);
+
+		mainMenuFont.load();
+		
+	}
+	
+	// ==================================================
+	// GAME SCENE
+	// ==================================================
+
+
 	public void loadGameSceneResources() {
 
 		try
@@ -239,6 +233,8 @@ public class ResourceCache {
 			String imgWindow = activity.getResources().getString(R.string.path_img_window);
 			String imgResult = activity.getResources().getString(R.string.path_img_result_button);
 
+			BitmapTextureAtlasTextureRegionFactory.setAssetBasePath("gfx/");
+			
 			// LOADS MAP TEXTURE
 			mapTextureAtlas = new BitmapTextureAtlas(activity.getTextureManager(), 4096, 2048, TextureOptions.DEFAULT);
 			mapTextureRegion = BitmapTextureAtlasTextureRegionFactory.createFromAsset(mapTextureAtlas, activity, imgMap, 0, 0);
@@ -464,10 +460,6 @@ public class ResourceCache {
 		return this.mGameFont;
 	}
 
-	public Font getFont() {
-		return this.mFont;
-	}
-
 	public ITextureRegion getMapTexture() {
 		return this.mapTextureRegion;
 	}
@@ -478,18 +470,6 @@ public class ResourceCache {
 
 	public Map getMap() {
 		return this.map;
-	}
-
-	public ITextureRegion getMenuBackgroundTexture() {
-		return this.mBackgroundTextureRegion;
-	}
-
-	public TiledTextureRegion getStartButtonTexture() {
-		return this.mStartButtonTiledTextureRegion;
-	}
-
-	public TiledTextureRegion getOptionsButtonTexture() {
-		return this.mOptionsButtonTiledTextureRegion;
 	}
 
 	public TiledTextureRegion getReturnButtonTexture() {

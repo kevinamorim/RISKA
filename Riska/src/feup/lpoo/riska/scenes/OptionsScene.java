@@ -46,7 +46,7 @@ public class OptionsScene extends MenuScene implements IOnMenuItemClickListener 
 
 	private void createDisplay() {
 		SpriteBackground background = new SpriteBackground(new Sprite(MainActivity.CAMERA_WIDTH/2, MainActivity.CAMERA_HEIGHT/2, 
-				resources.getMenuBackgroundTexture(), activity.getVertexBufferObjectManager()));
+				resources.menuBackgroundRegion, activity.getVertexBufferObjectManager()));
 		
 		TiledTextureRegion button = resources.getReturnButtonTexture();
 		
@@ -64,12 +64,12 @@ public class OptionsScene extends MenuScene implements IOnMenuItemClickListener 
 		
 		
 		
-		final Text music_text = new Text(0, 0, resources.getFont(), "MUSIC", activity.getVertexBufferObjectManager());
+		final Text music_text = new Text(0, 0, resources.mainMenuFont, "MUSIC", activity.getVertexBufferObjectManager());
 		music_text.setPosition(MainActivity.CAMERA_WIDTH/2 - (float) 0.75*music_text.getWidth(), 
 				(float) 0.5*MainActivity.CAMERA_HEIGHT);
 		music_text.setColor(Color.BLACK);
 		
-		final Text sfx_text = new Text(0, 0, resources.getFont(), "SFX", activity.getVertexBufferObjectManager());
+		final Text sfx_text = new Text(0, 0, resources.mainMenuFont, "SFX", activity.getVertexBufferObjectManager());
 		sfx_text.setPosition(MainActivity.CAMERA_WIDTH/2 - (float) 0.75*sfx_text.getWidth(),
 				(float) 0.75*MainActivity.CAMERA_HEIGHT);
 		sfx_text.setColor(Color.BLACK);
@@ -107,7 +107,7 @@ public class OptionsScene extends MenuScene implements IOnMenuItemClickListener 
 		switch(pMenuItem.getID()) {
 		case RETURN:
 			saveConfig();
-			sceneManager.setCurrentScene(SceneType.MENU);
+			sceneManager.setCurrentScene(SceneType.MAIN_MENU);
 			break;
 		case SFX:
 			break;

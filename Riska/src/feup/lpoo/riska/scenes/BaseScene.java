@@ -7,6 +7,7 @@ import org.andengine.opengl.vbo.VertexBufferObjectManager;
 
 import feup.lpoo.riska.logic.MainActivity;
 import feup.lpoo.riska.resources.ResourceCache;
+import feup.lpoo.riska.scenes.SceneManager.SceneType;
 
 public abstract class BaseScene extends Scene {
 
@@ -38,7 +39,7 @@ public abstract class BaseScene extends Scene {
 
 	public abstract void onBackKeyPressed();
 
-	//public abstract SceneType getSceneType();
+	public abstract SceneType getSceneType();
 
 	public abstract void disposeScene();
 

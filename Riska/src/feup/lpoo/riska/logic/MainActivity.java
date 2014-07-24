@@ -14,6 +14,7 @@ import org.andengine.ui.activity.BaseGameActivity;
 
 import android.app.AlertDialog;
 import android.content.DialogInterface;
+import android.view.KeyEvent;
 import feup.lpoo.riska.resources.ResourceCache;
 import feup.lpoo.riska.scenes.SceneManager;
 import feup.lpoo.riska.scenes.SceneManager.SceneType;
@@ -76,19 +77,14 @@ public class MainActivity extends BaseGameActivity {
 			OnPopulateSceneCallback pOnPopulateSceneCallback)
 			throws IOException {
 		
-		mEngine.registerUpdateHandler(new TimerHandler(1f, new ITimerCallback() {
-			
-			public void onTimePassed(final TimerHandler pTimerHandler) {
-				
+		float seconds = 2.0f;
+		
+		mEngine.registerUpdateHandler(new TimerHandler(seconds, new ITimerCallback() {
+
+			@Override
+			public void onTimePassed(TimerHandler pTimerHandler) {
 				mEngine.unregisterUpdateHandler(pTimerHandler);
-				
-				ResourceCache.getSharedInstance().loadMainMenuResources();
-				ResourceCache.getSharedInstance().loadGameSceneResources();
-				ResourceCache.getSharedInstance().loadMusicResources();
-				
-				SceneManager.getSharedInstance().createGameScenes();
-				SceneManager.getSharedInstance().setCurrentScene(SceneType.MENU);
-				
+				SceneManager.getSharedInstance().createMainMenuScene();
 			}
 		}));
 		
@@ -96,45 +92,12 @@ public class MainActivity extends BaseGameActivity {
 		
 	}
 	
-	/**
-	 * Handles what happens when the back button is pressed.
-	 */
 	@Override
-	public void onBackPressed() {
-		switch(sceneManager.getCurrentScene()) {
-		case SPLASH:
-			break;
-		case MENU:
-			new AlertDialog.Builder(this)
-			.setMessage("Exit?")
-			.setCancelable(false)
-			.setPositiveButton("Yes", new DialogInterface.OnClickListener() {
-				public void onClick(DialogInterface dialog, int id) {
-					finish();
-				}
-			})
-			.setNegativeButton("No", null)
-			.show();
-			break;
-		case STARTGAME:
-			SceneManager.getSharedInstance().setCurrentScene(SceneType.MENU);
-			break;
-		case OPTIONS:
-			SceneManager.getSharedInstance().setCurrentScene(SceneType.MENU);
-			break;
-		case LOAD_MAP:
-			break;
-		case GAME:
-			/* Save game */
-			SceneManager.getSharedInstance().getGameScene().saveGame();
-			SceneManager.getSharedInstance().setCurrentScene(SceneType.MENU);
-			break;
-		case GAME_OVER:
-			SceneManager.getSharedInstance().setCurrentScene(SceneType.MENU);
-			break;
-		default:
-			break;
+	public boolean onKeyDown(int keyCode, KeyEvent event) {
+		if(keyCode == KeyEvent.KEYCODE_BACK) {
+			SceneManager.getSharedInstance().getCurrentScene().onBackKeyPressed();
 		}
+		return false;
 	}
 
 	public static MainActivity getSharedInstance() {
