@@ -29,7 +29,6 @@ public class MainMenuScene extends BaseScene implements IOnMenuItemClickListener
 		createStartGameMenuChildScene();
 	}
 
-
 	@Override
 	public void onBackKeyPressed() {
 		if(this.getChildScene().equals(mainMenuChildScene)) {
@@ -40,14 +39,14 @@ public class MainMenuScene extends BaseScene implements IOnMenuItemClickListener
 		}
 	}
 
-
 	@Override
 	public void disposeScene() {
-		// TODO Auto-generated method stub
-		
+		detachChildren();
+		mainMenuChildScene = null;
+		startGameMenuChildScene = null;
+		dispose();
 	}
 	
-
 	@Override
 	public SceneType getSceneType() {
 		return SceneType.MAIN_MENU;
@@ -63,8 +62,6 @@ public class MainMenuScene extends BaseScene implements IOnMenuItemClickListener
 		setBackground(background);
 	}
 
-
-	
 	private void createMenuChildScene() {
 		
 		mainMenuChildScene = new MenuScene(camera);
@@ -127,13 +124,11 @@ public class MainMenuScene extends BaseScene implements IOnMenuItemClickListener
 		
 	}
 
-
 	@Override
 	public boolean onMenuItemClicked(MenuScene pMenuScene, IMenuItem pMenuItem,
 			float pMenuItemLocalX, float pMenuItemLocalY) {
 		switch(pMenuItem.getID()) {
 		case MENU_START:
-			detachChildren();
 			setChildScene(startGameMenuChildScene);
 			break;
 		case MENU_OPTIONS:

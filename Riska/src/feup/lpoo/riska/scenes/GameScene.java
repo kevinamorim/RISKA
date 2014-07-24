@@ -78,8 +78,7 @@ public class GameScene extends BaseScene implements IOnSceneTouchListener, IScro
 
 	@Override
 	public void onBackKeyPressed() {
-		// TODO Auto-generated method stub
-		
+		SceneManager.getSharedInstance().loadMainMenuScene(engine);
 	}
 
 	@Override
@@ -89,8 +88,7 @@ public class GameScene extends BaseScene implements IOnSceneTouchListener, IScro
 
 	@Override
 	public void disposeScene() {
-		// TODO Auto-generated method stub
-		
+		camera.setHUD(null);
 	}
 	
 	// ======================================================
@@ -167,7 +165,7 @@ public class GameScene extends BaseScene implements IOnSceneTouchListener, IScro
 		switch(logic.getState()) {
 		case PAUSED:
 			logic.setState(GAME_STATE.DEPLOYMENT);
-			//hud.showAutoDeployButton();
+			hud.showAutoDeployButton();
 			break;
 			
 		case DEPLOYMENT:

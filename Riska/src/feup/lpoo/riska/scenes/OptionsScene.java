@@ -8,15 +8,10 @@ import org.andengine.entity.sprite.Sprite;
 import org.andengine.entity.text.Text;
 import org.andengine.opengl.texture.region.TiledTextureRegion;
 
-import android.content.SharedPreferences;
-import android.content.SharedPreferences.Editor;
 import android.graphics.Color;
-import android.preference.PreferenceManager;
 import feup.lpoo.riska.gameInterface.AnimatedButtonSpriteMenuItem;
-import feup.lpoo.riska.gameInterface.AnimatedTextButtonSpriteMenuItem;
+import feup.lpoo.riska.io.SharedPreferencesManager;
 import feup.lpoo.riska.logic.MainActivity;
-import feup.lpoo.riska.music.Conductor;
-import feup.lpoo.riska.resources.ResourceCache;
 import feup.lpoo.riska.scenes.SceneManager.SceneType;
 
 public class OptionsScene extends BaseScene implements IOnMenuItemClickListener {
@@ -33,12 +28,11 @@ public class OptionsScene extends BaseScene implements IOnMenuItemClickListener 
 	public void createScene() {
 		createDisplay();
 		createOptionsMenuChildScene();
-		loadConfig();
+		//SharedPreferencesManager.LoadBoolean("musicOn");
 	}
 
 	@Override
 	public void onBackKeyPressed() {
-		saveConfig();
 		SceneManager.getSharedInstance().setScene(SceneType.MAIN_MENU);
 	}
 
@@ -126,7 +120,7 @@ public class OptionsScene extends BaseScene implements IOnMenuItemClickListener 
 		
 		switch(pMenuItem.getID()) {
 		case MENU_RETURN:
-			saveConfig();
+			SharedPreferencesManager.SaveBoolean("musicOn", true); /* TODO: implement music conductor */
 			SceneManager.getSharedInstance().setScene(SceneType.MAIN_MENU);
 			break;
 		case MENU_SFX:
@@ -138,27 +132,5 @@ public class OptionsScene extends BaseScene implements IOnMenuItemClickListener 
 		}
 		return false;
 	}
-
-	private void saveConfig() {
-		
-		SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(activity);
-		Editor editor = prefs.edit();
-		
-		//editor.putBoolean("musicOn", conductor.isMusicPlaying());
-		
-		editor.commit();
-		
-	}
-	
-	
-	private void loadConfig() {
-		
-		SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(activity);
-		
-		boolean music = prefs.getBoolean("musicOn", true);
-		
-	}
-
-
 
 }

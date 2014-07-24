@@ -22,178 +22,40 @@ public class GameHUD extends HUD implements Displayable {
 	// CONSTANTS
 	// ======================================================
 	private static final long MIN_TOUCH_INTERVAL = 30;
-
 	private enum B {ATTACK, DETAILS, AUTO_DEPLOY};
 
 	// ======================================================
 	// SINGLETONS
 	// ======================================================
-	MainActivity activity;
-	SceneManager sceneManager;
 	ResourceCache resources;
 
 	// ======================================================
 	// FIELDS
 	// ======================================================
 	private long lastTimeTouched;
-
 	private ButtonSprite attackButton;
 	private ButtonSprite detailsButton;
-	//
-	private ButtonSprite autoDeployButton;
-	
+	private ButtonSprite autoDeployButton;	
 	private Sprite infoTab;
 	private Text infoTabText;
 
-	/**
-	 * Constructor for the game HUD.
-	 * <p>
-	 * Created the HUD display.
-	 */
+
 	public GameHUD() {
 
 		lastTimeTouched = 0;
 
-		activity = MainActivity.getSharedInstance();
-		sceneManager = SceneManager.getSharedInstance();
 		resources = ResourceCache.getSharedInstance();
 
 		createDisplay();
 	}
 
-	/**
-	 * Creates the display for the given scene.
-	 */
+
 	public void createDisplay() {	
 
-		// =================================
-		//  NEW ATTACK BUTTON
-		// =================================
-		attackButton = new ButtonSprite(0, 0,
-				resources.attackBtnRegion,
-				activity.getVertexBufferObjectManager()) 
-		{
-
-			@Override
-			public boolean onAreaTouched(TouchEvent pSceneTouchEvent, 
-					float pTouchAreaLocalX, float pTouchAreaLocalY)
-			{
-				switch(pSceneTouchEvent.getAction())
-				{
-				case MotionEvent.ACTION_DOWN:
-					pressed(B.ATTACK);
-					break;
-				case MotionEvent.ACTION_UP:
-					touched(B.ATTACK);
-					break;
-				case MotionEvent.ACTION_OUTSIDE:
-					released(B.ATTACK);
-					break;
-				default:
-					break;
-				}
-				return true;
-			}
-		};
-
-//		attackButton.setScaleX(0.3f);
-//		attackButton.setScaleY(0.2f);
-//		attackButton.setPosition((MainActivity.CAMERA_WIDTH/2),
-//				attackButton.getScaleY() * attackButton.getHeight() / 2);
-		
-		attackButton.setScaleX(.5f);
-		attackButton.setScaleY(.6f);
-		attackButton.setPosition(
-				(MainActivity.CAMERA_WIDTH - (attackButton.getScaleX() * attackButton.getWidth() / 2f) + 4),
-				(MainActivity.CAMERA_HEIGHT / 2f));
-
-		// =================================
-		//  NEW INFO TAB
-		// =================================
-		infoTab = new Sprite(MainActivity.CAMERA_WIDTH / 2,
-				MainActivity.CAMERA_HEIGHT - resources.infoTabRegion.getHeight() / 2,
-				resources.infoTabRegion,
-				activity.getVertexBufferObjectManager());
-
-		infoTab.setScaleX(2.4f);
-
-		infoTabText = new Text(infoTab.getWidth() / 2, infoTab.getHeight() / 2,
-				resources.mInfoTabFont, "NO INFO", 1000, activity.getVertexBufferObjectManager());
-
-		infoTabText.setColor(Color.BLACK);
-
-		infoTab.attachChild(infoTabText);
-
-		// =================================
-		//  NEW DETAILS BUTTON
-		// =================================
-		detailsButton = new ButtonSprite(
-				resources.detailsBtnRegion.getWidth() / 2,
-				MainActivity.CAMERA_HEIGHT / 2,
-				resources.detailsBtnRegion,
-				activity.getVertexBufferObjectManager()) {
-
-			@Override
-			public boolean onAreaTouched(TouchEvent pSceneTouchEvent, 
-					float pTouchAreaLocalX, float pTouchAreaLocalY)
-			{
-				switch(pSceneTouchEvent.getAction())
-				{
-				case MotionEvent.ACTION_DOWN:
-					pressed(B.DETAILS);
-					break;
-				case MotionEvent.ACTION_UP:
-					touched(B.DETAILS);
-					break;
-				case MotionEvent.ACTION_OUTSIDE:
-					released(B.DETAILS);
-					break;
-				default:
-					break;
-				}
-				return true;
-			}
-		};
-		detailsButton.setScale(0.5f);
-		detailsButton.setPosition(detailsButton.getScaleX() * detailsButton.getWidth() / 2, detailsButton.getY());
-		
-		// =================================
-				//  NEW DETAILS BUTTON
-				// =================================
-		autoDeployButton = new ButtonSprite(
-				0f,
-				0f,
-				resources.autoDeployBtnRegion,
-				activity.getVertexBufferObjectManager()) {
-
-			@Override
-			public boolean onAreaTouched(TouchEvent pSceneTouchEvent, 
-					float pTouchAreaLocalX, float pTouchAreaLocalY)
-			{
-				switch(pSceneTouchEvent.getAction())
-				{
-				case MotionEvent.ACTION_DOWN:
-					pressed(B.AUTO_DEPLOY);
-					break;
-				case MotionEvent.ACTION_UP:
-					touched(B.AUTO_DEPLOY);
-					break;
-				case MotionEvent.ACTION_OUTSIDE:
-					released(B.AUTO_DEPLOY);
-					break;
-				default:
-					break;
-				}
-				return true;
-			}
-		};
-		
-		autoDeployButton.setScale(0.3f);
-		autoDeployButton.setPosition(0.66f * MainActivity.CAMERA_WIDTH, 0.18f * MainActivity.CAMERA_HEIGHT);
-
-		/*
-		 * ==================================
-		 */
+		createAttackButton();
+		createInfoTab();
+		createDetailsButton();
+		createAutoDeployButton();
 
 	}
 
@@ -202,7 +64,7 @@ public class GameHUD extends HUD implements Displayable {
 	 */
 	protected void touchedDetailsButton() {
 
-		GameScene gameScene = sceneManager.getGameScene();
+		GameScene gameScene = SceneManager.getSharedInstance().getGameScene();
 		DetailScene details = gameScene.getDetailScene();
 
 		changeDetailButton();
@@ -285,7 +147,7 @@ public class GameHUD extends HUD implements Displayable {
 	}
 	
 	private void touchedAutoDeployButton() {
-		sceneManager.getGameScene().onAutoDeploy();
+		SceneManager.getSharedInstance().getGameScene().onAutoDeploy();
 	}
 	
 	private void releasedAutoDeployButton() {
@@ -307,8 +169,8 @@ public class GameHUD extends HUD implements Displayable {
 
 		if((now - lastTimeTouched) > MIN_TOUCH_INTERVAL) {
 			attackButton.setCurrentTileIndex(0);
-			sceneManager.getGameScene().onAttack();
-			sceneManager.getGameScene().getCameraManager().zoomOut();
+			SceneManager.getSharedInstance().getGameScene().onAttack();
+			SceneManager.getSharedInstance().getGameScene().getCameraManager().zoomOut();
 		}
 
 		lastTimeTouched = now;
@@ -435,5 +297,129 @@ public class GameHUD extends HUD implements Displayable {
 		detailsButton.setEnabled(true);
 		attackButton.setEnabled(true);
 
+	}
+	
+	private void createAttackButton() {
+		
+		attackButton = new ButtonSprite(0, 0,
+				resources.attackBtnRegion,
+				resources.vbom) 
+		{
+
+			@Override
+			public boolean onAreaTouched(TouchEvent pSceneTouchEvent, 
+					float pTouchAreaLocalX, float pTouchAreaLocalY)
+			{
+				switch(pSceneTouchEvent.getAction())
+				{
+				case MotionEvent.ACTION_DOWN:
+					pressed(B.ATTACK);
+					break;
+				case MotionEvent.ACTION_UP:
+					touched(B.ATTACK);
+					break;
+				case MotionEvent.ACTION_OUTSIDE:
+					released(B.ATTACK);
+					break;
+				default:
+					break;
+				}
+				return true;
+			}
+		};
+		
+		attackButton.setScaleX(.5f);
+		attackButton.setScaleY(.6f);
+		attackButton.setPosition(
+				(resources.camera.getWidth() - (attackButton.getScaleX() * attackButton.getWidth() / 2f) + 4),
+				(resources.camera.getHeight()/2f));
+		
+	}
+	
+	private void createInfoTab() {
+		
+		infoTab = new Sprite(resources.camera.getWidth()/ 2,
+				resources.camera.getHeight() - resources.infoTabRegion.getHeight() / 2,
+				resources.infoTabRegion,
+				resources.vbom);
+
+		infoTab.setScaleX(2.4f);
+
+		infoTabText = new Text(infoTab.getWidth() / 2, infoTab.getHeight() / 2,
+				resources.mInfoTabFont, "NO INFO", 1000, resources.vbom);
+
+		infoTabText.setColor(Color.BLACK);
+
+		infoTab.attachChild(infoTabText);
+		
+	}
+	
+	private void createDetailsButton() {
+		
+		detailsButton = new ButtonSprite(
+				resources.detailsBtnRegion.getWidth() / 2,
+				resources.camera.getHeight() / 2,
+				resources.detailsBtnRegion,
+				resources.vbom) {
+
+			@Override
+			public boolean onAreaTouched(TouchEvent pSceneTouchEvent, 
+					float pTouchAreaLocalX, float pTouchAreaLocalY)
+			{
+				switch(pSceneTouchEvent.getAction())
+				{
+				case MotionEvent.ACTION_DOWN:
+					pressed(B.DETAILS);
+					break;
+				case MotionEvent.ACTION_UP:
+					touched(B.DETAILS);
+					break;
+				case MotionEvent.ACTION_OUTSIDE:
+					released(B.DETAILS);
+					break;
+				default:
+					break;
+				}
+				return true;
+			}
+		};
+		
+		detailsButton.setScale(0.5f);
+		detailsButton.setPosition(detailsButton.getScaleX() * detailsButton.getWidth() / 2, detailsButton.getY());
+	}
+	
+	private void createAutoDeployButton() {
+		
+		autoDeployButton = new ButtonSprite(
+				0f,
+				0f,
+				resources.autoDeployBtnRegion,
+				resources.vbom) {
+
+			@Override
+			public boolean onAreaTouched(TouchEvent pSceneTouchEvent, 
+					float pTouchAreaLocalX, float pTouchAreaLocalY)
+			{
+				switch(pSceneTouchEvent.getAction())
+				{
+				case MotionEvent.ACTION_DOWN:
+					pressed(B.AUTO_DEPLOY);
+					break;
+				case MotionEvent.ACTION_UP:
+					touched(B.AUTO_DEPLOY);
+					break;
+				case MotionEvent.ACTION_OUTSIDE:
+					released(B.AUTO_DEPLOY);
+					break;
+				default:
+					break;
+				}
+				return true;
+			}
+		};
+		
+		autoDeployButton.setScale(0.3f);
+		autoDeployButton.setPosition(0.66f * resources.camera.getWidth(), 0.18f * resources.camera.getHeight());
+		
 	}
 }

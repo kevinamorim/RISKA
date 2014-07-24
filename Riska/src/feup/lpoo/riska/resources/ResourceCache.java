@@ -63,11 +63,6 @@ public class ResourceCache {
 	private BuildableBitmapTextureAtlas mainMenuTextureAtlas;
 	public TiledTextureRegion textBtnRegion;
 	public TiledTextureRegion optionsBtnRegion;
-	
-	// ==================================================
-	// OPTIONS MENU RESOURCES
-	// ==================================================
-	private BuildableBitmapTextureAtlas optionsMenuTextureAtlas;
 	public TiledTextureRegion returnBtnRegion;
 	public TiledTextureRegion sliderBtnRegion;
 	
@@ -154,7 +149,7 @@ public class ResourceCache {
 		
 		menuBackgroundTextureAtlas.load();
 		
-		int mainTextureWidth = 512, mainTextureHeight = 2048;
+		int mainTextureWidth = 1024, mainTextureHeight = 2048;
 		
 		mainMenuTextureAtlas = new BuildableBitmapTextureAtlas(activity.getTextureManager(), 
 				mainTextureWidth, mainTextureHeight, TextureOptions.BILINEAR);
@@ -163,6 +158,12 @@ public class ResourceCache {
 				"button.png", 1, 2);
 		optionsBtnRegion = BitmapTextureAtlasTextureRegionFactory.createTiledFromAsset(mainMenuTextureAtlas, activity, 
 				"options.png", 1, 2); 
+		
+		returnBtnRegion = BitmapTextureAtlasTextureRegionFactory.createTiledFromAsset(mainMenuTextureAtlas, activity, 
+				"return.png", 1, 2);
+		
+		sliderBtnRegion = BitmapTextureAtlasTextureRegionFactory.createTiledFromAsset(mainMenuTextureAtlas, activity, 
+				"slider.png", 1, 2);
 			
 		try {
 			mainMenuTextureAtlas.build(
@@ -185,38 +186,6 @@ public class ResourceCache {
 
 		mainMenuFont.load();
 		
-	}
-	
-	// ==================================================
-	// OPTIONS MENU SCENE
-	// ==================================================
-	public void loadOptionsMenuSceneResources() {
-		
-		BitmapTextureAtlasTextureRegionFactory.setAssetBasePath("gfx/menu/");
-		
-		int textureWidth = 1024, textureHeight = 2048;
-		
-		optionsMenuTextureAtlas = new BuildableBitmapTextureAtlas(activity.getTextureManager(), 
-				textureWidth, textureHeight, TextureOptions.BILINEAR);
-		
-		returnBtnRegion = BitmapTextureAtlasTextureRegionFactory.createTiledFromAsset(optionsMenuTextureAtlas, activity, 
-				"return.png", 1, 2);
-		
-		sliderBtnRegion = BitmapTextureAtlasTextureRegionFactory.createTiledFromAsset(optionsMenuTextureAtlas, activity, 
-				"slider.png", 1, 2);
-		
-		try {
-			optionsMenuTextureAtlas.build(
-					new BlackPawnTextureAtlasBuilder<IBitmapTextureAtlasSource, BitmapTextureAtlas>(0, 1, 0));
-			optionsMenuTextureAtlas.load();
-		} catch(final TextureAtlasBuilderException e) {
-			Debug.e(e);
-		}
-		
-	}
-	
-	public void unloadOptionsMenuSceneResources() {
-		optionsMenuTextureAtlas.unload();
 	}
 		
 	// ==================================================

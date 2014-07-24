@@ -10,7 +10,7 @@ public class LoadingScene extends BaseScene {
 
 	@Override
 	public void createScene() {
-		setBackground(new Background(Color.WHITE));
+		setBackground(new Background(Color.BLACK));
 		
 		attachChild(new Text(camera.getCenterX(), camera.getCenterY(), 
 				resources.mainMenuFont, "Loading...", vbom));
@@ -24,8 +24,6 @@ public class LoadingScene extends BaseScene {
 
 	@Override
 	public void disposeScene() {
-		// TODO Auto-generated method stub
-		
 	}
 
 	@Override

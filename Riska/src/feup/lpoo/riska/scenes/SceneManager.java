@@ -47,7 +47,10 @@ public class SceneManager {
 		GAME_OVER,
 	};
 
-
+	
+	// ==================================================
+	// CREATE SCENES
+	// ==================================================
 	public void createSplashScene(OnCreateSceneCallback pOnCreateSceneCallback) {
 		
 		ResourceCache.getSharedInstance().loadSplashSceneResources();
@@ -86,15 +89,28 @@ public class SceneManager {
 	}
 	
 	public void createOptionsScene() {
+		optionsScene = new OptionsScene();
+		setScene(optionsScene);
+	}
+	
+	// ==================================================
+	// LOAD SCENES
+	// ==================================================
+	public void loadMainMenuScene(final Engine mEngine) {
 		setScene(loadingScene);
-		engine.registerUpdateHandler(new TimerHandler(MIN_LOAD_SECONDS, new ITimerCallback() {
+		gameScene.disposeScene();
+		ResourceCache.getSharedInstance().unloadGameSceneResources();
+		
+		mEngine.registerUpdateHandler(new TimerHandler(MIN_LOAD_SECONDS, new ITimerCallback() {
+
 			@Override
 			public void onTimePassed(TimerHandler pTimerHandler) {
-				engine.unregisterUpdateHandler(pTimerHandler);
-				ResourceCache.getSharedInstance().loadOptionsMenuSceneResources();
-				optionsScene = new OptionsScene();
-				setScene(optionsScene);
+				mEngine.unregisterUpdateHandler(pTimerHandler);
+				ResourceCache.getSharedInstance().loadMainMenuResources();
+				mainMenuScene = new MainMenuScene();
+				setScene(mainMenuScene);
 			}
+		
 		}));
 	}
 	
