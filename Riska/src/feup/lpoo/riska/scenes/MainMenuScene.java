@@ -137,10 +137,10 @@ public class MainMenuScene extends BaseScene implements IOnMenuItemClickListener
 			setChildScene(startGameMenuChildScene);
 			break;
 		case MENU_OPTIONS:
-			SceneManager.getSharedInstance().setCurrentScene(SceneType.OPTIONS);
+			//SceneManager.getSharedInstance().setCurrentScene(SceneType.OPTIONS);
 			break;
 		case MENU_NEW:
-			//SceneManager.getSharedInstance().loadGameScene(engine);
+			SceneManager.getSharedInstance().createGameScene();
 			break;
 		case MENU_LOAD:
 			//SceneManager.getSharedInstance().loadGameScene(engine);

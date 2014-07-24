@@ -2,6 +2,8 @@ package feup.lpoo.riska.scenes;
 
 import org.andengine.engine.Engine;
 import org.andengine.engine.camera.Camera;
+import org.andengine.engine.handler.timer.ITimerCallback;
+import org.andengine.engine.handler.timer.TimerHandler;
 import org.andengine.entity.scene.Scene;
 import org.andengine.ui.IGameInterface.OnCreateSceneCallback;
 
@@ -11,14 +13,19 @@ import feup.lpoo.riska.resources.ResourceCache;
 public class SceneManager {
 	
 	// ==================================================
+	// CONSTANTS
+	// ==================================================
+	private final float MIN_LOAD_SECONDS = 0.1f;
+	
+	// ==================================================
 	// SCENES
 	// ==================================================
 	private BaseScene splashScene;
 	private BaseScene loadingScene;
 	private BaseScene mainMenuScene;
+	private BaseScene gameScene;
 	
-	private Scene startGameScene, optionsScene, 
-		loadMapScene, gameScene; /* Create more scene if needed, like gameScene. */
+	private Scene optionsScene, loadMapScene;
 	
 	// ==================================================
 	// FIELDS
@@ -32,7 +39,6 @@ public class SceneManager {
 		SPLASH, 
 		LOADING,
 		MAIN_MENU,
-		STARTGAME,
 		OPTIONS,
 		LOAD_MAP,
 		GAME,
@@ -65,76 +71,20 @@ public class SceneManager {
 		disposeSplashScene();
 	}
 	
-	
-	
-	public void createGameScenes() {
-		
-		mainMenuScene = new MainMenuScene();
-		//startGameScene = new StartGameScene();
-		//optionsScene = new OptionsScene();
-		//loadMapScene = new LoadMapScene();
-		//gameScene = new GameScene();
-	}
-	
-
-	
-	public void setCurrentScene(SceneType scene) {
-		
-		currentSceneType = scene;
-		
-		switch(scene) {
-		case SPLASH: 
-			break;
-		case MAIN_MENU:
-			
-			if(gameScene != null) {
-				
-				if(((GameScene) gameScene).hud.isVisible()) {
-					((GameScene) gameScene).hud.setVisible(false);
-				} 
-
-			}
-
-			engine.setScene(mainMenuScene);
-			break;
-		case STARTGAME:
-			engine.setScene(startGameScene);
-			break;
-		case OPTIONS:
-			engine.setScene(optionsScene);
-			break;
-		case LOAD_MAP:
-			engine.setScene(loadMapScene);
-			break;
-		case NEWGAME:
-			gameScene = new GameScene();
-			((GameScene)gameScene).hud.setVisible(true);
-			((GameScene)gameScene).showInitialHUD();
-			engine.setScene(gameScene);
-			currentSceneType = SceneType.GAME;
-			break;
-		case LOADGAME:
-			if(gameScene == null)
-			{
+	public void createGameScene() {
+		setScene(loadingScene);
+		ResourceCache.getSharedInstance().unloadMainMenuResources();
+		engine.registerUpdateHandler(new TimerHandler(MIN_LOAD_SECONDS, new ITimerCallback() {
+			@Override
+			public void onTimePassed(TimerHandler pTimerHandler) {
+				engine.unregisterUpdateHandler(pTimerHandler);
+				ResourceCache.getSharedInstance().loadGameSceneResources();
 				gameScene = new GameScene();
+				setScene(gameScene);
 			}
-			((GameScene)gameScene).hud.setVisible(true);
-			((GameScene)gameScene).loadGame();
-			engine.setScene(gameScene);
-			currentSceneType = SceneType.GAME;
-			break;
-		default:
-				break;
-		}
-		
+		}));
 	}
 	
-	public void cleanGame() {
-		/*
-		 * Do stuff before exiting the game.
-		 * p.e. save game state.
-		 */
-	}
 	
 	public GameScene getGameScene() {
 		return ((GameScene) gameScene);

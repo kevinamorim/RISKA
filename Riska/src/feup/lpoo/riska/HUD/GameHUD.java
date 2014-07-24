@@ -70,7 +70,7 @@ public class GameHUD extends HUD implements Displayable {
 		//  NEW ATTACK BUTTON
 		// =================================
 		attackButton = new ButtonSprite(0, 0,
-				resources.getAttackButtonTexture(),
+				resources.attackBtnRegion,
 				activity.getVertexBufferObjectManager()) 
 		{
 
@@ -111,8 +111,8 @@ public class GameHUD extends HUD implements Displayable {
 		//  NEW INFO TAB
 		// =================================
 		infoTab = new Sprite(MainActivity.CAMERA_WIDTH / 2,
-				MainActivity.CAMERA_HEIGHT - resources.getInfoTabTexture().getHeight() / 2,
-				resources.getInfoTabTexture(),
+				MainActivity.CAMERA_HEIGHT - resources.infoTabRegion.getHeight() / 2,
+				resources.infoTabRegion,
 				activity.getVertexBufferObjectManager());
 
 		infoTab.setScaleX(2.4f);
@@ -128,9 +128,9 @@ public class GameHUD extends HUD implements Displayable {
 		//  NEW DETAILS BUTTON
 		// =================================
 		detailsButton = new ButtonSprite(
-				resources.getDetailsButtonTexture().getWidth() / 2,
+				resources.detailsBtnRegion.getWidth() / 2,
 				MainActivity.CAMERA_HEIGHT / 2,
-				resources.getDetailsButtonTexture(),
+				resources.detailsBtnRegion,
 				activity.getVertexBufferObjectManager()) {
 
 			@Override
@@ -163,7 +163,7 @@ public class GameHUD extends HUD implements Displayable {
 		autoDeployButton = new ButtonSprite(
 				0f,
 				0f,
-				resources.getAutoDeployButtonTexture(),
+				resources.autoDeployBtnRegion,
 				activity.getVertexBufferObjectManager()) {
 
 			@Override

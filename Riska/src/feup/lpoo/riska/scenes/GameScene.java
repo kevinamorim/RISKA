@@ -21,6 +21,7 @@ import feup.lpoo.riska.logic.GameLogic;
 import feup.lpoo.riska.logic.GameLogic.GAME_STATE;
 import feup.lpoo.riska.logic.MainActivity;
 import feup.lpoo.riska.resources.ResourceCache;
+import feup.lpoo.riska.scenes.SceneManager.SceneType;
 import feup.lpoo.riska.R;
 import android.app.AlertDialog;
 import android.content.DialogInterface;
@@ -28,7 +29,7 @@ import android.content.DialogInterface.OnClickListener;
 import android.graphics.Point;
 import android.util.Log;
 
-public class GameScene extends Scene implements IOnSceneTouchListener, IScrollDetectorListener {
+public class GameScene extends BaseScene implements IOnSceneTouchListener, IScrollDetectorListener {
 
 	// ======================================================
 	// CONSTANTS
@@ -44,12 +45,8 @@ public class GameScene extends Scene implements IOnSceneTouchListener, IScrollDe
 	// ======================================================
 	// SINGLETONS
 	// ======================================================
-	MainActivity activity;
 	GameLogic logic;
-	SceneManager sceneManager;
-	CameraManager cameraManager;
-	ResourceCache resources;
-	
+	CameraManager cameraManager;	
 	BattleScene battleScene;
 	
 	// ======================================================
@@ -67,27 +64,32 @@ public class GameScene extends Scene implements IOnSceneTouchListener, IScrollDe
 	
 	private boolean doubleTapAllowed = true;
 	private long lastTouchTime;
+
 	
-	// ======================================================
-	// CONSTRUCTOR
-	// ======================================================
-	
-	public GameScene() {	
-		
+	@Override
+	public void createScene() {
 		this.selectedRegion = null;
 		this.targetedRegion = null;
-		
-		activity = MainActivity.getSharedInstance();
-		
 		logic = new GameLogic();
-		sceneManager = SceneManager.getSharedInstance();	
-		cameraManager = CameraManager.getSharedInstance();
-		resources = ResourceCache.getSharedInstance();
 		detailScene = new DetailScene();
-
 		lastTouchTime = 0;	
-		
 		createDisplay();
+	}
+
+	@Override
+	public void onBackKeyPressed() {
+		// TODO Auto-generated method stub
+		
+	}
+
+	@Override
+	public SceneType getSceneType() {
+		return SceneType.GAME;
+	}
+
+	@Override
+	public void disposeScene() {
+		// TODO Auto-generated method stub
 		
 	}
 	
@@ -121,7 +123,7 @@ public class GameScene extends Scene implements IOnSceneTouchListener, IScrollDe
 		
 		Sprite mapSprite = new Sprite(MainActivity.CAMERA_WIDTH/2, MainActivity.CAMERA_HEIGHT/2,
 				MainActivity.CAMERA_WIDTH, MainActivity.CAMERA_HEIGHT,
-				resources.getMapTexture(), activity.getVertexBufferObjectManager());
+				resources.mapRegion, activity.getVertexBufferObjectManager());
 		
 		attachChild(mapSprite);
 		
@@ -132,7 +134,7 @@ public class GameScene extends Scene implements IOnSceneTouchListener, IScrollDe
 		int ANIMATION_TILES = 8;
 		
 		AnimatedSprite background = new AnimatedSprite(MainActivity.CAMERA_WIDTH/2, MainActivity.CAMERA_HEIGHT/2, 
-				resources.getSeaTexture(), activity.getVertexBufferObjectManager());
+				resources.seaRegion, activity.getVertexBufferObjectManager());
 		
 		background.setScale(2f);
 		
@@ -165,11 +167,11 @@ public class GameScene extends Scene implements IOnSceneTouchListener, IScrollDe
 		switch(logic.getState()) {
 		case PAUSED:
 			logic.setState(GAME_STATE.DEPLOYMENT);
-			hud.showAutoDeployButton();
+			//hud.showAutoDeployButton();
 			break;
 			
 		case DEPLOYMENT:
-			logic.updateDeployment();
+			//logic.updateDeployment();
 			break;
 			
 		case PLAY:
@@ -184,7 +186,7 @@ public class GameScene extends Scene implements IOnSceneTouchListener, IScrollDe
 	
 	private void setRegionButtons() {
 
-		for(Region region : resources.getMap().getRegions()) {
+		for(Region region : resources.map.getRegions()) {
 
 			int x = (region.getStratCenter().x * MainActivity.CAMERA_WIDTH)/100;
 			int y = (region.getStratCenter().y * MainActivity.CAMERA_HEIGHT)/100;
@@ -352,7 +354,7 @@ public class GameScene extends Scene implements IOnSceneTouchListener, IScrollDe
 		
 		Log.d("ScrollDetector", "Scrolling started");
 		
-		for(Region region : resources.getMap().getRegions()) {
+		for(Region region : resources.map.getRegions()) {
 			unregisterTouchArea(region.getButton());
 		}
 		
@@ -382,7 +384,7 @@ public class GameScene extends Scene implements IOnSceneTouchListener, IScrollDe
 				(int)(activity.mCamera.getCenterY() + pDistanceY));
 		cameraManager.jumpTo(p);
 		
-		for(Region region : resources.getMap().getRegions()) {
+		for(Region region : resources.map.getRegions()) {
 			registerTouchArea(region.getButton());
 		}
 		
@@ -732,6 +734,7 @@ public class GameScene extends Scene implements IOnSceneTouchListener, IScrollDe
 	public void hideAutoDeploy() {
 		hud.hideAutoDeployButton();
 	}
+
 }
 
 

@@ -49,7 +49,7 @@ public class DetailScene extends Scene {
 				MainActivity.CAMERA_HEIGHT / 2,
 				MainActivity.CAMERA_WIDTH,
 				MainActivity.CAMERA_HEIGHT,
-				resources.getWindowTexture(),
+				resources.windowRegion,
 				activity.getVertexBufferObjectManager());
 
 		setBackgroundEnabled(false);
@@ -58,9 +58,9 @@ public class DetailScene extends Scene {
 		float textPosY = (float) 0.75 * MainActivity.CAMERA_HEIGHT;
 
 		playerRegionName = new Text(MainActivity.CAMERA_WIDTH/4 - this.getWidth()/2, 
-				textPosY, resources.getGameFont(), "", 1000, activity.getVertexBufferObjectManager());
+				textPosY, resources.mGameFont, "", 1000, activity.getVertexBufferObjectManager());
 		enemyRegionName = new Text((float)(MainActivity.CAMERA_WIDTH * 0.75 - this.getWidth()/2),
-				textPosY, resources.getGameFont(), "", 1000, activity.getVertexBufferObjectManager());
+				textPosY, resources.mGameFont, "", 1000, activity.getVertexBufferObjectManager());
 
 		attachChild(playerRegionName);
 		attachChild(enemyRegionName);
@@ -76,10 +76,10 @@ public class DetailScene extends Scene {
 	public void updateDisplay() {
 		
 
-		playerRegionName.setText(wrapText(resources.getGameFont(), 
+		playerRegionName.setText(wrapText(resources.mGameFont, 
 				(playerRegion != null) ? playerRegion.getName() : "", this.getWidth()/2));
 		
-		enemyRegionName.setText(wrapText(resources.getGameFont(), 
+		enemyRegionName.setText(wrapText(resources.mGameFont, 
 				(enemyRegion != null) ? enemyRegion.getName() : "", this.getWidth()/2));
 			
 			

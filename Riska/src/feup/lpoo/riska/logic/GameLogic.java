@@ -57,7 +57,7 @@ public class GameLogic {
 		resources = ResourceCache.getSharedInstance();
 		sceneManager = SceneManager.getSharedInstance();
 		
-		map = resources.getMap();
+		map = resources.map;
 		
 		createsPlayers();
 		

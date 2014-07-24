@@ -31,8 +31,6 @@ public class SplashScene extends BaseScene {
 		
 		attachChild(splash);
 		
-		loadResources();
-		
 	}
 
 	@Override
@@ -51,23 +49,6 @@ public class SplashScene extends BaseScene {
 	@Override
 	public SceneType getSceneType() {
 		return SceneType.SPLASH;
-	}
-	
-	private void loadResources() {
-		
-		DelayModifier delayModifier = new DelayModifier(2) {
-			
-			@Override
-			protected void onModifierFinished(IEntity pItem) {
-				SceneManager.getSharedInstance().setCurrentScene(SceneType.MAIN_MENU);
-			}
-			
-		};
-		
-		
-		registerEntityModifier(delayModifier);
-
-		
 	}
 	
 }

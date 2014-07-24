@@ -79,7 +79,7 @@ public class Region extends Element {
 		this.soldiers = new ArrayList<Unit>();
 		this.neighbours = new ArrayList<Region>();
 		
-		button = new ButtonSprite(stratCenter.x, stratCenter.y, resources.getRegionButtonTexture(), 
+		button = new ButtonSprite(stratCenter.x, stratCenter.y, resources.regionBtnRegion, 
 				activity.getVertexBufferObjectManager()) {
 
 			@Override
@@ -101,7 +101,7 @@ public class Region extends Element {
 				return true;
 			}
 		};	
-		buttonText = new Text(0, 0, resources.getGameFont() , "" + soldiers, MAX_CHARS, activity.getVertexBufferObjectManager());	
+		buttonText = new Text(0, 0, resources.mGameFont, "" + soldiers, MAX_CHARS, activity.getVertexBufferObjectManager());	
 		buttonText.setScale((float) 1.4);
 		buttonText.setPosition(button.getWidth()/2, button.getHeight()/2);
 		button.attachChild(buttonText);

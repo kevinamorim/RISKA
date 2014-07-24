@@ -58,7 +58,7 @@ public class BattleScene extends Scene {
 				MainActivity.CAMERA_HEIGHT / 2,
 				MainActivity.CAMERA_WIDTH,
 				MainActivity.CAMERA_HEIGHT,
-				resources.getWindowTexture(),
+				resources.windowRegion,
 				activity.getVertexBufferObjectManager());
 		
 		background.setScale(0.9f);
@@ -68,7 +68,7 @@ public class BattleScene extends Scene {
 		setBackgroundEnabled(false);
 		
 		Text vsText = new Text(MainActivity.CAMERA_WIDTH/2, MainActivity.CAMERA_HEIGHT/2,
-				resources.getGameFont(), "VS", activity.getVertexBufferObjectManager());
+				resources.mGameFont, "VS", activity.getVertexBufferObjectManager());
 		
 		vsText.setColor(Color.BLACK);
 		vsText.setScale(2.0f);
@@ -101,19 +101,19 @@ public class BattleScene extends Scene {
 			x = MainActivity.CAMERA_WIDTH * 0.75f;
 		}
 		
-		Text typePlayerText = new Text(x - this.getWidth()/2, y,  resources.getGameFont(),
+		Text typePlayerText = new Text(x - this.getWidth()/2, y,  resources.mGameFont,
 				typePlayer, 10,  activity.getVertexBufferObjectManager());
 		
 		typePlayerText.setScale(0.70f);
 		
 		y = 0.60f * MainActivity.CAMERA_HEIGHT;
 		
-		Text regionNameText = new Text(x - this.getWidth()/2, y,  resources.getGameFont(),
-				wrapText(resources.getGameFont(), regionName, halfWidth), 1000,  activity.getVertexBufferObjectManager());
+		Text regionNameText = new Text(x - this.getWidth()/2, y,  resources.mGameFont,
+				wrapText(resources.mGameFont, regionName, halfWidth), 1000,  activity.getVertexBufferObjectManager());
 		
 		y = 0.25f * MainActivity.CAMERA_HEIGHT;
 		
-		Text resultText =  new Text(x - this.getWidth()/2, y,  resources.getGameFont(),
+		Text resultText =  new Text(x - this.getWidth()/2, y,  resources.mGameFont,
 				resultStr, 4,  activity.getVertexBufferObjectManager());
 		
 		typePlayerText.setColor(textColor);
@@ -121,7 +121,7 @@ public class BattleScene extends Scene {
 		
 		ButtonSprite result;
 		result = new ButtonSprite(0,0,
-				resources.getRegionButtonTexture(),
+				resources.regionBtnRegion,
 				activity.getVertexBufferObjectManager());
 		
 		if(regionWon)

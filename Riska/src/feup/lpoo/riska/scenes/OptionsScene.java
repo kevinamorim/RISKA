@@ -48,13 +48,13 @@ public class OptionsScene extends MenuScene implements IOnMenuItemClickListener 
 		SpriteBackground background = new SpriteBackground(new Sprite(MainActivity.CAMERA_WIDTH/2, MainActivity.CAMERA_HEIGHT/2, 
 				resources.menuBackgroundRegion, activity.getVertexBufferObjectManager()));
 		
-		TiledTextureRegion button = resources.getReturnButtonTexture();
+		TiledTextureRegion button = resources.returnBtnRegion;
 		
 		final AnimatedButtonSpriteMenuItem button_return = new AnimatedButtonSpriteMenuItem(RETURN, (float) 0.3*button.getWidth(), 
 				(float) 0.3*button.getHeight(), button, 
 				activity.getVertexBufferObjectManager());
 		
-		button = resources.getSliderButtonTexture();
+		button = resources.sliderBtnRegion;
 		
 		button_slider_sfx = new AnimatedButtonSpriteMenuItem(SFX, (float) 0.3*button.getWidth(),
 				(float) 0.3*button.getHeight(), button, activity.getVertexBufferObjectManager());
@@ -107,7 +107,7 @@ public class OptionsScene extends MenuScene implements IOnMenuItemClickListener 
 		switch(pMenuItem.getID()) {
 		case RETURN:
 			saveConfig();
-			sceneManager.setCurrentScene(SceneType.MAIN_MENU);
+			//sceneManager.setCurrentScene(SceneType.MAIN_MENU);
 			break;
 		case SFX:
 			break;
