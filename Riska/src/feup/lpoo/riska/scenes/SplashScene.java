@@ -12,47 +12,49 @@ import feup.lpoo.riska.logic.MainActivity;
 import feup.lpoo.riska.resources.ResourceCache;
 import feup.lpoo.riska.scenes.SceneManager.SceneType;
 
-public class SplashScene extends Scene {
+public class SplashScene extends BaseScene {
 	
-	MainActivity activity;
-	SceneManager instance;
-	ResourceCache resources;
+	// ==================================================
+	// FIELDS
+	// ==================================================
+	private Sprite splash;
 	
-	public SplashScene() {
-		
-		activity = MainActivity.getSharedInstance();
-		instance = SceneManager.getSharedInstance();
-		resources = ResourceCache.getSharedInstance();
+	@Override
+	public void createScene() {
 		
 		setBackground(new Background(Color.BLACK));
 
 		Sprite logoSprite;
 		
-		logoSprite = new Sprite(MainActivity.CAMERA_WIDTH/2, MainActivity.CAMERA_HEIGHT/2, 
-				resources.getLogo(), activity.getVertexBufferObjectManager());
+		splash = new Sprite(resources.camera.getWidth()/2, resources.camera.getHeight()/2, 
+				resources.splashRegion, resources.vbom);
 		
-		//logoSprite.setBlendFunction(GLES20.GL_SRC_ALPHA, GLES20.GL_ONE_MINUS_SRC_ALPHA);
-		//logoSprite.registerEntityModifier(new AlphaModifier(6f, 0f, 1f));
-		
-		Text company = new Text(0, 0, resources.mSplashFont, "HellHounds", activity.getVertexBufferObjectManager());
-		company.setPosition(MainActivity.CAMERA_WIDTH/2, 
-				MainActivity.CAMERA_HEIGHT * 0.05f );
-		company.setAlpha(0.3f);
-		
-		attachChild(logoSprite);
-		attachChild(company);
+		attachChild(splash);
 		
 		loadResources();
 		
 	}
 
+	@Override
+	public void onBackKeyPressed() {
+		return;
+	}
+
+	@Override
+	public void disposeScene() {
+		splash.detachSelf();
+		splash.dispose();
+		detachSelf();
+		dispose();
+	}
+	
 	private void loadResources() {
 		
 		DelayModifier delayModifier = new DelayModifier(2) {
 			
 			@Override
 			protected void onModifierFinished(IEntity pItem) {
-				instance.setCurrentScene(SceneType.MENU);
+				SceneManager.getSharedInstance().setCurrentScene(SceneType.MENU);
 			}
 			
 		};
@@ -62,5 +64,7 @@ public class SplashScene extends Scene {
 
 		
 	}
+
+
 	
 }

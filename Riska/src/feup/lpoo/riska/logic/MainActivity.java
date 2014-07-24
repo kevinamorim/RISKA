@@ -60,8 +60,8 @@ public class MainActivity extends BaseGameActivity {
 		
 		sceneManager = new SceneManager(this, mEngine, mCamera);
 		
-		resources = new ResourceCache(this, mEngine, mCamera);	
-		resources.loadSplashSceneResources();
+		ResourceCache.prepareManager(mEngine, this, mCamera, getVertexBufferObjectManager());	
+		ResourceCache.getSharedInstance().loadSplashSceneResources();
 		
 		pOnCreateResourcesCallback.onCreateResourcesFinished();
 		
@@ -86,9 +86,9 @@ public class MainActivity extends BaseGameActivity {
 				
 				mEngine.unregisterUpdateHandler(pTimerHandler);
 				
-				resources.loadMainMenuResources();
-				resources.loadGameSceneResources();
-				resources.loadMusicResources();
+				ResourceCache.getSharedInstance().loadMainMenuResources();
+				ResourceCache.getSharedInstance().loadGameSceneResources();
+				ResourceCache.getSharedInstance().loadMusicResources();
 				
 				sceneManager.createGameScenes();
 				sceneManager.setCurrentScene(SceneType.MENU);

@@ -7,6 +7,7 @@ import org.andengine.audio.music.Music;
 import org.andengine.audio.music.MusicFactory;
 import org.andengine.engine.Engine;
 import org.andengine.engine.camera.Camera;
+import org.andengine.engine.camera.SmoothCamera;
 import org.andengine.entity.scene.CameraScene;
 import org.andengine.opengl.font.Font;
 import org.andengine.opengl.font.FontFactory;
@@ -16,6 +17,7 @@ import org.andengine.opengl.texture.atlas.bitmap.BitmapTextureAtlasTextureRegion
 import org.andengine.opengl.texture.region.ITextureRegion;
 import org.andengine.opengl.texture.region.ITiledTextureRegion;
 import org.andengine.opengl.texture.region.TiledTextureRegion;
+import org.andengine.opengl.vbo.VertexBufferObjectManager;
 
 import feup.lpoo.riska.R;
 import android.graphics.Color;
@@ -35,20 +37,19 @@ import feup.lpoo.riska.scenes.CameraManager;
 public class ResourceCache {
 
 	// ======================================================
-	// SINGLETONS
-	// ======================================================
-
-	private MainActivity activity;
-	private Engine engine;
-	private Conductor conductor;
-
-	// ======================================================
 	// FIELDS
 	// ======================================================
-
-	// Logo texture used in the splash screen.
-	protected BitmapTextureAtlas mLogoTexture;
-	protected ITextureRegion mLogoTextureRegion;
+	public MainActivity activity;
+	public Engine engine;
+	public SmoothCamera camera;
+	public VertexBufferObjectManager vbom;
+	public Conductor conductor;
+	
+	// ==================================================
+	// SPLASH RESOURCES
+	// ==================================================
+	private BitmapTextureAtlas splashTextureAtlas;
+	public ITextureRegion splashRegion;
 
 	// Texture used as the background in several menus and scenes.
 	protected BitmapTextureAtlas mBackgroundTexture;
@@ -120,56 +121,30 @@ public class ResourceCache {
 	private static int SEA_COLS = 4;
 	private static int SEA_LINES = 2;	
 
-	private static ResourceCache instance;
+	private static ResourceCache instance = new ResourceCache();
 	// ======================================================
 	// ======================================================
-
-
-	public ResourceCache(MainActivity activity, Engine engine, Camera camera) {
-		instance = this;
-
-		this.activity = activity;
-		this.engine = engine;
-	}
-
-	public static ResourceCache getSharedInstance() {
-		return instance;	
-	}
 
 	/**
 	 * Loads all resources needed by our splash scene. 
 	 */
 	public void loadSplashSceneResources() {
-
-		try
-		{
-			String imgLogo = activity.getResources().getString(R.string.path_img_logo);
-			String fontPath = activity.getResources().getString(R.string.path_font_splash);
-
-			BitmapTextureAtlasTextureRegionFactory.setAssetBasePath("gfx/");
-
-			// LOADS LOGO PIC
-			mLogoTexture = new BitmapTextureAtlas(activity.getTextureManager(), 512, 512, TextureOptions.DEFAULT);
-
-			mLogoTextureRegion = BitmapTextureAtlasTextureRegionFactory.createFromAsset(mLogoTexture, activity, imgLogo, 0, 0);
-
-			mLogoTexture.load();	
-
-			FontFactory.setAssetBasePath("fonts/");
-
-			mSplashFont = FontFactory.createFromAsset(engine.getFontManager(),
-					engine.getTextureManager(), 256, 512, TextureOptions.BILINEAR,
-					activity.getAssets(), fontPath, 50f, true,
-					Color.WHITE); /* Load the font in white, so setColor() works. */
-
-			mSplashFont.load();
-		}
-		catch (Exception e)
-		{
-			e.printStackTrace();
-		}
+		loadSplashGraphics();
 	}
 
+	private void loadSplashGraphics() {
+		
+		int textureWidth = 512, textureHeight = 512;
+		
+		BitmapTextureAtlasTextureRegionFactory.setAssetBasePath("gfx/splash/");
+		splashTextureAtlas = new BitmapTextureAtlas(activity.getTextureManager(), 
+				textureWidth, textureHeight, TextureOptions.BILINEAR);
+		splashRegion = BitmapTextureAtlasTextureRegionFactory.createFromAsset(splashTextureAtlas, 
+				activity, "splash.png", 0, 0);
+		splashTextureAtlas.load();
+		
+	}
+	
 	/**
 	 * Loads all resources needed by our main menu.
 	 */
@@ -520,10 +495,6 @@ public class ResourceCache {
 		return this.mSliderButtonTiledTextureRegion;
 	}
 
-	public ITextureRegion getLogo() {
-		return this.mLogoTextureRegion;
-	}
-
 	public ITextureRegion getRegionFlags() {
 		return this.mFlagsTextureRegion;
 	}
@@ -557,4 +528,20 @@ public class ResourceCache {
 	{
 		return mResultTextureRegion;
 	}
+	
+	public static void prepareManager(Engine engine, MainActivity activity, 
+			SmoothCamera camera, VertexBufferObjectManager vbom) {
+		getSharedInstance().engine = engine;
+		getSharedInstance().activity = activity;
+		getSharedInstance().camera = camera;
+		getSharedInstance().vbom = vbom;
+	}
+	
+	// ==================================================
+	// GETTERS & SETTERS
+	// ==================================================
+	public static ResourceCache getSharedInstance() {
+		return instance;	
+	}
+	
 }
