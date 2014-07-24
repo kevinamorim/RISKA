@@ -121,6 +121,28 @@ public class SceneManager {
 		currentSceneType = scene.getSceneType();
 	}
 	
+	public void setScene(SceneType sceneType) {
+		switch(sceneType) {
+		case SPLASH:
+			setScene(splashScene);
+			break;
+		case MAIN_MENU:
+			setScene(mainMenuScene);
+			break;
+		case OPTIONS:
+			setScene(optionsScene);
+			break;
+		case GAME:
+			setScene(gameScene);
+			break;
+		case LOADING:
+			setScene(loadingScene);
+			break;
+		default:
+				break;
+		}
+	}
+	
 	public static SceneManager getSharedInstance() {
 		return instance;
 	}

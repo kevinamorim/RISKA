@@ -38,20 +38,21 @@ public class OptionsScene extends BaseScene implements IOnMenuItemClickListener 
 
 	@Override
 	public void onBackKeyPressed() {
-		// TODO Auto-generated method stub
-		
+		saveConfig();
+		SceneManager.getSharedInstance().setScene(SceneType.MAIN_MENU);
 	}
 
 	@Override
 	public SceneType getSceneType() {
-		// TODO Auto-generated method stub
-		return null;
+		return SceneType.OPTIONS;
 	}
 
 	@Override
 	public void disposeScene() {
-		// TODO Auto-generated method stub
-		
+		optionsMenuChildScene.detachSelf();
+		optionsMenuChildScene.dispose();
+		detachSelf();
+		dispose();
 	}
 	
 	private void createOptionsMenuChildScene() {
@@ -126,7 +127,7 @@ public class OptionsScene extends BaseScene implements IOnMenuItemClickListener 
 		switch(pMenuItem.getID()) {
 		case MENU_RETURN:
 			saveConfig();
-			//sceneManager.setCurrentScene(SceneType.MAIN_MENU);
+			SceneManager.getSharedInstance().setScene(SceneType.MAIN_MENU);
 			break;
 		case MENU_SFX:
 			break;
