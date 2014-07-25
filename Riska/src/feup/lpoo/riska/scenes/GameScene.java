@@ -18,6 +18,7 @@ import org.andengine.input.touch.detector.SurfaceScrollDetector;
 
 import feup.lpoo.riska.HUD.GameHUD;
 import feup.lpoo.riska.HUD.GameHUD.BUTTON;
+import feup.lpoo.riska.HUD.GameHUD.SPRITE;
 import feup.lpoo.riska.elements.Map;
 import feup.lpoo.riska.elements.Player;
 import feup.lpoo.riska.elements.Region;
@@ -173,6 +174,8 @@ public class GameScene extends BaseScene implements IOnSceneTouchListener, IScro
 		hud.setInfoTabText(logic.getCurrentPlayer().getSoldiersToDeploy() 
 				+ activity.getResources().getString(R.string.leftToDeploy));
 		
+
+		hud.show(SPRITE.INFO_TAB);
 		hud.show(BUTTON.AUTO_DEPLOY);
 	}
 	
@@ -216,7 +219,7 @@ public class GameScene extends BaseScene implements IOnSceneTouchListener, IScro
 			doubleTapAllowed = false;
 			scrollDetector.setEnabled(false);
 			hud.hide(BUTTON.ATTACK);
-			hud.hideInfoTab();
+			hud.hide(SPRITE.INFO_TAB);
 			battleScene.setVisible(false);
 			return;
 		}
@@ -226,7 +229,7 @@ public class GameScene extends BaseScene implements IOnSceneTouchListener, IScro
 			doubleTapAllowed = false;
 			scrollDetector.setEnabled(false);
 			hud.hide(BUTTON.ATTACK);
-			hud.hideInfoTab();
+			hud.hide(SPRITE.INFO_TAB);
 			detailScene.setVisible(false);
 			return;
 		}
@@ -234,7 +237,7 @@ public class GameScene extends BaseScene implements IOnSceneTouchListener, IScro
 		doubleTapAllowed = true;
 		scrollDetector.setEnabled(true);
 		hud.show(BUTTON.DETAILS);
-		hud.showInfoTab();
+		hud.show(SPRITE.INFO_TAB);
 		
 		for(int i = 0; i < regionButtons.size(); i++)
 		{
@@ -464,10 +467,6 @@ public class GameScene extends BaseScene implements IOnSceneTouchListener, IScro
 		battleScene.setVisible(false);
 	}
 
-	public void showInitialHUD() {
-		hud.showInfoTab();
-	}
-	
 	public void showDetails()
 	{	
 		detailScene.setVisible(true);

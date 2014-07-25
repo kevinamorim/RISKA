@@ -29,6 +29,11 @@ public class GameHUD extends HUD implements Displayable {
 		DETAILS,
 		AUTO_DEPLOY
 	};
+	
+	public enum SPRITE
+	{
+		INFO_TAB
+	};
 
 	// ======================================================
 	// SINGLETONS
@@ -149,24 +154,15 @@ public class GameHUD extends HUD implements Displayable {
 			break;
 		}
 	}
-	
-	/**
-	 * Displays the game info tab.
-	 */
-	public void showInfoTab() {
-		if(!infoTab.hasParent()) {
-			attachChild(infoTab);
-		}	
-	}
 
-	/**
-	 * Hides the game info tab.
-	 */
-	public void hideInfoTab() {
-		if(infoTab.hasParent()) {
-			detachChild(infoTab);
-		}
-	}
+//	/**
+//	 * Hides the game info tab.
+//	 */
+//	public void hideInfoTab() {
+//		if(infoTab.hasParent()) {
+//			detachChild(infoTab);
+//		}
+//	}
 
 	/**
 	 * Changes the text of the info tab.
@@ -338,38 +334,67 @@ public class GameHUD extends HUD implements Displayable {
 
 	public void hide(BUTTON toHide)
 	{
-		ButtonSprite btn = getButton(toHide);
+		ButtonSprite x = get(toHide);
 		
-		if(btn == null)
+		if(x == null)
 		{
 			return;
 		}
 		
-		if(btn.hasParent())
+		if(x.hasParent())
 		{
-			detachChild(btn);
-			unregisterTouchArea(btn);
+			detachChild(x);
+			unregisterTouchArea(x);
 		}
 	}
 	
 	public void show(BUTTON toShow)
 	{
-		ButtonSprite btn = getButton(toShow);
+		ButtonSprite x = get(toShow);
 		
-		if(btn == null)
+		if(x == null)
 		{
 			return;
 		}
 		
-		if(!btn.hasParent()) {
-			attachChild(btn);
-			registerTouchArea(btn);
+		if(!x.hasParent()) {
+			attachChild(x);
+			registerTouchArea(x);
 		}
 	}
 	
-	public ButtonSprite getButton(BUTTON btn)
+	public void hide(SPRITE toHide)
 	{
-		switch(btn)
+		Sprite x = get(toHide);
+		
+		if(x == null)
+		{
+			return;
+		}
+		
+		if(x.hasParent())
+		{
+			detachChild(x);
+		}
+	}
+	
+	public void show(SPRITE toShow)
+	{
+		Sprite x = get(toShow);
+		
+		if(x == null)
+		{
+			return;
+		}
+		
+		if(!x.hasParent()) {
+			attachChild(x);
+		}
+	}
+	
+	public ButtonSprite get(BUTTON x)
+	{
+		switch(x)
 		{
 		case ATTACK:
 			return attackButton;
@@ -377,6 +402,17 @@ public class GameHUD extends HUD implements Displayable {
 			return detailsButton;
 		case AUTO_DEPLOY:
 			return autoDeployButton;
+		default:
+			return null;
+		}
+	}
+	
+	public Sprite get(SPRITE x)
+	{
+		switch(x)
+		{
+		case INFO_TAB:
+			return infoTab;
 		default:
 			return null;
 		}
