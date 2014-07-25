@@ -73,22 +73,20 @@ public class DetailScene extends Scene {
 		setVisible(false);
 	}
 
-	public void updateDisplay() {
+	public void update() {
 		
-
 		playerRegionName.setText(wrapText(resources.mGameFont, 
 				(playerRegion != null) ? playerRegion.getName() : "", this.getWidth()/2));
 		
 		enemyRegionName.setText(wrapText(resources.mGameFont, 
-				(enemyRegion != null) ? enemyRegion.getName() : "", this.getWidth()/2));
-			
-			
-		
+				(enemyRegion != null) ? enemyRegion.getName() : "", this.getWidth()/2));	
 	}
 	
 	public void setAttributes(Region playerRegion, Region enemyRegion) {
 		this.playerRegion = playerRegion;
 		this.enemyRegion = enemyRegion;
+		
+		update();
 	}
 	
 	

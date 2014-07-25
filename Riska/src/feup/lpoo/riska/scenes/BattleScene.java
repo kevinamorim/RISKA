@@ -12,6 +12,7 @@ import feup.lpoo.riska.elements.Region;
 import feup.lpoo.riska.generator.BattleGenerator;
 import feup.lpoo.riska.logic.MainActivity;
 import feup.lpoo.riska.resources.ResourceCache;
+import feup.lpoo.riska.utilities.Utilities;
 
 public class BattleScene extends Scene {
 
@@ -31,10 +32,13 @@ public class BattleScene extends Scene {
 	// FIELDS
 	// ======================================================
 	BattleGenerator battleGenerator;
+	
 	Sprite background;
+	Text vsText;
+	Text typePlayer1, typePlayer2;
 	
 	Region attacker, defender;
-	boolean won;
+	boolean attackerWon;
 
 	public BattleScene(Region attacker, Region defender, boolean won) {
 		
@@ -45,14 +49,16 @@ public class BattleScene extends Scene {
 		
 		this.attacker = attacker;
 		this.defender = defender;
-		this.won = won;
+		this.attackerWon = won;
+		
+		setBackgroundEnabled(false);
 		
 		createDisplay();
 		
 	}
 
-	private void createDisplay() {
-		
+	private void createDisplay()
+	{
 		background = new Sprite(
 				MainActivity.CAMERA_WIDTH / 2,
 				MainActivity.CAMERA_HEIGHT / 2,
@@ -65,69 +71,62 @@ public class BattleScene extends Scene {
 		background.setAlpha(1f);
 		attachChild(background);
 		
-		setBackgroundEnabled(false);
-		
-		Text vsText = new Text(MainActivity.CAMERA_WIDTH/2, MainActivity.CAMERA_HEIGHT/2,
+		vsText = new Text(MainActivity.CAMERA_WIDTH/2, MainActivity.CAMERA_HEIGHT/2,
 				resources.mGameFont, "VS", activity.getVertexBufferObjectManager());
 		
 		vsText.setColor(Color.BLACK);
 		vsText.setScale(2.0f);
 		
 		attachChild(vsText);
-	
-		int playerNum = (attacker.getOwner().isCPU())? 1 : 0;
-		displayRegionInfo(attacker, won, playerNum);
-		
-		playerNum = (defender.getOwner().isCPU())? 1 : 0;
-		displayRegionInfo(defender, !won, playerNum);
 	}
 	
-	/* Assuming only two players for now. PlayerNum = 0 -> Left side, PlayerNum = 1 -> Right side */
+	public void setAttributes(Region attacker, Region defender, boolean attackerWon)
+	{
+		this.attacker = attacker;
+		this.defender = defender;
+		this.attackerWon = attackerWon;
+	}
+	
 	private void displayRegionInfo(Region pRegion, boolean regionWon, int playerNum) {
 		
 		Color textColor = Color.BLACK;
 		
 		String typePlayer = ((playerNum == 0)? "- PLAYER -" : "- CPU -");
 		String regionName = pRegion.getName();
-		String resultStr = (regionWon)? "WON" : "LOSE";
 		
 		float halfWidth = getWidth()/2f;
 		
 		float x, y = 0.80f * MainActivity.CAMERA_HEIGHT;
 		
-		if(playerNum == 0) {
+		if(playerNum == 0)
+		{
 			x = MainActivity.CAMERA_WIDTH * 0.25f;
 		} else {
 			x = MainActivity.CAMERA_WIDTH * 0.75f;
 		}
 		
-		Text typePlayerText = new Text(x - this.getWidth()/2, y,  resources.mGameFont,
-				typePlayer, 10,  activity.getVertexBufferObjectManager());
+		typePlayerText = new Text(x - this.getWidth()/2, y,  resources.mGameFont, typePlayer, 10,  resources.vbom);
 		
 		typePlayerText.setScale(0.70f);
 		
 		y = 0.60f * MainActivity.CAMERA_HEIGHT;
 		
 		Text regionNameText = new Text(x - this.getWidth()/2, y,  resources.mGameFont,
-				wrapText(resources.mGameFont, regionName, halfWidth), 1000,  activity.getVertexBufferObjectManager());
+				Utilities.wrapText(resources.mGameFont, regionName, halfWidth), 1000,  resources.vbom);
 		
 		y = 0.25f * MainActivity.CAMERA_HEIGHT;
-		
-		Text resultText =  new Text(x - this.getWidth()/2, y,  resources.mGameFont,
-				resultStr, 4,  activity.getVertexBufferObjectManager());
 		
 		typePlayerText.setColor(textColor);
 		regionNameText.setColor(textColor);
 		
 		ButtonSprite result;
-		result = new ButtonSprite(0,0,
-				resources.regionBtnRegion,
-				activity.getVertexBufferObjectManager());
+		result = new ButtonSprite(0,0, resources.regionBtnRegion, resources.vbom);
 		
 		if(regionWon)
 		{
 			result.setColor(Color.GREEN);
-		} else
+		}
+		else
 		{
 			result.setColor(Color.BLACK);
 		}
@@ -136,47 +135,7 @@ public class BattleScene extends Scene {
 		result.setPosition(x, y);
 		attachChild(result);
 		
-		resultText.setColor(textColor);	
-		
 		attachChild(typePlayerText);
 		attachChild(regionNameText);
-		//attachChild(resultText);
-	}
-	
-	private String wrapText(Font pFont, String pString, float maxWidth) {
-
-		Text pText = new Text(0, 0, pFont, pString, 1000, activity.getVertexBufferObjectManager());
-		
-		Log.d("Riska","Text width: " + pText.getWidth() + " of " + maxWidth);
-		
-		if(pText.getWidth() < maxWidth) {
-			return pString;
-		}
-
-		// Split the entire string into separated words.
-		String[] words = pText.getText().toString().split(" ");
-
-		String wrappedText = ""; /* Final string. */
-		String line = ""; /* Temp variable */
-
-		for(String word : words) {
-
-			pText.setText(line + word);
-			
-			Log.d("Riska","Text width: " + pText.getWidth() + " of " + maxWidth);
-			
-			if(pText.getWidth() > maxWidth) {			
-				wrappedText += line + "\n\n";
-				line = "";
-			}
-
-			line += word + " ";
-
-		}
-
-		wrappedText += line;
-
-		return wrappedText;
-
 	}
 }

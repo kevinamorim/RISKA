@@ -170,19 +170,21 @@ public class Player extends Object {
 		
 		Collections.sort(regions, new Comparator<Region>() {
 			@Override
-			public int compare(Region region1, Region region2) {
+			public int compare(Region region1, Region region2)
+			{
 				return region1.getNumberOfSoldiers() - region2.getNumberOfSoldiers();
 			}
 		});
 		
-		for(Region region : regions) {
-			if(region.hasEnemyNeighbor() && region.canAttack()) {
+		for(Region region : regions)
+		{
+			if(region.hasEnemyNeighbor() && region.canAttack())
+			{
 				return region;
 			}
 		}
 		
-		return null;
-		
+		return null;	
 	}
 	
 	public boolean hasPossibleMoves() {
