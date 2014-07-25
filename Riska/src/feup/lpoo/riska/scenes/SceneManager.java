@@ -1,13 +1,10 @@
 package feup.lpoo.riska.scenes;
 
 import org.andengine.engine.Engine;
-import org.andengine.engine.camera.Camera;
 import org.andengine.engine.handler.timer.ITimerCallback;
 import org.andengine.engine.handler.timer.TimerHandler;
-import org.andengine.entity.scene.Scene;
 import org.andengine.ui.IGameInterface.OnCreateSceneCallback;
 
-import feup.lpoo.riska.logic.MainActivity;
 import feup.lpoo.riska.resources.ResourceCache;
 
 public class SceneManager {

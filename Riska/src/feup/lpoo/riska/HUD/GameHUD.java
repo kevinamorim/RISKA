@@ -7,13 +7,14 @@ import org.andengine.entity.text.Text;
 import org.andengine.input.touch.TouchEvent;
 import org.andengine.util.adt.color.Color;
 
-import feup.lpoo.riska.gameInterface.AnimatedTextButtonSpriteMenuItem;
+import feup.lpoo.riska.HUD.GameHUD.BUTTON;
 import feup.lpoo.riska.interfaces.Displayable;
-import feup.lpoo.riska.logic.MainActivity;
+import feup.lpoo.riska.logic.GameLogic;
 import feup.lpoo.riska.resources.ResourceCache;
 import feup.lpoo.riska.scenes.DetailScene;
 import feup.lpoo.riska.scenes.GameScene;
 import feup.lpoo.riska.scenes.SceneManager;
+import feup.lpoo.riska.utilities.Utilities;
 import android.view.MotionEvent;
 
 public class GameHUD extends HUD implements Displayable {
@@ -22,7 +23,12 @@ public class GameHUD extends HUD implements Displayable {
 	// CONSTANTS
 	// ======================================================
 	private static final long MIN_TOUCH_INTERVAL = 30;
-	private enum B {ATTACK, DETAILS, AUTO_DEPLOY};
+	public enum BUTTON
+	{
+		ATTACK, 
+		DETAILS,
+		AUTO_DEPLOY
+	};
 
 	// ======================================================
 	// SINGLETONS
@@ -32,17 +38,20 @@ public class GameHUD extends HUD implements Displayable {
 	// ======================================================
 	// FIELDS
 	// ======================================================
-	private long lastTimeTouched;
+	private long lastTouchTime;
 	private ButtonSprite attackButton;
 	private ButtonSprite detailsButton;
 	private ButtonSprite autoDeployButton;	
 	private Sprite infoTab;
 	private Text infoTabText;
+	
+	private GameScene gameScene;
 
+	public GameHUD(GameScene scene) {
+		
+		gameScene = scene;
 
-	public GameHUD() {
-
-		lastTimeTouched = 0;
+		lastTouchTime = 0;
 
 		resources = ResourceCache.getSharedInstance();
 
@@ -63,148 +72,85 @@ public class GameHUD extends HUD implements Displayable {
 	 */
 	protected void touchedDetailsButton() {
 
-		GameScene gameScene = SceneManager.getSharedInstance().getGameScene();
-		DetailScene details = gameScene.getDetailScene();
-
-		changeDetailButton();
-
-		if(details.isVisible()) {
-			gameScene.hideDetailPanel();
-			details.setVisible(false);
+	}
+	
+	private void pressed(BUTTON current)
+	{
+		switch(current)
+		{
+		
+		case ATTACK:
+			attackButton.setCurrentTileIndex(1);
+			break;
+			
+		case DETAILS:
+			// Do something
+			break;
+			
+		case AUTO_DEPLOY:
+			autoDeployButton.setCurrentTileIndex(1);
+			break;
+			
+		default:
+			// Do nothing
+			break;
 		}
-		else {
+	}
+	
+	private void touched(BUTTON current)
+	{
+		switch(current)
+		{
+		
+		case ATTACK:
+			long now = System.currentTimeMillis();
 
-			if(gameScene.getBattleScene() != null && gameScene.getBattleScene().isVisible()) {
-				gameScene.hideBattleScene();
-			} else {				
-				details.setAttributes(gameScene.getSelectedRegion(), gameScene.getTargetedRegion());
-				details.updateDisplay();
-				gameScene.showDetailPanel();
-				gameScene.getCameraManager().zoomOut();
-				details.setVisible(true);
+			if(Utilities.isValidTouch(now, lastTouchTime, MIN_TOUCH_INTERVAL))
+			{
+				attackButton.setCurrentTileIndex(0);
+				SceneManager.getSharedInstance().getGameScene().onAttack();
+				SceneManager.getSharedInstance().getGameScene().getCameraManager().zoomOut();
 			}
 
-		}
-	}
-	
-	private void pressed(B current)
-	{
-		switch(current) {
-		case ATTACK:
-			pressedAttackButton();
+			lastTouchTime = now;
 			break;
+			
 		case DETAILS:
-			// Do something
+			gameScene.touchedDetailsButton();
 			break;
+			
 		case AUTO_DEPLOY:
-			pressedAutoDeployButton();
+			gameScene.onAutoDeploy();
 			break;
-		default:
-			// Do nothing
-			break;
-		}
-	}
-	
-	private void touched(B current)
-	{
-		switch(current) {
-		case ATTACK:
-			touchedAttackButton();
-			break;
-		case DETAILS:
-			touchedDetailsButton();
-			break;
-		case AUTO_DEPLOY:
-			touchedAutoDeployButton();
-			break;
+			
 		default:
 			// Do nothing
 			break;
 		}
 	}
 
-	private void released(B current)
+	private void released(BUTTON current)
 	{
 		switch(current) {
+		
 		case ATTACK:
-			releasedAttackButton();
-			break;
-		case DETAILS:
-			// Do something
-			break;
-		case AUTO_DEPLOY:
-			releasedAutoDeployButton();
-			break;
-		default:
-			// Do nothing
-			break;
-		}
-	}
-	
-	private void pressedAutoDeployButton() {
-		autoDeployButton.setCurrentTileIndex(1);
-	}
-	
-	private void touchedAutoDeployButton() {
-		SceneManager.getSharedInstance().getGameScene().onAutoDeploy();
-	}
-	
-	private void releasedAutoDeployButton() {
-		autoDeployButton.setCurrentTileIndex(0);
-	}
-
-	/**
-	 * Handles the release event for the attack button.
-	 */
-	protected void releasedAttackButton() {
-		attackButton.setCurrentTileIndex(0);
-	}
-
-	/**
-	 * Handles the touch event for the attack button.
-	 */
-	protected void touchedAttackButton() {
-		long now = System.currentTimeMillis();
-
-		if((now - lastTimeTouched) > MIN_TOUCH_INTERVAL) {
 			attackButton.setCurrentTileIndex(0);
-			SceneManager.getSharedInstance().getGameScene().onAttack();
-			SceneManager.getSharedInstance().getGameScene().getCameraManager().zoomOut();
+			break;
+			
+		case DETAILS:
+			// Do something
+			break;
+			
+		case AUTO_DEPLOY:
+			autoDeployButton.setCurrentTileIndex(0);
+			break;
+			
+		default:
+			// Do nothing
+			break;
 		}
-
-		lastTimeTouched = now;
-	}
-
-	/**
-	 * Handles the pressed event for the attack button.
-	 */
-	protected void pressedAttackButton() {
-		attackButton.setCurrentTileIndex(1);
 	}
 	
-	/**
-	 * Displays the attack button.
-	 */
-	public void showAttackButton() {
-
-		if(!attackButton.hasParent()) {
-			attachChild(attackButton);
-			registerTouchArea(attackButton);
-		}
-	}
-
-	/**
-	 * Hides the attack button.
-	 */
-	public void hideAttackButton() {
-
-		if(attackButton.hasParent()) {
-			detachChild(attackButton);
-			unregisterTouchArea(attackButton);
-		}
-
-	}
-
 	/**
 	 * Displays the game info tab.
 	 */
@@ -232,48 +178,14 @@ public class GameHUD extends HUD implements Displayable {
 		infoTabText.setText(info);
 	}
 
-	/**
-	 * Displays the details button.
-	 */
-	public void showDetailButton() {
-
-		if(!detailsButton.hasParent()) {
-			attachChild(detailsButton);
-			registerTouchArea(detailsButton);
-		}
-
-	}
-
-	/**
-	 * Hides the details button.
-	 */
-	public void hideDetailButton() {
-
-		if(detailsButton.hasParent()) {
-			detachChild(detailsButton);
-			unregisterTouchArea(detailsButton);
-		}
-	}
-	public void showAutoDeployButton() {
-
-		if(!autoDeployButton.hasParent()) {
-			attachChild(autoDeployButton);
-			registerTouchArea(autoDeployButton);
-		}
-
-	}
-	public void hideAutoDeployButton() {
-
-		if(autoDeployButton.hasParent()) {
-			detachChild(autoDeployButton);
-			unregisterTouchArea(autoDeployButton);
-		}
-	}
-
-	public void changeDetailButton() {
-		if(detailsButton.getCurrentTileIndex() == 0) {
+	public void changeDetailButton()
+	{
+		if(detailsButton.getCurrentTileIndex() == 0)
+		{
 			detailsButton.setCurrentTileIndex(1);
-		} else {
+		}
+		else
+		{
 			detailsButton.setCurrentTileIndex(0);
 		}
 	}
@@ -281,7 +193,7 @@ public class GameHUD extends HUD implements Displayable {
 	/** 
 	 * Locks HUD so the user can't use it. 
 	 */
-	public void lockHUD() {
+	public void lock() {
 
 		detailsButton.setEnabled(false);
 		attackButton.setEnabled(false);
@@ -291,7 +203,7 @@ public class GameHUD extends HUD implements Displayable {
 	/** 
 	 * Unlocks HUD so the user can use it.
 	 */
-	public void unlockHUD() {
+	public void unlock() {
 
 		detailsButton.setEnabled(true);
 		attackButton.setEnabled(true);
@@ -312,13 +224,13 @@ public class GameHUD extends HUD implements Displayable {
 				switch(pSceneTouchEvent.getAction())
 				{
 				case MotionEvent.ACTION_DOWN:
-					pressed(B.ATTACK);
+					pressed(BUTTON.ATTACK);
 					break;
 				case MotionEvent.ACTION_UP:
-					touched(B.ATTACK);
+					touched(BUTTON.ATTACK);
 					break;
 				case MotionEvent.ACTION_OUTSIDE:
-					released(B.ATTACK);
+					released(BUTTON.ATTACK);
 					break;
 				default:
 					break;
@@ -368,13 +280,13 @@ public class GameHUD extends HUD implements Displayable {
 				switch(pSceneTouchEvent.getAction())
 				{
 				case MotionEvent.ACTION_DOWN:
-					pressed(B.DETAILS);
+					pressed(BUTTON.DETAILS);
 					break;
 				case MotionEvent.ACTION_UP:
-					touched(B.DETAILS);
+					touched(BUTTON.DETAILS);
 					break;
 				case MotionEvent.ACTION_OUTSIDE:
-					released(B.DETAILS);
+					released(BUTTON.DETAILS);
 					break;
 				default:
 					break;
@@ -402,13 +314,13 @@ public class GameHUD extends HUD implements Displayable {
 				switch(pSceneTouchEvent.getAction())
 				{
 				case MotionEvent.ACTION_DOWN:
-					pressed(B.AUTO_DEPLOY);
+					pressed(BUTTON.AUTO_DEPLOY);
 					break;
 				case MotionEvent.ACTION_UP:
-					touched(B.AUTO_DEPLOY);
+					touched(BUTTON.AUTO_DEPLOY);
 					break;
 				case MotionEvent.ACTION_OUTSIDE:
-					released(B.AUTO_DEPLOY);
+					released(BUTTON.AUTO_DEPLOY);
 					break;
 				default:
 					break;
@@ -420,5 +332,51 @@ public class GameHUD extends HUD implements Displayable {
 		autoDeployButton.setScale(0.3f);
 		autoDeployButton.setPosition(0.66f * resources.camera.getWidth(), 0.18f * resources.camera.getHeight());
 		
+	}
+
+	public void hide(BUTTON toHide)
+	{
+		ButtonSprite btn = getButton(toHide);
+		
+		if(btn == null)
+		{
+			return;
+		}
+		
+		if(btn.hasParent())
+		{
+			detachChild(btn);
+			unregisterTouchArea(btn);
+		}
+	}
+	
+	public void show(BUTTON toShow)
+	{
+		ButtonSprite btn = getButton(toShow);
+		
+		if(btn == null)
+		{
+			return;
+		}
+		
+		if(!btn.hasParent()) {
+			attachChild(btn);
+			registerTouchArea(btn);
+		}
+	}
+	
+	public ButtonSprite getButton(BUTTON btn)
+	{
+		switch(btn)
+		{
+		case ATTACK:
+			return attackButton;
+		case DETAILS:
+			return detailsButton;
+		case AUTO_DEPLOY:
+			return autoDeployButton;
+		default:
+			return null;
+		}
 	}
 }

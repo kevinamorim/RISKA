@@ -1,8 +1,6 @@
 package feup.lpoo.riska.resources;
 
 import java.io.IOException;
-import java.util.ArrayList;
-
 import org.andengine.audio.music.Music;
 import org.andengine.audio.music.MusicFactory;
 import org.andengine.engine.Engine;
@@ -24,12 +22,8 @@ import org.andengine.util.debug.Debug;
 
 import feup.lpoo.riska.R;
 import android.graphics.Color;
-import android.graphics.Point;
 import android.graphics.Typeface;
-import android.util.Log;
 import feup.lpoo.riska.elements.Map;
-import feup.lpoo.riska.elements.Region;
-import feup.lpoo.riska.io.FileRead;
 import feup.lpoo.riska.logic.MainActivity;
 import feup.lpoo.riska.music.Conductor;
 import feup.lpoo.riska.scenes.CameraManager;

@@ -3,16 +3,12 @@ package feup.lpoo.riska.elements;
 import java.util.ArrayList;
 import java.util.Random;
 
-import org.andengine.entity.sprite.ButtonSprite;
-import org.andengine.entity.text.Text;
-import org.andengine.input.touch.TouchEvent;
 import org.andengine.util.adt.color.Color;
 
 import feup.lpoo.riska.logic.MainActivity;
 import feup.lpoo.riska.resources.ResourceCache;
 import feup.lpoo.riska.scenes.SceneManager;
 import android.graphics.Point;
-import android.view.MotionEvent;
 
 /**
  * Represents any region.
@@ -29,7 +25,7 @@ public class Region extends Element {
 	protected static final int MAX_CHARS = 10;
 	protected static final int SOLDIER_ATT = 10;
 	protected static final int SOLDIER_DEF = 10;
-	//private static final int MIN_SOLDIERS_TO_ATTACK = 1;
+	private static final int MIN_SOLDIERS_FOR_AN_ATTACK = 2;
 
 	// ======================================================
 	// SINGLETONS
@@ -41,11 +37,7 @@ public class Region extends Element {
 	// ======================================================
 	// FIELDS
 	// ======================================================
-	protected final int id;
-	
-	protected long lastTimeTouched;
-	protected ButtonSprite button;
-	protected Text buttonText;
+	public final int ID;
 	protected boolean focused;
 
 	protected Player owner;
@@ -72,60 +64,12 @@ public class Region extends Element {
 		sceneManager = SceneManager.getSharedInstance();
 		resources = ResourceCache.getSharedInstance();
 		
-		this.id = id;
+		this.ID = id;
 		this.continent = continent;
 		this.owner = null;
 		this.focused = false;
 		this.soldiers = new ArrayList<Unit>();
 		this.neighbours = new ArrayList<Region>();
-		
-		button = new ButtonSprite(stratCenter.x, stratCenter.y, resources.regionBtnRegion, 
-				activity.getVertexBufferObjectManager()) {
-
-			@Override
-			public boolean onAreaTouched(TouchEvent pSceneTouchEvent, 
-					float pTouchAreaLocalX, float pTouchAreaLocalY) {
-
-					switch(pSceneTouchEvent.getAction()) {
-					case MotionEvent.ACTION_DOWN:
-						pressedRegionButton();
-						break;
-					case MotionEvent.ACTION_UP:
-						releasedRegionButton();
-						break;
-					case MotionEvent.ACTION_OUTSIDE:
-						releasedRegionButton();
-						break;
-					}
-
-				return true;
-			}
-		};	
-		buttonText = new Text(0, 0, resources.mGameFont, "" + soldiers, MAX_CHARS, activity.getVertexBufferObjectManager());	
-		buttonText.setScale((float) 1.4);
-		buttonText.setPosition(button.getWidth()/2, button.getHeight()/2);
-		button.attachChild(buttonText);
-		
-		
-		lastTimeTouched = 0;
-	}
-
-	public void pressedRegionButton() {	
-			button.setCurrentTileIndex(1);	
-	}
-	
-	public void releasedRegionButton() {
-		
-		long now = System.currentTimeMillis();
-		
-		if((now - lastTimeTouched) > MIN_TOUCH_INTERVAL) {
-			
-			button.setCurrentTileIndex(0);
-
-			sceneManager.getGameScene().onRegionTouched(this);
-		}
-
-		lastTimeTouched = System.currentTimeMillis();
 	}
 	
 	/* ======================================================================
@@ -185,18 +129,18 @@ public class Region extends Element {
 	 * @param value : number of soldiers to add
 	 */
 	public void addSoldiers(int value) {
-		for(int i = 0; i < value; i++) {
+		for(int i = 0; i < value; i++)
+		{
 			soldiers.add(new Unit(SOLDIER_ATT, SOLDIER_DEF));
 		}
-		updateSoldiers();
 	}
 	
 	public void setSoldiers(int value) {
 		soldiers.clear();
-		for(int i = 0; i < value; i++) {
+		for(int i = 0; i < value; i++) 
+		{
 			soldiers.add(new Unit(SOLDIER_ATT, SOLDIER_DEF));
 		}
-		updateSoldiers();
 	}
 	
 	/**
@@ -209,24 +153,10 @@ public class Region extends Element {
 	}
 
 	/**
-	 * @return The ID of this region
-	 */
-	public int getId() {
-		return id;
-	}
-
-	/**
 	 * @return The set of neighbour regions
 	 */
 	public ArrayList<Region> getNeighbours() {
 		return neighbours;
-	}
-	
-	/**
-	 * @return The button associated with this region 
-	 */
-	public ButtonSprite getButton() {
-		return button;
 	}
 
 	/**
@@ -261,13 +191,6 @@ public class Region extends Element {
 	public boolean isNeighbourOf(Region pRegion) {
 		return neighbours.contains(pRegion);
 	}
-
-	/**
-	 * Updates the number of soldiers shown in the region's button.
-	 */
-	public void updateSoldiers() {	
-		buttonText.setText("" + getNumberOfSoldiers());
-	}
 	
 	/**
 	 * Sets the primary and secondary color for the region.
@@ -278,8 +201,6 @@ public class Region extends Element {
 	public void setColors(Color priColor, Color secColor) {
 		this.priColor = priColor;
 		this.secColor = secColor;
-		
-		updateButtonColors();
 	}
 
 	/**
@@ -290,16 +211,6 @@ public class Region extends Element {
 		
 		this.priColor = secColor;
 		this.secColor = temp;
-		
-		updateButtonColors();
-	}
-	
-	/**
-	 * Updates the button and text colors with the region's colors
-	 */
-	private void updateButtonColors() {
-		this.button.setColor(priColor);
-		this.buttonText.setColor(secColor);
 	}
 
 	/**
@@ -317,7 +228,6 @@ public class Region extends Element {
 	 */
 	public void clearSoldiers() {
 		soldiers.clear();
-		updateSoldiers();
 	}
 	
 	/**
@@ -339,16 +249,12 @@ public class Region extends Element {
 		
 		priColor = newOwner.getPrimaryColor();
 		secColor = newOwner.getScondaryColor();
-
-		updateButtonColors();
 		
 		unfocus();
-		
-		updateSoldiers();
 	}
 	
 	public boolean canAttack() {
-		return getNumberOfSoldiers() > 1;
+		return (getNumberOfSoldiers() > MIN_SOLDIERS_FOR_AN_ATTACK);
 	}
 	
 	public boolean hasEnemyNeighbor() {
@@ -375,17 +281,11 @@ public class Region extends Element {
 	public void focus() {
 		
 		focused = true;
-		this.button.setColor(secColor);
-		this.buttonText.setColor(priColor);
-		
 	}
 	
 	public void unfocus() {
 		
 		focused = false;
-		this.button.setColor(priColor);
-		this.buttonText.setColor(secColor);
-		
 	}
 	
 	public Region selectTargetRegion() {

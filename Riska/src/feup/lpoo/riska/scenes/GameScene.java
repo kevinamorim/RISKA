@@ -1,5 +1,6 @@
 package feup.lpoo.riska.scenes;
 
+import java.util.ArrayList;
 import java.util.Arrays;
 
 import org.andengine.entity.IEntity;
@@ -7,13 +8,17 @@ import org.andengine.entity.modifier.DelayModifier;
 import org.andengine.entity.scene.IOnSceneTouchListener;
 import org.andengine.entity.scene.Scene;
 import org.andengine.entity.sprite.AnimatedSprite;
+import org.andengine.entity.sprite.ButtonSprite;
 import org.andengine.entity.sprite.Sprite;
+import org.andengine.entity.text.Text;
 import org.andengine.input.touch.TouchEvent;
 import org.andengine.input.touch.detector.ScrollDetector;
 import org.andengine.input.touch.detector.ScrollDetector.IScrollDetectorListener;
 import org.andengine.input.touch.detector.SurfaceScrollDetector;
 
 import feup.lpoo.riska.HUD.GameHUD;
+import feup.lpoo.riska.HUD.GameHUD.BUTTON;
+import feup.lpoo.riska.elements.Map;
 import feup.lpoo.riska.elements.Region;
 import feup.lpoo.riska.io.LoadGame;
 import feup.lpoo.riska.io.SaveGame;
@@ -21,9 +26,12 @@ import feup.lpoo.riska.logic.GameLogic;
 import feup.lpoo.riska.logic.GameLogic.GAME_STATE;
 import feup.lpoo.riska.logic.MainActivity;
 import feup.lpoo.riska.scenes.SceneManager.SceneType;
+import feup.lpoo.riska.utilities.Utilities;
 import feup.lpoo.riska.R;
 import android.graphics.Point;
 import android.util.Log;
+import android.util.Pair;
+import android.view.MotionEvent;
 
 public class GameScene extends BaseScene implements IOnSceneTouchListener, IScrollDetectorListener {
 
@@ -31,12 +39,17 @@ public class GameScene extends BaseScene implements IOnSceneTouchListener, IScro
 	// CONSTANTS
 	// ======================================================
 	private final int MIN_SCROLLING_DIST = 30; /* Bigger the number, slower the scrolling. */
-	private static final long MIN_TOUCH_INTERVAL = 70;
-	private static final long MAX_TOUCH_INTERVAL = 400;
+	private final long MIN_TOUCH_INTERVAL = 70;
+	private final long MAX_TOUCH_INTERVAL = 400;
 	
-	private static final int ANIM_DURATION = 250;
+	private final int ANIM_DURATION = 250;
 	
-	private static final int SOLDIER_INC = 1;
+	private final int MIN_SOLDIERS_PER_REGION = 1;
+	
+	private final long REGION_BUTTON_MIN_TOUCH_INTERVAL = 30;
+	private final int MAX_REGION_CHARS = 10;
+	
+	private final int PLAYER_NUM = 0;
 
 	// ======================================================
 	// SINGLETONS
@@ -51,25 +64,32 @@ public class GameScene extends BaseScene implements IOnSceneTouchListener, IScro
 	GameHUD hud;
 	DetailScene detailScene;
 	
-	protected Point touchPoint;
+	private Point touchPoint;
+	
+	private Map map;
 	
 	private ScrollDetector scrollDetector;
 	
-	public Region selectedRegion;
-	public Region targetedRegion;
+	private ArrayList<Pair<ButtonSprite,Text> > regionButtons;
 	
 	private boolean doubleTapAllowed = true;
 	private long lastTouchTime;
+	private long lastTouchTimeInRegion;
 
 	
 	@Override
 	public void createScene() {
-		this.selectedRegion = null;
-		this.targetedRegion = null;
-		logic = new GameLogic();
+		logic = new GameLogic(this);
 		detailScene = new DetailScene();
+		battleScene = new BattleScene(null, null, false);
+		
+		map = resources.map;
+		
 		cameraManager = CameraManager.getSharedInstance();
-		lastTouchTime = 0;	
+		
+		lastTouchTime = 0;
+		lastTouchTimeInRegion = 0;
+		
 		createDisplay();
 	}
 
@@ -102,16 +122,16 @@ public class GameScene extends BaseScene implements IOnSceneTouchListener, IScro
 		
 		createScrollDetector();
 	
-		setRegionButtons();
+		createRegionButtons();
+		
+		detailScene.setVisible(false);
+		attachChild(detailScene);
+		
+		battleScene.setVisible(false);
+		attachChild(battleScene);
 
 		setTouchAreaBindingOnActionDownEnabled(true);
-		setOnSceneTouchListener(this);
-		
-		/*
-		 * Details Scene
-		 */
-		detailScene = new DetailScene();
-		
+		setOnSceneTouchListener(this);	
 	}
 	
 	private void createMap() {
@@ -144,11 +164,13 @@ public class GameScene extends BaseScene implements IOnSceneTouchListener, IScro
 	
 	private void createHUD() {
 		
-		hud = new GameHUD();
+		hud = new GameHUD(this);
 		activity.mCamera.setHUD(hud);
 		
 		hud.setInfoTabText(logic.getCurrentPlayer().getSoldiersToDeploy() 
 				+ activity.getResources().getString(R.string.leftToDeploy));
+		
+		hud.show(BUTTON.AUTO_DEPLOY);
 	}
 	
 	// ======================================================
@@ -159,17 +181,19 @@ public class GameScene extends BaseScene implements IOnSceneTouchListener, IScro
 		
 		super.onManagedUpdate(pSecondsElapsed);
 		
-		switch(logic.getState()) {
+		switch(logic.getState())
+		{
 		case PAUSED:
 			logic.setState(GAME_STATE.DEPLOYMENT);
-			hud.showAutoDeployButton();
 			break;
 			
 		case DEPLOYMENT:
+			deploymentUpdate();
 			logic.updateDeployment();
 			break;
 			
 		case PLAY:
+			gameUpdate();
 			logic.updateGame();
 			break;
 			
@@ -179,26 +203,123 @@ public class GameScene extends BaseScene implements IOnSceneTouchListener, IScro
 		
 	}
 	
-	private void setRegionButtons() {
+	private void gameUpdate()
+	{
+		
+		//hud.hide(BUTTON.AUTO_DEPLOY);
+		
+		if(detailScene.isVisible())
+		{
+			doubleTapAllowed = false;
+			scrollDetector.setEnabled(false);
+			hud.hide(BUTTON.ATTACK);
+			hud.hideInfoTab();
+			battleScene.setVisible(false);
+			return;
+		}
+		
+		if(battleScene.isVisible())
+		{
+			doubleTapAllowed = false;
+			scrollDetector.setEnabled(false);
+			hud.hide(BUTTON.ATTACK);
+			hud.hideInfoTab();
+			detailScene.setVisible(false);
+			return;
+		}
+		
+		doubleTapAllowed = true;
+		scrollDetector.setEnabled(true);
+		hud.show(BUTTON.DETAILS);
+		hud.showInfoTab();
+	}
+
+	private void deploymentUpdate()
+	{	
+		doubleTapAllowed = false;
+		scrollDetector.setEnabled(false);
+		
+		if(logic.getCurrentPlayerByIndex() == PLAYER_NUM)
+		{
+			hud.setInfoTabText(Utilities.getString(logic.getCurrentPlayer().getSoldiersToDeploy() + R.string.game_info_deployable));
+		}
+		else
+		{
+			hud.setInfoTabText(Utilities.getString(R.string.game_info_wait_for_CPU));
+			hud.hide(BUTTON.AUTO_DEPLOY);
+		}
+		
+		hud.hide(BUTTON.ATTACK);
+		hud.hide(BUTTON.DETAILS);
+	}
+
+	private void createRegionButtons() {
+		
+		Text buttonText;
+		ButtonSprite regionButton;
 
 		for(Region region : resources.map.getRegions()) {
 
 			int x = (region.getStratCenter().x * MainActivity.CAMERA_WIDTH)/100;
 			int y = (region.getStratCenter().y * MainActivity.CAMERA_HEIGHT)/100;
 			
-			region.getButton().setPosition(x, y);
-			region.getButton().setScale((float) 0.5);
+			buttonText = new Text(0, 0, resources.mGameFont, "" + MIN_SOLDIERS_PER_REGION, MAX_REGION_CHARS, vbom);
 			
-			if(region.getButton().hasParent())
-			{
-				region.getButton().detachSelf();
-			}
+			regionButton = new ButtonSprite(x, y, resources.regionBtnRegion, vbom) {
+
+				@Override
+				public boolean onAreaTouched(TouchEvent ev, float pX, float pY) {
+
+					switch(ev.getAction()) {
+					case MotionEvent.ACTION_DOWN:
+						pressedRegionButton(this, getTag());
+						break;
+					case MotionEvent.ACTION_UP:
+						releasedRegionButton(this, getTag());
+						break;
+					case MotionEvent.ACTION_OUTSIDE:
+						releasedRegionButton(this, getTag());
+						break;
+					}
+
+					return true;
+				}
+			};
 			
-			attachChild(region.getButton());
-			registerTouchArea(region.getButton());
+			regionButton.setTag(region.ID);
+			regionButton.setPosition(x, y);
+			regionButton.setScale((float) 0.5);
+			
+			buttonText.setScale((float) 1.4);
+			buttonText.setPosition(regionButton.getWidth()/2, regionButton.getHeight()/2);
+			regionButton.attachChild(buttonText);
+			
+			regionButtons.add(new Pair<ButtonSprite, Text>(regionButton, buttonText));
+			
+			attachChild(regionButton);
+			registerTouchArea(regionButton);
 		}
 	}
 	
+	void pressedRegionButton(ButtonSprite btn, int regionID)
+	{
+		btn.setCurrentTileIndex(1);
+	}
+	
+	void releasedRegionButton(ButtonSprite btn, int regionID)
+	{
+		long now = System.currentTimeMillis();
+
+		if((now - lastTouchTimeInRegion) > MIN_TOUCH_INTERVAL) {
+
+			btn.setCurrentTileIndex(0);
+
+			logic.onRegionTouched(resources.map.getRegionById(regionID));
+		}
+
+		lastTouchTimeInRegion = System.currentTimeMillis();
+	}
+
 	@Override
 	public boolean onSceneTouchEvent(Scene pScene, TouchEvent pSceneTouchEvent) {
 			
@@ -228,107 +349,6 @@ public class GameScene extends BaseScene implements IOnSceneTouchListener, IScro
 		
 		return true;
 	}
-	
-	// ======================================================
-	// ======================================================
-	
-	public void onRegionTouched(Region pRegion) {
-		
-		switch(logic.getState()) {
-		
-		case DEPLOYMENT:
-			onDeploymentHandler(pRegion);
-			break;
-			
-		case PLAY:
-			onPlayHandler(pRegion);
-			break;
-			
-		default:
-			break;
-			
-		}
-	}
-
-	public void targetRegion(Region pRegion) {
-		
-		if(selectedRegion != null) {
-			
-			if(pRegion.isNeighbourOf(selectedRegion)) {
-				
-				if(targetedRegion != null) {
-					untargetRegion();
-				}
-				
-				targetedRegion = pRegion;
-				targetedRegion.focus();
-
-				detailScene.setAttributes(selectedRegion, targetedRegion);
-				
-				hud.showAttackButton();	
-				setInfoTabToProceedToAttack();
-					
-			}
-			
-		}
-		
-	}
-
-	private void untargetRegion() {
-		
-		targetedRegion.unfocus();
-		
-		targetedRegion = null;
-
-		detailScene.setAttributes(selectedRegion, null);
-		hud.hideAttackButton();
-		
-		setInfoTabToChooseEnemyRegion();
-
-	}
-
-	public void selectRegion(Region pRegion) {
-		
-		// Shouldn't happen. 
-		if(selectedRegion != null) {
-			unselectRegion();
-		}
-		
-		if(pRegion.canAttack()) {
-			
-			selectedRegion = pRegion;
-			selectedRegion.focus();
-			
-			detailScene.setAttributes(selectedRegion, null);
-			
-			hud.showDetailButton();
-			setInfoTabToChooseEnemyRegion();
-
-			showOnlyNeighbourRegions(pRegion);
-			
-		}
-		
-	}
-	
-	private void unselectRegion() {	
-
-		if(targetedRegion != null) {
-			targetedRegion.unfocus();
-			targetedRegion = null;
-			
-			hud.hideAttackButton();
-		}
-		
-		detailScene.setAttributes(null, null);
-		hud.hideDetailButton();
-		
-		selectedRegion.unfocus();
-		selectedRegion = null;
-		
-		showAllRegions();
-		
-		setInfoTabToChooseOwnRegion();
-	}
 
 	// ======================================================
 	// SCROLL DETECTOR
@@ -343,45 +363,31 @@ public class GameScene extends BaseScene implements IOnSceneTouchListener, IScro
 	}
 
 	@Override
-	public void onScrollStarted(ScrollDetector pScollDetector, int pPointerID,
-			float pDistanceX, float pDistanceY) {
+	public void onScrollStarted(ScrollDetector pScollDetector, int pPointerID, float pX, float pY) {
 		
 		Log.d("ScrollDetector", "Scrolling started");
 		
-		for(Region region : resources.map.getRegions()) {
-			unregisterTouchArea(region.getButton());
-		}
-		
+		unregisterTouchAreaForAllRegions();
 	}
 
 	@Override
-	public void onScroll(ScrollDetector pScollDetector, int pPointerID,
-			float pDistanceX, float pDistanceY) {
+	public void onScroll(ScrollDetector pScollDetector, int pPointerID, float pX, float pY) {
 		
 		Log.d("ScrollDetector", "Scrolling");
 		
-		Point p = new Point((int)(activity.mCamera.getCenterX() - pDistanceX),
-				
-				(int)(activity.mCamera.getCenterY() + pDistanceY));
-		cameraManager.jumpTo(p);
-		
+		Point p = new Point((int)(activity.mCamera.getCenterX() - pX), (int)(activity.mCamera.getCenterY() + pY));
+		cameraManager.jumpTo(p);	
 	}
 
 	@Override
-	public void onScrollFinished(ScrollDetector pScollDetector, int pPointerID,
-			float pDistanceX, float pDistanceY) {
+	public void onScrollFinished(ScrollDetector pScollDetector, int pPointerID, float pX, float pY) {
 		
 		Log.d("ScrollDetector", "Scrolling finished.");
 		
-		Point p = new Point((int)(activity.mCamera.getCenterX() - pDistanceX),
-				
-				(int)(activity.mCamera.getCenterY() + pDistanceY));
+		Point p = new Point((int)(activity.mCamera.getCenterX() - pX), (int)(activity.mCamera.getCenterY() + pY));
 		cameraManager.jumpTo(p);
 		
-		for(Region region : resources.map.getRegions()) {
-			registerTouchArea(region.getButton());
-		}
-		
+		registerTouchAreaForAllRegions();
 	}
 
 	// ======================================================
@@ -398,27 +404,25 @@ public class GameScene extends BaseScene implements IOnSceneTouchListener, IScro
 		logic.autoDeployment(logic.getPlayers().get(0));
 	}
 	
-	public void showBattleScene(boolean result) {
+	public void createBattleScene(boolean result) {
 		
 		hud.hideAttackButton();
 		hud.showDetailButton();
 		hud.changeDetailButton();
+		hud.hideInfoTab();
+//		
+//		Region tmpSelectedRegion = new Region(-1, selectedRegion.getName(), selectedRegion.getStratCenter(), "");
+//		tmpSelectedRegion.setOwner(selectedRegion.getOwner());
+//		
+//		Region tmpTargetedRegion = new Region(-1, targetedRegion.getName(), targetedRegion.getStratCenter(), "");
+//		tmpTargetedRegion.setOwner(targetedRegion.getOwner());
 		
-		Region tmpSelectedRegion = new Region(-1, selectedRegion.getName(), selectedRegion.getStratCenter(), "");
-		tmpSelectedRegion.setOwner(selectedRegion.getOwner());
-		
-		Region tmpTargetedRegion = new Region(-1, targetedRegion.getName(), targetedRegion.getStratCenter(), "");
-		tmpTargetedRegion.setOwner(targetedRegion.getOwner());
-		
-		battleScene = new BattleScene(tmpSelectedRegion, tmpTargetedRegion, result);
+		battleScene = new BattleScene(logic.selectedRegion, logic.targetedRegion, result);
 		
 		doubleTapAllowed = false;
 		scrollDetector.setEnabled(false);
-		
-		hud.hideInfoTab();
-		
-		attachChild(battleScene);
-		
+
+		attachChild(battleScene);		
 	}
 	
 	public void hideBattleScene() {
@@ -447,32 +451,18 @@ public class GameScene extends BaseScene implements IOnSceneTouchListener, IScro
 		hud.showInfoTab();
 	}
 	
-	public void showDetailPanel() {
-		doubleTapAllowed = false;
-		scrollDetector.setEnabled(false);
+	public void showDetails()
+	{	
+		detailScene.setVisible(true);
 		
-		if(targetedRegion != null) {
-			hud.hideAttackButton();
-		}
-		hud.hideInfoTab();
-		
-		attachChild(detailScene);
+		//attachChild(detailScene);
 	}
 	
-	public void hideDetailPanel() {
-		doubleTapAllowed = true;
-		scrollDetector.setEnabled(true);
+	public void hideDetails()
+	{
+		detailScene.setVisible(false);
 		
-		if(targetedRegion != null) {
-			hud.showAttackButton();
-		}
-		hud.showInfoTab();
-		
-		detachChild(detailScene);
-	}
-
-	public DetailScene getDetailScene() {
-		return detailScene;
+		//detachChild(detailScene);
 	}
 
 	// ======================================================
@@ -480,57 +470,6 @@ public class GameScene extends BaseScene implements IOnSceneTouchListener, IScro
 	// ======================================================
 	public void setInfoTabText(String pText) {
 		hud.setInfoTabText(pText);
-	}
-	
-	public BattleScene getBattleScene() {
-		return battleScene;
-	}
-
-	// ======================================================
-	// ======================================================
-		
-	// ======================================================
-	// onRegionTouch Handlers
-	// ======================================================
-	private void onDeploymentHandler(Region pRegion) {
-		
-		if(logic.getCurrentPlayer().hasSoldiersLeftToDeploy()) {
-			
-			if(logic.getCurrentPlayer().ownsRegion(pRegion)) {
-				int deployed = logic.getCurrentPlayer().deploySoldiers(SOLDIER_INC);
-				pRegion.addSoldiers(deployed);
-				
-				hud.setInfoTabText(logic.getCurrentPlayer().getSoldiersToDeploy() + " left to deploy");
-			}
-			
-		}
-		
-	}
-	
-	private void onPlayHandler(Region pRegion) {
-		
-		if(!pRegion.isFocused()) {
-			
-			if(logic.getCurrentPlayer().ownsRegion(pRegion)) {
-				selectRegion(pRegion);
-			}
-			else {
-				targetRegion(pRegion);
-			}
-
-		}
-		else {
-
-			if(logic.getCurrentPlayer().ownsRegion(pRegion)) {
-				unselectRegion();
-			}
-			else {
-				untargetRegion();
-			}
-			
-		}	
-		
-		
 	}
 
 	// ======================================================
@@ -555,68 +494,12 @@ public class GameScene extends BaseScene implements IOnSceneTouchListener, IScro
 	// ======================================================
 	// ======================================================
 	
-	public void simulateCPU(float pDelay, final Region pRegion1, final Region pRegion2) {
-		
-		lockUserInput();
-		hud.lockHUD();
-		setInfoTabToWait();
-		
-		DelayModifier selectRegionMod = new DelayModifier(pDelay) {
-			
-			@Override
-			protected void onModifierFinished(IEntity pItem) {
-				pRegion1.focus();
-				
-			}
-			
-		};
-		
-		DelayModifier targetRegionMod = new DelayModifier(pDelay * 2) {
-			
-			@Override
-			protected void onModifierFinished(IEntity pItem) {
-				pRegion2.focus();
-			}
-			
-		};
-		
-		DelayModifier attackMod = new DelayModifier(pDelay * 3) {
-			
-			@Override
-			protected void onModifierFinished(IEntity pItem) {
-				
-				selectRegion(pRegion1);
-				targetRegion(pRegion2);
-				
-				unlockUserInput();
-				hud.unlockHUD();
-				logic.attack(pRegion1, pRegion2);
-				
-				// untargetRegion(pRegion1);
-				// unselectRegion(pRegion1);
-			}
-			
-		};
-		
-		
-		registerEntityModifier(selectRegionMod);
-		registerEntityModifier(targetRegionMod);
-		registerEntityModifier(attackMod);
-
-		
-	}
-	
 	public void lockUserInput() {
 		
 		doubleTapAllowed = false;
 		scrollDetector.setEnabled(false);
 		
-		for(Region region : logic.getMap().getRegions()) {
-			if(getTouchAreas().contains(region.getButton())) {
-				unregisterTouchArea(region.getButton());
-			}
-		}
-		
+		unregisterTouchAreaForAllRegions();
 	}
 	
 	public void unlockUserInput() {
@@ -624,12 +507,7 @@ public class GameScene extends BaseScene implements IOnSceneTouchListener, IScro
 		doubleTapAllowed = true;
 		scrollDetector.setEnabled(true);
 		
-		for(Region region : logic.getMap().getRegions()) {
-			if(!getTouchAreas().contains(region.getButton())) {
-				registerTouchArea(region.getButton());
-			}
-		}
-		
+		registerTouchAreaForAllRegions();
 	}
 
 	public void saveGame()
@@ -698,7 +576,8 @@ public class GameScene extends BaseScene implements IOnSceneTouchListener, IScro
 		
 	}
 	
-	private void showAllRegions() {
+	private void showAllRegions()
+	{
 		
 		for(int i = 0; i < logic.getMap().getRegions().size(); i++) {
 			showRegionButton(logic.getMap().getRegions().get(i));
@@ -715,20 +594,66 @@ public class GameScene extends BaseScene implements IOnSceneTouchListener, IScro
 		return cameraManager;
 	}
 
-	public Region getSelectedRegion() {
-		return selectedRegion;
-	}
-
-	public Region getTargetedRegion() {
-		return targetedRegion;
-	}
 	// ======================================================
 	// ======================================================
 
-	public void hideAutoDeploy() {
-		hud.hideAutoDeployButton();
+	private void registerTouchAreaForAllRegions()
+	{
+		for(Pair<ButtonSprite, Text> regionButton : regionButtons)
+		{
+			if(!getTouchAreas().contains(regionButton.first))
+			{
+				registerTouchArea(regionButton.first);
+			}
+		}
+	}
+	
+	private void unregisterTouchAreaForAllRegions()
+	{
+		for(Pair<ButtonSprite, Text> regionButton : regionButtons)
+		{
+			if(getTouchAreas().contains(regionButton.first))
+			{
+				unregisterTouchArea(regionButton.first);
+			}
+		}
 	}
 
+	
+	public void lockHUD() {
+		hud.lock();
+	}
+
+	public void unlockHUD() {
+		hud.unlock();
+	}
+
+	
+	public void touchedDetailsButton()
+	{
+		hud.changeDetailButton();
+
+		if(detailScene.isVisible())
+		{
+			hideDetails();
+			detailScene.setVisible(false);
+		}
+		else
+		{
+			if(battleScene.isVisible())
+			{
+				hideBattleScene();
+			}
+			else
+			{				
+				detailScene.setAttributes(logic.selectedRegion, logic.targetedRegion);
+				detailScene.setVisible(true);
+				
+				showDetails();
+				getCameraManager().zoomOut();
+			}
+		}
+	}
 }
 
 

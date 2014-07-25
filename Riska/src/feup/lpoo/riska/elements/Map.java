@@ -25,7 +25,7 @@ public class Map {
 
 	public Region getRegionById(int id) {
 		for(Region region : regions) {
-			if(region.getId() == id) return region;
+			if(region.ID == id) return region;
 		}
 		return null;
 	}
@@ -92,7 +92,7 @@ public class Map {
 			{
 				if(!region.getNeighbours().contains(reg))
 				{
-					Log.d("Regions","Region " + reg.getName() + " (" + reg.getId() + ") has neighbour " + region.getName() + " (" + region.getId() + ") but not vice-versa.");
+					Log.d("Regions","Region " + reg.getName() + " (" + reg.ID + ") has neighbour " + region.getName() + " (" + region.ID + ") but not vice-versa.");
 				}
 			}
 		}
