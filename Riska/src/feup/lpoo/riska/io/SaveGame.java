@@ -32,7 +32,7 @@ public class SaveGame {
 		
 		editor.putInt("cpuRegionsSize", player.getRegions().size());
 		for(int i = 0; i < player.getRegions().size(); i++) {
-			editor.putInt("cpuRegion_" + i, player.getRegions().get(i).getId());
+			editor.putInt("cpuRegion_" + i, player.getRegions().get(i).ID);
 		}
 		
 		editor.commit();
@@ -45,7 +45,7 @@ public class SaveGame {
 		
 		editor.putInt("playerRegionsSize", player.getRegions().size());
 		for(int i = 0; i < player.getRegions().size(); i++) {
-			editor.putInt("playerRegion_" + i, player.getRegions().get(i).getId());
+			editor.putInt("playerRegion_" + i, player.getRegions().get(i).ID);
 		}
 		
 		editor.commit();

@@ -108,8 +108,7 @@ public class GameHUD extends HUD implements Displayable {
 			if(Utilities.isValidTouch(now, lastTouchTime, MIN_TOUCH_INTERVAL))
 			{
 				attackButton.setCurrentTileIndex(0);
-				SceneManager.getSharedInstance().getGameScene().onAttack();
-				SceneManager.getSharedInstance().getGameScene().getCameraManager().zoomOut();
+				gameScene.onAttack();
 			}
 
 			lastTouchTime = now;
@@ -329,8 +328,11 @@ public class GameHUD extends HUD implements Displayable {
 			}
 		};
 		
-		autoDeployButton.setScale(0.3f);
-		autoDeployButton.setPosition(0.66f * resources.camera.getWidth(), 0.18f * resources.camera.getHeight());
+		autoDeployButton.setScaleX(.5f);
+		autoDeployButton.setScaleY(.6f);
+		autoDeployButton.setPosition(
+				(resources.camera.getWidth() - (autoDeployButton.getScaleX() * autoDeployButton.getWidth() / 2f) + 4),
+				(resources.camera.getHeight()/2f));
 		
 	}
 

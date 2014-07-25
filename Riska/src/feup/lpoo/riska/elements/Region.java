@@ -288,7 +288,8 @@ public class Region extends Element {
 		focused = false;
 	}
 	
-	public Region selectTargetRegion() {
+	public Region selectTargetRegion()
+	{
 		
 		if(hasEnemyNeighbor())
 		{
@@ -301,4 +302,15 @@ public class Region extends Element {
 		return null;
 		
 	}
+	
+	public Color getPrimaryColor()
+	{
+		return priColor;
+	}
+	
+	public Color getSecundaryColor()
+	{
+		return secColor;
+	}
+
 }

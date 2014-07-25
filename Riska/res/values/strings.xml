@@ -44,8 +44,8 @@
 	<string name="path_font_menu">reprise.ttf</string>
 	<string name="path_font_game">reprise.ttf</string>
 	
-	<string name="game_info_wait">Wait...</string>
-	<string name="game_info_wait_for_CPU">Waiting for CPU...</string>
-	<string name="game_info_deployable"> left to deploy</string>
+	<string name="game_info_wait">Wait</string>
+	<string name="game_info_wait_for_CPU">Waiting for CPU</string>
+	<string name="game_info_deployable"> Left to Deploy</string>
 
 </resources>

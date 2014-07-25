@@ -290,7 +290,7 @@ public class GameLogic {
 
 		selectRegion(attacker);
 		targetRegion(defender);
-		attack(attacker, defender);
+		attack();
 		
 		gameScene.unlockUserInput();
 		gameScene.unlockHUD();
@@ -317,21 +317,24 @@ public class GameLogic {
 
 	}
 
-	public void attack(Region attacker, Region defender)
+	public void attack()
 	{
+		
+		Region attacker = selectedRegion;
+		Region defender = targetedRegion;
 
 		boolean won = battleGenerator.simulateAttack(attacker.getSoldiers(), defender.getSoldiers());
 
 		if(won)
 		{
-			attackerWon(attacker, defender);
+			attackerWon(attacker, defender);			
 		}
 		else
 		{
 			defenderWon(attacker, defender);
-		}	
-		
-		gameScene.showBattleScene(won);
+		}
+
+		gameScene.showBattleResult(selectedRegion, targetedRegion, won);
 	}
 
 	public void attackerWon(Region attacker, Region defender)
@@ -456,16 +459,17 @@ public class GameLogic {
 	{
 		if(!pRegion.isFocused()) {
 
-			if(currentPlayer.ownsRegion(pRegion)) {
+			if(currentPlayer.ownsRegion(pRegion))
+			{
 				selectRegion(pRegion);
+				gameScene.showOnlyNeighbourRegions(pRegion);
 			}
 			else {
 				targetRegion(pRegion);
 			}
-
 		}
-		else {
-
+		else
+		{
 			if(currentPlayer.ownsRegion(pRegion))
 			{
 				unselectRegion(pRegion);

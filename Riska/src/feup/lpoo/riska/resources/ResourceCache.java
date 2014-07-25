@@ -69,7 +69,7 @@ public class ResourceCache {
 	public ITiledTextureRegion autoDeployBtnRegion;
 	public ITiledTextureRegion infoTabRegion;
 	public ITextureRegion windowRegion;
-	public ITiledTextureRegion resultRegion;
+//	public ITiledTextureRegion resultRegion;
 	public ITiledTextureRegion seaRegion;
 	public ITextureRegion mapRegion;
 	private BuildableBitmapTextureAtlas gameTextureAtlas;
@@ -242,8 +242,8 @@ public class ResourceCache {
 		
 		windowRegion = BitmapTextureAtlasTextureRegionFactory.createFromAsset(gameTextureAtlas, activity, "window.png");
 		
-		resultRegion = BitmapTextureAtlasTextureRegionFactory.createTiledFromAsset(gameTextureAtlas, activity, 
-				"result.png", 2, 1);
+//		resultRegion = BitmapTextureAtlasTextureRegionFactory.createTiledFromAsset(gameTextureAtlas, activity, 
+//				"result.png", 2, 1);
 		
 		
 		try {		

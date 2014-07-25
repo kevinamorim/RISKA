@@ -36,20 +36,17 @@ public class BattleScene extends Scene {
 	Sprite background;
 	Text vsText;
 	Text typePlayer1, typePlayer2;
-	
-	Region attacker, defender;
+	Text regionName1, regionName2;
+	Sprite result1, result2;
+
 	boolean attackerWon;
 
-	public BattleScene(Region attacker, Region defender, boolean won) {
+	public BattleScene() {
 		
 		activity = MainActivity.getSharedInstance();
 		sceneManager = SceneManager.getSharedInstance();	
 		cameraManager = CameraManager.getSharedInstance();
 		resources = ResourceCache.getSharedInstance();
-		
-		this.attacker = attacker;
-		this.defender = defender;
-		this.attackerWon = won;
 		
 		setBackgroundEnabled(false);
 		
@@ -77,65 +74,44 @@ public class BattleScene extends Scene {
 		vsText.setColor(Color.BLACK);
 		vsText.setScale(2.0f);
 		
+		typePlayer1 = new Text(0,0,resources.mGameFont,"",10,resources.vbom);
+		typePlayer2 = new Text(0,0,resources.mGameFont,"",10,resources.vbom);
+		
+		regionName1 = new Text(0,0,resources.mGameFont,"",1000,resources.vbom);
+		regionName2 = new Text(0,0,resources.mGameFont,"",1000,resources.vbom);
+		
+		result1 = new Sprite(0,0,resources.regionBtnRegion, resources.vbom);
+		result2 = new Sprite(0,0,resources.regionBtnRegion, resources.vbom);
+		
+		attachChild(result1);
+		attachChild(result2);
+		attachChild(typePlayer1);
+		attachChild(typePlayer2);
+		attachChild(regionName1);
+		attachChild(regionName2);
 		attachChild(vsText);
 	}
 	
-	public void setAttributes(Region attacker, Region defender, boolean attackerWon)
+	public void setAttributes(Region pRegion1, Region pRegion2, boolean won)
 	{
-		this.attacker = attacker;
-		this.defender = defender;
-		this.attackerWon = attackerWon;
-	}
-	
-	private void displayRegionInfo(Region pRegion, boolean regionWon, int playerNum) {
 		
-		Color textColor = Color.BLACK;
+		Boolean Player1 = pRegion1.getOwner().isCPU();
+		Boolean Player2 = pRegion2.getOwner().isCPU();
 		
-		String typePlayer = ((playerNum == 0)? "- PLAYER -" : "- CPU -");
-		String regionName = pRegion.getName();
+		typePlayer1.setText(Player1 ? "" : "- PLAYER -");
+		typePlayer2.setText(Player2 ? "" : "- PlAYER -");
+		regionName1.setText(pRegion1.getName());
+		regionName2.setText(pRegion2.getName());
 		
-		float halfWidth = getWidth()/2f;
-		
-		float x, y = 0.80f * MainActivity.CAMERA_HEIGHT;
-		
-		if(playerNum == 0)
+		if(won)
 		{
-			x = MainActivity.CAMERA_WIDTH * 0.25f;
-		} else {
-			x = MainActivity.CAMERA_WIDTH * 0.75f;
-		}
-		
-		typePlayerText = new Text(x - this.getWidth()/2, y,  resources.mGameFont, typePlayer, 10,  resources.vbom);
-		
-		typePlayerText.setScale(0.70f);
-		
-		y = 0.60f * MainActivity.CAMERA_HEIGHT;
-		
-		Text regionNameText = new Text(x - this.getWidth()/2, y,  resources.mGameFont,
-				Utilities.wrapText(resources.mGameFont, regionName, halfWidth), 1000,  resources.vbom);
-		
-		y = 0.25f * MainActivity.CAMERA_HEIGHT;
-		
-		typePlayerText.setColor(textColor);
-		regionNameText.setColor(textColor);
-		
-		ButtonSprite result;
-		result = new ButtonSprite(0,0, resources.regionBtnRegion, resources.vbom);
-		
-		if(regionWon)
-		{
-			result.setColor(Color.GREEN);
+			result1.setColor(Color.GREEN);
+			result2.setColor(Color.BLACK);
 		}
 		else
 		{
-			result.setColor(Color.BLACK);
+			result1.setColor(Color.BLACK);
+			result2.setColor(Color.GREEN);
 		}
-		
-		result.setScale(0.7f);
-		result.setPosition(x, y);
-		attachChild(result);
-		
-		attachChild(typePlayerText);
-		attachChild(regionNameText);
 	}
 }
