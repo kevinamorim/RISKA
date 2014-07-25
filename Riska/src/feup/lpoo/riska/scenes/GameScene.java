@@ -69,7 +69,8 @@ public class GameScene extends BaseScene implements IOnSceneTouchListener, IScro
 	
 	private ScrollDetector scrollDetector;
 	
-	private ArrayList<Pair<ButtonSprite,Text> > regionButtons;
+	private ArrayList<ButtonSprite> regionButtons;
+	private ArrayList<Text> regionButtonsText;
 	
 	private boolean doubleTapAllowed = true;
 	private long lastTouchTime;
@@ -86,7 +87,8 @@ public class GameScene extends BaseScene implements IOnSceneTouchListener, IScro
 		
 		cameraManager = CameraManager.getSharedInstance();
 		
-		regionButtons = new ArrayList<Pair<ButtonSprite, Text> >();
+		regionButtons = new ArrayList<ButtonSprite>();
+		regionButtonsText = new ArrayList<Text>();
 		
 		lastTouchTime = 0;
 		lastTouchTimeInRegion = 0;
@@ -236,12 +238,13 @@ public class GameScene extends BaseScene implements IOnSceneTouchListener, IScro
 		
 		for(int i = 0; i < regionButtons.size(); i++)
 		{
-			Pair<ButtonSprite, Text> btn = regionButtons.get(i);
+			ButtonSprite btn = regionButtons.get(i);
+			Text btnText = regionButtonsText.get(i);
 			
-			if(btn.first.isVisible())
+			if(btn.isVisible())
 			{
 				Region region = map.getRegionById(i);
-				regionButtons.get(i).second.setText("" + region.getNumberOfSoldiers());
+				btnText.setText("" + region.getNumberOfSoldiers());
 			}
 		}
 		
@@ -291,7 +294,7 @@ public class GameScene extends BaseScene implements IOnSceneTouchListener, IScro
 			int x = (region.getStratCenter().x * MainActivity.CAMERA_WIDTH)/100;
 			int y = (region.getStratCenter().y * MainActivity.CAMERA_HEIGHT)/100;
 			
-			buttonText = new Text(0, 0, resources.mGameFont, "" + MIN_SOLDIERS_PER_REGION, MAX_REGION_CHARS, vbom);
+			buttonText = new Text(0, 0, resources.mGameFont, "", MAX_REGION_CHARS, vbom);
 			
 			regionButton = new ButtonSprite(x, y, resources.regionBtnRegion, vbom) {
 
@@ -320,13 +323,15 @@ public class GameScene extends BaseScene implements IOnSceneTouchListener, IScro
 			
 			regionButton.setColor(region.getPrimaryColor());
 			
+			buttonText.setText("" + MIN_SOLDIERS_PER_REGION);
 			buttonText.setScale((float) 1.4);
 			buttonText.setPosition(regionButton.getWidth()/2, regionButton.getHeight()/2);
 			buttonText.setColor(region.getSecundaryColor());
 			
 			regionButton.attachChild(buttonText);
 			
-			regionButtons.add(new Pair<ButtonSprite, Text>(regionButton, buttonText));
+			regionButtons.add(regionButton);
+			regionButtonsText.add(buttonText);
 			
 			//Log.d("Riska", "Added region " + region.getName());
 			
@@ -349,11 +354,17 @@ public class GameScene extends BaseScene implements IOnSceneTouchListener, IScro
 		if((now - lastTouchTimeInRegion) > REGION_BUTTON_MIN_TOUCH_INTERVAL) {
 
 			logic.onRegionTouched(resources.map.getRegionById(regionID));
+			updateRegionButton(regionID);
 		}
 
 		lastTouchTimeInRegion = System.currentTimeMillis();
 	}
 
+	void updateRegionButton(int i) {
+		Region reg = map.getRegionById(i);
+		regionButtonsText.get(i).setText("" + reg.getNumberOfSoldiers());
+	}
+	
 	@Override
 	public boolean onSceneTouchEvent(Scene pScene, TouchEvent pSceneTouchEvent) {
 			
@@ -547,14 +558,14 @@ public class GameScene extends BaseScene implements IOnSceneTouchListener, IScro
 
 			if(!r.isNeighbourOf(pRegion))
 			{
-				regionButtons.get(i).first.setVisible(false);
+				regionButtons.get(i).setVisible(false);
 				//regionButtons.get(i).first.setEnabled(false);
 			}
 			else
 			{
 				if(r.getOwner() == logic.getCurrentPlayer())
 				{
-					regionButtons.get(i).first.setVisible(false);
+					regionButtons.get(i).setVisible(false);
 					//regionButtons.get(i).first.setEnabled(false);
 				}
 			}
@@ -577,22 +588,22 @@ public class GameScene extends BaseScene implements IOnSceneTouchListener, IScro
 
 	private void registerTouchAreaForAllRegions()
 	{
-		for(Pair<ButtonSprite, Text> regionButton : regionButtons)
+		for(ButtonSprite regionButton : regionButtons)
 		{
-			if(!getTouchAreas().contains(regionButton.first))
+			if(!getTouchAreas().contains(regionButton))
 			{
-				registerTouchArea(regionButton.first);
+				registerTouchArea(regionButton);
 			}
 		}
 	}
 	
 	private void unregisterTouchAreaForAllRegions()
 	{
-		for(Pair<ButtonSprite, Text> regionButton : regionButtons)
+		for(ButtonSprite regionButton : regionButtons)
 		{
-			if(getTouchAreas().contains(regionButton.first))
+			if(getTouchAreas().contains(regionButton))
 			{
-				unregisterTouchArea(regionButton.first);
+				unregisterTouchArea(regionButton);
 			}
 		}
 	}
