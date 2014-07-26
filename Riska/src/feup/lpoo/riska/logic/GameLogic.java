@@ -182,6 +182,7 @@ public class GameLogic {
 
 			if(currentPlayer.isCPU())
 			{
+				pauseGame();
 				automaticMove();
 			}
 
@@ -212,7 +213,7 @@ public class GameLogic {
 	}
 
 	private void automaticMove()
-	{
+	{	
 		Region pRegion1 = currentPlayer.selectRegion();
 
 		if(pRegion1 != null)
@@ -221,23 +222,9 @@ public class GameLogic {
 
 			if(pRegion2 != null)
 			{
-				simulateCPU(pRegion1, pRegion2);
+				gameScene.showCpuMove(pRegion1, pRegion2);	
 			}
-		}
-	}
-
-	public void simulateCPU(final Region attacker, final Region defender)
-	{
-
-		gameScene.lockUserInput();
-		gameScene.lockHUD();
-
-		selectRegion(attacker);
-		targetRegion(defender);
-		attack();
-		
-		gameScene.unlockUserInput();
-		gameScene.unlockHUD();
+		}		
 	}
 
 	private boolean gameOver()
@@ -315,7 +302,7 @@ public class GameLogic {
 		return currentPlayer;
 	}
 
-	public int getCurrentPlayerByIndex() {
+	public int getCurrentPlayerIndex() {
 		for(int i = 0; i < players.size(); i++)
 		{
 			if(players.get(i) == currentPlayer)
@@ -424,7 +411,7 @@ public class GameLogic {
 		}	
 	}
 
-	private void selectRegion(Region pRegion) {
+	public void selectRegion(Region pRegion) {
 
 		// Shouldn't happen. 
 		if(selectedRegion != null)
@@ -436,7 +423,7 @@ public class GameLogic {
 		selectedRegion.focus();
 	}
 
-	private void unselectRegion()
+	public void unselectRegion()
 	{
 		if(targetedRegion != null)
 		{
@@ -447,7 +434,7 @@ public class GameLogic {
 		selectedRegion = null;
 	}
 
-	private void targetRegion(Region pRegion)
+	public void targetRegion(Region pRegion)
 	{
 		if(selectedRegion != null)
 		{
@@ -465,12 +452,11 @@ public class GameLogic {
 		}
 	}
 
-	private void untargetRegion() 
+	public void untargetRegion() 
 	{
 		targetedRegion.unfocus();	
 		targetedRegion = null;
 	}
-
 	
 	public void pauseGame()
 	{

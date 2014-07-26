@@ -73,7 +73,7 @@ public class SaveGame {
 		editor.putInt("State", state.ordinal());
 		editor.commit();
 		
-		editor.putInt("CurrentPlayer", logic.getCurrentPlayerByIndex());
+		editor.putInt("CurrentPlayer", logic.getCurrentPlayerIndex());
 		editor.commit();
 	}
 

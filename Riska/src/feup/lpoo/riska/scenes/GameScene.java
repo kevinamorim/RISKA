@@ -3,6 +3,8 @@ package feup.lpoo.riska.scenes;
 import java.util.ArrayList;
 import java.util.Arrays;
 
+import org.andengine.entity.IEntity;
+import org.andengine.entity.modifier.DelayModifier;
 import org.andengine.entity.scene.IOnSceneTouchListener;
 import org.andengine.entity.scene.Scene;
 import org.andengine.entity.sprite.AnimatedSprite;
@@ -40,9 +42,9 @@ public class GameScene extends BaseScene implements IOnSceneTouchListener, IScro
 	private final long MIN_TOUCH_INTERVAL = 70;
 	private final long MAX_TOUCH_INTERVAL = 400;
 	
-	private final float CPU_DELAY = 1.0f;
-	
 	private final int ANIM_DURATION = 250;
+	
+	private final float CPU_DELAY = 1.0f;
 	
 	private final int MIN_SOLDIERS_PER_REGION = 1;
 	
@@ -265,14 +267,28 @@ public class GameScene extends BaseScene implements IOnSceneTouchListener, IScro
 				detailScene.setAttributes(logic.selectedRegion, logic.targetedRegion);
 				hud.show(BUTTON.ATTACK);
 				
-				hud.setInfoTabText(Utilities.getString(R.string.game_info_attack));
+				if(logic.getCurrentPlayerIndex() == 0)
+				{
+					hud.setInfoTabText(Utilities.getString(R.string.game_info_attack));
+				}
+				else
+				{
+					hud.setInfoTabText(Utilities.getString(R.string.game_info_wait_for_CPU));
+				}
 			}
 			else
 			{
 				detailScene.setAttributes(logic.selectedRegion, null);
 				hud.hide(BUTTON.ATTACK);
 				
-				hud.setInfoTabText(Utilities.getString(R.string.game_info_tap_enemy_region));
+				if(logic.getCurrentPlayerIndex() == 0)
+				{
+					hud.setInfoTabText(Utilities.getString(R.string.game_info_tap_enemy_region));
+				}
+				else
+				{
+					hud.setInfoTabText(Utilities.getString(R.string.game_info_wait_for_CPU));
+				}
 			}
 		}
 		else
@@ -280,10 +296,17 @@ public class GameScene extends BaseScene implements IOnSceneTouchListener, IScro
 			detailScene.setAttributes(null, null);
 			hud.hide(BUTTON.DETAILS);
 			hud.hide(BUTTON.ATTACK);
-			
+
 			showAllRegions();
-			
-			hud.setInfoTabText(Utilities.getString(R.string.game_info_tap_allied_region));
+
+			if(logic.getCurrentPlayerIndex() == 0)
+			{
+				hud.setInfoTabText(Utilities.getString(R.string.game_info_tap_allied_region));
+			}
+			else
+			{
+				hud.setInfoTabText(Utilities.getString(R.string.game_info_wait_for_CPU));
+			}
 		}
 	}
 
@@ -292,7 +315,7 @@ public class GameScene extends BaseScene implements IOnSceneTouchListener, IScro
 		doubleTapAllowed = false;
 		scrollDetector.setEnabled(false);
 		
-		if(logic.getCurrentPlayerByIndex() == PLAYER_NUM)
+		if(logic.getCurrentPlayerIndex() == PLAYER_NUM)
 		{
 			hud.setInfoTabText(logic.getCurrentPlayer().getSoldiersToDeploy() + Utilities.getString(R.string.game_info_left_to_deploy));
 		}
@@ -469,8 +492,7 @@ public class GameScene extends BaseScene implements IOnSceneTouchListener, IScro
 	
 	public void onAttack()
 	{
-		cameraManager.zoomOut();	
-		//hud.changeDetailButton();	
+		cameraManager.zoomOut();
 		logic.attack();
 	}
 	
@@ -667,6 +689,63 @@ public class GameScene extends BaseScene implements IOnSceneTouchListener, IScro
 			}
 		}
 	}
+
+	
+	public void createDelay(float time)
+	{	
+		DelayModifier delay = new DelayModifier(time) {
+
+			@Override
+			protected void onModifierFinished(IEntity pItem) {
+			}
+
+		};
+		
+		registerEntityModifier(delay);
+	}
+
+	public void showCpuMove(final Region pRegion1, final Region pRegion2)
+	{
+		lockUserInput();
+		lockHUD();
+		
+		DelayModifier selectRegionDelay = new DelayModifier(CPU_DELAY)
+		{
+			@Override
+			protected void onModifierFinished(IEntity pItem)
+			{
+				logic.selectRegion(pRegion1);
+			}
+
+		};
+		
+		DelayModifier targetRegionDelay = new DelayModifier(CPU_DELAY * 2)
+		{
+			@Override
+			protected void onModifierFinished(IEntity pItem)
+			{
+				logic.targetRegion(pRegion2);
+			}
+
+		};
+		
+		DelayModifier attackDelay = new DelayModifier(CPU_DELAY * 3)
+		{
+			@Override
+			protected void onModifierFinished(IEntity pItem)
+			{
+				unlockUserInput();
+				unlockHUD();
+				logic.attack();
+			}
+
+		};
+		
+		registerEntityModifier(selectRegionDelay);
+		registerEntityModifier(targetRegionDelay);
+		registerEntityModifier(attackDelay);
+	}
+	
 }
 
 
