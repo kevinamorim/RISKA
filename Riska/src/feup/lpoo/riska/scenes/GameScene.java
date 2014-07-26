@@ -186,7 +186,6 @@ public class GameScene extends BaseScene implements IOnSceneTouchListener, IScro
 		switch(logic.getState())
 		{
 		case PAUSED:
-			logic.setState(GAME_STATE.DEPLOYMENT);
 			break;
 			
 		case DEPLOYMENT:
@@ -197,6 +196,10 @@ public class GameScene extends BaseScene implements IOnSceneTouchListener, IScro
 		case PLAY:
 			gameUpdate();
 			logic.updateGame();
+			break;
+			
+		case PAUSED_PLAY:
+			gameUpdate();
 			break;
 			
 		default:
@@ -256,6 +259,7 @@ public class GameScene extends BaseScene implements IOnSceneTouchListener, IScro
 			if(logic.targetedRegion != null)
 			{
 				detailScene.setAttributes(logic.selectedRegion, logic.targetedRegion);
+				hud.show(BUTTON.ATTACK);
 			}
 			else
 			{
@@ -455,40 +459,14 @@ public class GameScene extends BaseScene implements IOnSceneTouchListener, IScro
 		
 		cameraManager.zoomOut();
 		
+		hud.changeDetailButton();
+		
 		logic.attack();
 	}
 	
 	public void onAutoDeploy()
 	{
 		logic.autoDeployment(logic.getPlayers().get(0));
-	}
-	
-	public void showBattleResult(Region pRegion1, Region pRegion2, boolean result) {
-		
-		battleScene.setAttributes(pRegion1, pRegion2, result);
-
-		battleScene.setVisible(true);		
-	}
-	
-	public void hideBattleResult()
-	{		
-		logic.turnDone = true;
-		
-		battleScene.setVisible(false);
-	}
-
-	public void showDetails()
-	{	
-		detailScene.setVisible(true);
-		
-		//attachChild(detailScene);
-	}
-	
-	public void hideDetails()
-	{
-		detailScene.setVisible(false);
-		
-		//detachChild(detailScene);
 	}
 
 	// ======================================================
@@ -632,7 +610,6 @@ public class GameScene extends BaseScene implements IOnSceneTouchListener, IScro
 		}
 	}
 
-	
 	public void lockHUD() {
 		hud.lock();
 	}
@@ -641,6 +618,11 @@ public class GameScene extends BaseScene implements IOnSceneTouchListener, IScro
 		hud.unlock();
 	}
 
+	public void showBattleResult(Region pRegion1, Region pRegion2, boolean result) {
+		
+		battleScene.setAttributes(pRegion1, pRegion2, result);
+		battleScene.setVisible(true);		
+	}
 	
 	public void touchedDetailsButton()
 	{
@@ -648,21 +630,22 @@ public class GameScene extends BaseScene implements IOnSceneTouchListener, IScro
 
 		if(detailScene.isVisible())
 		{
-			hideDetails();
 			detailScene.setVisible(false);
+			logic.resumeGame();
 		}
 		else
 		{
 			if(battleScene.isVisible())
 			{
-				hideBattleResult();
+				battleScene.setVisible(false);
+				logic.resumeGame();
 			}
 			else
-			{				
+			{
+				logic.pauseGame();
 				detailScene.setAttributes(logic.selectedRegion, logic.targetedRegion);
 				detailScene.setVisible(true);
-				
-				showDetails();
+
 				getCameraManager().zoomOut();
 			}
 		}

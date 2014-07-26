@@ -13,6 +13,12 @@ import android.util.Log;
 public class Player extends Object {
 	
 	// ======================================================
+	// STATICS
+	// ======================================================
+
+	public static int numberOfCPUs = 0;
+	
+	// ======================================================
 	// CONSTANTS
 	// ======================================================
 	
@@ -20,9 +26,14 @@ public class Player extends Object {
 	// FIELDS
 	// ======================================================
 	private boolean isCPU;
+	
 	private ArrayList<Region> regions;
+	
 	private int soldiersToDeploy;
+	
 	private Color priColor, secColor;
+	
+	private String playerName;
 	
 	/**
 	 * Constructor for Player.
@@ -33,15 +44,24 @@ public class Player extends Object {
 	 * @param primaryColor : player's primary color
 	 * @param secondaryColor : player's secondary color
 	 */
-	public Player(boolean isCPU, Color primaryColor, Color secondaryColor) {
+	public Player(boolean isCPU, Color primaryColor, Color secondaryColor, String name) {
 		
 		this.isCPU = isCPU;
+		if(isCPU)
+		{
+			numberOfCPUs++;
+			playerName = "CPU " + numberOfCPUs;
+		}
+		else
+		{
+			playerName = name;
+		}
 		
 		this.regions = new ArrayList<Region>();
 		
 		this.priColor = primaryColor;
 		this.secColor = secondaryColor;
-		
+
 	}
 	
 	/**
@@ -187,16 +207,22 @@ public class Player extends Object {
 		return null;	
 	}
 	
-	public boolean hasPossibleMoves() {
-		
-		for(Region region : regions) {
-			if(region.hasEnemyNeighbor() && region.canAttack()) {
+	public boolean hasPossibleMoves()
+	{
+		for(Region region : regions)
+		{
+			if(region.hasEnemyNeighbor() && region.canAttack())
+			{
 				Log.d("Region", "True" + region.getName());
 				return true;
 			}
 		}
 		
 		return false;
-		
+	}
+	
+	public String getName()
+	{
+		return playerName;
 	}
 }

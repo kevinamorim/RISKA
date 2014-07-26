@@ -5,6 +5,7 @@ import org.andengine.entity.sprite.Sprite;
 import org.andengine.entity.text.Text;
 import org.andengine.util.adt.color.Color;
 
+import feup.lpoo.riska.elements.Player;
 import feup.lpoo.riska.elements.Region;
 import feup.lpoo.riska.generator.BattleGenerator;
 import feup.lpoo.riska.logic.MainActivity;
@@ -62,7 +63,7 @@ public class BattleScene extends Scene {
 		
 		background.setScale(0.9f);
 		background.setAlpha(1f);
-		attachChild(background);
+		
 		
 		vsText = new Text(MainActivity.CAMERA_WIDTH/2, MainActivity.CAMERA_HEIGHT/2,
 				resources.mGameFont, "VS", activity.getVertexBufferObjectManager());
@@ -79,6 +80,10 @@ public class BattleScene extends Scene {
 		result1 = new Sprite(0,0,resources.regionBtnRegion, resources.vbom);
 		result2 = new Sprite(0,0,resources.regionBtnRegion, resources.vbom);
 		
+		result1.setPosition(0.25f * MainActivity.CAMERA_WIDTH, 0.3f * MainActivity.CAMERA_HEIGHT);
+		result2.setPosition(0.75f * MainActivity.CAMERA_WIDTH, 0.3f * MainActivity.CAMERA_HEIGHT);
+		
+		attachChild(background);
 		attachChild(result1);
 		attachChild(result2);
 		attachChild(typePlayer1);
@@ -91,13 +96,38 @@ public class BattleScene extends Scene {
 	public void setAttributes(Region pRegion1, Region pRegion2, boolean won)
 	{
 		
-		Boolean Player1 = pRegion1.getOwner().isCPU();
-		Boolean Player2 = pRegion2.getOwner().isCPU();
+		float x1, x2;
+		float y1, y2;
 		
-		typePlayer1.setText(Player1 ? "" : "- PLAYER -");
-		typePlayer2.setText(Player2 ? "" : "- PlAYER -");
+		Player Player1 = pRegion1.getOwner();
+		Player Player2 = pRegion2.getOwner();
+		
+		x1 = 0.25f * MainActivity.CAMERA_WIDTH;
+		x2 = 0.75f * MainActivity.CAMERA_WIDTH;
+		
+		if(Player1.isCPU() && !Player2.isCPU())
+		{
+			x1 = 0.75f * MainActivity.CAMERA_WIDTH;
+			x2 = 0.25f * MainActivity.CAMERA_WIDTH;
+			
+			won = !won;
+		}
+		
+		y1 = 0.8f * MainActivity.CAMERA_HEIGHT;
+		y2 = 0.8f * MainActivity.CAMERA_HEIGHT;
+		
+		typePlayer1.setText(Player1.getName());
+		typePlayer1.setPosition(x1, y1);
+		typePlayer2.setText(Player2.getName());
+		typePlayer2.setPosition(x2, y2);
+		
+		y1 = 0.5f * MainActivity.CAMERA_HEIGHT;
+		y2 = 0.5f * MainActivity.CAMERA_HEIGHT;
+		
 		regionName1.setText(pRegion1.getName());
+		regionName1.setPosition(x1, y1);
 		regionName2.setText(pRegion2.getName());
+		regionName2.setPosition(x2, y2);
 		
 		if(won)
 		{
@@ -110,4 +140,5 @@ public class BattleScene extends Scene {
 			result2.setColor(Color.GREEN);
 		}
 	}
+
 }
