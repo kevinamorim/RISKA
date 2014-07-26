@@ -12,9 +12,9 @@
     
     <string name="csvSplitBy">;</string>
     
-    <string name="waitingForDeployment"> Waiting for deployment! </string>
+<!--     <string name="waitingForDeployment"> Waiting for deployment! </string>
     
-    <string name="leftToDeploy">&#160;left to deploy</string>
+    <string name="leftToDeploy">&#160;left to deploy</string> -->
     
     <string name="name_music_background">background</string>
     
@@ -46,6 +46,9 @@
 	
 	<string name="game_info_wait">Wait</string>
 	<string name="game_info_wait_for_CPU">Waiting for CPU</string>
-	<string name="game_info_deployable"> Left to Deploy</string>
-
+	<string name="game_info_left_to_deploy">&#160;left to deploy (tap an allied region to deploy)</string>
+	<string name="game_info_tap_allied_region">Tap an allied region to select</string>
+	<string name="game_info_tap_enemy_region">Tap an enemy region to target</string>
+	<string name="game_info_attack">Click the attack button</string>
+	
 </resources>

@@ -253,8 +253,7 @@ public class ResourceCache {
 
 		
 		try {		
-			gameTextureAtlas.build(
-					new BlackPawnTextureAtlasBuilder<IBitmapTextureAtlasSource, BitmapTextureAtlas>(0, 1, 0));
+			gameTextureAtlas.build(new BlackPawnTextureAtlasBuilder<IBitmapTextureAtlasSource, BitmapTextureAtlas>(0, 1, 0));
 			gameTextureAtlas.load();
 			seaTextureAtlas.load();
 			mapTextureAtlas.load();

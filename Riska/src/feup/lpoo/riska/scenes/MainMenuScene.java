@@ -80,8 +80,8 @@ public class MainMenuScene extends BaseScene implements IOnMenuItemClickListener
 						vbom, "START", resources.mainMenuFont);
 		
 		final AnimatedButtonSpriteMenuItem optionsBtn = new AnimatedButtonSpriteMenuItem(MENU_OPTIONS, 
-						(float)(0.3*resources.optionsBtnRegion.getWidth()),
-						(float)(0.3*resources.optionsBtnRegion.getHeight()), 
+						0.3f*resources.optionsBtnRegion.getWidth(),
+						0.3f*resources.optionsBtnRegion.getHeight(), 
 						resources.optionsBtnRegion, 
 						vbom);
 		
@@ -113,13 +113,14 @@ public class MainMenuScene extends BaseScene implements IOnMenuItemClickListener
 						vbom, "LOAD", resources.mainMenuFont);
 
 		final AnimatedButtonSpriteMenuItem returnBtn = new AnimatedButtonSpriteMenuItem(MENU_RETURN,
-				resources.returnBtnRegion.getWidth(), 
-				resources.returnBtnRegion.getHeight(),
+				0.3f*resources.returnBtnRegion.getWidth(), 
+				0.3f*resources.returnBtnRegion.getHeight(),
 				resources.returnBtnRegion,
 				vbom);
 		
 		newGameBtn.setPosition(camera.getCenterX(), camera.getCenterY() + newGameBtn.getHeight()/2);
 		loadGameBtn.setPosition(camera.getCenterX(), camera.getCenterY() - loadGameBtn.getHeight()/2);
+		returnBtn.setPosition(returnBtn.getWidth()/2, returnBtn.getHeight()/2);
 		
 		startGameMenuChildScene.addMenuItem(returnBtn);
 		startGameMenuChildScene.addMenuItem(newGameBtn);

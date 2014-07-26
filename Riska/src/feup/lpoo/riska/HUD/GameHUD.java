@@ -19,6 +19,7 @@ public class GameHUD extends HUD implements Displayable {
 	// CONSTANTS
 	// ======================================================
 	private static final long MIN_TOUCH_INTERVAL = 30;
+	
 	public enum BUTTON
 	{
 		ATTACK, 
@@ -68,9 +69,6 @@ public class GameHUD extends HUD implements Displayable {
 
 	}
 
-	/**
-	 * Handles the touch event for the details button.
-	 */
 	protected void touchedDetailsButton() {
 
 	}
@@ -151,39 +149,10 @@ public class GameHUD extends HUD implements Displayable {
 		}
 	}
 
-//	/**
-//	 * Hides the game info tab.
-//	 */
-//	public void hideInfoTab() {
-//		if(infoTab.hasParent()) {
-//			detachChild(infoTab);
-//		}
-//	}
-
-	/**
-	 * Changes the text of the info tab.
-	 * 
-	 * @param info : new info to set
-	 */
 	public void setInfoTabText(String info) {
 		infoTabText.setText(info);
 	}
 
-	public void changeDetailButton()
-	{
-		if(detailsButton.getCurrentTileIndex() == 0)
-		{
-			detailsButton.setCurrentTileIndex(1);
-		}
-		else
-		{
-			detailsButton.setCurrentTileIndex(0);
-		}
-	}
-
-	/** 
-	 * Locks HUD so the user can't use it. 
-	 */
 	public void lock() {
 
 		detailsButton.setEnabled(false);
@@ -191,9 +160,6 @@ public class GameHUD extends HUD implements Displayable {
 
 	}
 
-	/** 
-	 * Unlocks HUD so the user can use it.
-	 */
 	public void unlock() {
 
 		detailsButton.setEnabled(true);
@@ -240,20 +206,19 @@ public class GameHUD extends HUD implements Displayable {
 	
 	private void createInfoTab() {
 		
-		infoTab = new Sprite(resources.camera.getWidth()/ 2,
-				resources.camera.getHeight() - resources.infoTabRegion.getHeight() / 2,
+		infoTab = new Sprite(0f,0f,
 				resources.infoTabRegion,
 				resources.vbom);
-
-		infoTab.setScaleX(2.4f);
+		
+		infoTab.setSize(resources.camera.getWidth(), 0.10f * resources.camera.getHeight());
+		infoTab.setPosition(resources.camera.getWidth() / 2, infoTab.getHeight() / 2);
 
 		infoTabText = new Text(infoTab.getWidth() / 2, infoTab.getHeight() / 2,
 				resources.mInfoTabFont, "NO INFO", 1000, resources.vbom);
 
 		infoTabText.setColor(Color.BLACK);
 
-		infoTab.attachChild(infoTabText);
-		
+		infoTab.attachChild(infoTabText);	
 	}
 	
 	private void createDetailsButton() {
@@ -292,9 +257,7 @@ public class GameHUD extends HUD implements Displayable {
 	
 	private void createAutoDeployButton() {
 		
-		autoDeployButton = new ButtonSprite(
-				0f,
-				0f,
+		autoDeployButton = new ButtonSprite(0f,0f,
 				resources.autoDeployBtnRegion,
 				resources.vbom) {
 
@@ -412,5 +375,15 @@ public class GameHUD extends HUD implements Displayable {
 		default:
 			return null;
 		}
+	}
+
+	public void setDetailButtonToQuestion()
+	{
+		detailsButton.setCurrentTileIndex(0);
+	}
+	
+	public void setDetailButtonToExit()
+	{
+		detailsButton.setCurrentTileIndex(1);
 	}
 }

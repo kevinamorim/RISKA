@@ -143,7 +143,7 @@ public class GameScene extends BaseScene implements IOnSceneTouchListener, IScro
 		
 		Sprite mapSprite = new Sprite(MainActivity.CAMERA_WIDTH/2, MainActivity.CAMERA_HEIGHT/2,
 				MainActivity.CAMERA_WIDTH, MainActivity.CAMERA_HEIGHT,
-				resources.mapRegion, activity.getVertexBufferObjectManager());
+				resources.mapRegion, vbom);
 		
 		attachChild(mapSprite);
 		
@@ -154,7 +154,7 @@ public class GameScene extends BaseScene implements IOnSceneTouchListener, IScro
 		int ANIMATION_TILES = 8;
 		
 		AnimatedSprite background = new AnimatedSprite(MainActivity.CAMERA_WIDTH/2, MainActivity.CAMERA_HEIGHT/2, 
-				resources.seaRegion, activity.getVertexBufferObjectManager());
+				resources.seaRegion, vbom);
 		
 		background.setScale(2f);
 		
@@ -171,10 +171,6 @@ public class GameScene extends BaseScene implements IOnSceneTouchListener, IScro
 		
 		hud = new GameHUD(this);
 		activity.mCamera.setHUD(hud);
-		
-		hud.setInfoTabText(logic.getCurrentPlayer().getSoldiersToDeploy() 
-				+ activity.getResources().getString(R.string.leftToDeploy));
-		
 
 		hud.show(SPRITE.INFO_TAB);
 		hud.show(BUTTON.AUTO_DEPLOY);
@@ -240,6 +236,7 @@ public class GameScene extends BaseScene implements IOnSceneTouchListener, IScro
 		
 		doubleTapAllowed = true;
 		scrollDetector.setEnabled(true);
+		hud.setDetailButtonToQuestion();
 		hud.show(BUTTON.DETAILS);
 		hud.show(SPRITE.INFO_TAB);
 		
@@ -267,11 +264,15 @@ public class GameScene extends BaseScene implements IOnSceneTouchListener, IScro
 			{
 				detailScene.setAttributes(logic.selectedRegion, logic.targetedRegion);
 				hud.show(BUTTON.ATTACK);
+				
+				hud.setInfoTabText(Utilities.getString(R.string.game_info_attack));
 			}
 			else
 			{
 				detailScene.setAttributes(logic.selectedRegion, null);
 				hud.hide(BUTTON.ATTACK);
+				
+				hud.setInfoTabText(Utilities.getString(R.string.game_info_tap_enemy_region));
 			}
 		}
 		else
@@ -281,6 +282,8 @@ public class GameScene extends BaseScene implements IOnSceneTouchListener, IScro
 			hud.hide(BUTTON.ATTACK);
 			
 			showAllRegions();
+			
+			hud.setInfoTabText(Utilities.getString(R.string.game_info_tap_allied_region));
 		}
 	}
 
@@ -291,7 +294,7 @@ public class GameScene extends BaseScene implements IOnSceneTouchListener, IScro
 		
 		if(logic.getCurrentPlayerByIndex() == PLAYER_NUM)
 		{
-			hud.setInfoTabText(logic.getCurrentPlayer().getSoldiersToDeploy() + Utilities.getString(R.string.game_info_deployable));
+			hud.setInfoTabText(logic.getCurrentPlayer().getSoldiersToDeploy() + Utilities.getString(R.string.game_info_left_to_deploy));
 		}
 		else
 		{
@@ -625,7 +628,9 @@ public class GameScene extends BaseScene implements IOnSceneTouchListener, IScro
 		hud.unlock();
 	}
 
-	public void showBattleResult(Region pRegion1, Region pRegion2, boolean result) {
+	public void showBattleResult(Region pRegion1, Region pRegion2, boolean result)
+	{
+		hud.setDetailButtonToExit();
 		
 		battleScene.setAttributes(pRegion1, pRegion2, result);
 		battleScene.setVisible(true);		
@@ -633,10 +638,11 @@ public class GameScene extends BaseScene implements IOnSceneTouchListener, IScro
 	
 	public void touchedDetailsButton()
 	{
-		hud.changeDetailButton();
 
 		if(detailScene.isVisible())
 		{
+			hud.setDetailButtonToQuestion();
+			
 			detailScene.setVisible(false);
 			logic.resumeGame();
 		}
@@ -644,11 +650,15 @@ public class GameScene extends BaseScene implements IOnSceneTouchListener, IScro
 		{
 			if(battleScene.isVisible())
 			{
+				hud.setDetailButtonToQuestion();
+				
 				battleScene.setVisible(false);
 				logic.resumeGame();
 			}
 			else
 			{
+				hud.setDetailButtonToExit();
+				
 				logic.pauseGame();
 				detailScene.setAttributes(logic.selectedRegion, logic.targetedRegion);
 				detailScene.setVisible(true);
