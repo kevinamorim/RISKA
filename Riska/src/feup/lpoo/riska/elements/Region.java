@@ -247,7 +247,7 @@ public class Region extends Element {
 	}
 	
 	public boolean canAttack() {
-		return (getNumberOfSoldiers() > MIN_SOLDIERS_FOR_AN_ATTACK);
+		return (getNumberOfSoldiers() >= MIN_SOLDIERS_FOR_AN_ATTACK);
 	}
 	
 	public boolean hasEnemyNeighbor() {

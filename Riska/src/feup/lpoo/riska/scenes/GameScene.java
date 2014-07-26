@@ -108,6 +108,9 @@ public class GameScene extends BaseScene implements IOnSceneTouchListener, IScro
 	@Override
 	public void disposeScene() {
 		camera.setHUD(null);
+		//detachChildren();
+		//detachSelf();
+		//dispose();
 	}
 	
 	// ======================================================

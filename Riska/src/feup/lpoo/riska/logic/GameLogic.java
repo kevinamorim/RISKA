@@ -391,8 +391,11 @@ public class GameLogic {
 		{
 			if(currentPlayer.ownsRegion(pRegion))
 			{
-				selectRegion(pRegion);
-				gameScene.showOnlyNeighbourRegions(pRegion);
+				if(pRegion.canAttack()) // Shouldn't be here
+				{
+					selectRegion(pRegion);
+					gameScene.showOnlyNeighbourRegions(pRegion);
+				}
 			}
 			else
 			{
@@ -421,11 +424,8 @@ public class GameLogic {
 			unselectRegion();
 		}
 
-		if(pRegion.canAttack())
-		{
-			selectedRegion = pRegion;
-			selectedRegion.focus();
-		}
+		selectedRegion = pRegion;
+		selectedRegion.focus();
 	}
 
 	private void unselectRegion()
