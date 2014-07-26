@@ -42,7 +42,7 @@ public class GameScene extends BaseScene implements IOnSceneTouchListener, IScro
 	private final long MIN_TOUCH_INTERVAL = 70;
 	private final long MAX_TOUCH_INTERVAL = 400;
 	
-	private final int ANIM_DURATION = 250;
+	private final int ANIM_DURATION = 200;
 	
 	private final float CPU_DELAY = 1.0f;
 	
@@ -147,8 +147,7 @@ public class GameScene extends BaseScene implements IOnSceneTouchListener, IScro
 				MainActivity.CAMERA_WIDTH, MainActivity.CAMERA_HEIGHT,
 				resources.mapRegion, vbom);
 		
-		attachChild(mapSprite);
-		
+		attachChild(mapSprite);	
 	}
 	
 	private void createBackground() {
@@ -158,7 +157,9 @@ public class GameScene extends BaseScene implements IOnSceneTouchListener, IScro
 		AnimatedSprite background = new AnimatedSprite(MainActivity.CAMERA_WIDTH/2, MainActivity.CAMERA_HEIGHT/2, 
 				resources.seaRegion, vbom);
 		
-		background.setScale(2f);
+		background.setSize(MainActivity.CAMERA_WIDTH, MainActivity.CAMERA_HEIGHT);
+		
+		//background.setScale(2f);
 		
 		long duration[] = new long[ANIMATION_TILES];
 		Arrays.fill(duration, ANIM_DURATION);
@@ -265,14 +266,16 @@ public class GameScene extends BaseScene implements IOnSceneTouchListener, IScro
 			if(logic.targetedRegion != null)
 			{
 				detailScene.setAttributes(logic.selectedRegion, logic.targetedRegion);
-				hud.show(BUTTON.ATTACK);
 				
 				if(logic.getCurrentPlayerIndex() == 0)
 				{
+					hud.show(BUTTON.ATTACK);
 					hud.setInfoTabText(Utilities.getString(R.string.game_info_attack));
 				}
 				else
 				{
+					hud.hide(BUTTON.ATTACK);
+					hud.hide(BUTTON.DETAILS);
 					hud.setInfoTabText(Utilities.getString(R.string.game_info_wait_for_CPU));
 				}
 			}
@@ -287,6 +290,8 @@ public class GameScene extends BaseScene implements IOnSceneTouchListener, IScro
 				}
 				else
 				{
+					hud.hide(BUTTON.ATTACK);
+					hud.hide(BUTTON.DETAILS);
 					hud.setInfoTabText(Utilities.getString(R.string.game_info_wait_for_CPU));
 				}
 			}
