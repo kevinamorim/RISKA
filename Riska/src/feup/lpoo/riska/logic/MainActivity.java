@@ -12,12 +12,9 @@ import org.andengine.entity.scene.Scene;
 import org.andengine.opengl.font.Font;
 import org.andengine.ui.activity.BaseGameActivity;
 
-import android.app.AlertDialog;
-import android.content.DialogInterface;
 import android.view.KeyEvent;
 import feup.lpoo.riska.resources.ResourceCache;
 import feup.lpoo.riska.scenes.SceneManager;
-import feup.lpoo.riska.scenes.SceneManager.SceneType;
 
 public class MainActivity extends BaseGameActivity {	
 	

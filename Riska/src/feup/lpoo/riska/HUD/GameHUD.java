@@ -7,13 +7,9 @@ import org.andengine.entity.text.Text;
 import org.andengine.input.touch.TouchEvent;
 import org.andengine.util.adt.color.Color;
 
-import feup.lpoo.riska.HUD.GameHUD.BUTTON;
 import feup.lpoo.riska.interfaces.Displayable;
-import feup.lpoo.riska.logic.GameLogic;
 import feup.lpoo.riska.resources.ResourceCache;
-import feup.lpoo.riska.scenes.DetailScene;
 import feup.lpoo.riska.scenes.GameScene;
-import feup.lpoo.riska.scenes.SceneManager;
 import feup.lpoo.riska.utilities.Utilities;
 import android.view.MotionEvent;
 

@@ -1,18 +1,14 @@
 package feup.lpoo.riska.scenes;
 
 import org.andengine.entity.scene.Scene;
-import org.andengine.entity.sprite.ButtonSprite;
 import org.andengine.entity.sprite.Sprite;
 import org.andengine.entity.text.Text;
-import org.andengine.opengl.font.Font;
 import org.andengine.util.adt.color.Color;
 
-import android.util.Log;
 import feup.lpoo.riska.elements.Region;
 import feup.lpoo.riska.generator.BattleGenerator;
 import feup.lpoo.riska.logic.MainActivity;
 import feup.lpoo.riska.resources.ResourceCache;
-import feup.lpoo.riska.utilities.Utilities;
 
 public class BattleScene extends Scene {
 

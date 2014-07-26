@@ -3,8 +3,6 @@ package feup.lpoo.riska.scenes;
 import java.util.ArrayList;
 import java.util.Arrays;
 
-import org.andengine.entity.IEntity;
-import org.andengine.entity.modifier.DelayModifier;
 import org.andengine.entity.scene.IOnSceneTouchListener;
 import org.andengine.entity.scene.Scene;
 import org.andengine.entity.sprite.AnimatedSprite;
@@ -20,7 +18,6 @@ import feup.lpoo.riska.HUD.GameHUD;
 import feup.lpoo.riska.HUD.GameHUD.BUTTON;
 import feup.lpoo.riska.HUD.GameHUD.SPRITE;
 import feup.lpoo.riska.elements.Map;
-import feup.lpoo.riska.elements.Player;
 import feup.lpoo.riska.elements.Region;
 import feup.lpoo.riska.io.LoadGame;
 import feup.lpoo.riska.io.SaveGame;
@@ -32,7 +29,6 @@ import feup.lpoo.riska.utilities.Utilities;
 import feup.lpoo.riska.R;
 import android.graphics.Point;
 import android.util.Log;
-import android.util.Pair;
 import android.view.MotionEvent;
 
 public class GameScene extends BaseScene implements IOnSceneTouchListener, IScrollDetectorListener {
@@ -270,6 +266,8 @@ public class GameScene extends BaseScene implements IOnSceneTouchListener, IScro
 		{
 			detailScene.setAttributes(null, null);
 			hud.hide(BUTTON.DETAILS);
+			
+			showAllRegions();
 		}
 	}
 
@@ -584,6 +582,19 @@ public class GameScene extends BaseScene implements IOnSceneTouchListener, IScro
 				}
 			}
 		}		
+	}
+	
+	public void showAllRegions()
+	{
+		for(int i = 0; i < regionButtons.size(); i++)
+		{
+			ButtonSprite btn = regionButtons.get(i);
+			
+			if(!btn.isVisible())
+			{
+				btn.setVisible(true);
+			}
+		}
 	}
 	
 	// ======================================================

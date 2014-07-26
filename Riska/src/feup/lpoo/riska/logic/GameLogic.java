@@ -3,8 +3,6 @@ package feup.lpoo.riska.logic;
 import java.util.ArrayList;
 import java.util.Random;
 
-import org.andengine.entity.IEntity;
-import org.andengine.entity.modifier.DelayModifier;
 import org.andengine.util.adt.color.Color;
 
 import feup.lpoo.riska.R;
@@ -23,7 +21,6 @@ public class GameLogic {
 	// SINGLETONS
 	// ======================================================
 	private ResourceCache resources;
-	private SceneManager sceneManager;
 	private BattleGenerator battleGenerator;
 
 	// ======================================================
@@ -65,7 +62,7 @@ public class GameLogic {
 	public GameLogic(GameScene scene) {
 
 		resources = ResourceCache.getSharedInstance();
-		sceneManager = SceneManager.getSharedInstance();
+		SceneManager.getSharedInstance();
 
 		gameScene = scene;
 
