@@ -5,8 +5,6 @@ import org.andengine.entity.scene.menu.MenuScene;
 import org.andengine.entity.scene.menu.item.IMenuItem;
 import org.andengine.entity.scene.menu.MenuScene.IOnMenuItemClickListener;
 import org.andengine.entity.sprite.Sprite;
-import org.andengine.opengl.texture.region.TiledTextureRegion;
-
 import feup.lpoo.riska.gameInterface.AnimatedButtonSpriteMenuItem;
 import feup.lpoo.riska.gameInterface.AnimatedTextButtonSpriteMenuItem;
 import feup.lpoo.riska.scenes.SceneManager.SceneType;
