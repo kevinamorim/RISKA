@@ -206,7 +206,7 @@ public class Region extends Element {
 	/**
 	 * Switches the primary color with the secondary one.
 	 */
-	public void switchColors() {
+	private void switchColors() {
 		Color temp = new Color(priColor);
 		
 		this.priColor = secColor;
@@ -218,7 +218,8 @@ public class Region extends Element {
 	 *  
 	 * @param value : new value for the region focus
 	 */
-	public void changeFocus(boolean value) {
+	public void changeFocus(boolean value)
+	{
 		this.focused = value;
 		this.switchColors();
 	}
@@ -238,19 +239,16 @@ public class Region extends Element {
 	 */
 	public void changeOwner(Player newOwner) {
 		
-		if(owner != null) {
+		if(owner != null)
+		{
 			owner.removeRegion(this);
 		}
 		
 		owner = newOwner;
 		owner.addRegion(this);
-
-		soldiers.clear();
 		
-		priColor = newOwner.getPrimaryColor();
-		secColor = newOwner.getScondaryColor();
-		
-		unfocus();
+		priColor = owner.getPrimaryColor();
+		secColor = owner.getScondaryColor();
 	}
 	
 	public boolean canAttack() {
@@ -278,14 +276,18 @@ public class Region extends Element {
 		return result;
 	}
 	
-	public void focus() {
-		
+	public void focus()
+	{	
 		focused = true;
+		
+		switchColors();
 	}
 	
-	public void unfocus() {
-		
+	public void unfocus()
+	{
 		focused = false;
+		
+		switchColors();
 	}
 	
 	public Region selectTargetRegion()

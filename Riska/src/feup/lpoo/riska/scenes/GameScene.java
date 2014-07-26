@@ -212,8 +212,6 @@ public class GameScene extends BaseScene implements IOnSceneTouchListener, IScro
 	private void gameUpdate()
 	{
 		
-		//hud.hide(BUTTON.AUTO_DEPLOY);
-		
 		if(detailScene.isVisible())
 		{
 			doubleTapAllowed = false;
@@ -248,6 +246,12 @@ public class GameScene extends BaseScene implements IOnSceneTouchListener, IScro
 			{
 				Region region = map.getRegionById(i);
 				btnText.setText("" + region.getNumberOfSoldiers());
+				
+				if(region.getPrimaryColor() != btn.getColor())
+				{
+					btn.setColor(region.getPrimaryColor());
+					btnText.setColor(region.getSecundaryColor());
+				}
 			}
 		}
 		
@@ -265,6 +269,7 @@ public class GameScene extends BaseScene implements IOnSceneTouchListener, IScro
 		else
 		{
 			detailScene.setAttributes(null, null);
+			hud.hide(BUTTON.DETAILS);
 		}
 	}
 
@@ -286,7 +291,11 @@ public class GameScene extends BaseScene implements IOnSceneTouchListener, IScro
 		hud.hide(BUTTON.ATTACK);
 		hud.hide(BUTTON.DETAILS);
 	}
-
+	
+	// ======================================================
+	// REGION BUTTONS
+	// ======================================================
+	
 	private void createRegionButtons() {
 		
 		Text buttonText;
@@ -367,6 +376,9 @@ public class GameScene extends BaseScene implements IOnSceneTouchListener, IScro
 		Region reg = map.getRegionById(i);
 		regionButtonsText.get(i).setText("" + reg.getNumberOfSoldiers());
 	}
+	
+	// ======================================================
+	// ======================================================
 	
 	@Override
 	public boolean onSceneTouchEvent(Scene pScene, TouchEvent pSceneTouchEvent) {
@@ -553,23 +565,25 @@ public class GameScene extends BaseScene implements IOnSceneTouchListener, IScro
 		
 		for(int i = 0; i < map.getRegions().size(); i++) {
 
-			Region r = map.getRegions().get(i);
-
-			if(!r.isNeighbourOf(pRegion))
+			Region comp = map.getRegions().get(i);
+			
+			if (comp != pRegion)
 			{
-				regionButtons.get(i).setVisible(false);
-				//regionButtons.get(i).first.setEnabled(false);
-			}
-			else
-			{
-				if(r.getOwner() == logic.getCurrentPlayer())
+				if(!comp.isNeighbourOf(pRegion))
 				{
 					regionButtons.get(i).setVisible(false);
 					//regionButtons.get(i).first.setEnabled(false);
 				}
+				else
+				{
+					if(comp.getOwner() == logic.getCurrentPlayer())
+					{
+						regionButtons.get(i).setVisible(false);
+						//regionButtons.get(i).first.setEnabled(false);
+					}
+				}
 			}
-		}
-		
+		}		
 	}
 	
 	// ======================================================

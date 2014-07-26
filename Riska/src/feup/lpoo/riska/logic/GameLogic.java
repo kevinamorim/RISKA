@@ -7,6 +7,7 @@ import org.andengine.entity.IEntity;
 import org.andengine.entity.modifier.DelayModifier;
 import org.andengine.util.adt.color.Color;
 
+import feup.lpoo.riska.R;
 import feup.lpoo.riska.elements.Map;
 import feup.lpoo.riska.elements.Player;
 import feup.lpoo.riska.elements.Region;
@@ -14,6 +15,7 @@ import feup.lpoo.riska.generator.BattleGenerator;
 import feup.lpoo.riska.resources.ResourceCache;
 import feup.lpoo.riska.scenes.GameScene;
 import feup.lpoo.riska.scenes.SceneManager;
+import feup.lpoo.riska.utilities.Utilities;
 
 public class GameLogic {
 
@@ -147,7 +149,7 @@ public class GameLogic {
 
 				if(currentPlayer.isCPU())
 				{
-					sceneManager.getGameScene().setInfoTabText("Waiting for deployment...");
+					gameScene.setInfoTabText(Utilities.getString(R.string.game_info_wait_for_CPU));
 					currentPlayer.deploy();
 				}
 
@@ -424,6 +426,10 @@ public class GameLogic {
 		this.setCurrentPlayer(players.get(index));
 	}
 
+	// ======================================================
+	// REGIONS RELATED
+	// ======================================================
+
 	public void onRegionTouched(Region pRegion)
 	{
 		switch(state)
@@ -457,8 +463,8 @@ public class GameLogic {
 
 	private void onPlayHandler(Region pRegion)
 	{
-		if(!pRegion.isFocused()) {
-
+		if(!pRegion.isFocused())
+		{
 			if(currentPlayer.ownsRegion(pRegion))
 			{
 				selectRegion(pRegion);
@@ -472,11 +478,11 @@ public class GameLogic {
 		{
 			if(currentPlayer.ownsRegion(pRegion))
 			{
-				unselectRegion(pRegion);
+				unselectRegion();
 			}
 			else
 			{
-				untargetRegion(pRegion);
+				untargetRegion();
 			}
 
 		}	
@@ -485,42 +491,27 @@ public class GameLogic {
 	private void selectRegion(Region pRegion) {
 
 		// Shouldn't happen. 
-		if(selectedRegion != null) {
-			unselectRegion(selectedRegion);
+		if(selectedRegion != null)
+		{
+			unselectRegion();
 		}
 
-		if(pRegion.canAttack()) {
-
+		if(pRegion.canAttack())
+		{
 			selectedRegion = pRegion;
 			selectedRegion.focus();
-
-			//detailScene.setAttributes(selectedRegion, null);
-
-			//hud.showDetailButton();
-			//setInfoTabToChooseEnemyRegion();
-
-			//howOnlyNeighbourRegions(pRegion);	
 		}
 	}
 
-	private void unselectRegion(Region pRegion)
+	private void unselectRegion()
 	{
-		if(targetedRegion != null) {
-			targetedRegion.unfocus();
-			targetedRegion = null;
-
-			//hud.hideAttackButton();
+		if(targetedRegion != null)
+		{
+			untargetRegion();
 		}
-
-		//detailScene.setAttributes(null, null);
-		//hud.hideDetailButton();
 
 		selectedRegion.unfocus();
 		selectedRegion = null;
-
-		//showAllRegions();
-
-		//setInfoTabToChooseOwnRegion();
 	}
 
 	private void targetRegion(Region pRegion)
@@ -532,30 +523,18 @@ public class GameLogic {
 
 				if(targetedRegion != null)
 				{
-					untargetRegion(targetedRegion);
+					untargetRegion();
 				}
 
 				targetedRegion = pRegion;
 				targetedRegion.focus();
-
-				//detailScene.setAttributes(selectedRegion, targetedRegion);
-
-				//hud.showAttackButton();	
-				//setInfoTabToProceedToAttack();
 			}
-
 		}
 	}
 
-	private void untargetRegion(Region pRegion) 
+	private void untargetRegion() 
 	{
-
 		targetedRegion.unfocus();	
 		targetedRegion = null;
-
-		//detailScene.setAttributes(selectedRegion, null);
-		//hud.hideAttackButton();
-
-		//setInfoTabToChooseEnemyRegion();
 	}
 }
