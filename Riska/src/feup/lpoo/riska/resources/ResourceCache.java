@@ -54,6 +54,9 @@ public class ResourceCache {
 	private BitmapTextureAtlas menuBackgroundTextureAtlas;
 	public ITextureRegion menuBackgroundRegion;
 	
+	private BitmapTextureAtlas menuBorderTextureAtlas;
+	public ITextureRegion menuBorderRegion;
+	
 	private BuildableBitmapTextureAtlas mainMenuTextureAtlas;
 	public TiledTextureRegion textBtnRegion;
 	public TiledTextureRegion optionsBtnRegion;
@@ -69,7 +72,6 @@ public class ResourceCache {
 	public ITiledTextureRegion autoDeployBtnRegion;
 	public ITiledTextureRegion infoTabRegion;
 	public ITextureRegion windowRegion;
-//	public ITiledTextureRegion resultRegion;
 	public ITiledTextureRegion seaRegion;
 	public ITextureRegion mapRegion;
 	private BuildableBitmapTextureAtlas gameTextureAtlas;
@@ -142,6 +144,13 @@ public class ResourceCache {
 				activity, "background.png", 0, 0);
 		
 		menuBackgroundTextureAtlas.load();
+		
+		menuBorderTextureAtlas = new BitmapTextureAtlas(activity.getTextureManager(), 
+				bgTextureWidth, bgTextureHeight, TextureOptions.DEFAULT);
+		menuBorderRegion = BitmapTextureAtlasTextureRegionFactory.createFromAsset(menuBorderTextureAtlas, 
+				activity, "border.png", 0, 0);
+		
+		menuBorderTextureAtlas.load();
 		
 		int mainTextureWidth = 1024, mainTextureHeight = 2048;
 		
@@ -241,10 +250,7 @@ public class ResourceCache {
 				"info_tab.png", 1, 2);
 		
 		windowRegion = BitmapTextureAtlasTextureRegionFactory.createFromAsset(gameTextureAtlas, activity, "window.png");
-		
-//		resultRegion = BitmapTextureAtlasTextureRegionFactory.createTiledFromAsset(gameTextureAtlas, activity, 
-//				"result.png", 2, 1);
-		
+
 		
 		try {		
 			gameTextureAtlas.build(

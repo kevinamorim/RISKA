@@ -28,9 +28,9 @@ public class OptionsScene extends BaseScene implements IOnMenuItemClickListener 
 	public void createScene() {
 		createDisplay();
 		createOptionsMenuChildScene();
+		createBorder();
 		//SharedPreferencesManager.LoadBoolean("musicOn");
 	}
-
 	@Override
 	public void onBackKeyPressed() {
 		SceneManager.getSharedInstance().setScene(SceneType.MAIN_MENU);
@@ -53,26 +53,25 @@ public class OptionsScene extends BaseScene implements IOnMenuItemClickListener 
 		
 		optionsMenuChildScene = new MenuScene(camera);
 		
-		
 		TiledTextureRegion button = resources.returnBtnRegion;
 		
-		final AnimatedButtonSpriteMenuItem button_return = new AnimatedButtonSpriteMenuItem(MENU_RETURN, (float) 0.3*button.getWidth(), 
-				(float) 0.3*button.getHeight(), button, 
-				activity.getVertexBufferObjectManager());
+		final AnimatedButtonSpriteMenuItem button_return = new AnimatedButtonSpriteMenuItem(MENU_RETURN,
+				(float) 0.3*button.getWidth(), 
+				(float) 0.3*button.getHeight(),
+				button, vbom);
 		
 		button = resources.sliderBtnRegion;
 		
 		AnimatedButtonSpriteMenuItem button_slider_sfx = new AnimatedButtonSpriteMenuItem(MENU_SFX, 
 				(float) 0.3*button.getWidth(),
-				(float) 0.3*button.getHeight(), button, 
-				activity.getVertexBufferObjectManager());
+				(float) 0.3*button.getHeight(),
+				button, vbom);
 		
 		AnimatedButtonSpriteMenuItem button_slider_music = new AnimatedButtonSpriteMenuItem(MENU_MUSIC, 
 				(float) 0.3*button.getWidth(),
-				(float) 0.3*button.getHeight(), button, 
-				activity.getVertexBufferObjectManager());
-		
-		
+				(float) 0.3*button.getHeight(),
+				button, vbom);
+			
 		
 		final Text music_text = new Text(0, 0, resources.mainMenuFont, "MUSIC", activity.getVertexBufferObjectManager());
 		music_text.setPosition(MainActivity.CAMERA_WIDTH/2 - (float) 0.75*music_text.getWidth(), 
@@ -87,11 +86,13 @@ public class OptionsScene extends BaseScene implements IOnMenuItemClickListener 
 		
 		button_return.setPosition(button_return.getWidth()/2, button_return.getHeight()/2);
 		
-		button_slider_sfx.setPosition(MainActivity.CAMERA_WIDTH/2 + button_slider_sfx.getWidth()/2, 
+		button_slider_sfx.setPosition(
+				MainActivity.CAMERA_WIDTH/2 + button_slider_sfx.getWidth()/2, 
 				(float) 0.75*MainActivity.CAMERA_HEIGHT);
-		button_slider_music.setPosition(MainActivity.CAMERA_WIDTH/2 + button_slider_music.getWidth()/2, 
-				(float) 0.5*MainActivity.CAMERA_HEIGHT);
 		
+		button_slider_music.setPosition(
+				MainActivity.CAMERA_WIDTH/2 + button_slider_music.getWidth()/2, 
+				(float) 0.50*MainActivity.CAMERA_HEIGHT);
 		
 		
 		optionsMenuChildScene.addMenuItem(button_return);
@@ -111,8 +112,18 @@ public class OptionsScene extends BaseScene implements IOnMenuItemClickListener 
 	private void createDisplay() {
 		SpriteBackground background = new SpriteBackground(new Sprite(MainActivity.CAMERA_WIDTH/2, MainActivity.CAMERA_HEIGHT/2, 
 				resources.menuBackgroundRegion, activity.getVertexBufferObjectManager()));
+		
 		setBackground(background);
 	}
+	
+
+	private void createBorder() {
+		Sprite border = new Sprite(camera.getWidth()/2, camera.getHeight()/2, resources.menuBorderRegion, vbom);
+		border.setSize(camera.getWidth(), camera.getHeight());
+
+		optionsMenuChildScene.attachChild(border);
+	}
+
 
 	@Override
 	public boolean onMenuItemClicked(MenuScene pMenuScene, IMenuItem pMenuItem,

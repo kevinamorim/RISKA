@@ -19,12 +19,14 @@ public abstract class BaseScene extends Scene {
 	protected ResourceCache resources;
 	protected VertexBufferObjectManager vbom;
 	protected SmoothCamera camera;
+	protected SceneManager sceneManager;
 
 	// ==================================================
 	// CONSTRUCTOR
 	// ==================================================
 	public BaseScene() {
 		this.resources = ResourceCache.getSharedInstance();
+		this.sceneManager = SceneManager.getSharedInstance();
 		this.engine = resources.engine;
 		this.activity = resources.activity;
 		this.vbom = resources.vbom;

@@ -5,6 +5,8 @@ import org.andengine.entity.scene.menu.MenuScene;
 import org.andengine.entity.scene.menu.item.IMenuItem;
 import org.andengine.entity.scene.menu.MenuScene.IOnMenuItemClickListener;
 import org.andengine.entity.sprite.Sprite;
+import org.andengine.opengl.texture.region.TiledTextureRegion;
+
 import feup.lpoo.riska.gameInterface.AnimatedButtonSpriteMenuItem;
 import feup.lpoo.riska.gameInterface.AnimatedTextButtonSpriteMenuItem;
 import feup.lpoo.riska.scenes.SceneManager.SceneType;
@@ -16,24 +18,29 @@ public class MainMenuScene extends BaseScene implements IOnMenuItemClickListener
 	// ==================================================
 	private MenuScene mainMenuChildScene;
 	private MenuScene startGameMenuChildScene;
-	private final int MENU_START = 0;
-	private final int MENU_OPTIONS = 1;
-	private final int MENU_NEW = 2;
-	private final int MENU_LOAD = 3;
 
+	final int MENU_START = 0;
+	final int MENU_NEW = 1;
+	final int MENU_LOAD = 2;
+	final int MENU_RETURN = 3;
+	final int MENU_OPTIONS = 4;
 	
 	@Override
 	public void createScene() {
 		createBackground();
 		createMenuChildScene();
 		createStartGameMenuChildScene();
+		createBorder();
 	}
 
 	@Override
 	public void onBackKeyPressed() {
-		if(this.getChildScene().equals(mainMenuChildScene)) {
+		if(this.getChildScene().equals(mainMenuChildScene))
+		{
 			System.exit(0);
-		} else if(this.getChildScene().equals(startGameMenuChildScene)) {
+		}
+		else if(this.getChildScene().equals(startGameMenuChildScene))
+		{
 			detachChildren();
 			setChildScene(mainMenuChildScene);
 		}
@@ -57,7 +64,7 @@ public class MainMenuScene extends BaseScene implements IOnMenuItemClickListener
 		SpriteBackground background = new SpriteBackground(new Sprite(camera.getWidth()/2, 
 				camera.getHeight()/2, 
 				resources.menuBackgroundRegion, 
-				activity.getVertexBufferObjectManager()));
+				vbom));
 		
 		setBackground(background);
 	}
@@ -66,17 +73,13 @@ public class MainMenuScene extends BaseScene implements IOnMenuItemClickListener
 		
 		mainMenuChildScene = new MenuScene(camera);
 		
-		final AnimatedTextButtonSpriteMenuItem startBtn = 
-				new AnimatedTextButtonSpriteMenuItem(
-						MENU_START, 
+		final AnimatedTextButtonSpriteMenuItem startBtn = new AnimatedTextButtonSpriteMenuItem(MENU_START, 
 						resources.textBtnRegion.getWidth(), 
 						resources.textBtnRegion.getHeight(),
 						resources.textBtnRegion, 
 						vbom, "START", resources.mainMenuFont);
 		
-		final AnimatedButtonSpriteMenuItem optionsBtn = 
-				new AnimatedButtonSpriteMenuItem(
-						MENU_OPTIONS, 
+		final AnimatedButtonSpriteMenuItem optionsBtn = new AnimatedButtonSpriteMenuItem(MENU_OPTIONS, 
 						(float)(0.3*resources.optionsBtnRegion.getWidth()),
 						(float)(0.3*resources.optionsBtnRegion.getHeight()), 
 						resources.optionsBtnRegion, 
@@ -89,60 +92,80 @@ public class MainMenuScene extends BaseScene implements IOnMenuItemClickListener
 		mainMenuChildScene.addMenuItem(optionsBtn);
 		mainMenuChildScene.setBackgroundEnabled(false);
 		mainMenuChildScene.setOnMenuItemClickListener(this);
-		
-		setChildScene(mainMenuChildScene);
-		
+
+		setChildScene(mainMenuChildScene);	
 	}
 	
 	private void createStartGameMenuChildScene() {
 		
 		startGameMenuChildScene = new MenuScene(camera);
 		
-		final AnimatedTextButtonSpriteMenuItem newGameBtn =
-				new AnimatedTextButtonSpriteMenuItem(
-						MENU_NEW,
+		final AnimatedTextButtonSpriteMenuItem newGameBtn = new AnimatedTextButtonSpriteMenuItem(MENU_NEW,
 						resources.textBtnRegion.getWidth(),
 						resources.textBtnRegion.getHeight(),
 						resources.textBtnRegion,
 						vbom, "NEW", resources.mainMenuFont);
 		
-		final AnimatedTextButtonSpriteMenuItem loadGameBtn =
-				new AnimatedTextButtonSpriteMenuItem(
-						MENU_LOAD,
+		final AnimatedTextButtonSpriteMenuItem loadGameBtn = new AnimatedTextButtonSpriteMenuItem(MENU_LOAD,
 						resources.textBtnRegion.getWidth(),
 						resources.textBtnRegion.getHeight(),
 						resources.textBtnRegion,
 						vbom, "LOAD", resources.mainMenuFont);
+
+		final AnimatedButtonSpriteMenuItem returnBtn = new AnimatedButtonSpriteMenuItem(MENU_RETURN,
+				resources.returnBtnRegion.getWidth(), 
+				resources.returnBtnRegion.getHeight(),
+				resources.returnBtnRegion,
+				vbom);
 		
 		newGameBtn.setPosition(camera.getCenterX(), camera.getCenterY() + newGameBtn.getHeight()/2);
 		loadGameBtn.setPosition(camera.getCenterX(), camera.getCenterY() - loadGameBtn.getHeight()/2);
 		
+		startGameMenuChildScene.addMenuItem(returnBtn);
 		startGameMenuChildScene.addMenuItem(newGameBtn);
 		startGameMenuChildScene.addMenuItem(loadGameBtn);
 		startGameMenuChildScene.setBackgroundEnabled(false);
 		startGameMenuChildScene.setOnMenuItemClickListener(this);
 		
 	}
+	
+	private void createBorder()
+	{
+		Sprite border = new Sprite(camera.getWidth()/2, camera.getHeight()/2, resources.menuBorderRegion, vbom);
+		border.setSize(camera.getWidth(), camera.getHeight());
+
+		mainMenuChildScene.attachChild(border);
+		
+		Sprite border2 = new Sprite(camera.getWidth()/2, camera.getHeight()/2, resources.menuBorderRegion, vbom);
+		border2.setSize(camera.getWidth(), camera.getHeight());
+		
+		startGameMenuChildScene.attachChild(border2);
+	}
 
 	@Override
-	public boolean onMenuItemClicked(MenuScene pMenuScene, IMenuItem pMenuItem,
-			float pMenuItemLocalX, float pMenuItemLocalY) {
-		switch(pMenuItem.getID()) {
+	public boolean onMenuItemClicked(MenuScene pMenuScene, IMenuItem pMenuItem, float pX, float pY)
+	{
+		switch(pMenuItem.getID())
+		{
 		case MENU_START:
 			setChildScene(startGameMenuChildScene);
 			break;
 		case MENU_OPTIONS:
-			SceneManager.getSharedInstance().createOptionsScene();
+			sceneManager.createOptionsScene();
 			break;
 		case MENU_NEW:
-			SceneManager.getSharedInstance().createGameScene();
+			sceneManager.createGameScene();
 			break;
 		case MENU_LOAD:
-			//SceneManager.getSharedInstance().loadGameScene(engine);
+			//sceneManager.loadGameScene(engine);
+			break;
+		case MENU_RETURN:
+			setChildScene(mainMenuChildScene);
 			break;
 		default:
 			break;
 		}
+		
 		return false;
 	}
 
