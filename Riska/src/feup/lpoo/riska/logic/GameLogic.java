@@ -5,6 +5,7 @@ import java.util.Random;
 
 import org.andengine.util.adt.color.Color;
 
+import android.util.Log;
 import feup.lpoo.riska.R;
 import feup.lpoo.riska.elements.Map;
 import feup.lpoo.riska.elements.Player;
@@ -258,6 +259,13 @@ public class GameLogic {
 
 	public void attack()
 	{
+		
+		if(selectedRegion == null || targetedRegion == null)
+		{
+			Log.e("Riska","An attack was called but either the attacker and/or defender are undefined.");
+			return;
+		}
+		
 		Region attacker = selectedRegion;
 		Region defender = targetedRegion;
 		

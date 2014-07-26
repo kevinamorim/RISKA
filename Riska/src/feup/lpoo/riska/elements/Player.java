@@ -49,8 +49,8 @@ public class Player extends Object {
 		this.isCPU = isCPU;
 		if(isCPU)
 		{
-			numberOfCPUs++;
-			playerName = "CPU " + numberOfCPUs;
+			//numberOfCPUs++;
+			playerName = "CPU" /*+ " " + numberOfCPUs*/;
 		}
 		else
 		{

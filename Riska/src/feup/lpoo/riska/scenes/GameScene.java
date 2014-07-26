@@ -271,12 +271,14 @@ public class GameScene extends BaseScene implements IOnSceneTouchListener, IScro
 			else
 			{
 				detailScene.setAttributes(logic.selectedRegion, null);
+				hud.hide(BUTTON.ATTACK);
 			}
 		}
 		else
 		{
 			detailScene.setAttributes(null, null);
 			hud.hide(BUTTON.DETAILS);
+			hud.hide(BUTTON.ATTACK);
 			
 			showAllRegions();
 		}
@@ -463,7 +465,7 @@ public class GameScene extends BaseScene implements IOnSceneTouchListener, IScro
 	// ======================================================
 	
 	public void onAttack()
-	{	
+	{
 		cameraManager.zoomOut();	
 		//hud.changeDetailButton();	
 		logic.attack();
