@@ -206,22 +206,17 @@ public class Region extends Element {
 	/**
 	 * Switches the primary color with the secondary one.
 	 */
-	private void switchColors() {
-		Color temp = new Color(priColor);
-		
-		this.priColor = secColor;
-		this.secColor = temp;
-	}
-
-	/**
-	 * Changes a region's focus.
-	 *  
-	 * @param value : new value for the region focus
-	 */
-	public void changeFocus(boolean value)
-	{
-		this.focused = value;
-		this.switchColors();
+	private void switchColors(boolean toFocus) {
+		if(toFocus)
+		{
+			priColor = owner.getScondaryColor();
+			secColor = owner.getPrimaryColor();
+		}
+		else
+		{
+			priColor = owner.getPrimaryColor();
+			secColor = owner.getScondaryColor();
+		}
 	}
 	
 	/**
@@ -247,8 +242,8 @@ public class Region extends Element {
 		owner = newOwner;
 		owner.addRegion(this);
 		
-		priColor = owner.getPrimaryColor();
-		secColor = owner.getScondaryColor();
+		secColor = owner.getPrimaryColor();
+		priColor = owner.getScondaryColor();
 	}
 	
 	public boolean canAttack() {
@@ -280,14 +275,14 @@ public class Region extends Element {
 	{	
 		focused = true;
 		
-		switchColors();
+		switchColors(true);
 	}
 	
 	public void unfocus()
 	{
 		focused = false;
 		
-		switchColors();
+		switchColors(false);
 	}
 	
 	public Region selectTargetRegion()

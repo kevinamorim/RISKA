@@ -40,6 +40,8 @@ public class GameScene extends BaseScene implements IOnSceneTouchListener, IScro
 	private final long MIN_TOUCH_INTERVAL = 70;
 	private final long MAX_TOUCH_INTERVAL = 400;
 	
+	private final float CPU_DELAY = 1.0f;
+	
 	private final int ANIM_DURATION = 250;
 	
 	private final int MIN_SOLDIERS_PER_REGION = 1;
@@ -215,6 +217,7 @@ public class GameScene extends BaseScene implements IOnSceneTouchListener, IScro
 		{
 			doubleTapAllowed = false;
 			scrollDetector.setEnabled(false);
+			hud.show(BUTTON.DETAILS);
 			hud.hide(BUTTON.ATTACK);
 			hud.hide(SPRITE.INFO_TAB);
 			battleScene.setVisible(false);
@@ -225,6 +228,7 @@ public class GameScene extends BaseScene implements IOnSceneTouchListener, IScro
 		{
 			doubleTapAllowed = false;
 			scrollDetector.setEnabled(false);
+			hud.show(BUTTON.DETAILS);
 			hud.hide(BUTTON.ATTACK);
 			hud.hide(SPRITE.INFO_TAB);
 			detailScene.setVisible(false);
@@ -455,12 +459,10 @@ public class GameScene extends BaseScene implements IOnSceneTouchListener, IScro
 	// ======================================================
 	// ======================================================
 	
-	public void onAttack() {
-		
-		cameraManager.zoomOut();
-		
-		hud.changeDetailButton();
-		
+	public void onAttack()
+	{	
+		cameraManager.zoomOut();	
+		//hud.changeDetailButton();	
 		logic.attack();
 	}
 	

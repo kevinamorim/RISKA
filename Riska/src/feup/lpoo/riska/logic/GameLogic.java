@@ -28,7 +28,6 @@ public class GameLogic {
 	// ======================================================
 	private final int MIN_PLAYERS_IN_GAME = 2;
 	private final float BONUS_FACTOR = 1.0f;
-	private final float CPU_DELAY = 1.0f;
 
 	private final int SOLDIER_INC = 1;
 
@@ -232,18 +231,12 @@ public class GameLogic {
 		gameScene.lockUserInput();
 		gameScene.lockHUD();
 
-		attacker.focus();
-		defender.focus();
 		selectRegion(attacker);
 		targetRegion(defender);
 		attack();
 		
 		gameScene.unlockUserInput();
 		gameScene.unlockHUD();
-
-		//		registerEntityModifier(selectRegionMod);
-		//		registerEntityModifier(targetRegionMod);
-		//		registerEntityModifier(attackMod);
 	}
 
 	private boolean gameOver()
@@ -334,11 +327,7 @@ public class GameLogic {
 	public Map getMap() {
 		return map;
 	}
-
-	public void setMap(Map map) {
-		this.map = map;
-	}
-
+	
 	private Player getNextPlayer() {
 
 		int i = players.indexOf(currentPlayer);
@@ -405,7 +394,8 @@ public class GameLogic {
 				selectRegion(pRegion);
 				gameScene.showOnlyNeighbourRegions(pRegion);
 			}
-			else {
+			else
+			{
 				targetRegion(pRegion);
 			}
 		}
