@@ -28,15 +28,16 @@ public class GameLogic {
 	// CONSTANTS
 	// ======================================================
 	private final int MIN_PLAYERS_IN_GAME = 2;
-	private final float BONUS_FACTOR = 1.0f;
 
 	private final int SOLDIER_INC = 1;
 
 	public enum GAME_STATE {
 		PAUSED,
 		DEPLOYMENT,
-		PLAY,
-		PAUSED_PLAY,
+		ATTACK,
+		MOVE,
+		PLAY, 		 /* TODO: Delete */
+		PAUSED_PLAY, /* TODO: Delete */
 		GAMEOVER
 	};
 
@@ -68,12 +69,8 @@ public class GameLogic {
 
 		gameScene = scene;
 
-		map = resources.map;
-
 		createsPlayers();
-
-		/* Distributes regions equally between each player */
-		handOutRegions();
+		createMap();
 
 		state = GAME_STATE.DEPLOYMENT;
 		turnDone = false;
@@ -85,52 +82,23 @@ public class GameLogic {
 
 		players = new ArrayList<Player>();
 
-		int MAX_SOLDIERS_TO_DEPLOY = (int) (map.getNumberOfRegions() * BONUS_FACTOR);
+		int INITIAL_SOLDIERS_TO_DEPLOY = 38;
 
 		Player player = new Player(false, PLAYER_COLOR[0], PLAYER_COLOR[1], "PLAYER");
-		player.setSoldiersToDeploy(MAX_SOLDIERS_TO_DEPLOY);
+		player.setSoldiersToDeploy(INITIAL_SOLDIERS_TO_DEPLOY);
 
 		Player cpu = new Player(true, CPU_COLOR[0], CPU_COLOR[1], "CPU");
-		cpu.setSoldiersToDeploy(MAX_SOLDIERS_TO_DEPLOY);
+		cpu.setSoldiersToDeploy(INITIAL_SOLDIERS_TO_DEPLOY);
 
 		players.add(player);
 		players.add(cpu);
 
 		currentPlayer = players.get(0);	
 	}
-
-	private void handOutRegions() {
-
-		ArrayList<Integer> indexes = new ArrayList<Integer>();
-
-		Random random = new Random();
-
-		while(indexes.size() < map.getNumberOfRegions()) {
-
-			int index = random.nextInt(map.getNumberOfRegions());
-
-			if(!indexes.contains(index)) {
-				indexes.add(index);
-			}	
-		}
-
-		int i = 0;
-
-		for(Integer index : indexes) {
-
-			Region region = map.getRegions().get(index);
-			Player player = players.get(i);
-
-			player.addRegion(region);
-
-			region.setSoldiers(1);
-
-			region.setOwner(player);
-			region.setColors(player.getPrimaryColor(), player.getScondaryColor());
-
-			i++;
-			i = i % players.size(); 
-		}
+	
+	private void createMap() {
+		map = resources.map;
+		map.handOutRegions(players);
 	}
 
 	

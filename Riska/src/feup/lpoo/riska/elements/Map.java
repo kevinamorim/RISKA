@@ -1,6 +1,7 @@
 package feup.lpoo.riska.elements;
 
 import java.util.ArrayList;
+import java.util.Random;
 
 import android.graphics.Point;
 import android.util.Log;
@@ -33,6 +34,41 @@ public class Map {
 
 	public int getNumberOfRegions() {
 		return regions.size();
+	}
+	
+	public void handOutRegions(ArrayList<Player> players) {
+		
+		ArrayList<Integer> indexes = new ArrayList<Integer>();
+
+		Random random = new Random();
+
+		while(indexes.size() < getNumberOfRegions()) {
+
+			int index = random.nextInt(getNumberOfRegions());
+
+			if(!indexes.contains(index)) {
+				indexes.add(index);
+			}	
+		}
+
+		int i = 0;
+
+		for(Integer index : indexes) {
+
+			Region region = getRegions().get(index);
+			Player player = players.get(i);
+
+			player.addRegion(region);
+
+			region.setSoldiers(1);
+
+			region.setOwner(player);
+			region.setColors(player.getPrimaryColor(), player.getScondaryColor());
+
+			i++;
+			i = i % players.size(); 
+		}
+		
 	}
 	
 	private ArrayList<Region> readRegions(String filename) {

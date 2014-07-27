@@ -80,8 +80,6 @@ public class GameScene extends BaseScene implements IOnSceneTouchListener, IScro
 	@Override
 	public void createScene() {
 		logic = new GameLogic(this);
-		detailScene = new DetailScene();
-		battleScene = new BattleScene();
 		
 		map = resources.map;
 		
@@ -107,9 +105,9 @@ public class GameScene extends BaseScene implements IOnSceneTouchListener, IScro
 	@Override
 	public void disposeScene() {
 		camera.setHUD(null);
-		//detachChildren();
-		//detachSelf();
-		//dispose();
+		detachChildren();
+		detachSelf();
+		dispose();
 	}
 	
 	// ======================================================
@@ -128,11 +126,7 @@ public class GameScene extends BaseScene implements IOnSceneTouchListener, IScro
 	
 		createRegionButtons();
 		
-		detailScene.setVisible(false);
-		attachChild(detailScene);
-		
-		battleScene.setVisible(false);
-		attachChild(battleScene);
+		createChildScenes();
 
 		setTouchAreaBindingOnActionDownEnabled(true);
 		setOnSceneTouchListener(this);	
@@ -172,6 +166,19 @@ public class GameScene extends BaseScene implements IOnSceneTouchListener, IScro
 
 		hud.show(SPRITE.INFO_TAB);
 		hud.show(BUTTON.AUTO_DEPLOY);
+	}
+	
+	private void createChildScenes() {
+		
+		detailScene = new DetailScene();
+		battleScene = new BattleScene();
+		
+		detailScene.setVisible(false);
+		attachChild(detailScene);
+		
+		battleScene.setVisible(false);
+		attachChild(battleScene);
+		
 	}
 	
 	// ======================================================
@@ -381,8 +388,6 @@ public class GameScene extends BaseScene implements IOnSceneTouchListener, IScro
 			
 			regionButtons.add(regionButton);
 			regionButtonsText.add(buttonText);
-			
-			//Log.d("Riska", "Added region " + region.getName());
 			
 			attachChild(regionButton);
 			registerTouchArea(regionButton);
