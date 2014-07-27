@@ -163,7 +163,7 @@ public class GameScene extends BaseScene implements IOnSceneTouchListener, IScro
 		
 		hud = new GameHUD(this);
 		activity.mCamera.setHUD(hud);
-
+	
 		hud.show(SPRITE.INFO_TAB);
 		hud.show(BUTTON.AUTO_DEPLOY);
 	}
@@ -193,21 +193,21 @@ public class GameScene extends BaseScene implements IOnSceneTouchListener, IScro
 		{
 		case PAUSED:
 			break;
-			
+		case SETUP:
+			logic.setup();
+			break;		
 		case DEPLOYMENT:
 			deploymentUpdate();
-			logic.updateDeployment();
+			logic.deploy();
+			break;	
+		case ATTACK:
 			break;
-			
+		case MOVE:
+			break;
 		case PLAY:
 			gameUpdate();
 			logic.updateGame();
-			break;
-			
-		case PAUSED_PLAY:
-			gameUpdate();
-			break;
-			
+			break;				
 		default:
 			break;
 		}
@@ -215,36 +215,7 @@ public class GameScene extends BaseScene implements IOnSceneTouchListener, IScro
 	}
 	
 	private void gameUpdate()
-	{
-		
-		if(detailScene.isVisible())
-		{
-			doubleTapAllowed = false;
-			scrollDetector.setEnabled(false);
-			hud.show(BUTTON.DETAILS);
-			hud.hide(BUTTON.ATTACK);
-			hud.hide(SPRITE.INFO_TAB);
-			battleScene.setVisible(false);
-			return;
-		}
-		
-		if(battleScene.isVisible())
-		{
-			doubleTapAllowed = false;
-			scrollDetector.setEnabled(false);
-			hud.show(BUTTON.DETAILS);
-			hud.hide(BUTTON.ATTACK);
-			hud.hide(SPRITE.INFO_TAB);
-			detailScene.setVisible(false);
-			return;
-		}
-		
-		doubleTapAllowed = true;
-		scrollDetector.setEnabled(true);
-		hud.setDetailButtonToQuestion();
-		hud.show(BUTTON.DETAILS);
-		hud.show(SPRITE.INFO_TAB);
-		
+	{	
 		for(int i = 0; i < regionButtons.size(); i++)
 		{
 			ButtonSprite btn = regionButtons.get(i);
@@ -668,28 +639,34 @@ public class GameScene extends BaseScene implements IOnSceneTouchListener, IScro
 
 		if(detailScene.isVisible())
 		{
-			hud.setDetailButtonToQuestion();
-			
 			detailScene.setVisible(false);
+			hud.setDetailButtonToQuestion();
+			unlockUserInput();
+			hud.show(BUTTON.DETAILS);
+			hud.show(SPRITE.INFO_TAB);
 			logic.resumeGame();
 		}
 		else
 		{
 			if(battleScene.isVisible())
 			{
-				hud.setDetailButtonToQuestion();
-				
 				battleScene.setVisible(false);
+				hud.setDetailButtonToQuestion();
+				unlockUserInput();
+				hud.show(BUTTON.DETAILS);
+				hud.show(SPRITE.INFO_TAB);
 				logic.resumeGame();
 			}
 			else
 			{
 				hud.setDetailButtonToExit();
-				
+				lockUserInput();
 				logic.pauseGame();
+				hud.show(BUTTON.DETAILS);
+				hud.hide(BUTTON.ATTACK);
+				hud.hide(SPRITE.INFO_TAB);
 				detailScene.update(logic.selectedRegion, logic.targetedRegion);
 				detailScene.setVisible(true);
-
 				getCameraManager().zoomOut();
 			}
 		}

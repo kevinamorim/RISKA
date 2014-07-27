@@ -33,11 +33,11 @@ public class GameLogic {
 
 	public enum GAME_STATE {
 		PAUSED,
+		SETUP, 
 		DEPLOYMENT,
 		ATTACK,
 		MOVE,
 		PLAY, 		 /* TODO: Delete */
-		PAUSED_PLAY, /* TODO: Delete */
 		GAMEOVER
 	};
 
@@ -72,7 +72,7 @@ public class GameLogic {
 		createsPlayers();
 		createMap();
 
-		state = GAME_STATE.DEPLOYMENT;
+		state = GAME_STATE.SETUP;
 		turnDone = false;
 
 		battleGenerator = new BattleGenerator();
@@ -101,8 +101,7 @@ public class GameLogic {
 		map.handOutRegions(players);
 	}
 
-	
-	public void updateDeployment() {
+	public void setup() {
 
 		if(!currentPlayer.hasSoldiersLeftToDeploy()) /* If player has deployed all of his soldiers. */
 		{
@@ -117,7 +116,7 @@ public class GameLogic {
 
 				if(currentPlayer.isCPU())
 				{
-					gameScene.setInfoTabText(Utilities.getString(R.string.game_info_wait_for_CPU));
+					gameScene.setInfoTabText(Utilities.getString(R.string.game_info_wait_for_CPU)); /* TODO: Move to gamescene */
 					currentPlayer.deploy();
 				}
 
@@ -248,6 +247,22 @@ public class GameLogic {
 		unselectRegion();
 	}
 
+	public void deploy() {
+		
+		if(currentPlayer.hasSoldiersLeftToDeploy() && currentPlayer.isCPU()) {
+			currentPlayer.deploy();
+		}
+		
+		if(!currentPlayer.hasSoldiersLeftToDeploy()) {
+			state = GAME_STATE.ATTACK;
+		}
+		
+	}
+	
+	public void move() {
+		
+	}
+	
 	public void autoDeployment(Player player)
 	{
 		player.deploy();
@@ -428,7 +443,7 @@ public class GameLogic {
 	
 	public void pauseGame()
 	{
-		state = GAME_STATE.PAUSED_PLAY;
+		state = GAME_STATE.PAUSED;
 	}
 	
 	public void resumeGame()

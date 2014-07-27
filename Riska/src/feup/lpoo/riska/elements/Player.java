@@ -13,12 +13,6 @@ import android.util.Log;
 public class Player extends Object {
 	
 	// ======================================================
-	// STATICS
-	// ======================================================
-
-	public static int numberOfCPUs = 0;
-	
-	// ======================================================
 	// CONSTANTS
 	// ======================================================
 	
@@ -49,8 +43,7 @@ public class Player extends Object {
 		this.isCPU = isCPU;
 		if(isCPU)
 		{
-			//numberOfCPUs++;
-			playerName = "CPU" /*+ " " + numberOfCPUs*/;
+			playerName = "CPU";
 		}
 		else
 		{
