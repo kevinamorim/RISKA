@@ -152,14 +152,12 @@ public class GameScene extends BaseScene implements IOnSceneTouchListener, IScro
 	
 	private void createBackground() {
 		
-		int ANIMATION_TILES = 8;
+		int ANIMATION_TILES = 4;
 		
 		AnimatedSprite background = new AnimatedSprite(MainActivity.CAMERA_WIDTH/2, MainActivity.CAMERA_HEIGHT/2, 
 				resources.seaRegion, vbom);
 		
 		background.setSize(MainActivity.CAMERA_WIDTH, MainActivity.CAMERA_HEIGHT);
-		
-		//background.setScale(2f);
 		
 		long duration[] = new long[ANIMATION_TILES];
 		Arrays.fill(duration, ANIM_DURATION);

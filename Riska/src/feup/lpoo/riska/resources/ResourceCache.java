@@ -214,7 +214,7 @@ public class ResourceCache {
 		
 		BitmapTextureAtlasTextureRegionFactory.setAssetBasePath("gfx/game/");
 		
-		int seaTextureWidth = 2048, seaTextureHeight = 1024, seaCols = 4, seaLines = 2;
+		int seaTextureWidth = 4096, seaTextureHeight = 2048, seaCols = 2, seaLines = 2;
 		int mapTextureWidth = 4096, mapTextureHeight = 2048;
 		int gameTextureWidth = 1024, gameTextureHeight = 1024;
 		
