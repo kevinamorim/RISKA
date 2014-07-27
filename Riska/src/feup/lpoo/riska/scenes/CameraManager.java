@@ -1,50 +1,38 @@
 package feup.lpoo.riska.scenes;
 
+import org.andengine.engine.camera.SmoothCamera;
+
 import feup.lpoo.riska.elements.Region;
 import feup.lpoo.riska.logic.MainActivity;
 import android.graphics.Point;
 
-public class CameraManager {
+public class CameraManager extends SmoothCamera {
 
 	Point start, mid, temp, center;
 	
-	MainActivity activity;
+	private final float MAX_ZOOM_FACTOR = 2.0f;
+	private final float MIN_ZOOM_FACTOR = 1.0f;
+	private final int NEAR_DIST = 5;
 	
-	protected static final float MAX_ZOOM_FACTOR = 2.0f;
-	protected static final float MIN_ZOOM_FACTOR = 1.0f;
-	protected static final int NEAR_DIST = 5;
+	private float zoomFactor;
 	
-	protected float initialDistance;
-	protected float finalDistance;
-	protected float zoomFactor;
-	
-	protected int mode;
-	
-	static CameraManager instance;
-	
-	public CameraManager() {
+	public CameraManager(float pX, float pY, float pWidth, float pHeight, float pMaxVelocityX, float pMaxVelocityY, 
+			float pMaxZoomFactorChange) {
 		
-		instance = this;
-		
-		this.activity = MainActivity.getSharedInstance();
+		super(pX, pY, pWidth, pHeight, pMaxVelocityX, pMaxVelocityY, pMaxZoomFactorChange);
 		
 		this.start = new Point();
 		this.mid = new Point();
 		this.temp = new Point();
 		this.center = new Point();
+		zoomFactor = MIN_ZOOM_FACTOR;
 		
-		center.set(MainActivity.CAMERA_WIDTH / 2, MainActivity.CAMERA_HEIGHT / 2);
-		
-		this.zoomFactor = 1.0f;
+		center.set((int) getCenterX(), (int) getCenterY());
 		
 	}
 	
 	public void setStartPoint(float x, float y) {
 		start.set((int)x, (int)y);
-	}
-	
-	public void setMode(int mode) {
-		this.mode = mode;
 	}
 	
 	public void setZoomFactor(float factor) {
@@ -55,7 +43,7 @@ public class CameraManager {
 			setStartPoint(center.x, center.y);
 		}
 		
-		activity.mCamera.setZoomFactor(factor);
+		super.setZoomFactor(factor);
 		zoomFactor = factor;
 	}
 	
@@ -66,23 +54,19 @@ public class CameraManager {
 	}
 
 	public void panToStart() {
-		activity.mCamera.setCenter(start.x, start.y);
+		setCenter(start.x, start.y);
 	}
 	
 	public void panToCenter() {
-		activity.mCamera.setCenter(center.x, center.y);
+		setCenter(center.x, center.y);
 	}
 	
 	public void panTo(Point p) {
-		activity.mCamera.setCenter(p.x, p.y);
+		setCenter(p.x, p.y);
 	}
 	
 	public void jumpTo(Point p) {
-		activity.mCamera.setCenterDirect(p.x, p.y);
-	}
-
-	public static CameraManager getSharedInstance() {
-		return instance;
+		setCenterDirect(p.x, p.y);
 	}
 
 	public void setPoint(float x, float y) {
@@ -105,30 +89,29 @@ public class CameraManager {
 	}
 	
 	public void setAutomaticZoom(Point p) {
-		if(activity.mCamera.getZoomFactor() == 1.0f) {
-			activity.mCamera.setZoomFactor(MAX_ZOOM_FACTOR);
+		if(getZoomFactor() == 1.0f) {
+			super.setZoomFactor(MAX_ZOOM_FACTOR);
 			panTo(p);
 		} else {
-			activity.mCamera.setZoomFactor(MIN_ZOOM_FACTOR);
+			super.setZoomFactor(MIN_ZOOM_FACTOR);
 			panTo(center);
 		}
 	}
 	
 	public void zoomIn() {
-		activity.mCamera.setZoomFactor(MAX_ZOOM_FACTOR);
+		super.setZoomFactor(MAX_ZOOM_FACTOR);
 	}
 	
 	public void zoomOut() {
-		activity.mCamera.setZoomFactor(MIN_ZOOM_FACTOR);
+		super.setZoomFactor(MIN_ZOOM_FACTOR);
 	}
 	
 	public void focusOnRegion(Region region) {
-		activity.mCamera.setBoundsEnabled(false);
-		activity.mCamera.setZoomFactor(MAX_ZOOM_FACTOR);
-		Point p = new Point((int) (((region.getStratCenter().x * MainActivity.CAMERA_WIDTH)/100) - (MainActivity.CAMERA_HEIGHT * 0.25)),
-				((region.getStratCenter().y * MainActivity.CAMERA_HEIGHT)/100));
+		setBoundsEnabled(false);
+		super.setZoomFactor(MAX_ZOOM_FACTOR);
+		Point p = new Point((int) (((region.getStratCenter().x * getWidth()/100) - (getHeight() * 0.25))),
+				(int) ((region.getStratCenter().y * getHeight())/100));
 		panTo(p);
-		//activity.mCamera.setBoundsEnabled(true);
 	}
 	
 

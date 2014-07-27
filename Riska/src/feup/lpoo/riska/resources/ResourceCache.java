@@ -36,7 +36,7 @@ public class ResourceCache {
 	// ======================================================
 	public MainActivity activity;
 	public Engine engine;
-	public SmoothCamera camera;
+	public CameraManager camera;
 	public VertexBufferObjectManager vbom;
 	public Conductor conductor;
 	
@@ -199,8 +199,6 @@ public class ResourceCache {
 		loadGameGraphics();
 		loadGameFonts();
 		map = new Map("regions.csv", "neighbours.csv");
-		
-		new CameraManager();
 
 	}
 
@@ -322,7 +320,7 @@ public class ResourceCache {
 
 	
 	public static void prepareManager(Engine engine, MainActivity activity, 
-			SmoothCamera camera, VertexBufferObjectManager vbom) {
+			CameraManager camera, VertexBufferObjectManager vbom) {
 		getSharedInstance().engine = engine;
 		getSharedInstance().activity = activity;
 		getSharedInstance().camera = camera;

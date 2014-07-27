@@ -42,8 +42,8 @@ public class BattleScene extends Scene {
 		
 		activity = MainActivity.getSharedInstance();
 		sceneManager = SceneManager.getSharedInstance();	
-		cameraManager = CameraManager.getSharedInstance();
 		resources = ResourceCache.getSharedInstance();
+		cameraManager = resources.camera;
 		
 		setBackgroundEnabled(false);
 		

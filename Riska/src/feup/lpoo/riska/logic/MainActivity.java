@@ -14,6 +14,7 @@ import org.andengine.ui.activity.BaseGameActivity;
 
 import android.view.KeyEvent;
 import feup.lpoo.riska.resources.ResourceCache;
+import feup.lpoo.riska.scenes.CameraManager;
 import feup.lpoo.riska.scenes.SceneManager;
 
 public class MainActivity extends BaseGameActivity {	
@@ -28,7 +29,7 @@ public class MainActivity extends BaseGameActivity {
 	public final static float RES_RATIO = 16f/10f;
 	
 	public Font mFont;
-	public SmoothCamera  mCamera;
+	public CameraManager  mCamera;
 	
 	public Scene mCurrentScene;
 	public static MainActivity instance;
@@ -41,7 +42,7 @@ public class MainActivity extends BaseGameActivity {
 		
 		instance = this;
 		
-		mCamera = new SmoothCamera(0, 0, CAMERA_WIDTH, CAMERA_HEIGHT, MAX_VELOCITY, MAX_VELOCITY, 3.0f);
+		mCamera = new CameraManager(0, 0, CAMERA_WIDTH, CAMERA_HEIGHT, MAX_VELOCITY, MAX_VELOCITY, 3.0f);
 
 		mCamera.setBounds(0, 0, CAMERA_WIDTH, CAMERA_HEIGHT);
 		mCamera.setBoundsEnabled(true);

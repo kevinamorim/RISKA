@@ -18,7 +18,7 @@ public abstract class BaseScene extends Scene {
 	protected MainActivity activity;
 	protected ResourceCache resources;
 	protected VertexBufferObjectManager vbom;
-	protected SmoothCamera camera;
+	protected CameraManager camera;
 	protected SceneManager sceneManager;
 
 	// ==================================================

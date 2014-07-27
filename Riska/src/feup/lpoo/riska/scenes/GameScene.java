@@ -57,7 +57,6 @@ public class GameScene extends BaseScene implements IOnSceneTouchListener, IScro
 	// SINGLETONS
 	// ======================================================
 	GameLogic logic;
-	CameraManager cameraManager;	
 	BattleScene battleScene;
 	
 	// ======================================================
@@ -85,8 +84,6 @@ public class GameScene extends BaseScene implements IOnSceneTouchListener, IScro
 		battleScene = new BattleScene();
 		
 		map = resources.map;
-		
-		cameraManager = CameraManager.getSharedInstance();
 		
 		regionButtons = new ArrayList<ButtonSprite>();
 		regionButtonsText = new ArrayList<Text>();
@@ -430,7 +427,7 @@ public class GameScene extends BaseScene implements IOnSceneTouchListener, IScro
 					((System.currentTimeMillis() - lastTouchTime) < MAX_TOUCH_INTERVAL) && doubleTapAllowed ) {
 				
 				/* Double tap */
-				cameraManager.setAutomaticZoom(new Point((int) pSceneTouchEvent.getX(), 
+				camera.setAutomaticZoom(new Point((int) pSceneTouchEvent.getX(), 
 						(int) pSceneTouchEvent.getY()));
 				
 			}
@@ -476,7 +473,7 @@ public class GameScene extends BaseScene implements IOnSceneTouchListener, IScro
 		Log.d("ScrollDetector", "Scrolling");
 		
 		Point p = new Point((int)(activity.mCamera.getCenterX() - pX), (int)(activity.mCamera.getCenterY() + pY));
-		cameraManager.jumpTo(p);	
+		camera.jumpTo(p);	
 	}
 
 	@Override
@@ -485,7 +482,7 @@ public class GameScene extends BaseScene implements IOnSceneTouchListener, IScro
 		Log.d("ScrollDetector", "Scrolling finished.");
 		
 		Point p = new Point((int)(activity.mCamera.getCenterX() - pX), (int)(activity.mCamera.getCenterY() + pY));
-		cameraManager.jumpTo(p);
+		camera.jumpTo(p);
 		
 		registerTouchAreaForAllRegions();
 	}
@@ -495,7 +492,7 @@ public class GameScene extends BaseScene implements IOnSceneTouchListener, IScro
 	
 	public void onAttack()
 	{
-		cameraManager.zoomOut();
+		camera.zoomOut();
 		logic.attack();
 	}
 	
@@ -617,7 +614,7 @@ public class GameScene extends BaseScene implements IOnSceneTouchListener, IScro
 	// GETTERS & SETTERS
 	// ======================================================
 	public CameraManager getCameraManager() {
-		return cameraManager;
+		return camera;
 	}
 
 	// ======================================================
