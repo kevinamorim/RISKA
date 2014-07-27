@@ -265,11 +265,9 @@ public class ResourceCache {
 		
 		FontFactory.setAssetBasePath("fonts/");
 
-		mGameFont = FontFactory.createFromAsset(engine.getFontManager(),
-				engine.getTextureManager(), 256, 512, TextureOptions.BILINEAR,
-				activity.getAssets(), "reprise.ttf", 48f, true,
-				Color.WHITE);
-
+		mGameFont = FontFactory.create(engine.getFontManager(), 
+				engine.getTextureManager(), 512, 512, 
+				Typeface.create(Typeface.DEFAULT, Typeface.BOLD), 32);
 		
 		mInfoTabFont = FontFactory.create(engine.getFontManager(), 
 				engine.getTextureManager(), 512, 512, 

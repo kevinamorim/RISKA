@@ -12,8 +12,11 @@ public class LoadingScene extends BaseScene {
 	public void createScene() {
 		setBackground(new Background(Color.BLACK));
 		
-		attachChild(new Text(camera.getCenterX(), camera.getCenterY(), 
-				resources.mainMenuFont, "Loading...", vbom));
+		Text loadingTxt = new Text(camera.getCenterX(), camera.getCenterY(), 
+				resources.mainMenuFont, "Loading...", vbom);
+		loadingTxt.setScale(0.5f);
+		
+		attachChild(loadingTxt);
 		
 	}
 
