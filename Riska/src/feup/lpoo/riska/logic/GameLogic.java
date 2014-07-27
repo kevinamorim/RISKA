@@ -37,6 +37,7 @@ public class GameLogic {
 		DEPLOYMENT,
 		ATTACK,
 		MOVE,
+		CPU,
 		PLAY, 		 /* TODO: Delete */
 		GAMEOVER
 	};
@@ -101,30 +102,6 @@ public class GameLogic {
 		map.handOutRegions(players);
 	}
 
-	public void setup() {
-
-		if(!currentPlayer.hasSoldiersLeftToDeploy()) /* If player has deployed all of his soldiers. */
-		{
-			currentPlayer = getNextPlayer();
-
-			if(currentPlayer.equals(players.get(0))) /* If all players have deployed their soldiers. */
-			{
-				state = GAME_STATE.PLAY;
-			}
-			else
-			{
-
-				if(currentPlayer.isCPU())
-				{
-					gameScene.setInfoTabText(Utilities.getString(R.string.game_info_wait_for_CPU)); /* TODO: Move to gamescene */
-					currentPlayer.deploy();
-				}
-
-			}
-		}
-
-	}
-
 	public void updateGame() {
 
 		if(gameOver())
@@ -149,7 +126,6 @@ public class GameLogic {
 
 			if(currentPlayer.isCPU())
 			{
-				pauseGame();
 				automaticMove();
 			}
 
@@ -211,24 +187,46 @@ public class GameLogic {
 
 	}
 
+	public void setup() {
+
+		if(!currentPlayer.hasSoldiersLeftToDeploy()) /* If player has deployed all of his soldiers. */
+		{
+			currentPlayer = getNextPlayer();
+
+			if(currentPlayer.equals(players.get(0))) /* If all players have deployed their soldiers. */
+			{
+				gameScene.setInitialHUD();
+				state = GAME_STATE.PLAY;
+			}
+			else
+			{
+				if(currentPlayer.isCPU())
+				{
+					gameScene.setInfoTabText(Utilities.getString(R.string.game_info_wait_for_CPU)); /* TODO: Move to gamescene */
+					currentPlayer.deploy();
+				}
+			}
+		}
+
+	}
+
 	public void attack()
 	{
 		
 		if(selectedRegion == null || targetedRegion == null)
 		{
-			Log.e("Riska","An attack was called but either the attacker and/or defender are undefined.");
 			return;
 		}
 		
 		Region attacker = selectedRegion;
 		Region defender = targetedRegion;
 		
-		pauseGame();
+		//pauseGame();
 
 		// TEMP - battleGenerator will have to provide more precise insight on the results
 		boolean won = battleGenerator.simulateAttack(attacker.getSoldiers(), defender.getSoldiers());
 
-		gameScene.showBattleResult(selectedRegion, targetedRegion, won);
+		gameScene.showBattleScene(selectedRegion, targetedRegion, won);
 		
 		if(won)
 		{
@@ -260,6 +258,10 @@ public class GameLogic {
 	}
 	
 	public void move() {
+		
+	}
+	
+	public void cpu() {
 		
 	}
 	
@@ -336,10 +338,12 @@ public class GameLogic {
 	{
 		switch(state)
 		{
+		case SETUP:
+			onDeploymentHandler(pRegion);
+			break;
 		case DEPLOYMENT:
 			onDeploymentHandler(pRegion);
 			break;
-
 		case PLAY:
 			onPlayHandler(pRegion);
 			break;
