@@ -260,7 +260,7 @@ public class GameScene extends BaseScene implements IOnSceneTouchListener, IScro
 		{
 			if(logic.targetedRegion != null)
 			{
-				detailScene.setAttributes(logic.selectedRegion, logic.targetedRegion);
+				detailScene.update(logic.selectedRegion, logic.targetedRegion);
 				
 				if(logic.getCurrentPlayerIndex() == 0)
 				{
@@ -276,7 +276,7 @@ public class GameScene extends BaseScene implements IOnSceneTouchListener, IScro
 			}
 			else
 			{
-				detailScene.setAttributes(logic.selectedRegion, null);
+				detailScene.update(logic.selectedRegion, null);
 				hud.hide(BUTTON.ATTACK);
 				
 				if(logic.getCurrentPlayerIndex() == 0)
@@ -293,7 +293,7 @@ public class GameScene extends BaseScene implements IOnSceneTouchListener, IScro
 		}
 		else
 		{
-			detailScene.setAttributes(null, null);
+			detailScene.update(null, null);
 			hud.hide(BUTTON.DETAILS);
 			hud.hide(BUTTON.ATTACK);
 
@@ -682,7 +682,7 @@ public class GameScene extends BaseScene implements IOnSceneTouchListener, IScro
 				hud.setDetailButtonToExit();
 				
 				logic.pauseGame();
-				detailScene.setAttributes(logic.selectedRegion, logic.targetedRegion);
+				detailScene.update(logic.selectedRegion, logic.targetedRegion);
 				detailScene.setVisible(true);
 
 				getCameraManager().zoomOut();
