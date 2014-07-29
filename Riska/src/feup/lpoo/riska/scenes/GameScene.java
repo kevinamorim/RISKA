@@ -88,6 +88,7 @@ public class GameScene extends BaseScene implements IOnSceneTouchListener, IScro
 		
 		lastTouchTime = 0;
 		lastTouchTimeInRegion = 0;
+		doubleTapAllowed = true;
 		
 		createDisplay();
 	}
@@ -324,9 +325,6 @@ public class GameScene extends BaseScene implements IOnSceneTouchListener, IScro
 
 	private void deploymentUpdate()
 	{	
-		doubleTapAllowed = false;
-		scrollDetector.setEnabled(false);
-		
 		if(logic.getCurrentPlayerIndex() == PLAYER_NUM)
 		{
 			hud.setInfoTabText(logic.getCurrentPlayer().getSoldiersToDeploy() + Utilities.getString(R.string.game_info_left_to_deploy));
@@ -470,27 +468,18 @@ public class GameScene extends BaseScene implements IOnSceneTouchListener, IScro
 	}
 
 	@Override
-	public void onScrollStarted(ScrollDetector pScollDetector, int pPointerID, float pX, float pY) {
-		
-		Log.d("ScrollDetector", "Scrolling started");
-		
+	public void onScrollStarted(ScrollDetector pScollDetector, int pPointerID, float pX, float pY) {		
 		unregisterTouchAreaForAllRegions();
 	}
 
 	@Override
 	public void onScroll(ScrollDetector pScollDetector, int pPointerID, float pX, float pY) {
-		
-		Log.d("ScrollDetector", "Scrolling");
-		
 		Point p = new Point((int)(activity.mCamera.getCenterX() - pX), (int)(activity.mCamera.getCenterY() + pY));
 		camera.jumpTo(p);	
 	}
 
 	@Override
-	public void onScrollFinished(ScrollDetector pScollDetector, int pPointerID, float pX, float pY) {
-		
-		Log.d("ScrollDetector", "Scrolling finished.");
-		
+	public void onScrollFinished(ScrollDetector pScollDetector, int pPointerID, float pX, float pY) {		
 		Point p = new Point((int)(activity.mCamera.getCenterX() - pX), (int)(activity.mCamera.getCenterY() + pY));
 		camera.jumpTo(p);
 		
