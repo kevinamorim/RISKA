@@ -8,6 +8,7 @@ import org.andengine.input.touch.TouchEvent;
 import org.andengine.util.adt.color.Color;
 
 import feup.lpoo.riska.interfaces.Displayable;
+import feup.lpoo.riska.logic.GameLogic;
 import feup.lpoo.riska.resources.ResourceCache;
 import feup.lpoo.riska.scenes.GameScene;
 import feup.lpoo.riska.utilities.Utilities;
@@ -385,5 +386,23 @@ public class GameHUD extends HUD implements Displayable {
 	public void setDetailButtonToExit()
 	{
 		detailsButton.setCurrentTileIndex(1);
+	}
+	
+	public void draw(GameLogic logic) {
+		if(!logic.getCurrentPlayer().isCPU()) {
+			if(logic.selectedRegion != null || logic.targetedRegion != null) {
+				show(BUTTON.DETAILS);
+				if(logic.selectedRegion != null && logic.targetedRegion != null) {
+					show(BUTTON.ATTACK);
+				} else {
+					hide(BUTTON.ATTACK);
+				}
+			} else {
+				hide(BUTTON.DETAILS);
+			}
+		} else {
+			hide(BUTTON.DETAILS);
+			hide(BUTTON.ATTACK);
+		}
 	}
 }
