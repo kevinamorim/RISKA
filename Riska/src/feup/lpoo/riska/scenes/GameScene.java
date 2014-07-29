@@ -41,37 +41,24 @@ public class GameScene extends BaseScene implements IOnSceneTouchListener, IScro
 	private final int MIN_SCROLLING_DIST = 30; /* Bigger the number, slower the scrolling. */
 	private final long MIN_TOUCH_INTERVAL = 70;
 	private final long MAX_TOUCH_INTERVAL = 400;
-	
 	private final int ANIM_DURATION = 200;
-	
 	private final float CPU_DELAY = 1.0f;
-	
-	private final int MIN_SOLDIERS_PER_REGION = 1;
-	
+	private final int MIN_SOLDIERS_PER_REGION = 1;	
 	private final long REGION_BUTTON_MIN_TOUCH_INTERVAL = 30;
-	private final int MAX_REGION_CHARS = 10;
-	
+	private final int MAX_REGION_CHARS = 10;	
 	private final int PLAYER_NUM = 0;
-
-	// ======================================================
-	// SINGLETONS
-	// ======================================================
-	GameLogic logic;
-	BattleScene battleScene;
 	
 	// ======================================================
 	// FIELDS
 	// ======================================================
-	GameHUD hud;
-	DetailScene detailScene;
-	
-	private Map map;
-	
+	private GameLogic logic;
+	private GameHUD hud;
+	private DetailScene detailScene;
+	private BattleScene battleScene;
 	private ScrollDetector scrollDetector;
-	
+	private Map map;		
 	private ArrayList<ButtonSprite> regionButtons;
 	private ArrayList<Text> regionButtonsText;
-	
 	private boolean doubleTapAllowed;
 	private long lastTouchTime;
 	private long lastTouchTimeInRegion;
@@ -167,6 +154,60 @@ public class GameScene extends BaseScene implements IOnSceneTouchListener, IScro
 	
 		hud.show(SPRITE.INFO_TAB);
 		hud.show(BUTTON.AUTO_DEPLOY);
+	}
+	
+	private void createRegionButtons() {
+		
+		Text buttonText;
+		ButtonSprite regionButton;
+
+		for(Region region : resources.map.getRegions()) {
+
+			int x = (region.getStratCenter().x * MainActivity.CAMERA_WIDTH)/100;
+			int y = (region.getStratCenter().y * MainActivity.CAMERA_HEIGHT)/100;
+			
+			buttonText = new Text(0, 0, resources.mGameFont, "", MAX_REGION_CHARS, vbom);
+			
+			regionButton = new ButtonSprite(x, y, resources.regionBtnRegion, vbom) {
+
+				@Override
+				public boolean onAreaTouched(TouchEvent ev, float pX, float pY) {
+
+					switch(ev.getAction()) {
+					case MotionEvent.ACTION_DOWN:
+						pressedRegionButton(this, getTag());
+						break;
+					case MotionEvent.ACTION_UP:
+						releasedRegionButton(this, getTag());
+						break;
+					case MotionEvent.ACTION_OUTSIDE:
+						releasedRegionButton(this, getTag());
+						break;
+					}
+
+					return true;
+				}
+			};
+			
+			regionButton.setTag(region.ID);
+			regionButton.setPosition(x, y);
+			regionButton.setScale((float) 0.5);
+			
+			regionButton.setColor(region.getPrimaryColor());
+			
+			buttonText.setText("" + MIN_SOLDIERS_PER_REGION);
+			buttonText.setScale((float) 1.4);
+			buttonText.setPosition(regionButton.getWidth()/2, regionButton.getHeight()/2);
+			buttonText.setColor(region.getSecundaryColor());
+			
+			regionButton.attachChild(buttonText);
+			
+			regionButtons.add(regionButton);
+			regionButtonsText.add(buttonText);
+			
+			attachChild(regionButton);
+			registerTouchArea(regionButton);
+		}
 	}
 	
 	private void createChildScenes() {
@@ -325,6 +366,9 @@ public class GameScene extends BaseScene implements IOnSceneTouchListener, IScro
 		hud.hide(BUTTON.DETAILS);
 	}
 	
+	// ======================================================
+	// REGION BUTTONS
+	// ======================================================
 	private void drawRegionButtons() {
 		
 		for(int i = 0; i < regionButtons.size(); i++)
@@ -345,63 +389,6 @@ public class GameScene extends BaseScene implements IOnSceneTouchListener, IScro
 			}
 		}
 		
-	}
-	// ======================================================
-	// REGION BUTTONS
-	// ======================================================
-	
-	private void createRegionButtons() {
-		
-		Text buttonText;
-		ButtonSprite regionButton;
-
-		for(Region region : resources.map.getRegions()) {
-
-			int x = (region.getStratCenter().x * MainActivity.CAMERA_WIDTH)/100;
-			int y = (region.getStratCenter().y * MainActivity.CAMERA_HEIGHT)/100;
-			
-			buttonText = new Text(0, 0, resources.mGameFont, "", MAX_REGION_CHARS, vbom);
-			
-			regionButton = new ButtonSprite(x, y, resources.regionBtnRegion, vbom) {
-
-				@Override
-				public boolean onAreaTouched(TouchEvent ev, float pX, float pY) {
-
-					switch(ev.getAction()) {
-					case MotionEvent.ACTION_DOWN:
-						pressedRegionButton(this, getTag());
-						break;
-					case MotionEvent.ACTION_UP:
-						releasedRegionButton(this, getTag());
-						break;
-					case MotionEvent.ACTION_OUTSIDE:
-						releasedRegionButton(this, getTag());
-						break;
-					}
-
-					return true;
-				}
-			};
-			
-			regionButton.setTag(region.ID);
-			regionButton.setPosition(x, y);
-			regionButton.setScale((float) 0.5);
-			
-			regionButton.setColor(region.getPrimaryColor());
-			
-			buttonText.setText("" + MIN_SOLDIERS_PER_REGION);
-			buttonText.setScale((float) 1.4);
-			buttonText.setPosition(regionButton.getWidth()/2, regionButton.getHeight()/2);
-			buttonText.setColor(region.getSecundaryColor());
-			
-			regionButton.attachChild(buttonText);
-			
-			regionButtons.add(regionButton);
-			regionButtonsText.add(buttonText);
-			
-			attachChild(regionButton);
-			registerTouchArea(regionButton);
-		}
 	}
 	
 	void pressedRegionButton(ButtonSprite btn, int regionID)
@@ -428,7 +415,6 @@ public class GameScene extends BaseScene implements IOnSceneTouchListener, IScro
 		Region reg = map.getRegionById(i);
 		regionButtonsText.get(i).setText("" + reg.getNumberOfSoldiers());
 	}
-	
 	// ======================================================
 	// ======================================================
 	
@@ -510,29 +496,7 @@ public class GameScene extends BaseScene implements IOnSceneTouchListener, IScro
 	// ======================================================
 	// HUD
 	// ======================================================
-	public void setInfoTabText(String pText) {
-		hud.setInfoTabText(pText);
-	}
 
-	// ======================================================
-	// INFO TAB
-	// ======================================================
-	public void setInfoTabToChooseOwnRegion() {
-		hud.setInfoTabText("Tap a region to select.");
-	}
-	
-	public void setInfoTabToChooseEnemyRegion() {
-		hud.setInfoTabText("Tap an enemy neighbour.");
-	}
-	
-	public void setInfoTabToProceedToAttack() {
-		hud.setInfoTabText("Attack! Attack!");
-	}
-	
-	public void setInfoTabToWait() {
-		hud.setInfoTabText("Wait...");
-	}
-	
 	// ======================================================
 	// ======================================================
 	
@@ -771,6 +735,13 @@ public class GameScene extends BaseScene implements IOnSceneTouchListener, IScro
 
 	public void setInitialHUD() {
 		hud.hide(BUTTON.AUTO_DEPLOY);
+	}
+	
+	// ======================================================
+	// GETTERS & SETTERS
+	// ======================================================
+	public void setInfoTabText(String pText) {
+		hud.setInfoTabText(pText);
 	}
 }
 
