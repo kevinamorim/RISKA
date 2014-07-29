@@ -110,7 +110,6 @@ public class GameLogic {
 		}
 		else
 		{
-
 			if(turnDone)
 			{
 				if(!getNextPossiblePlayer())
@@ -126,11 +125,10 @@ public class GameLogic {
 
 			if(currentPlayer.isCPU())
 			{
+				pauseGame();
 				automaticMove();
 			}
-
 		}	
-
 	}
 
 	private boolean getNextPossiblePlayer()
@@ -225,9 +223,9 @@ public class GameLogic {
 
 		// TEMP - battleGenerator will have to provide more precise insight on the results
 		boolean won = battleGenerator.simulateAttack(attacker.getSoldiers(), defender.getSoldiers());
-
+			
 		gameScene.showBattleScene(selectedRegion, targetedRegion, won);
-		
+
 		if(won)
 		{
 			defender.changeOwner(attacker.getOwner());
@@ -243,6 +241,8 @@ public class GameLogic {
 		
 		untargetRegion();
 		unselectRegion();
+		
+
 	}
 
 	public void deploy() {

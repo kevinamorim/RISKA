@@ -72,7 +72,7 @@ public class GameScene extends BaseScene implements IOnSceneTouchListener, IScro
 	private ArrayList<ButtonSprite> regionButtons;
 	private ArrayList<Text> regionButtonsText;
 	
-	private boolean doubleTapAllowed = true;
+	private boolean doubleTapAllowed;
 	private long lastTouchTime;
 	private long lastTouchTimeInRegion;
 
@@ -193,6 +193,7 @@ public class GameScene extends BaseScene implements IOnSceneTouchListener, IScro
 		switch(logic.getState())
 		{
 		case PAUSED:
+			gameUpdate();
 			break;
 		case SETUP:
 			deploymentUpdate();
@@ -208,7 +209,7 @@ public class GameScene extends BaseScene implements IOnSceneTouchListener, IScro
 			break;
 		case PLAY:
 			gameUpdate();
-			if(!logic.getCurrentPlayer().isCPU()) logic.updateGame();
+			logic.updateGame();
 			break;	
 		case CPU:
 			break;
@@ -221,53 +222,38 @@ public class GameScene extends BaseScene implements IOnSceneTouchListener, IScro
 	private void gameUpdate()
 	{	
 		
-		if(detailScene.isVisible())
-		{
-			doubleTapAllowed = false;
-			scrollDetector.setEnabled(false);
-			hud.show(BUTTON.DETAILS);
-			hud.hide(BUTTON.ATTACK);
-			hud.hide(SPRITE.INFO_TAB);
-			battleScene.setVisible(false);
-			return;
-		}
+//		if(detailScene.isVisible())
+//		{
+//			doubleTapAllowed = false;
+//			scrollDetector.setEnabled(false);
+//			hud.show(BUTTON.DETAILS);
+//			hud.hide(BUTTON.ATTACK);
+//			hud.hide(SPRITE.INFO_TAB);
+//			battleScene.setVisible(false);
+//			return;
+//		}
+//
+//		if(battleScene.isVisible())
+//		{
+//			doubleTapAllowed = false;
+//			scrollDetector.setEnabled(false);
+//			hud.show(BUTTON.DETAILS);
+//			hud.hide(BUTTON.ATTACK);
+//			hud.hide(SPRITE.INFO_TAB);
+//			detailScene.setVisible(false);
+//			return;
+//		}
+//		
+//		doubleTapAllowed = true;
+//		scrollDetector.setEnabled(true);
+//		hud.setDetailButtonToQuestion();
+//		hud.show(BUTTON.DETAILS);
+//		hud.show(SPRITE.INFO_TAB);
+		
+		if(detailScene.isVisible() || battleScene.isVisible()) return;
+		
+		drawRegionButtons();
 
-		if(battleScene.isVisible())
-		{
-			doubleTapAllowed = false;
-			scrollDetector.setEnabled(false);
-			hud.show(BUTTON.DETAILS);
-			hud.hide(BUTTON.ATTACK);
-			hud.hide(SPRITE.INFO_TAB);
-			detailScene.setVisible(false);
-			return;
-		}
-		
-		doubleTapAllowed = true;
-		scrollDetector.setEnabled(true);
-		hud.setDetailButtonToQuestion();
-		hud.show(BUTTON.DETAILS);
-		hud.show(SPRITE.INFO_TAB);
-		
-		
-		for(int i = 0; i < regionButtons.size(); i++)
-		{
-			ButtonSprite btn = regionButtons.get(i);
-			Text btnText = regionButtonsText.get(i);
-			
-			if(btn.isVisible())
-			{
-				Region region = map.getRegionById(i);
-				btnText.setText("" + region.getNumberOfSoldiers());
-				
-				if(region.getPrimaryColor() != btn.getColor())
-				{
-					btn.setColor(region.getPrimaryColor());
-					btnText.setColor(region.getSecundaryColor());
-				}
-			}
-		}
-		
 		if(logic.selectedRegion != null)
 		{
 			hud.show(BUTTON.DETAILS);
@@ -339,6 +325,27 @@ public class GameScene extends BaseScene implements IOnSceneTouchListener, IScro
 		hud.hide(BUTTON.DETAILS);
 	}
 	
+	private void drawRegionButtons() {
+		
+		for(int i = 0; i < regionButtons.size(); i++)
+		{
+			ButtonSprite btn = regionButtons.get(i);
+			Text btnText = regionButtonsText.get(i);
+			
+			if(btn.isVisible())
+			{
+				Region region = map.getRegionById(i);
+				btnText.setText("" + region.getNumberOfSoldiers());
+				
+				if(region.getPrimaryColor() != btn.getColor())
+				{
+					btn.setColor(region.getPrimaryColor());
+					btnText.setColor(region.getSecundaryColor());
+				}
+			}
+		}
+		
+	}
 	// ======================================================
 	// REGION BUTTONS
 	// ======================================================
@@ -620,6 +627,7 @@ public class GameScene extends BaseScene implements IOnSceneTouchListener, IScro
 			hud.hide(SPRITE.INFO_TAB);
 			unregisterTouchAreaForAllRegions();
 			detailScene.setVisible(true);
+			logic.pauseGame();
 		}
 	}
 	
@@ -630,16 +638,20 @@ public class GameScene extends BaseScene implements IOnSceneTouchListener, IScro
 			hud.show(SPRITE.INFO_TAB);
 			registerTouchAreaForAllRegions();
 			detailScene.setVisible(false);
+			logic.resumeGame();
 		}
 	}
 	
 	public void showBattleScene(Region pRegion1, Region pRegion2, boolean result) {
 		if(battleScene != null) {
+			logic.pauseGame();
 			hud.setDetailButtonToExit();
 			hud.show(BUTTON.DETAILS);
 			hud.hide(BUTTON.ATTACK);
 			hud.hide(SPRITE.INFO_TAB);
 			unregisterTouchAreaForAllRegions();
+			doubleTapAllowed = false;
+			scrollDetector.setEnabled(false);
 			battleScene.setAttributes(pRegion1, pRegion2, result);
 			battleScene.setVisible(true);
 		}
@@ -652,6 +664,9 @@ public class GameScene extends BaseScene implements IOnSceneTouchListener, IScro
 			hud.show(SPRITE.INFO_TAB);
 			registerTouchAreaForAllRegions();
 			battleScene.setVisible(false);
+			doubleTapAllowed = true;
+			scrollDetector.setEnabled(true);
+			logic.resumeGame();
 		}
 	}
 
@@ -686,40 +701,15 @@ public class GameScene extends BaseScene implements IOnSceneTouchListener, IScro
 	}
 	
 	public void touchedDetailsButton()
-	{
-
-		if(detailScene.isVisible())
-		{
-			detailScene.setVisible(false);
-			hud.setDetailButtonToQuestion();
-			unlockUserInput();
-			hud.show(BUTTON.DETAILS);
-			hud.show(SPRITE.INFO_TAB);
-			logic.resumeGame();
-		}
-		else
-		{
-			if(battleScene.isVisible())
-			{
-				battleScene.setVisible(false);
-				hud.setDetailButtonToQuestion();
-				unlockUserInput();
-				hud.show(BUTTON.DETAILS);
-				hud.show(SPRITE.INFO_TAB);
-				logic.resumeGame();
-			}
-			else
-			{
-				hud.setDetailButtonToExit();
-				lockUserInput();
-				logic.pauseGame();
-				hud.show(BUTTON.DETAILS);
-				hud.hide(BUTTON.ATTACK);
-				hud.hide(SPRITE.INFO_TAB);
-				detailScene.update(logic.selectedRegion, logic.targetedRegion);
-				detailScene.setVisible(true);
-				camera.zoomOut();
-			}
+	{	
+		if(detailScene.isVisible()) {
+			hideDetailScene();
+		} else if(battleScene.isVisible()) {
+			hideBattleScene();
+		} else if(!detailScene.isVisible()) {
+			showDetailScene();
+		} else {
+			return;
 		}
 	}
 
