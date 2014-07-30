@@ -7,6 +7,7 @@ import org.andengine.entity.text.Text;
 import org.andengine.input.touch.TouchEvent;
 import org.andengine.util.adt.color.Color;
 
+import feup.lpoo.riska.R;
 import feup.lpoo.riska.interfaces.Displayable;
 import feup.lpoo.riska.logic.GameLogic;
 import feup.lpoo.riska.resources.ResourceCache;
@@ -403,6 +404,20 @@ public class GameHUD extends HUD implements Displayable {
 		} else {
 			hide(BUTTON.DETAILS);
 			hide(BUTTON.ATTACK);
+		}
+	}
+	
+	public void setInfoTabText(GameLogic logic) {
+		if(logic.getCurrentPlayer().isCPU()) {
+			setInfoTabText(Utilities.getString(R.string.game_info_wait_for_CPU));
+		} else {
+			if(logic.selectedRegion != null && logic.targetedRegion != null) {
+				setInfoTabText(Utilities.getString(R.string.game_info_attack));
+			} else if(logic.selectedRegion != null) {
+				setInfoTabText(Utilities.getString(R.string.game_info_tap_enemy_region));
+			} else {
+				setInfoTabText(Utilities.getString(R.string.game_info_tap_allied_region));
+			}
 		}
 	}
 }
