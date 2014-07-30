@@ -28,9 +28,9 @@ public class GameLogic {
 	// CONSTANTS
 	// ======================================================
 	private final int MIN_PLAYERS_IN_GAME = 2;
-
+	private Color[] PLAYER_COLOR = { new Color(0f, 0.6f, 0f), new Color(1f, 1f, 0f) };
+	private Color[] CPU_COLOR = { new Color(1f, 0f, 0f), new Color(1f, 1f, 0f) };
 	
-
 	public enum GAME_STATE {
 		PAUSED,
 		SETUP, 
@@ -42,23 +42,15 @@ public class GameLogic {
 		GAMEOVER
 	};
 
-	private Color[] PLAYER_COLOR = { new Color(0f, 0.6f, 0f), new Color(1f, 1f, 0f) };
-	private Color[] CPU_COLOR = { new Color(1f, 0f, 0f), new Color(1f, 1f, 0f) };
-
-
 	// ======================================================
 	// FIELDS
 	// ======================================================
 	private ArrayList<Player> players;
 	private Map map;
 	private GAME_STATE state;
-
 	private Player currentPlayer;
-
 	private GameScene gameScene;
-
 	public boolean turnDone;
-
 	public Region selectedRegion;
 	public Region targetedRegion;
 
@@ -201,7 +193,7 @@ public class GameLogic {
 				if(currentPlayer.isCPU())
 				{
 					gameScene.setInfoTabText(Utilities.getString(R.string.game_info_wait_for_CPU)); /* TODO: Move to gamescene */
-					currentPlayer.deploy();
+					currentPlayer.deployAllSoldiers();
 				}
 			}
 		}
@@ -248,7 +240,7 @@ public class GameLogic {
 	public void deploy() {
 		
 		if(currentPlayer.hasSoldiersLeftToDeploy() && currentPlayer.isCPU()) {
-			currentPlayer.deploy();
+			currentPlayer.deployAllSoldiers();
 		}
 		
 		if(!currentPlayer.hasSoldiersLeftToDeploy()) {
@@ -263,11 +255,6 @@ public class GameLogic {
 	
 	public void cpu() {
 		
-	}
-	
-	public void autoDeployment(Player player)
-	{
-		player.deploy();
 	}
 
 	// ======================================================

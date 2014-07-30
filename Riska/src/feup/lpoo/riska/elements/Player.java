@@ -159,7 +159,7 @@ public class Player extends Object {
 	 * Called only with non-human players
 	 * TODO : heavy deployment
 	 */
-	public void deploy() {
+	public void deployAllSoldiers() {
 		
 		int i = 0;
 		while(soldiersToDeploy > 0) {

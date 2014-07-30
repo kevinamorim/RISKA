@@ -413,7 +413,7 @@ public class GameScene extends BaseScene implements IOnSceneTouchListener, IScro
 	
 	public void onAutoDeploy()
 	{
-		logic.autoDeployment(logic.getPlayers().get(0));
+		logic.getCurrentPlayer().deployAllSoldiers();
 	}
 	
 	public void lockUserInput() {
