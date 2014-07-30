@@ -241,6 +241,7 @@ public class GameScene extends BaseScene implements IOnSceneTouchListener, IScro
 			logic.setup();
 			break;		
 		case DEPLOYMENT:
+			Log.d("user", "deployment");
 			deploymentUpdate();
 			logic.deploy();
 			break;	
@@ -275,6 +276,12 @@ public class GameScene extends BaseScene implements IOnSceneTouchListener, IScro
 
 	private void deploymentUpdate()
 	{	
+		if(detailScene.isVisible()) {
+			hideDetailScene();
+		} else if(battleScene.isVisible()) {
+			hideBattleScene();
+		}
+		
 		if(logic.getCurrentPlayerIndex() == PLAYER_NUM)
 		{
 			hud.setInfoTabText(logic.getCurrentPlayer().getSoldiersToDeploy() + Utilities.getString(R.string.game_info_left_to_deploy));
@@ -287,6 +294,9 @@ public class GameScene extends BaseScene implements IOnSceneTouchListener, IScro
 		
 		hud.hide(BUTTON.ATTACK);
 		hud.hide(BUTTON.DETAILS);
+		hud.show(BUTTON.AUTO_DEPLOY);
+		drawRegionButtons();
+	
 	}
 	
 	// ======================================================
@@ -314,12 +324,12 @@ public class GameScene extends BaseScene implements IOnSceneTouchListener, IScro
 		
 	}
 	
-	void pressedRegionButton(ButtonSprite btn, int regionID)
+	private void pressedRegionButton(ButtonSprite btn, int regionID)
 	{
 		btn.setCurrentTileIndex(1);
 	}
 	
-	void releasedRegionButton(ButtonSprite btn, int regionID)
+	private void releasedRegionButton(ButtonSprite btn, int regionID)
 	{
 		btn.setCurrentTileIndex(0);
 		
@@ -334,7 +344,7 @@ public class GameScene extends BaseScene implements IOnSceneTouchListener, IScro
 		lastTouchTimeInRegion = System.currentTimeMillis();
 	}
 
-	void updateRegionButton(int i) {
+	private void updateRegionButton(int i) {
 		Region reg = map.getRegionById(i);
 		regionButtonsText.get(i).setText("" + reg.getNumberOfSoldiers());
 	}
@@ -374,7 +384,6 @@ public class GameScene extends BaseScene implements IOnSceneTouchListener, IScro
 	// ======================================================
 	// SCROLL DETECTOR
 	// ======================================================
-	
 	private void createScrollDetector() {
 		
 		scrollDetector = new SurfaceScrollDetector(this);
@@ -492,7 +501,6 @@ public class GameScene extends BaseScene implements IOnSceneTouchListener, IScro
 			}
 		}
 	}
-	
 	// ======================================================
 	// ======================================================
 	
