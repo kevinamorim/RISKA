@@ -29,7 +29,7 @@ public class GameLogic {
 	// ======================================================
 	private final int MIN_PLAYERS_IN_GAME = 2;
 
-	private final int SOLDIER_INC = 1;
+	
 
 	public enum GAME_STATE {
 		PAUSED,
@@ -339,10 +339,10 @@ public class GameLogic {
 		switch(state)
 		{
 		case SETUP:
-			onDeploymentHandler(pRegion);
+			pRegion.deploy(currentPlayer);
 			break;
 		case DEPLOYMENT:
-			onDeploymentHandler(pRegion);
+			pRegion.deploy(currentPlayer);
 			break;
 		case PLAY:
 			onPlayHandler(pRegion);
@@ -350,20 +350,6 @@ public class GameLogic {
 
 		default:
 			break;
-		}
-	}
-
-	private void onDeploymentHandler(Region pRegion)
-	{
-		if(pRegion.getOwner().equals(currentPlayer))
-		{
-			if(currentPlayer.hasSoldiersLeftToDeploy())
-			{
-				int deployed = currentPlayer.deploySoldiers(SOLDIER_INC);
-				pRegion.addSoldiers(deployed);
-
-				//hud.setInfoTabText(logic.getCurrentPlayer().getSoldiersToDeploy() + " left to deploy");
-			}
 		}
 	}
 

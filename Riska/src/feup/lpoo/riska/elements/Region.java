@@ -21,32 +21,33 @@ public class Region extends Element {
 	// ======================================================
 	// CONSTANTS
 	// ======================================================
-	protected static final long MIN_TOUCH_INTERVAL = 30;
-	protected static final int MAX_CHARS = 10;
-	protected static final int SOLDIER_ATT = 10;
-	protected static final int SOLDIER_DEF = 10;
+	private static final long MIN_TOUCH_INTERVAL = 30;
+	private static final int MAX_CHARS = 10;
+	private static final int SOLDIER_ATT = 10;
+	private static final int SOLDIER_DEF = 10;
 	private static final int MIN_SOLDIERS_FOR_AN_ATTACK = 2;
+	private final int SOLDIER_INC = 1;
 
 	// ======================================================
 	// SINGLETONS
 	// ======================================================
-	protected MainActivity activity;
-	protected SceneManager sceneManager;
-	protected ResourceCache resources;
+	private MainActivity activity;
+	private SceneManager sceneManager;
+	private ResourceCache resources;
 
 	// ======================================================
 	// FIELDS
 	// ======================================================
 	public final int ID;
-	protected boolean focused;
+	private boolean focused;
 
-	protected Player owner;
-	protected String continent;
+	private Player owner;
+	private String continent;
 	
-	protected Color priColor, secColor;
+	private Color priColor, secColor;
 	
-	protected ArrayList<Unit> soldiers;
-	protected ArrayList<Region> neighbours;
+	private ArrayList<Unit> soldiers;
+	private ArrayList<Region> neighbours;
 	
 	/**
 	 * Constructor for a region.
@@ -310,4 +311,14 @@ public class Region extends Element {
 		return secColor;
 	}
 
+	public void deploy(Player pPlayer) {
+		if(getOwner().equals(pPlayer))
+		{
+			if(pPlayer.hasSoldiersLeftToDeploy())
+			{
+				int deployed = pPlayer.deploySoldiers(SOLDIER_INC);
+				addSoldiers(deployed);
+			}
+		}
+	}
 }
