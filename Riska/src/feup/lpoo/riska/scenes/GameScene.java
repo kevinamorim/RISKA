@@ -501,6 +501,7 @@ public class GameScene extends BaseScene implements IOnSceneTouchListener, IScro
 	// ======================================================
 	public void showDetailScene() {
 		if(detailScene != null) {
+			camera.zoomOut();
 			hud.setDetailButtonToExit();
 			hud.show(BUTTON.DETAILS);
 			hud.hide(BUTTON.ATTACK);
@@ -524,6 +525,7 @@ public class GameScene extends BaseScene implements IOnSceneTouchListener, IScro
 	
 	public void showBattleScene(Region pRegion1, Region pRegion2, boolean result) {
 		if(battleScene != null) {
+			camera.zoomOut();
 			logic.pauseGame();
 			hud.setDetailButtonToExit();
 			hud.show(BUTTON.DETAILS);
