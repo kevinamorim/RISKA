@@ -17,6 +17,9 @@ public class BattleScene extends Scene {
 	// CONSTANTS
 	// ======================================================
 
+	private final Color COLOR_LOSE = Color.RED;
+	private final Color COLOR_WIN = Color.GREEN;
+	
 	// ======================================================
 	// SINGLETONS
 	// ======================================================
@@ -131,12 +134,12 @@ public class BattleScene extends Scene {
 		
 		if(won)
 		{
-			result1.setColor(Color.GREEN);
-			result2.setColor(Color.BLACK);
+			result1.setColor(COLOR_WIN);
+			result2.setColor(COLOR_LOSE);
 		}
 		else
 		{
-			result1.setColor(Color.BLACK);
+			result1.setColor(COLOR_LOSE);
 			result2.setColor(Color.GREEN);
 		}
 	}

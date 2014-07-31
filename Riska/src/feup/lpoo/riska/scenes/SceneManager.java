@@ -95,12 +95,14 @@ public class SceneManager {
 	// ==================================================
 	// LOAD SCENES
 	// ==================================================
-	public void loadMainMenuScene(final Engine mEngine) {
+	public void loadMainMenuScene(final Engine mEngine)
+	{
 		setScene(loadingScene);
 		gameScene.disposeScene();
 		ResourceCache.getSharedInstance().unloadGameSceneResources();
 		
-		mEngine.registerUpdateHandler(new TimerHandler(MIN_LOAD_SECONDS, new ITimerCallback() {
+		mEngine.registerUpdateHandler(new TimerHandler(MIN_LOAD_SECONDS, new ITimerCallback()
+		{
 
 			@Override
 			public void onTimePassed(TimerHandler pTimerHandler) {

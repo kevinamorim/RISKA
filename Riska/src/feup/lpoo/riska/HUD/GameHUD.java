@@ -104,22 +104,17 @@ public class GameHUD extends HUD implements Displayable {
 		{
 		
 		case ATTACK:
-			long now = System.currentTimeMillis();
-
-			if(Utilities.isValidTouch(now, lastTouchTime, MIN_TOUCH_INTERVAL))
-			{
-				attackButton.setCurrentTileIndex(0);
-				gameScene.onAttack();
-			}
-
-			lastTouchTime = now;
+			released(current);
+			gameScene.onAttack();
 			break;
 			
 		case DETAILS:
+			released(current);
 			gameScene.touchedDetailsButton();
 			break;
 			
 		case AUTO_DEPLOY:
+			released(current);
 			gameScene.onAutoDeploy();
 			break;
 			
@@ -213,7 +208,7 @@ public class GameHUD extends HUD implements Displayable {
 				resources.vbom);
 		
 		infoTab.setSize(resources.camera.getWidth(), 0.10f * resources.camera.getHeight());
-		infoTab.setPosition(resources.camera.getWidth() / 2, infoTab.getHeight() / 2);
+		infoTab.setPosition(resources.camera.getWidth() / 2, resources.camera.getHeight() - infoTab.getHeight() / 2);
 
 		infoTabText = new Text(infoTab.getWidth() / 2, infoTab.getHeight() / 2,
 				resources.mInfoTabFont, "NO INFO", 1000, resources.vbom);

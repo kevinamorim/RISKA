@@ -225,7 +225,7 @@ public class ResourceCache {
 		
 		mapTextureAtlas = new BitmapTextureAtlas(activity.getTextureManager(), mapTextureWidth, mapTextureHeight, 
 				TextureOptions.DEFAULT);
-		mapRegion = BitmapTextureAtlasTextureRegionFactory.createFromAsset(mapTextureAtlas, activity, "map.png", 0, 0);
+		mapRegion = BitmapTextureAtlasTextureRegionFactory.createFromAsset(mapTextureAtlas, activity, "map_3.png", 0, 0);
 		
 
 		
@@ -265,13 +265,16 @@ public class ResourceCache {
 		
 		FontFactory.setAssetBasePath("fonts/");
 
-		mGameFont = FontFactory.create(engine.getFontManager(), 
+		mGameFont = FontFactory.create(
+				engine.getFontManager(), 
 				engine.getTextureManager(), 512, 512, 
-				Typeface.create(Typeface.DEFAULT, Typeface.BOLD), 32);
+				Typeface.create(Typeface.DEFAULT, Typeface.BOLD), 32f,
+				Color.WHITE);
 		
 		mInfoTabFont = FontFactory.create(engine.getFontManager(), 
 				engine.getTextureManager(), 512, 512, 
-				Typeface.create(Typeface.DEFAULT, Typeface.BOLD), 28);
+				Typeface.create(Typeface.DEFAULT, Typeface.BOLD), 28f,
+				Color.WHITE);
 
 		mGameFont.load();
 		mInfoTabFont.load();

@@ -27,8 +27,8 @@ public class GameLogic {
 	// CONSTANTS
 	// ======================================================
 	private final int MIN_PLAYERS_IN_GAME = 2;
-	private Color[] PLAYER_COLOR = { new Color(0f, 0.6f, 0f), new Color(1f, 1f, 0f) };
-	private Color[] CPU_COLOR = { new Color(1f, 0f, 0f), new Color(1f, 1f, 0f) };
+	private Color[] PLAYER_COLOR = { new Color(0f, 0.447f, 0.898f), new Color(1f, 1f, 0f) };
+	private Color[] CPU_COLOR = { new Color(1f, 0f, 0f), new Color(0f, 0f, 0f) };
 	
 	public enum GAME_STATE {
 		PAUSED,
@@ -105,6 +105,15 @@ public class GameLogic {
 		{
 			if(turnDone)
 			{
+				if(selectedRegion != null)
+				{
+					unselectRegion();
+				}
+				if(targetedRegion != null)
+				{
+					untargetRegion();
+				}
+				
 				if(!getNextPossiblePlayer())
 				{
 					state = GAME_STATE.GAMEOVER;
@@ -117,9 +126,13 @@ public class GameLogic {
 					gameScene.setInitialHUD();
 					state = GAME_STATE.PLAY;
 				}
-			} else if(attackDone) {
+			}
+			else if(attackDone)
+			{
 				state = GAME_STATE.DEPLOYMENT;
-			} else {
+			}
+			else
+			{
 				if(currentPlayer.isCPU())
 				{
 					pauseGame();
@@ -205,7 +218,7 @@ public class GameLogic {
 	}
 
 	public void attack()
-	{		
+	{
 		if(selectedRegion == null || targetedRegion == null)
 		{
 			return;
@@ -233,7 +246,6 @@ public class GameLogic {
 		//state = GAME_STATE.DEPLOYMENT; /* New stuff */	
 		
 		attackDone = true;
-		
 	}
 
 	public void deploy() {
