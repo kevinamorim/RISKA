@@ -20,7 +20,7 @@ public class GameHUD extends HUD implements Displayable {
 	// ======================================================
 	// CONSTANTS
 	// ======================================================
-	private static final long MIN_TOUCH_INTERVAL = 30;
+//	private static final long MIN_TOUCH_INTERVAL = 30;
 	
 	public enum BUTTON
 	{
@@ -42,7 +42,6 @@ public class GameHUD extends HUD implements Displayable {
 	// ======================================================
 	// FIELDS
 	// ======================================================
-	private long lastTouchTime;
 	private ButtonSprite attackButton;
 	private ButtonSprite detailsButton;
 	private ButtonSprite autoDeployButton;	
@@ -54,8 +53,6 @@ public class GameHUD extends HUD implements Displayable {
 	public GameHUD(GameScene scene) {
 		
 		gameScene = scene;
-
-		lastTouchTime = 0;
 
 		resources = ResourceCache.getSharedInstance();
 
@@ -105,12 +102,12 @@ public class GameHUD extends HUD implements Displayable {
 		
 		case ATTACK:
 			released(current);
-			gameScene.onAttack();
+			gameScene.onAttackButtonTouched();
 			break;
 			
 		case DETAILS:
 			released(current);
-			gameScene.touchedDetailsButton();
+			gameScene.onDetailButtonTouched();
 			break;
 			
 		case AUTO_DEPLOY:

@@ -53,7 +53,6 @@ public class GameLogic {
 	public boolean turnDone;
 	public Region selectedRegion;
 	public Region targetedRegion;
-
 	
 	public GameLogic(GameScene scene) {
 

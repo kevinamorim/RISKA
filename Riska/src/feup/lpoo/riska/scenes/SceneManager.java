@@ -71,14 +71,17 @@ public class SceneManager {
 		disposeSplashScene();
 	}
 	
-	public void createGameScene() {
+	public void createGameScene()
+	{
 		setScene(loadingScene);
 		ResourceCache.getSharedInstance().unloadMainMenuResources();
 		mainMenuScene.dispose();
 		mainMenuScene = null;
-		engine.registerUpdateHandler(new TimerHandler(MIN_LOAD_SECONDS, new ITimerCallback() {
+		engine.registerUpdateHandler(new TimerHandler(MIN_LOAD_SECONDS, new ITimerCallback()
+		{
 			@Override
-			public void onTimePassed(TimerHandler pTimerHandler) {
+			public void onTimePassed(TimerHandler pTimerHandler)
+			{
 				engine.unregisterUpdateHandler(pTimerHandler);
 				ResourceCache.getSharedInstance().loadGameSceneResources();
 				gameScene = new GameScene();

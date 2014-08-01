@@ -8,9 +8,10 @@ import org.andengine.opengl.font.Font;
 import feup.lpoo.riska.elements.Region;
 import feup.lpoo.riska.logic.MainActivity;
 import feup.lpoo.riska.resources.ResourceCache;
+import feup.lpoo.riska.scenes.SceneManager.SceneType;
 import feup.lpoo.riska.utilities.Utilities;
 
-public class DetailScene extends Scene {
+public class DetailScene extends BaseScene {
 	
 	// ======================================================
 	// CONSTANTS
@@ -18,21 +19,23 @@ public class DetailScene extends Scene {
 	private static final float SCALE_FACTOR = 0.9f;
 
 	// ======================================================
-	// SINGLETONS
-	// ======================================================
-	ResourceCache resources;
-
-	// ======================================================
 	// FIELDS
 	// ======================================================
 	Text playerRegionName, enemyRegionName;
-
-	public DetailScene() {
 	
-		resources = ResourceCache.getSharedInstance();
-
+	@Override
+	public void createScene() {
 		createDisplay();
 	}
+
+	@Override
+	public void onBackKeyPressed() { }
+
+	@Override
+	public SceneType getSceneType() { return null; }
+
+	@Override
+	public void disposeScene() { }
 	
 	private void createDisplay() {
 		

@@ -1,6 +1,5 @@
 package feup.lpoo.riska.scenes;
 
-import org.andengine.entity.scene.Scene;
 import org.andengine.entity.sprite.Sprite;
 import org.andengine.entity.text.Text;
 import org.andengine.util.adt.color.Color;
@@ -10,8 +9,9 @@ import feup.lpoo.riska.elements.Region;
 import feup.lpoo.riska.generator.BattleGenerator;
 import feup.lpoo.riska.logic.MainActivity;
 import feup.lpoo.riska.resources.ResourceCache;
+import feup.lpoo.riska.scenes.SceneManager.SceneType;
 
-public class BattleScene extends Scene {
+public class BattleScene extends BaseScene {
 
 	// ======================================================
 	// CONSTANTS
@@ -19,44 +19,43 @@ public class BattleScene extends Scene {
 
 	private final Color COLOR_LOSE = Color.RED;
 	private final Color COLOR_WIN = Color.GREEN;
-	
-	// ======================================================
-	// SINGLETONS
-	// ======================================================
-	MainActivity activity;
-	SceneManager sceneManager;
-	CameraManager cameraManager;
-	ResourceCache resources;
 
 	// ======================================================
 	// FIELDS
 	// ======================================================
 	BattleGenerator battleGenerator;
 	
-	Sprite background;
+	Sprite window;
 	Text vsText;
 	Text typePlayer1, typePlayer2;
 	Text regionName1, regionName2;
 	Sprite result1, result2;
 
 	boolean attackerWon;
-
-	public BattleScene() {
-		
-		activity = MainActivity.getSharedInstance();
-		sceneManager = SceneManager.getSharedInstance();	
-		resources = ResourceCache.getSharedInstance();
-		cameraManager = resources.camera;
-		
-		setBackgroundEnabled(false);
-		
+	
+	
+	@Override
+	public void createScene()
+	{		
 		createDisplay();
-		
 	}
+
+	@Override
+	public void onBackKeyPressed() { }
+
+	@Override
+	public SceneType getSceneType() { return null; }
+
+	@Override
+	public void disposeScene() { }
+	
+	
 
 	private void createDisplay()
 	{
-		background = new Sprite(
+		setBackgroundEnabled(false);
+		
+		window = new Sprite(
 				MainActivity.CAMERA_WIDTH / 2,
 				MainActivity.CAMERA_HEIGHT / 2,
 				MainActivity.CAMERA_WIDTH,
@@ -64,8 +63,8 @@ public class BattleScene extends Scene {
 				resources.windowRegion,
 				activity.getVertexBufferObjectManager());
 		
-		background.setScale(0.9f);
-		background.setAlpha(1f);
+		window.setScale(0.9f);
+		window.setAlpha(1f);
 		
 		
 		vsText = new Text(MainActivity.CAMERA_WIDTH/2, MainActivity.CAMERA_HEIGHT/2,
@@ -86,7 +85,7 @@ public class BattleScene extends Scene {
 		result1.setPosition(0.25f * MainActivity.CAMERA_WIDTH, 0.3f * MainActivity.CAMERA_HEIGHT);
 		result2.setPosition(0.75f * MainActivity.CAMERA_WIDTH, 0.3f * MainActivity.CAMERA_HEIGHT);
 		
-		attachChild(background);
+		attachChild(window);
 		attachChild(result1);
 		attachChild(result2);
 		attachChild(typePlayer1);
@@ -96,7 +95,7 @@ public class BattleScene extends Scene {
 		attachChild(vsText);
 	}
 	
-	public void setAttributes(Region pRegion1, Region pRegion2, boolean won)
+	public void update(Region pRegion1, Region pRegion2, boolean won)
 	{
 		
 		float x1, x2;

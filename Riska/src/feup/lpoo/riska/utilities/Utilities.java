@@ -1,5 +1,7 @@
 package feup.lpoo.riska.utilities;
 
+import java.util.Random;
+
 import org.andengine.entity.text.Text;
 import org.andengine.opengl.font.Font;
 
@@ -49,6 +51,28 @@ public class Utilities {
 
 		return wrappedText;
 
+	}
+	
+	public boolean isBetween(int value, int min, int max)
+	{
+		return (value >= min && value <= max);
+	}
+	
+	public boolean isBetween(float value, float min, float max)
+	{
+		return (value >= min && value <= max);
+	}
+	
+	public float randomFloat(float min, float max)
+	{
+		Random r = new Random();
+		return (r.nextFloat() % max + min);
+	}
+	
+	public int randomInt(int min, int max)
+	{
+		Random r = new Random();
+		return (r.nextInt() % max + min);
 	}
 	
 }

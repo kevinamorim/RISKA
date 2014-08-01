@@ -4,7 +4,6 @@ import java.io.IOException;
 import org.andengine.audio.music.Music;
 import org.andengine.audio.music.MusicFactory;
 import org.andengine.engine.Engine;
-import org.andengine.engine.camera.SmoothCamera;
 import org.andengine.opengl.font.Font;
 import org.andengine.opengl.font.FontFactory;
 import org.andengine.opengl.texture.TextureOptions;
@@ -27,7 +26,6 @@ import feup.lpoo.riska.elements.Map;
 import feup.lpoo.riska.logic.MainActivity;
 import feup.lpoo.riska.music.Conductor;
 import feup.lpoo.riska.scenes.CameraManager;
-
 
 public class ResourceCache {
 
@@ -72,6 +70,9 @@ public class ResourceCache {
 	public ITiledTextureRegion autoDeployBtnRegion;
 	public ITiledTextureRegion infoTabRegion;
 	public ITextureRegion windowRegion;
+	public ITextureRegion windowRegionGeneric;
+	public ITextureRegion windowButtonGeneric;
+	public ITiledTextureRegion arrowRightRegion;
 	public ITiledTextureRegion seaRegion;
 	public ITextureRegion mapRegion;
 	private BuildableBitmapTextureAtlas gameTextureAtlas;
@@ -159,6 +160,7 @@ public class ResourceCache {
 		
 		textBtnRegion = BitmapTextureAtlasTextureRegionFactory.createTiledFromAsset(mainMenuTextureAtlas, activity, 
 				"button.png", 1, 2);
+		
 		optionsBtnRegion = BitmapTextureAtlasTextureRegionFactory.createTiledFromAsset(mainMenuTextureAtlas, activity, 
 				"options.png", 1, 2); 
 		
@@ -247,8 +249,17 @@ public class ResourceCache {
 		infoTabRegion = BitmapTextureAtlasTextureRegionFactory.createTiledFromAsset(gameTextureAtlas, activity, 
 				"info_tab.png", 1, 2);
 		
-		windowRegion = BitmapTextureAtlasTextureRegionFactory.createFromAsset(gameTextureAtlas, activity, "window.png");
+		windowRegion = BitmapTextureAtlasTextureRegionFactory.createFromAsset(gameTextureAtlas, activity,
+				"window.png");
 
+		windowRegionGeneric = BitmapTextureAtlasTextureRegionFactory.createFromAsset(gameTextureAtlas, activity,
+				"window_general.png");
+		
+		windowButtonGeneric = BitmapTextureAtlasTextureRegionFactory.createTiledFromAsset(gameTextureAtlas, activity, 
+				"button.png", 1, 2);
+		
+		arrowRightRegion = BitmapTextureAtlasTextureRegionFactory.createTiledFromAsset(gameTextureAtlas, activity,
+				"arrow_right.png", 2, 1);
 		
 		try {		
 			gameTextureAtlas.build(new BlackPawnTextureAtlasBuilder<IBitmapTextureAtlasSource, BitmapTextureAtlas>(0, 1, 0));
