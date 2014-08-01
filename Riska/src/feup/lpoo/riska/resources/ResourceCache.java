@@ -71,7 +71,7 @@ public class ResourceCache {
 	public ITiledTextureRegion infoTabRegion;
 	public ITextureRegion windowRegion;
 	public ITextureRegion windowRegionGeneric;
-	public ITextureRegion windowButtonGeneric;
+	public ITextureRegion windowButtonGenericInverted;
 	public ITiledTextureRegion arrowRightRegion;
 	public ITiledTextureRegion seaRegion;
 	public ITextureRegion mapRegion;
@@ -220,14 +220,15 @@ public class ResourceCache {
 		
 		seaTextureAtlas = new BitmapTextureAtlas(activity.getTextureManager(), seaTextureWidth, seaTextureHeight,
 				TextureOptions.DEFAULT);
-		seaRegion = BitmapTextureAtlasTextureRegionFactory.createTiledFromAsset(seaTextureAtlas, 
-				activity.getAssets(), "sea.png", 0, 0, seaCols, seaLines);
+		seaRegion = BitmapTextureAtlasTextureRegionFactory.createTiledFromAsset(seaTextureAtlas, activity.getAssets(),
+				"sea.png", 0, 0, seaCols, seaLines);
 		
 		
 		
 		mapTextureAtlas = new BitmapTextureAtlas(activity.getTextureManager(), mapTextureWidth, mapTextureHeight, 
 				TextureOptions.DEFAULT);
-		mapRegion = BitmapTextureAtlasTextureRegionFactory.createFromAsset(mapTextureAtlas, activity, "map_3.png", 0, 0);
+		mapRegion = BitmapTextureAtlasTextureRegionFactory.createFromAsset(mapTextureAtlas, activity,
+				"map_2.png", 0, 0);
 		
 
 		
@@ -255,8 +256,8 @@ public class ResourceCache {
 		windowRegionGeneric = BitmapTextureAtlasTextureRegionFactory.createFromAsset(gameTextureAtlas, activity,
 				"window_general.png");
 		
-		windowButtonGeneric = BitmapTextureAtlasTextureRegionFactory.createTiledFromAsset(gameTextureAtlas, activity, 
-				"button.png", 1, 2);
+		windowButtonGenericInverted = BitmapTextureAtlasTextureRegionFactory.createFromAsset(gameTextureAtlas, activity, 
+				"window_general_inverted.png");
 		
 		arrowRightRegion = BitmapTextureAtlasTextureRegionFactory.createTiledFromAsset(gameTextureAtlas, activity,
 				"arrow_right.png", 2, 1);

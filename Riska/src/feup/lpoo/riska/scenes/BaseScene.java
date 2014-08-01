@@ -1,7 +1,6 @@
 package feup.lpoo.riska.scenes;
 
 import org.andengine.engine.Engine;
-import org.andengine.engine.camera.SmoothCamera;
 import org.andengine.entity.scene.Scene;
 import org.andengine.opengl.vbo.VertexBufferObjectManager;
 
@@ -24,13 +23,15 @@ public abstract class BaseScene extends Scene {
 	// ==================================================
 	// CONSTRUCTOR
 	// ==================================================
-	public BaseScene() {
+	public BaseScene()
+	{
 		this.resources = ResourceCache.getSharedInstance();
 		this.sceneManager = SceneManager.getSharedInstance();
 		this.engine = resources.engine;
 		this.activity = resources.activity;
 		this.vbom = resources.vbom;
 		this.camera = resources.camera;
+		
 		createScene();
 	}
 

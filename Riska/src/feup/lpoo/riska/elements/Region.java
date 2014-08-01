@@ -5,35 +5,14 @@ import java.util.Random;
 
 import org.andengine.util.adt.color.Color;
 
-import feup.lpoo.riska.logic.MainActivity;
-import feup.lpoo.riska.resources.ResourceCache;
-import feup.lpoo.riska.scenes.SceneManager;
 import android.graphics.Point;
 
-/**
- * Represents any region.
- * 
- * @author Luís
- *
- */
 public class Region extends Element {
 
-	// ======================================================
-	// CONSTANTS
-	// ======================================================
-	private static final long MIN_TOUCH_INTERVAL = 30;
-	private static final int MAX_CHARS = 10;
 	private static final int SOLDIER_ATT = 10;
 	private static final int SOLDIER_DEF = 10;
 	private static final int MIN_SOLDIERS_FOR_AN_ATTACK = 2;
 	private final int SOLDIER_INC = 1;
-
-	// ======================================================
-	// SINGLETONS
-	// ======================================================
-	private MainActivity activity;
-	private SceneManager sceneManager;
-	private ResourceCache resources;
 
 	// ======================================================
 	// FIELDS
@@ -42,12 +21,13 @@ public class Region extends Element {
 	private boolean focused;
 
 	private Player owner;
-	private String continent;
-	
 	private Color priColor, secColor;
 	
 	private ArrayList<Unit> soldiers;
 	private ArrayList<Region> neighbours;
+
+	// ======================================================
+	// ======================================================
 	
 	/**
 	 * Constructor for a region.
@@ -61,24 +41,12 @@ public class Region extends Element {
 		
 		super(stratCenter.x, stratCenter.y, name);
 		
-		activity = MainActivity.getSharedInstance();
-		sceneManager = SceneManager.getSharedInstance();
-		resources = ResourceCache.getSharedInstance();
-		
 		this.ID = id;
-		this.continent = continent;
 		this.owner = null;
 		this.focused = false;
 		this.soldiers = new ArrayList<Unit>();
 		this.neighbours = new ArrayList<Region>();
 	}
-	
-	/* ======================================================================
-	 * ======================================================================    
-	 *                          GETTERS & SETTERS 
-	 * ======================================================================    
-	 * ======================================================================    
-	 */
 
 	/**
 	 * @return The strategic center of the region

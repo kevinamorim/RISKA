@@ -3,7 +3,6 @@ package feup.lpoo.riska.scenes;
 import org.andengine.engine.camera.SmoothCamera;
 
 import feup.lpoo.riska.elements.Region;
-import feup.lpoo.riska.logic.MainActivity;
 import android.graphics.Point;
 
 public class CameraManager extends SmoothCamera {

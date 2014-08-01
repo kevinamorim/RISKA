@@ -3,9 +3,6 @@ package feup.lpoo.riska.logic;
 import java.util.ArrayList;
 import org.andengine.util.adt.color.Color;
 
-import android.util.Log;
-
-import feup.lpoo.riska.R;
 import feup.lpoo.riska.elements.Map;
 import feup.lpoo.riska.elements.Player;
 import feup.lpoo.riska.elements.Region;
@@ -13,7 +10,6 @@ import feup.lpoo.riska.generator.BattleGenerator;
 import feup.lpoo.riska.resources.ResourceCache;
 import feup.lpoo.riska.scenes.GameScene;
 import feup.lpoo.riska.scenes.SceneManager;
-import feup.lpoo.riska.utilities.Utilities;
 
 public class GameLogic {
 
@@ -307,7 +303,7 @@ public class GameLogic {
 		return map;
 	}
 	
-	private Player getNextPlayer() {
+	public Player getNextPlayer() {
 
 		int i = players.indexOf(currentPlayer);
 
@@ -332,7 +328,6 @@ public class GameLogic {
 	// ======================================================
 	// REGIONS RELATED
 	// ======================================================
-
 	public void onRegionTouched(Region pRegion)
 	{
 		switch(state)
@@ -395,17 +390,6 @@ public class GameLogic {
 		selectedRegion.focus();
 	}
 
-	public void unselectRegion()
-	{
-		if(targetedRegion != null)
-		{
-			untargetRegion();
-		}
-
-		selectedRegion.unfocus();
-		selectedRegion = null;
-	}
-
 	public void targetRegion(Region pRegion)
 	{
 		if(selectedRegion != null)
@@ -424,7 +408,18 @@ public class GameLogic {
 		}
 	}
 
-	public void untargetRegion() 
+	private void unselectRegion()
+	{
+		if(targetedRegion != null)
+		{
+			untargetRegion();
+		}
+
+		selectedRegion.unfocus();
+		selectedRegion = null;
+	}
+	
+	private void untargetRegion() 
 	{
 		targetedRegion.unfocus();	
 		targetedRegion = null;

@@ -1,13 +1,11 @@
 package feup.lpoo.riska.scenes;
 
 import java.util.ArrayList;
-import java.util.Arrays;
-
 import org.andengine.entity.IEntity;
 import org.andengine.entity.modifier.DelayModifier;
 import org.andengine.entity.scene.IOnSceneTouchListener;
 import org.andengine.entity.scene.Scene;
-import org.andengine.entity.sprite.AnimatedSprite;
+//import org.andengine.entity.sprite.AnimatedSprite;
 import org.andengine.entity.sprite.ButtonSprite;
 import org.andengine.entity.sprite.Sprite;
 import org.andengine.entity.text.Text;
@@ -15,8 +13,6 @@ import org.andengine.input.touch.TouchEvent;
 import org.andengine.input.touch.detector.ScrollDetector;
 import org.andengine.input.touch.detector.ScrollDetector.IScrollDetectorListener;
 import org.andengine.input.touch.detector.SurfaceScrollDetector;
-import org.andengine.util.adt.color.Color;
-
 import feup.lpoo.riska.HUD.GameHUD;
 import feup.lpoo.riska.HUD.GameHUD.BUTTON;
 import feup.lpoo.riska.HUD.GameHUD.SPRITE;
@@ -42,7 +38,7 @@ public class GameScene extends BaseScene implements IOnSceneTouchListener, IScro
 	private final int MIN_SCROLLING_DIST = 30; /* Bigger the number, slower the scrolling. */
 	private final long MIN_TOUCH_INTERVAL = 70;
 	private final long MAX_TOUCH_INTERVAL = 400;
-	private final int ANIM_DURATION = 200;
+	//private final int ANIM_DURATION = 200;
 	private final float CPU_DELAY = 1.0f;
 	private final int MIN_SOLDIERS_PER_REGION = 1;	
 	private final long REGION_BUTTON_MIN_TOUCH_INTERVAL = 30;
@@ -228,7 +224,7 @@ public class GameScene extends BaseScene implements IOnSceneTouchListener, IScro
 
 		battleScene.setVisible(false);
 		attachChild(battleScene);
-		
+
 		preBattleScene.setVisible(false);
 		attachChild(preBattleScene);
 	}
@@ -287,15 +283,21 @@ public class GameScene extends BaseScene implements IOnSceneTouchListener, IScro
 		drawRegionButtons();
 		hud.draw(logic);
 		hud.setInfoTabText(logic);
-
 	}
 
 	private void deploymentUpdate()
 	{	
-		if(detailScene.isVisible()) {
+		if(detailScene.isVisible())
+		{
 			hideDetailScene();
-		} else if(battleScene.isVisible()) {
+		}
+		if(battleScene.isVisible())
+		{
 			hideBattleScene();
+		}
+		if(preBattleScene.isVisible())
+		{
+			hidePreBattleScene();
 		}
 
 		if(logic.getCurrentPlayerIndex() == PLAYER_NUM)
@@ -312,7 +314,144 @@ public class GameScene extends BaseScene implements IOnSceneTouchListener, IScro
 		hud.hide(BUTTON.DETAILS);
 		hud.show(BUTTON.AUTO_DEPLOY);
 		drawRegionButtons();
+	}
 
+	public void saveGame()
+	{
+
+		if(logic.getState() != GAME_STATE.PAUSED && logic.getState() != GAME_STATE.DEPLOYMENT) {
+
+			Log.d("Riska", "Will save the game.");
+
+			new SaveGame(activity, logic);
+		}
+
+	}
+
+	public void loadGame() {
+
+		LoadGame load = new LoadGame(activity);
+		load.setLogic(this.logic);
+		load.load();
+
+	}
+
+	public void showCpuMove(final Region pRegion1, final Region pRegion2)
+	{
+		lockUserInput();
+		lockHUD();
+
+		DelayModifier selectRegionDelay = new DelayModifier(CPU_DELAY)
+		{
+			@Override
+			protected void onModifierFinished(IEntity pItem)
+			{
+				logic.selectRegion(pRegion1);
+			}
+
+		};
+
+		DelayModifier targetRegionDelay = new DelayModifier(CPU_DELAY * 2)
+		{
+			@Override
+			protected void onModifierFinished(IEntity pItem)
+			{
+				logic.targetRegion(pRegion2);
+			}
+
+		};
+
+		DelayModifier attackDelay = new DelayModifier(CPU_DELAY * 3)
+		{
+			@Override
+			protected void onModifierFinished(IEntity pItem)
+			{
+				logic.attack();
+				unlockUserInput();
+				unlockHUD();
+			}
+
+		};
+
+		registerEntityModifier(selectRegionDelay);
+		registerEntityModifier(targetRegionDelay);
+		registerEntityModifier(attackDelay);
+	}
+	
+	// ======================================================
+	// SCENE TOUCH
+	// ======================================================
+	@Override
+	public boolean onSceneTouchEvent(Scene pScene, TouchEvent pSceneTouchEvent) {
+
+		switch(pSceneTouchEvent.getMotionEvent().getActionMasked()) {
+		case TouchEvent.ACTION_UP:
+
+			if( ((System.currentTimeMillis() - lastTouchTime) >  MIN_TOUCH_INTERVAL) &&
+					((System.currentTimeMillis() - lastTouchTime) < MAX_TOUCH_INTERVAL) && doubleTapAllowed ) {
+
+				/* Double tap */
+				camera.setAutomaticZoom(new Point((int) pSceneTouchEvent.getX(), 
+						(int) pSceneTouchEvent.getY()));
+
+			}
+
+			if((System.currentTimeMillis() - lastTouchTime) >  MIN_TOUCH_INTERVAL)
+			{
+				lastTouchTime = System.currentTimeMillis();
+			}
+
+
+			break;
+
+		}
+
+		scrollDetector.onTouchEvent(pSceneTouchEvent);
+
+		return true;
+	}
+
+	private void createScrollDetector() {
+
+		scrollDetector = new SurfaceScrollDetector(this);
+		scrollDetector.setTriggerScrollMinimumDistance(MIN_SCROLLING_DIST);
+		scrollDetector.setEnabled(true);
+
+	}
+
+	@Override
+	public void onScrollStarted(ScrollDetector pScollDetector, int pPointerID, float pX, float pY) {		
+		unregisterTouchAreaForAllRegions();
+	}
+
+	@Override
+	public void onScroll(ScrollDetector pScollDetector, int pPointerID, float pX, float pY) {
+		Point p = new Point((int)(activity.mCamera.getCenterX() - pX), (int)(activity.mCamera.getCenterY() + pY));
+		camera.jumpTo(p);	
+	}
+
+	@Override
+	public void onScrollFinished(ScrollDetector pScollDetector, int pPointerID, float pX, float pY) {		
+		Point p = new Point((int)(activity.mCamera.getCenterX() - pX), (int)(activity.mCamera.getCenterY() + pY));
+		camera.jumpTo(p);
+
+		registerTouchAreaForAllRegions();
+	}
+
+	private void lockUserInput() {
+
+		doubleTapAllowed = false;
+		scrollDetector.setEnabled(false);
+
+		unregisterTouchAreaForAllRegions();
+	}
+
+	private void unlockUserInput() {
+
+		doubleTapAllowed = true;
+		scrollDetector.setEnabled(true);
+
+		registerTouchAreaForAllRegions();
 	}
 
 	// ======================================================
@@ -360,134 +499,12 @@ public class GameScene extends BaseScene implements IOnSceneTouchListener, IScro
 		lastTouchTimeInRegion = System.currentTimeMillis();
 	}
 
-	private void updateRegionButton(int i) {
+	private void updateRegionButton(int i)
+	{
 		Region reg = map.getRegionById(i);
 		regionButtonsText.get(i).setText("" + reg.getNumberOfSoldiers());
 	}
-	// ======================================================
-	// ======================================================
 
-	@Override
-	public boolean onSceneTouchEvent(Scene pScene, TouchEvent pSceneTouchEvent) {
-
-		switch(pSceneTouchEvent.getMotionEvent().getActionMasked()) {
-		case TouchEvent.ACTION_UP:
-
-			if( ((System.currentTimeMillis() - lastTouchTime) >  MIN_TOUCH_INTERVAL) &&
-					((System.currentTimeMillis() - lastTouchTime) < MAX_TOUCH_INTERVAL) && doubleTapAllowed ) {
-
-				/* Double tap */
-				camera.setAutomaticZoom(new Point((int) pSceneTouchEvent.getX(), 
-						(int) pSceneTouchEvent.getY()));
-
-			}
-
-			if((System.currentTimeMillis() - lastTouchTime) >  MIN_TOUCH_INTERVAL)
-			{
-				lastTouchTime = System.currentTimeMillis();
-			}
-
-
-			break;
-
-		}
-
-		scrollDetector.onTouchEvent(pSceneTouchEvent);
-
-		return true;
-	}
-
-	// ======================================================
-	// SCROLL DETECTOR
-	// ======================================================
-	private void createScrollDetector() {
-
-		scrollDetector = new SurfaceScrollDetector(this);
-		scrollDetector.setTriggerScrollMinimumDistance(MIN_SCROLLING_DIST);
-		scrollDetector.setEnabled(true);
-
-	}
-
-	@Override
-	public void onScrollStarted(ScrollDetector pScollDetector, int pPointerID, float pX, float pY) {		
-		unregisterTouchAreaForAllRegions();
-	}
-
-	@Override
-	public void onScroll(ScrollDetector pScollDetector, int pPointerID, float pX, float pY) {
-		Point p = new Point((int)(activity.mCamera.getCenterX() - pX), (int)(activity.mCamera.getCenterY() + pY));
-		camera.jumpTo(p);	
-	}
-
-	@Override
-	public void onScrollFinished(ScrollDetector pScollDetector, int pPointerID, float pX, float pY) {		
-		Point p = new Point((int)(activity.mCamera.getCenterX() - pX), (int)(activity.mCamera.getCenterY() + pY));
-		camera.jumpTo(p);
-
-		registerTouchAreaForAllRegions();
-	}
-
-	// ======================================================
-	// ======================================================
-
-	public void onAttackButtonTouched()
-	{
-		if(preBattleScene.isVisible())
-		{
-			hidePreBattleScene();
-			logic.attack();
-		}
-		else
-		{
-			logic.pauseGame();
-			showPreBattleScene(logic.selectedRegion.getNumberOfSoldiers()); // TODO alter this, maybe, no?
-		}
-	}
-
-	public void onAutoDeploy()
-	{
-		logic.getCurrentPlayer().deployAllSoldiers();
-	}
-
-	public void lockUserInput() {
-
-		doubleTapAllowed = false;
-		scrollDetector.setEnabled(false);
-
-		unregisterTouchAreaForAllRegions();
-	}
-
-	public void unlockUserInput() {
-
-		doubleTapAllowed = true;
-		scrollDetector.setEnabled(true);
-
-		registerTouchAreaForAllRegions();
-	}
-
-	public void saveGame()
-	{
-
-		if(logic.getState() != GAME_STATE.PAUSED && logic.getState() != GAME_STATE.DEPLOYMENT) {
-
-			Log.d("Riska", "Will save the game.");
-
-			new SaveGame(activity, logic);
-		}
-
-	}
-
-	public void loadGame() {
-
-		LoadGame load = new LoadGame(activity);
-		load.setLogic(this.logic);
-		load.load();
-
-	}
-
-	// ======================================================
-	// REGION BUTTONS
-	// ======================================================
 	public void showOnlyNeighbourRegions(Region pRegion) {
 
 		for(int i = 0; i < map.getRegions().size(); i++) {
@@ -513,7 +530,7 @@ public class GameScene extends BaseScene implements IOnSceneTouchListener, IScro
 		}		
 	}
 
-	public void showAllRegions()
+	private void showAllRegions()
 	{
 		for(int i = 0; i < regionButtons.size(); i++)
 		{
@@ -525,13 +542,33 @@ public class GameScene extends BaseScene implements IOnSceneTouchListener, IScro
 			}
 		}
 	}
-	// ======================================================
-	// ======================================================
+
+	private void registerTouchAreaForAllRegions()
+	{
+		for(ButtonSprite regionButton : regionButtons)
+		{
+			if(!getTouchAreas().contains(regionButton))
+			{
+				registerTouchArea(regionButton);
+			}
+		}
+	}
+
+	private void unregisterTouchAreaForAllRegions()
+	{
+		for(ButtonSprite regionButton : regionButtons)
+		{
+			if(getTouchAreas().contains(regionButton))
+			{
+				unregisterTouchArea(regionButton);
+			}
+		}
+	}
 
 	// ======================================================
 	// CHILD SCENES
 	// ======================================================
-	public void showDetailScene()
+	private void showDetailScene()
 	{
 		if(detailScene != null)
 		{
@@ -546,7 +583,7 @@ public class GameScene extends BaseScene implements IOnSceneTouchListener, IScro
 		}
 	}
 
-	public void hideDetailScene()
+	private void hideDetailScene()
 	{
 		if(detailScene != null)
 		{
@@ -574,7 +611,7 @@ public class GameScene extends BaseScene implements IOnSceneTouchListener, IScro
 		}
 	}
 
-	public void hideBattleScene()
+	private void hideBattleScene()
 	{
 		if(battleScene != null)
 		{
@@ -596,13 +633,15 @@ public class GameScene extends BaseScene implements IOnSceneTouchListener, IScro
 			//hud.hide(BUTTON.ATTACK);
 			hud.hide(BUTTON.DETAILS);
 			hud.hide(SPRITE.INFO_TAB);
+			hud.show(BUTTON.ARROW_LEFT);
+			hud.show(BUTTON.ARROW_RIGHT);
 			preBattleScene.update(maxNumber);
 			preBattleScene.setVisible(true);
 			lockUserInput();
 		}
-		
+
 	}
-	
+
 	private void hidePreBattleScene()
 	{
 		if(preBattleScene != null)
@@ -610,39 +649,42 @@ public class GameScene extends BaseScene implements IOnSceneTouchListener, IScro
 			hud.setDetailButtonToQuestion();
 			hud.hide(BUTTON.DETAILS);
 			hud.show(SPRITE.INFO_TAB);
+			hud.hide(BUTTON.ARROW_LEFT);
+			hud.hide(BUTTON.ARROW_RIGHT);
 			preBattleScene.setVisible(false);
 			unlockUserInput();
 		}
 	}
-	
-	private void registerTouchAreaForAllRegions()
+
+	private boolean anyChildSceneIsVisible()
 	{
-		for(ButtonSprite regionButton : regionButtons)
+		if(detailScene.isVisible())
 		{
-			if(!getTouchAreas().contains(regionButton))
-			{
-				registerTouchArea(regionButton);
-			}
+			return true;
 		}
-	}
 
-	private void unregisterTouchAreaForAllRegions()
-	{
-		for(ButtonSprite regionButton : regionButtons)
+		if(battleScene.isVisible())
 		{
-			if(getTouchAreas().contains(regionButton))
-			{
-				unregisterTouchArea(regionButton);
-			}
+			return true;
 		}
+
+		if(preBattleScene.isVisible())
+		{
+			return true;
+		}
+
+		return false;
 	}
 
-	public void lockHUD() {
-		hud.lock();
+	// ======================================================
+	// HUD
+	// ======================================================
+	private void lockHUD() {
+		hud.Lock();
 	}
 
-	public void unlockHUD() {
-		hud.unlock();
+	private void unlockHUD() {
+		hud.Unlock();
 	}
 
 	public void onDetailButtonTouched()
@@ -665,78 +707,44 @@ public class GameScene extends BaseScene implements IOnSceneTouchListener, IScro
 		}
 	}
 
-	public void showCpuMove(final Region pRegion1, final Region pRegion2)
-	{
-		lockUserInput();
-		lockHUD();
-
-		DelayModifier selectRegionDelay = new DelayModifier(CPU_DELAY)
-		{
-			@Override
-			protected void onModifierFinished(IEntity pItem)
-			{
-				logic.selectRegion(pRegion1);
-			}
-
-		};
-
-		DelayModifier targetRegionDelay = new DelayModifier(CPU_DELAY * 2)
-		{
-			@Override
-			protected void onModifierFinished(IEntity pItem)
-			{
-				logic.targetRegion(pRegion2);
-			}
-
-		};
-
-		DelayModifier attackDelay = new DelayModifier(CPU_DELAY * 3)
-		{
-			@Override
-			protected void onModifierFinished(IEntity pItem)
-			{
-				logic.attack();
-				unlockUserInput();
-				unlockHUD();
-			}
-
-		};
-
-		registerEntityModifier(selectRegionDelay);
-		registerEntityModifier(targetRegionDelay);
-		registerEntityModifier(attackDelay);
-	}
-
-	// ======================================================
-	// GETTERS & SETTERS
-	// ======================================================
-	public void setInfoTabText(String pText) {
-		hud.setInfoTabText(pText);
-	}
-
 	public void setInitialHUD() 
 	{
 		hud.hide(BUTTON.AUTO_DEPLOY);
 	}
 
-	private boolean anyChildSceneIsVisible()
+	public void onAttackButtonTouched()
 	{
-		if(detailScene.isVisible())
-		{
-			return true;
-		}
-
-		if(battleScene.isVisible())
-		{
-			return true;
-		}
-
 		if(preBattleScene.isVisible())
 		{
-			return true;
+			hidePreBattleScene();
+			logic.attack();
 		}
+		else
+		{
+			logic.pauseGame();
+			showPreBattleScene(logic.selectedRegion.getNumberOfSoldiers() - MIN_SOLDIERS_PER_REGION); // TODO alter this, maybe, no?
+		}
+	}
 
-		return false;
+	public void onAutoDeployButtonTouched()
+	{
+		logic.getCurrentPlayer().deployAllSoldiers();
+	}
+
+	public void onLeftArrowTouched()
+	{
+		if(preBattleScene != null)
+		{
+			preBattleScene.decreaseSoldiers();
+		}
+	}
+
+	public void onRightArrowTouched()
+	{
+		if(preBattleScene != null)
+		{
+			preBattleScene.increaseSoldiers();
+		}
 	}
 }
 

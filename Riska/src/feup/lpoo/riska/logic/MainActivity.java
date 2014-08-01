@@ -2,7 +2,6 @@ package feup.lpoo.riska.logic;
 
 import java.io.IOException;
 
-import org.andengine.engine.camera.SmoothCamera;
 import org.andengine.engine.handler.timer.ITimerCallback;
 import org.andengine.engine.handler.timer.TimerHandler;
 import org.andengine.engine.options.EngineOptions;
