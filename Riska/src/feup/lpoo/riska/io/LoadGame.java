@@ -57,7 +57,7 @@ public class LoadGame {
 		for(int i = 0; i < size; i++) {
 			int id = prefs.getInt("cpuRegion_" + i, 0);
 
-			logic.getMap().getRegionById(id).changeOwner(logic.getPlayers().get(1));
+			logic.getMap().getRegionById(id).setOwner(logic.getPlayers().get(1));
 		}
 		
 	}
@@ -68,7 +68,7 @@ public class LoadGame {
 		for(int i = 0; i < size; i++) {
 			int id = prefs.getInt("playerRegion_" + i, 0);
 
-			logic.getMap().getRegionById(id).changeOwner(logic.getPlayers().get(0));
+			logic.getMap().getRegionById(id).setOwner(logic.getPlayers().get(0));
 
 		}
 	}

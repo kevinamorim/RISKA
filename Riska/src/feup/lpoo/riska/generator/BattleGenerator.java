@@ -1,6 +1,5 @@
 package feup.lpoo.riska.generator;
 
-import android.util.Log;
 import feup.lpoo.riska.utilities.*;
 
 /**
@@ -21,17 +20,14 @@ public class BattleGenerator {
 		attackerPoints = Utilities.randomInt(1, attacker);
 		defenderPoints = Utilities.randomInt(1, defender);
 		
-		Log.d("Riska","Attack random result : " + attackerPoints);
-		Log.d("Riska","Defense random result: " + defenderPoints);
-		
 		result = attackerPoints > defenderPoints;
 		
-		if(result) // attacker won
+		if(result)	// attacker won
 		{
 			remainingDefenders = 0;
 			remainingAttackers = attackerPoints;
 		}
-		else
+		else		// Defender won (lol, rly)
 		{
 			remainingDefenders = defenderPoints;
 			remainingAttackers = 0;

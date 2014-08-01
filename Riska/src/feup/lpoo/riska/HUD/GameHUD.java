@@ -58,7 +58,7 @@ public class GameHUD extends HUD implements Displayable {
 
 	public void draw(GameLogic logic)
 	{
-		if(!logic.getCurrentPlayer().isCPU())
+		if(!logic.getCurrentPlayer().isCPU)
 		{
 			if(logic.selectedRegion != null)
 			{
@@ -534,15 +534,24 @@ public class GameHUD extends HUD implements Displayable {
 		infoTabText.setText(info);
 	}
 
-	public void setInfoTabText(GameLogic logic) {
-		if(logic.getCurrentPlayer().isCPU()) {
+	public void setInfoTabText(GameLogic logic)
+	{
+		if(logic.getCurrentPlayer().isCPU)
+		{
 			setInfoTabText(Utilities.getString(R.string.game_info_wait_for_CPU));
-		} else {
-			if(logic.selectedRegion != null && logic.targetedRegion != null) {
+		}
+		else
+		{
+			if(logic.selectedRegion != null && logic.targetedRegion != null)
+			{
 				setInfoTabText(Utilities.getString(R.string.game_info_attack));
-			} else if(logic.selectedRegion != null) {
+			}
+			else if(logic.selectedRegion != null)
+			{
 				setInfoTabText(Utilities.getString(R.string.game_info_tap_enemy_region));
-			} else {
+			}
+			else
+			{
 				setInfoTabText(Utilities.getString(R.string.game_info_tap_allied_region));
 			}
 		}

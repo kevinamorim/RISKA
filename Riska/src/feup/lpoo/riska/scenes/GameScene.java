@@ -305,7 +305,7 @@ public class GameScene extends BaseScene implements IOnSceneTouchListener, IScro
 
 		if(logic.getCurrentPlayerIndex() == PLAYER_NUM)
 		{
-			hud.setInfoTabText(logic.getCurrentPlayer().getSoldiersToDeploy() + Utilities.getString(R.string.game_info_left_to_deploy));
+			hud.setInfoTabText(logic.getCurrentPlayer().soldiersToDeploy + Utilities.getString(R.string.game_info_left_to_deploy));
 		}
 		else
 		{

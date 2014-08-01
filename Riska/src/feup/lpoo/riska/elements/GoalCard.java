@@ -6,12 +6,15 @@ public class GoalCard extends Card {
 	
 	protected String description;
 
-	public GoalCard(int x, int y, Sprite pSprite, String pName, String descr) {
+	public GoalCard(int x, int y, Sprite pSprite, String pName, String descr)
+	{
 		super(x, y, pSprite, pName);
+		
 		this.description = descr;
 	}
 	
-	public boolean isCompleted(Player player) {
+	public boolean isCompleted(Player player)
+	{
 		return false;
 	}
 

@@ -4,11 +4,9 @@ import org.andengine.entity.sprite.Sprite;
 import org.andengine.entity.text.Text;
 import org.andengine.util.adt.color.Color;
 
-import android.util.Log;
 import feup.lpoo.riska.elements.Player;
 import feup.lpoo.riska.elements.Region;
 import feup.lpoo.riska.generator.BattleGenerator;
-import feup.lpoo.riska.logic.MainActivity;
 import feup.lpoo.riska.scenes.SceneManager.SceneType;
 import feup.lpoo.riska.utilities.Utilities;
 
@@ -135,7 +133,7 @@ public class BattleScene extends BaseScene {
 		x1 = 0.25f * width;
 		x2 = 0.75f * width;
 
-		if(Player1.isCPU() && !Player2.isCPU())
+		if(Player1.isCPU && !Player2.isCPU)
 		{
 			x1 = 0.75f * width;
 			x2 = 0.25f * width;

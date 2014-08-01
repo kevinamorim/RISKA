@@ -1,6 +1,9 @@
 package feup.lpoo.riska.logic;
 
 import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Comparator;
+
 import org.andengine.util.adt.color.Color;
 
 import feup.lpoo.riska.elements.Map;
@@ -22,13 +25,14 @@ public class GameLogic {
 	// ======================================================
 	// CONSTANTS
 	// ======================================================
-	public final int WIN_BONUS = 2;
-	public final int TURN_REPLENISHMENT = 3;
+	private final int WIN_BONUS = 2;
+	private final int TURN_REPLENISHMENT = 3;
 	public final int MIN_SOLDIERS_PER_REGION = 1;
+	private final int MIN_SOLDIERS_FOR_AN_ATTACK = 2;
 	private final int MIN_PLAYERS_IN_GAME = 2;
 	private Color[] PLAYER_COLOR = { new Color(0f, 0.447f, 0.898f), new Color(1f, 1f, 0f) };
 	private Color[] CPU_COLOR = { new Color(1f, 0f, 0f), new Color(0f, 0f, 0f) };
-	
+
 	public enum GAME_STATE { PAUSED, SETUP,  DEPLOYMENT, ATTACK, MOVE, CPU, PLAY, GAMEOVER };
 
 	// ======================================================
@@ -43,9 +47,9 @@ public class GameLogic {
 	public boolean turnDone;
 	public Region selectedRegion;
 	public Region targetedRegion;
-	
+
 	public int attackingSoldiers = 0;
-	
+
 	public GameLogic(GameScene scene) {
 
 		resources = ResourceCache.getSharedInstance();
@@ -80,7 +84,7 @@ public class GameLogic {
 
 		currentPlayer = players.get(0);	
 	}
-	
+
 	private void createMap() {
 		map = resources.map;
 		map.handOutRegions(players);
@@ -104,7 +108,7 @@ public class GameLogic {
 				{
 					untargetRegion();
 				}
-				
+
 				if(!getNextPossiblePlayer())
 				{
 					state = GAME_STATE.GAMEOVER;
@@ -124,7 +128,7 @@ public class GameLogic {
 			}
 			else
 			{
-				if(currentPlayer.isCPU())
+				if(currentPlayer.isCPU)
 				{
 					pauseGame();
 					automaticMove();
@@ -136,12 +140,12 @@ public class GameLogic {
 	private boolean getNextPossiblePlayer()
 	{
 		int count = 0;
-		
+
 		currentPlayer = getNextPlayer();
 
 		while(count < players.size())
 		{
-			if(currentPlayer.hasPossibleMoves())
+			if(hasPossibleMoves(currentPlayer))
 			{
 				return true;
 			}
@@ -151,13 +155,13 @@ public class GameLogic {
 				count++;
 			}
 		}
-		
+
 		return false;
 	}
 
 	private void automaticMove()
 	{	
-		Region pRegion1 = currentPlayer.selectRegion();
+		Region pRegion1 = selectRegion(currentPlayer);
 
 		if(pRegion1 != null)
 		{
@@ -169,6 +173,20 @@ public class GameLogic {
 				gameScene.showCpuMove(pRegion1, pRegion2);	
 			}
 		}		
+	}
+	
+	private boolean hasPossibleMoves(Player player)
+	{
+		for(Region pRegion : player.getRegions())
+		{
+			if(pRegion.hasEnemyNeighbor() && canAttack(pRegion))
+			{
+				//Log.d("Region", "True" + pRegion.getName());
+				return true;
+			}
+		}
+
+		return false;
 	}
 
 	private boolean gameOver()
@@ -200,7 +218,7 @@ public class GameLogic {
 			}
 			else
 			{
-				if(currentPlayer.isCPU())
+				if(currentPlayer.isCPU)
 				{
 					currentPlayer.deployAllSoldiers();
 				}
@@ -215,21 +233,22 @@ public class GameLogic {
 		{
 			return;
 		}
-		
+
 		Region pRegion1 = selectedRegion;
 		Region pRegion2 = targetedRegion;
-		
+
 		battleGenerator.simulateAttack(attackingSoldiers, pRegion2.getNumberOfSoldiers());
-		
+
 		boolean won = battleGenerator.result;
-			
+
 		gameScene.showBattleScene(selectedRegion, targetedRegion, battleGenerator);
 
 		if(won)
 		{
 			pRegion1.setSoldiers(pRegion1.getNumberOfSoldiers() - attackingSoldiers);
-			pRegion2.changeOwner(currentPlayer);
+			pRegion2.setOwner(currentPlayer);
 			pRegion2.setSoldiers(battleGenerator.remainingAttackers);
+			// If the player wins an attack, he/she gets a bonus of soldiers to deploys next turn
 			currentPlayer.setSoldiersToDeploy(WIN_BONUS * TURN_REPLENISHMENT);
 		}
 		else
@@ -238,33 +257,33 @@ public class GameLogic {
 			pRegion2.setSoldiers(battleGenerator.remainingDefenders);
 			currentPlayer.setSoldiersToDeploy(TURN_REPLENISHMENT);
 		}
-			
+
 		untargetRegion();
 		unselectRegion();
-		
+
 		attackDone = true;
 	}
 
 	public void deploy() {
-		
-		if(currentPlayer.hasSoldiersLeftToDeploy() && currentPlayer.isCPU()) {
+
+		if(currentPlayer.hasSoldiersLeftToDeploy() && currentPlayer.isCPU) {
 			currentPlayer.deployAllSoldiers();
 		}
-		
+
 		if(!currentPlayer.hasSoldiersLeftToDeploy()) {
 			//state = GAME_STATE.ATTACK;
 			state = GAME_STATE.PLAY;
 			turnDone = true;
 		}
-		
+
 	}
-	
+
 	public void move() {
-		
+
 	}
-	
+
 	public void cpu() {
-		
+
 	}
 
 	// ======================================================
@@ -304,7 +323,7 @@ public class GameLogic {
 	public Map getMap() {
 		return map;
 	}
-	
+
 	public Player getNextPlayer() {
 
 		int i = players.indexOf(currentPlayer);
@@ -355,7 +374,7 @@ public class GameLogic {
 		{
 			if(currentPlayer.ownsRegion(pRegion))
 			{
-				if(pRegion.canAttack()) // Shouldn't be here
+				if(canAttack(pRegion))
 				{
 					selectRegion(pRegion);
 					gameScene.showOnlyNeighbourRegions(pRegion);
@@ -378,6 +397,32 @@ public class GameLogic {
 			}
 
 		}	
+	}
+
+	private boolean canAttack(Region pRegion)
+	{
+		return pRegion.getNumberOfSoldiers() >= MIN_SOLDIERS_FOR_AN_ATTACK;
+	}
+
+	private Region selectRegion(Player player) {
+		Collections.sort(player.getRegions(), new Comparator<Region>()
+				{
+					@Override
+					public int compare(Region region1, Region region2)
+					{
+						return region1.getNumberOfSoldiers() - region2.getNumberOfSoldiers();
+					}
+				});
+
+		for(Region pRegion : player.getRegions())
+		{
+			if(pRegion.hasEnemyNeighbor() && canAttack(pRegion))
+			{
+				return pRegion;
+			}
+		}
+
+		return null;
 	}
 
 	public void selectRegion(Region pRegion) {
@@ -420,18 +465,18 @@ public class GameLogic {
 		selectedRegion.unfocus();
 		selectedRegion = null;
 	}
-	
+
 	private void untargetRegion() 
 	{
 		targetedRegion.unfocus();	
 		targetedRegion = null;
 	}
-	
+
 	public void pauseGame()
 	{
 		state = GAME_STATE.PAUSED;
 	}
-	
+
 	public void resumeGame()
 	{
 		if(state.equals(GAME_STATE.PAUSED)) state = GAME_STATE.PLAY;

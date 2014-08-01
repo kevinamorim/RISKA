@@ -11,7 +11,6 @@ public class Region extends Element {
 
 	private static final int SOLDIER_ATT = 10;
 	private static final int SOLDIER_DEF = 10;
-	private static final int MIN_SOLDIERS_FOR_AN_ATTACK = 2;
 	private final int SOLDIER_INC = 1;
 
 	// ======================================================
@@ -70,22 +69,6 @@ public class Region extends Element {
 	}
 
 	/**
-	 * @return True if this region is focused/selected
-	 */
-	public boolean isFocused() {
-		return focused;
-	}
-
-	/**
-	 * Changes the focus of a region.
-	 * 
-	 * @param value : new value of the focus
-	 */
-	public void setFocused(boolean value) {
-		this.focused = value;
-	}
-	
-	/**
 	 * @return Number of soldiers stationed in this region
 	 */
 	public int getNumberOfSoldiers() {
@@ -133,8 +116,17 @@ public class Region extends Element {
 	 * 
 	 * @param player : new owner
 	 */
-	public void setOwner(Player player) {
-		this.owner = player;
+	public void setOwner(Player newOwner) {
+		if(owner != null)
+		{
+			owner.removeRegion(this);
+		}
+		
+		owner = newOwner;
+		owner.addRegion(this);
+		
+		secColor = owner.getPrimaryColor();
+		priColor = owner.getScondaryColor();
 	}
 	
 	/**
@@ -191,34 +183,10 @@ public class Region extends Element {
 	/**
 	 * Clears (erases) the set of soldiers in a region.
 	 */
-	public void clearSoldiers() {
+	public void removeSoldiers() {
 		soldiers.clear();
 	}
-	
-	/**
-	 * Changes the ownership for this region.
-	 * Unlike setOwner(), this method updates every information regarding the new owner.
-	 * 
-	 * @param newOwner : new owner
-	 */
-	public void changeOwner(Player newOwner) {
-		
-		if(owner != null)
-		{
-			owner.removeRegion(this);
-		}
-		
-		owner = newOwner;
-		owner.addRegion(this);
-		
-		secColor = owner.getPrimaryColor();
-		priColor = owner.getScondaryColor();
-	}
-	
-	public boolean canAttack() {
-		return (getNumberOfSoldiers() >= MIN_SOLDIERS_FOR_AN_ATTACK);
-	}
-	
+
 	public boolean hasEnemyNeighbor() {
 		for(Region region : neighbours) {
 			if(!region.getOwner().equals(owner)) {
@@ -253,7 +221,11 @@ public class Region extends Element {
 		
 		switchColors(false);
 	}
-	
+
+	public boolean isFocused() {
+		return focused;
+	}
+
 	public Region selectTargetRegion()
 	{
 		
@@ -279,7 +251,8 @@ public class Region extends Element {
 		return secColor;
 	}
 
-	public void deploy(Player pPlayer) {
+	public void deploy(Player pPlayer)
+	{
 		if(getOwner().equals(pPlayer))
 		{
 			if(pPlayer.hasSoldiersLeftToDeploy())
@@ -289,4 +262,5 @@ public class Region extends Element {
 			}
 		}
 	}
+	
 }
