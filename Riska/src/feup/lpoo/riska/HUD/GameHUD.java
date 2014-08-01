@@ -268,8 +268,7 @@ public class GameHUD extends HUD implements Displayable {
 			}	
 		};
 
-		arrowLeft.setScaleX(-1f);
-		arrowLeft.setScale(0.6f);	
+		arrowLeft.setScale(-0.6f);
 		arrowLeft.setPosition(0.25f * MainActivity.CAMERA_WIDTH, 0.5f * MainActivity.CAMERA_HEIGHT);
 
 

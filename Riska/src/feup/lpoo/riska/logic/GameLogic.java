@@ -22,20 +22,14 @@ public class GameLogic {
 	// ======================================================
 	// CONSTANTS
 	// ======================================================
+	public final int WIN_BONUS = 2;
+	public final int TURN_REPLENISHMENT = 3;
+	public final int MIN_SOLDIERS_PER_REGION = 1;
 	private final int MIN_PLAYERS_IN_GAME = 2;
 	private Color[] PLAYER_COLOR = { new Color(0f, 0.447f, 0.898f), new Color(1f, 1f, 0f) };
 	private Color[] CPU_COLOR = { new Color(1f, 0f, 0f), new Color(0f, 0f, 0f) };
 	
-	public enum GAME_STATE {
-		PAUSED,
-		SETUP, 
-		DEPLOYMENT,
-		ATTACK,
-		MOVE,
-		CPU,
-		PLAY, 		 /* TODO: Delete */
-		GAMEOVER
-	};
+	public enum GAME_STATE { PAUSED, SETUP,  DEPLOYMENT, ATTACK, MOVE, CPU, PLAY, GAMEOVER };
 
 	// ======================================================
 	// FIELDS
@@ -49,6 +43,8 @@ public class GameLogic {
 	public boolean turnDone;
 	public Region selectedRegion;
 	public Region targetedRegion;
+	
+	public int attackingSoldiers = 0;
 	
 	public GameLogic(GameScene scene) {
 
@@ -169,6 +165,7 @@ public class GameLogic {
 
 			if(pRegion2 != null)
 			{
+				this.attackingSoldiers = pRegion1.getNumberOfSoldiers() - MIN_SOLDIERS_PER_REGION;
 				gameScene.showCpuMove(pRegion1, pRegion2);	
 			}
 		}		
@@ -219,26 +216,31 @@ public class GameLogic {
 			return;
 		}
 		
-		Region attacker = selectedRegion;
-		Region defender = targetedRegion;
+		Region pRegion1 = selectedRegion;
+		Region pRegion2 = targetedRegion;
 		
-		boolean won = battleGenerator.simulateAttack(attacker.getSoldiers(), defender.getSoldiers());
+		battleGenerator.simulateAttack(attackingSoldiers, pRegion2.getNumberOfSoldiers());
+		
+		boolean won = battleGenerator.result;
 			
-		gameScene.showBattleScene(selectedRegion, targetedRegion, won);
+		gameScene.showBattleScene(selectedRegion, targetedRegion, battleGenerator);
 
 		if(won)
 		{
-			defender.changeOwner(attacker.getOwner());
-			defender.setSoldiers(attacker.getNumberOfSoldiers());				
+			pRegion1.setSoldiers(pRegion1.getNumberOfSoldiers() - attackingSoldiers);
+			pRegion2.changeOwner(currentPlayer);
+			pRegion2.setSoldiers(battleGenerator.remainingAttackers);
+			currentPlayer.setSoldiersToDeploy(WIN_BONUS * TURN_REPLENISHMENT);
 		}
-		
-		attacker.setSoldiers(1);	
+		else
+		{
+			pRegion1.setSoldiers(pRegion1.getNumberOfSoldiers() - attackingSoldiers);
+			pRegion2.setSoldiers(battleGenerator.remainingDefenders);
+			currentPlayer.setSoldiersToDeploy(TURN_REPLENISHMENT);
+		}
 			
 		untargetRegion();
 		unselectRegion();
-		
-		currentPlayer.setSoldiersToDeploy(3); /* New stuff */
-		//state = GAME_STATE.DEPLOYMENT; /* New stuff */	
 		
 		attackDone = true;
 	}

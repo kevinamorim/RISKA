@@ -2,9 +2,11 @@ package feup.lpoo.riska.utilities;
 
 import java.util.Random;
 
+import org.andengine.entity.Entity;
 import org.andengine.entity.text.Text;
 import org.andengine.opengl.font.Font;
 
+import android.util.Log;
 import feup.lpoo.riska.logic.MainActivity;
 
 public class Utilities {
@@ -53,26 +55,32 @@ public class Utilities {
 
 	}
 	
-	public boolean isBetween(int value, int min, int max)
+	public static boolean isBetween(int value, int min, int max)
 	{
 		return (value >= min && value <= max);
 	}
 	
-	public boolean isBetween(float value, float min, float max)
+	public static boolean isBetween(float value, float min, float max)
 	{
 		return (value >= min && value <= max);
 	}
 	
-	public float randomFloat(float min, float max)
+	public static int randomInt(int min, int max)
 	{
 		Random r = new Random();
-		return (r.nextFloat() % max + min);
+		Log.d("Riska", "Random (int) called, between " + min + " and " + max);
+		
+		return (r.nextInt(max) + min);
 	}
 	
-	public int randomInt(int min, int max)
+	public static float getBoundsX(Entity e)
 	{
-		Random r = new Random();
-		return (r.nextInt() % max + min);
+		return (e.getX() + (0.5f * e.getWidth()));
+	}
+	
+	public static float getBoundsY(Entity e)
+	{
+		return (e.getY() + (0.5f * e.getHeight()));
 	}
 	
 }

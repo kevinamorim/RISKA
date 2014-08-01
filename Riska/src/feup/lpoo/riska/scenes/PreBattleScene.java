@@ -5,8 +5,8 @@ import org.andengine.entity.text.Text;
 import org.andengine.util.adt.color.Color;
 
 import feup.lpoo.riska.interfaces.Displayable;
-import feup.lpoo.riska.logic.MainActivity;
 import feup.lpoo.riska.scenes.SceneManager.SceneType;
+import feup.lpoo.riska.utilities.Utilities;
 
 public class PreBattleScene extends BaseScene implements Displayable {
 
@@ -22,7 +22,7 @@ public class PreBattleScene extends BaseScene implements Displayable {
 	// ======================================================
 	Sprite window;
 	Sprite soldierNumBox;
-	Text soldiers;
+	Text soldiersToSend;
 	Text soldierNum;
 
 	int soldierMin;
@@ -50,44 +50,59 @@ public class PreBattleScene extends BaseScene implements Displayable {
 	// CREATE DISPLAY
 	// ======================================================
 	@Override
-	public void createDisplay() {
-
+	public void createDisplay()
+	{
 		setBackgroundEnabled(false);
+		
+		createBackground();	
+		createText();
 
+		attachChild(window);
+		window.attachChild(soldiersToSend);
+		window.attachChild(soldierNumBox);
+		window.attachChild(soldierNum);
+	}
+
+	private void createBackground()
+	{
 		window = new Sprite(
-				MainActivity.CAMERA_WIDTH / 2,
-				MainActivity.CAMERA_HEIGHT / 2,
-				MainActivity.CAMERA_WIDTH,
-				MainActivity.CAMERA_HEIGHT,
+				camera.getCenterX(),
+				camera.getCenterY(),
+				camera.getWidth(),
+				camera.getHeight(),
 				resources.windowRegionGeneric,
 				vbom);
 
 		window.setScale(0.9f);
-		window.setAlpha(1f);
+		//window.setAlpha(1f);
+		
+		
+		soldierNumBox = new Sprite(
+				0.5f * Utilities.getBoundsX(window),
+				0.5f * Utilities.getBoundsY(window),
+				resources.windowButtonGenericInverted,
+				vbom);
 
-		soldiers = new Text(0.5f * MainActivity.CAMERA_WIDTH, 0.8f * MainActivity.CAMERA_HEIGHT,
-				resources.mGameFont, "SOLDIERS", 100, vbom);
+		soldierNumBox.setScaleX(1.1f);
+	}
+	
+	private void createText()
+	{
+		soldiersToSend = new Text(
+				0.5f * Utilities.getBoundsX(window),
+				0.8f * Utilities.getBoundsY(window),
+				resources.mGameFont, "SOLDIERS TO SEND ON ATTACK", 100, vbom);
 
-		soldiers.setColor(Color.WHITE);
-		soldiers.setScale(1.2f);
+		soldiersToSend.setColor(Color.WHITE);
+		soldiersToSend.setScale(1.2f);
 
-		soldierNum = new Text(0.5f * MainActivity.CAMERA_WIDTH, 0.5f * MainActivity.CAMERA_HEIGHT,
+		soldierNum = new Text(
+				0.5f * Utilities.getBoundsX(window),
+				0.5f * Utilities.getBoundsY(window),
 				resources.mGameFont, "X", 500, vbom);
 
 		soldierNum.setColor(Color.BLACK);
 		soldierNum.setScale(1.4f);
-
-		soldierNumBox = new Sprite(
-				MainActivity.CAMERA_WIDTH / 2,
-				MainActivity.CAMERA_HEIGHT / 2, resources.windowButtonGenericInverted, vbom);
-
-		soldierNumBox.setScaleX(1.1f);
-		//soldierNumBox.setAlpha(1f);
-
-		attachChild(window);
-		attachChild(soldiers);
-		attachChild(soldierNumBox);
-		attachChild(soldierNum);
 	}
 
 	// ======================================================

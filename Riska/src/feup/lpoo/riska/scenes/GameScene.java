@@ -1,6 +1,7 @@
 package feup.lpoo.riska.scenes;
 
 import java.util.ArrayList;
+
 import org.andengine.entity.IEntity;
 import org.andengine.entity.modifier.DelayModifier;
 import org.andengine.entity.scene.IOnSceneTouchListener;
@@ -13,11 +14,13 @@ import org.andengine.input.touch.TouchEvent;
 import org.andengine.input.touch.detector.ScrollDetector;
 import org.andengine.input.touch.detector.ScrollDetector.IScrollDetectorListener;
 import org.andengine.input.touch.detector.SurfaceScrollDetector;
+
 import feup.lpoo.riska.HUD.GameHUD;
 import feup.lpoo.riska.HUD.GameHUD.BUTTON;
 import feup.lpoo.riska.HUD.GameHUD.SPRITE;
 import feup.lpoo.riska.elements.Map;
 import feup.lpoo.riska.elements.Region;
+import feup.lpoo.riska.generator.BattleGenerator;
 import feup.lpoo.riska.io.LoadGame;
 import feup.lpoo.riska.io.SaveGame;
 import feup.lpoo.riska.logic.GameLogic;
@@ -40,7 +43,7 @@ public class GameScene extends BaseScene implements IOnSceneTouchListener, IScro
 	private final long MAX_TOUCH_INTERVAL = 400;
 	//private final int ANIM_DURATION = 200;
 	private final float CPU_DELAY = 1.0f;
-	private final int MIN_SOLDIERS_PER_REGION = 1;	
+	//private final int MIN_SOLDIERS_PER_REGION = 1;	
 	private final long REGION_BUTTON_MIN_TOUCH_INTERVAL = 30;
 	private final int MAX_REGION_CHARS = 10;	
 	private final int PLAYER_NUM = 0;
@@ -198,7 +201,7 @@ public class GameScene extends BaseScene implements IOnSceneTouchListener, IScro
 
 			regionButton.setColor(region.getPrimaryColor());
 
-			buttonText.setText("" + MIN_SOLDIERS_PER_REGION);
+			buttonText.setText("" + logic.MIN_SOLDIERS_PER_REGION);
 			buttonText.setScale((float) 1.1);
 			buttonText.setPosition(regionButton.getWidth()/2, regionButton.getHeight()/2);
 			buttonText.setColor(region.getSecundaryColor());
@@ -596,7 +599,7 @@ public class GameScene extends BaseScene implements IOnSceneTouchListener, IScro
 		}
 	}
 
-	public void showBattleScene(Region pRegion1, Region pRegion2, boolean result)
+	public void showBattleScene(Region pRegion1, Region pRegion2, BattleGenerator battleGenerator)
 	{
 		if(battleScene != null)
 		{
@@ -605,7 +608,7 @@ public class GameScene extends BaseScene implements IOnSceneTouchListener, IScro
 			hud.show(BUTTON.DETAILS);
 			hud.hide(BUTTON.ATTACK);
 			hud.hide(SPRITE.INFO_TAB);
-			battleScene.update(pRegion1, pRegion2, result);
+			battleScene.update(pRegion1, pRegion2, battleGenerator);
 			battleScene.setVisible(true);
 			lockUserInput();
 		}
@@ -717,12 +720,13 @@ public class GameScene extends BaseScene implements IOnSceneTouchListener, IScro
 		if(preBattleScene.isVisible())
 		{
 			hidePreBattleScene();
+			logic.attackingSoldiers = preBattleScene.getAttackingSoldiers();
 			logic.attack();
 		}
 		else
 		{
 			logic.pauseGame();
-			showPreBattleScene(logic.selectedRegion.getNumberOfSoldiers() - MIN_SOLDIERS_PER_REGION); // TODO alter this, maybe, no?
+			showPreBattleScene(logic.selectedRegion.getNumberOfSoldiers() - logic.MIN_SOLDIERS_PER_REGION); // TODO alter this, maybe, no?
 		}
 	}
 
