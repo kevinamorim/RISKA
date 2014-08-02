@@ -177,9 +177,10 @@ public class GameScene extends BaseScene implements IOnSceneTouchListener, IScro
 			regionButton = new ButtonSprite(x, y, resources.regionBtnRegion, vbom) {
 
 				@Override
-				public boolean onAreaTouched(TouchEvent ev, float pX, float pY) {
-
-					switch(ev.getAction()) {
+				public boolean onAreaTouched(TouchEvent ev, float pX, float pY) 
+				{
+					switch(ev.getAction()) 
+					{
 					case MotionEvent.ACTION_DOWN:
 						onRegionButtonPressed(this, getTag());
 						break;
@@ -216,8 +217,8 @@ public class GameScene extends BaseScene implements IOnSceneTouchListener, IScro
 		}
 	}
 
-	private void createChildScenes() {
-
+	private void createChildScenes()
+	{
 		detailScene = new DetailScene();
 		battleScene = new BattleScene();
 		preBattleScene = new PreBattleScene();
@@ -627,7 +628,7 @@ public class GameScene extends BaseScene implements IOnSceneTouchListener, IScro
 		}
 	}
 
-	private void showPreBattleScene(int maxNumber)
+	private void showPreBattleScene(int attackingSoldiers, int defendingSoldiers)
 	{
 		if(preBattleScene != null)
 		{
@@ -638,7 +639,7 @@ public class GameScene extends BaseScene implements IOnSceneTouchListener, IScro
 			hud.hide(SPRITE.INFO_TAB);
 			hud.show(BUTTON.ARROW_LEFT);
 			hud.show(BUTTON.ARROW_RIGHT);
-			preBattleScene.update(maxNumber);
+			preBattleScene.update(attackingSoldiers, defendingSoldiers);
 			preBattleScene.setVisible(true);
 			lockUserInput();
 		}
@@ -726,7 +727,7 @@ public class GameScene extends BaseScene implements IOnSceneTouchListener, IScro
 		else
 		{
 			logic.pauseGame();
-			showPreBattleScene(logic.selectedRegion.getNumberOfSoldiers() - logic.MIN_SOLDIERS_PER_REGION); // TODO alter this, maybe, no?
+			showPreBattleScene(logic.attackingSoldiers, logic.defendingSoldiers); // TODO alter this, maybe, no?
 		}
 	}
 

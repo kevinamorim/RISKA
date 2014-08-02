@@ -64,18 +64,18 @@ public class Player extends Object {
 		this.soldiersToDeploy = soldiersToDeploy;
 	}
 
-	public int deploySoldiers(int number)
+	public void deploy(int number, Region pRegion)
 	{
 		int deployed = number;
 
 		soldiersToDeploy -= number;
 
-		if(soldiersToDeploy < 0) {
+		if(soldiersToDeploy < 0)
+		{
 			deployed = number + soldiersToDeploy;
-			
 		}
-
-		return deployed;
+		
+		pRegion.deploy(deployed);
 	}
 
 	public boolean hasSoldiersLeftToDeploy()

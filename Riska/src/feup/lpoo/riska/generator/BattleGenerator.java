@@ -23,14 +23,14 @@ public class BattleGenerator {
 		result = attackerPoints > defenderPoints;
 		
 		if(result)	// attacker won
-		{
+		{			
 			remainingDefenders = 0;
 			remainingAttackers = attackerPoints;
 		}
 		else		// Defender won (lol, rly)
 		{
 			remainingDefenders = defenderPoints;
-			remainingAttackers = 0;
+			remainingAttackers = attackerPoints;
 		}
 	}
 }

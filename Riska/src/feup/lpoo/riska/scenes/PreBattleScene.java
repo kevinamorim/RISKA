@@ -24,10 +24,12 @@ public class PreBattleScene extends BaseScene implements Displayable {
 	Sprite soldierNumBox;
 	Text soldiersToSend;
 	Text soldierNum;
+	Text successNum;
 
-	int soldierMin;
-	int soldierMax;
-	int currentSoldiers;
+	private int soldierMin;
+	private int soldierMax;
+	private int currentSoldiers = 1;
+	private int defendingSoldiers = 1;
 
 	// ======================================================
 	// ======================================================
@@ -61,6 +63,7 @@ public class PreBattleScene extends BaseScene implements Displayable {
 		window.attachChild(soldiersToSend);
 		window.attachChild(soldierNumBox);
 		window.attachChild(soldierNum);
+		window.attachChild(successNum);
 	}
 
 	private void createBackground()
@@ -103,6 +106,14 @@ public class PreBattleScene extends BaseScene implements Displayable {
 
 		soldierNum.setColor(Color.BLACK);
 		soldierNum.setScale(1.4f);
+		
+		successNum = new Text(
+				0.5f * Utilities.getBoundsX(window),
+				0.20f * Utilities.getBoundsY(window),
+				resources.mGameFont, "INSERT", 500, vbom);
+
+		successNum.setColor(Color.BLACK);
+		successNum.setScale(1f);
 	}
 
 	// ======================================================
@@ -122,18 +133,23 @@ public class PreBattleScene extends BaseScene implements Displayable {
 		updateText();
 	}
 
-	public void update(int max)
+	public void update(int numAttackers, int numDefenders)
 	{
 		this.soldierMin = MIN_SOLDIERS_PER_ATTACK;
-		this.soldierMax = max;
-		this.currentSoldiers = max;
+		this.soldierMax = numAttackers;
+		
+		this.currentSoldiers = numAttackers;
+		this.defendingSoldiers = numDefenders;
 
 		updateText();
 	}
 
 	private void updateText()
 	{
+		int successChance = (int)(Utilities.calculateChanceOfSuccess(currentSoldiers, defendingSoldiers) * 100);
+		
 		soldierNum.setText(currentSoldiers + " (" + soldierMax + " max)");
+		successNum.setText("Chance of success: " + successChance + " %");
 	}
 
 	public int getAttackingSoldiers()

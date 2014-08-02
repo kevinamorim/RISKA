@@ -1,8 +1,6 @@
 package feup.lpoo.riska.elements;
 
 import java.util.ArrayList;
-import java.util.Random;
-
 import org.andengine.util.adt.color.Color;
 
 import android.graphics.Point;
@@ -11,7 +9,6 @@ public class Region extends Element {
 
 	private static final int SOLDIER_ATT = 10;
 	private static final int SOLDIER_DEF = 10;
-	private final int SOLDIER_INC = 1;
 
 	// ======================================================
 	// FIELDS
@@ -71,7 +68,8 @@ public class Region extends Element {
 	/**
 	 * @return Number of soldiers stationed in this region
 	 */
-	public int getNumberOfSoldiers() {
+	public int getNumberOfSoldiers()
+	{
 		return soldiers.size();
 	}
 	
@@ -80,14 +78,16 @@ public class Region extends Element {
 	 * 
 	 * @param value : number of soldiers to add
 	 */
-	public void addSoldiers(int value) {
+	public void addSoldiers(int value)
+	{
 		for(int i = 0; i < value; i++)
 		{
 			soldiers.add(new Unit(SOLDIER_ATT, SOLDIER_DEF));
 		}
 	}
 	
-	public void setSoldiers(int value) {
+	public void setSoldiers(int value)
+	{
 		soldiers.clear();
 		for(int i = 0; i < value; i++) 
 		{
@@ -100,14 +100,16 @@ public class Region extends Element {
 	 * 
 	 * @param region : region to add
 	 */
-	public void addNeighbour(Region region) {
+	public void addNeighbour(Region region)
+	{
 		neighbours.add(region);
 	}
 
 	/**
 	 * @return The set of neighbour regions
 	 */
-	public ArrayList<Region> getNeighbours() {
+	public ArrayList<Region> getNeighbours()
+	{
 		return neighbours;
 	}
 
@@ -116,7 +118,8 @@ public class Region extends Element {
 	 * 
 	 * @param player : new owner
 	 */
-	public void setOwner(Player newOwner) {
+	public void setOwner(Player newOwner)
+	{
 		if(owner != null)
 		{
 			owner.removeRegion(this);
@@ -132,14 +135,16 @@ public class Region extends Element {
 	/**
 	 * @return The set of soldiers stationed in this region
 	 */
-	public ArrayList<Unit> getSoldiers() {
+	public ArrayList<Unit> getSoldiers()
+	{
 		return soldiers;
 	}
 
 	/**
 	 * @return The player that is currently owner of this region
 	 */
-	public Player getOwner() {
+	public Player getOwner()
+	{
 		return this.owner;
 	}
 
@@ -149,7 +154,8 @@ public class Region extends Element {
 	 * @param pRegion : region to check
 	 * @return True if is neighbour of pRegion
 	 */
-	public boolean isNeighbourOf(Region pRegion) {
+	public boolean isNeighbourOf(Region pRegion)
+	{
 		return neighbours.contains(pRegion);
 	}
 	
@@ -159,7 +165,8 @@ public class Region extends Element {
 	 * @param priColor : primary color
 	 * @param secColor : secondary color
 	 */
-	public void setColors(Color priColor, Color secColor) {
+	public void setColors(Color priColor, Color secColor)
+	{
 		this.priColor = priColor;
 		this.secColor = secColor;
 	}
@@ -167,7 +174,8 @@ public class Region extends Element {
 	/**
 	 * Switches the primary color with the secondary one.
 	 */
-	private void switchColors(boolean toFocus) {
+	private void switchColors(boolean toFocus)
+	{
 		if(toFocus)
 		{
 			priColor = owner.getScondaryColor();
@@ -183,30 +191,15 @@ public class Region extends Element {
 	/**
 	 * Clears (erases) the set of soldiers in a region.
 	 */
-	public void removeSoldiers() {
+	public void removeSoldiers()
+	{
 		soldiers.clear();
 	}
 
-	public boolean hasEnemyNeighbor() {
-		for(Region region : neighbours) {
-			if(!region.getOwner().equals(owner)) {
-				return true;
-			}
-		}
-		return false;
-	}
-	
-	public ArrayList<Region> getEnemyNeighbours() {
-		ArrayList<Region> result = new ArrayList<Region>();
-		
-		for(Region region : neighbours) {
-			if(!region.getOwner().equals(owner)) {
-				result.add(region);
-			}
-		}
-		
-		return result;
-	}
+//	public boolean hasEnemyNeighbor()
+//	{
+//		
+//	}
 	
 	public void focus()
 	{	
@@ -222,23 +215,9 @@ public class Region extends Element {
 		switchColors(false);
 	}
 
-	public boolean isFocused() {
-		return focused;
-	}
-
-	public Region selectTargetRegion()
+	public boolean isFocused()
 	{
-		
-		if(hasEnemyNeighbor())
-		{
-			ArrayList<Region> neighbours = getEnemyNeighbours();
-			Random r = new Random();
-			int i = r.nextInt(neighbours.size());
-			return neighbours.get(i);
-		}
-		
-		return null;
-		
+		return focused;
 	}
 	
 	public Color getPrimaryColor()
@@ -251,16 +230,9 @@ public class Region extends Element {
 		return secColor;
 	}
 
-	public void deploy(Player pPlayer)
+	public void deploy(int number)
 	{
-		if(getOwner().equals(pPlayer))
-		{
-			if(pPlayer.hasSoldiersLeftToDeploy())
-			{
-				int deployed = pPlayer.deploySoldiers(SOLDIER_INC);
-				addSoldiers(deployed);
-			}
-		}
+		addSoldiers(number);
 	}
 	
 }

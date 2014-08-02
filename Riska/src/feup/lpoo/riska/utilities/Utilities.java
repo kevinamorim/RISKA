@@ -83,4 +83,27 @@ public class Utilities {
 		return (e.getY() + (0.5f * e.getHeight()));
 	}
 	
+	public static float calculateChanceOfSuccess(int val_1, int val_2)
+	{
+		float prob1 = 1f / (val_1 + 0);
+		float prob2 = 1f / (val_2 + 0);
+		
+		float probSum = 0f;
+		
+		for(int i = 1; i <= val_1; i++)
+		{
+			float probSumI = 0f;
+			
+			for(int j = 1; j <= val_2 && j < i; j++)
+			{
+				probSumI += prob2;
+			}
+			
+			probSum += prob1 * probSumI;
+		}
+		
+		Log.d("Riska", "Probability for " + val_1 + " and " + val_2 + " : " + probSum);
+		
+		return probSum;
+	}
 }

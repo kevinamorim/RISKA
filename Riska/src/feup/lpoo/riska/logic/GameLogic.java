@@ -3,6 +3,7 @@ package feup.lpoo.riska.logic;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
+import java.util.Random;
 
 import org.andengine.util.adt.color.Color;
 
@@ -30,6 +31,7 @@ public class GameLogic {
 	public final int MIN_SOLDIERS_PER_REGION = 1;
 	private final int MIN_SOLDIERS_FOR_AN_ATTACK = 2;
 	private final int MIN_PLAYERS_IN_GAME = 2;
+	private final int SOLDIER_INC = 1;
 	private Color[] PLAYER_COLOR = { new Color(0f, 0.447f, 0.898f), new Color(1f, 1f, 0f) };
 	private Color[] CPU_COLOR = { new Color(1f, 0f, 0f), new Color(0f, 0f, 0f) };
 
@@ -48,7 +50,8 @@ public class GameLogic {
 	public Region selectedRegion;
 	public Region targetedRegion;
 
-	public int attackingSoldiers = 0;
+	public int attackingSoldiers = MIN_SOLDIERS_PER_REGION;
+	public int defendingSoldiers = MIN_SOLDIERS_PER_REGION;
 
 	public GameLogic(GameScene scene) {
 
@@ -165,21 +168,22 @@ public class GameLogic {
 
 		if(pRegion1 != null)
 		{
-			Region pRegion2 = pRegion1.selectTargetRegion();
+			Region pRegion2 = selectTargetRegion(pRegion1);
 
 			if(pRegion2 != null)
 			{
-				this.attackingSoldiers = pRegion1.getNumberOfSoldiers() - MIN_SOLDIERS_PER_REGION;
+//				this.attackingSoldiers = pRegion1.getNumberOfSoldiers() - MIN_SOLDIERS_PER_REGION;
+//				this.defendingSoldiers = pRegion2.getNumberOfSoldiers();
 				gameScene.showCpuMove(pRegion1, pRegion2);	
 			}
 		}		
 	}
-	
+
 	private boolean hasPossibleMoves(Player player)
 	{
 		for(Region pRegion : player.getRegions())
 		{
-			if(pRegion.hasEnemyNeighbor() && canAttack(pRegion))
+			if(hasEnemyNeighbor(pRegion) && canAttack(pRegion))
 			{
 				//Log.d("Region", "True" + pRegion.getName());
 				return true;
@@ -229,6 +233,8 @@ public class GameLogic {
 
 	public void attack()
 	{
+		boolean attackerWon;
+		
 		if(selectedRegion == null || targetedRegion == null)
 		{
 			return;
@@ -237,24 +243,26 @@ public class GameLogic {
 		Region pRegion1 = selectedRegion;
 		Region pRegion2 = targetedRegion;
 
-		battleGenerator.simulateAttack(attackingSoldiers, pRegion2.getNumberOfSoldiers());
-
-		boolean won = battleGenerator.result;
+		battleGenerator.simulateAttack(attackingSoldiers, defendingSoldiers);
+		
+		attackerWon = battleGenerator.result;
 
 		gameScene.showBattleScene(selectedRegion, targetedRegion, battleGenerator);
 
-		if(won)
+		if(attackerWon)
 		{
-			pRegion1.setSoldiers(pRegion1.getNumberOfSoldiers() - attackingSoldiers);
+			pRegion1.setSoldiers(Math.max(MIN_SOLDIERS_PER_REGION, pRegion1.getNumberOfSoldiers() - attackingSoldiers));
 			pRegion2.setOwner(currentPlayer);
-			pRegion2.setSoldiers(battleGenerator.remainingAttackers);
+			pRegion2.setSoldiers(Math.max(MIN_SOLDIERS_PER_REGION, battleGenerator.remainingAttackers));
+			
 			// If the player wins an attack, he/she gets a bonus of soldiers to deploys next turn
 			currentPlayer.setSoldiersToDeploy(WIN_BONUS * TURN_REPLENISHMENT);
 		}
 		else
 		{
-			pRegion1.setSoldiers(pRegion1.getNumberOfSoldiers() - attackingSoldiers);
+			pRegion1.setSoldiers(Math.max(MIN_SOLDIERS_PER_REGION, pRegion1.getNumberOfSoldiers() - attackingSoldiers + battleGenerator.remainingAttackers));
 			pRegion2.setSoldiers(battleGenerator.remainingDefenders);
+			
 			currentPlayer.setSoldiersToDeploy(TURN_REPLENISHMENT);
 		}
 
@@ -354,10 +362,10 @@ public class GameLogic {
 		switch(state)
 		{
 		case SETUP:
-			pRegion.deploy(currentPlayer);
+			currentPlayer.deploy(SOLDIER_INC, pRegion);
 			break;
 		case DEPLOYMENT:
-			pRegion.deploy(currentPlayer);
+			currentPlayer.deploy(SOLDIER_INC, pRegion);
 			break;
 		case PLAY:
 			onPlayHandler(pRegion);
@@ -399,6 +407,47 @@ public class GameLogic {
 		}	
 	}
 
+	private Region selectTargetRegion(Region pRegion1)
+	{
+		if(hasEnemyNeighbor(pRegion1))
+		{
+			ArrayList<Region> neighbours = getEnemyNeighbours(pRegion1);
+			Random r = new Random();
+			int i = r.nextInt(neighbours.size());
+			return neighbours.get(i);
+		}
+		
+		return null;
+	}
+	
+	private ArrayList<Region> getEnemyNeighbours(Region pRegion)
+	{
+		ArrayList<Region> result = new ArrayList<Region>();
+		
+		for(Region neighbour : pRegion.getNeighbours())
+		{
+			if(!neighbour.getOwner().equals(pRegion.getOwner()))
+			{
+				result.add(neighbour);
+			}
+		}
+		
+		return result;
+	}
+
+	private boolean hasEnemyNeighbor(Region pRegion)
+	{
+		for(Region neighbour : pRegion.getNeighbours())
+		{
+			if(!neighbour.getOwner().equals(pRegion.getOwner()))
+			{
+				return true;
+			}
+		}
+		
+		return false;
+	}
+
 	private boolean canAttack(Region pRegion)
 	{
 		return pRegion.getNumberOfSoldiers() >= MIN_SOLDIERS_FOR_AN_ATTACK;
@@ -416,7 +465,7 @@ public class GameLogic {
 
 		for(Region pRegion : player.getRegions())
 		{
-			if(pRegion.hasEnemyNeighbor() && canAttack(pRegion))
+			if(hasEnemyNeighbor(pRegion) && canAttack(pRegion))
 			{
 				return pRegion;
 			}
@@ -424,7 +473,7 @@ public class GameLogic {
 
 		return null;
 	}
-
+	
 	public void selectRegion(Region pRegion) {
 
 		// Shouldn't happen. 
@@ -432,6 +481,8 @@ public class GameLogic {
 		{
 			unselectRegion();
 		}
+		
+		attackingSoldiers = pRegion.getNumberOfSoldiers() - MIN_SOLDIERS_PER_REGION;
 
 		selectedRegion = pRegion;
 		selectedRegion.focus();
@@ -448,6 +499,7 @@ public class GameLogic {
 				{
 					untargetRegion();
 				}
+				defendingSoldiers = pRegion.getNumberOfSoldiers();
 
 				targetedRegion = pRegion;
 				targetedRegion.focus();
