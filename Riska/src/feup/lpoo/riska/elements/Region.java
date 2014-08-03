@@ -235,4 +235,9 @@ public class Region extends Element {
 		addSoldiers(number);
 	}
 	
+	public boolean hasOwner(Player player)
+	{
+		return (owner.equals(player));
+	}
+	
 }

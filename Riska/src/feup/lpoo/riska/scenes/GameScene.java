@@ -128,7 +128,9 @@ public class GameScene extends BaseScene implements IOnSceneTouchListener, IScro
 
 	private void createMap() {
 
-		Sprite mapSprite = new Sprite(MainActivity.CAMERA_WIDTH/2, MainActivity.CAMERA_HEIGHT/2,
+		Sprite mapSprite = new Sprite(
+				MainActivity.CAMERA_WIDTH/2,
+				MainActivity.CAMERA_HEIGHT/2,
 				MainActivity.CAMERA_WIDTH, MainActivity.CAMERA_HEIGHT,
 				resources.mapRegion, vbom);
 
@@ -251,7 +253,7 @@ public class GameScene extends BaseScene implements IOnSceneTouchListener, IScro
 			logic.setup();
 			break;		
 		case DEPLOYMENT:
-			Log.d("user", "deployment");
+			//Log.d("user", "deployment");
 			deploymentUpdate();
 			logic.deploy();
 			break;	
@@ -261,7 +263,7 @@ public class GameScene extends BaseScene implements IOnSceneTouchListener, IScro
 			break;
 		case PLAY:
 			draw();
-			logic.updateGame();
+			logic.update();
 			break;	
 		case CPU:
 			break;
@@ -494,8 +496,8 @@ public class GameScene extends BaseScene implements IOnSceneTouchListener, IScro
 
 		long now = System.currentTimeMillis();
 
-		if((now - lastTouchTimeInRegion) > REGION_BUTTON_MIN_TOUCH_INTERVAL) {
-
+		if((now - lastTouchTimeInRegion) > REGION_BUTTON_MIN_TOUCH_INTERVAL)
+		{
 			logic.onRegionTouched(resources.map.getRegionById(regionID));
 			updateRegionButton(regionID);
 		}

@@ -9,7 +9,7 @@ import feup.lpoo.riska.io.FileRead;
 
 
 public class Map {
-	
+
 	private ArrayList<Region> regions;
 
 	public Map(String regionsFilename, String neighboursFilename)
@@ -22,7 +22,7 @@ public class Map {
 	{
 		return regions;
 	}
-	
+
 	public Region getRegionById(int id)
 	{
 		for(Region region : regions)
@@ -31,7 +31,7 @@ public class Map {
 		}
 		return null;
 	}
-	
+
 	public int getNumberOfRegions() {
 		return regions.size();
 	}
@@ -64,41 +64,38 @@ public class Map {
 		return regions;
 
 	}
-	
+
 	public void handOutRegions(ArrayList<Player> players) {
-		
+
 		ArrayList<Integer> indexes = new ArrayList<Integer>();
 
 		Random random = new Random();
 
-		while(indexes.size() < getNumberOfRegions()) {
+		while(indexes.size() < regions.size())
+		{
 
-			int index = random.nextInt(getNumberOfRegions());
+			int index = random.nextInt(regions.size());
 
-			if(!indexes.contains(index)) {
+			if(!indexes.contains(index))
+			{
 				indexes.add(index);
 			}	
 		}
 
 		int i = 0;
 
-		for(Integer index : indexes) {
-
-			Region region = getRegions().get(index);
+		for(Integer index : indexes)
+		{
+			Region region = regions.get(index);
 			Player player = players.get(i);
-
-			player.addRegion(region);
-
-			region.setSoldiers(1);
 
 			region.setOwner(player);
 			region.setColors(player.getPrimaryColor(), player.getScondaryColor());
 
-			i++;
-			i = i % players.size(); 
-		}	
+			i = (i + 1) % players.size();
+		}
 	}
-	
+
 	private void readNeighbours(String filename) {
 
 		ArrayList<String> data = new ArrayList<String>();
@@ -116,7 +113,7 @@ public class Map {
 				i++;
 			}
 		}
-		
+
 		checkNeighbours();
 	}
 

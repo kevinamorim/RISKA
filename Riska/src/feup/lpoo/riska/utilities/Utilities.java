@@ -6,12 +6,13 @@ import org.andengine.entity.Entity;
 import org.andengine.entity.text.Text;
 import org.andengine.opengl.font.Font;
 
-import android.util.Log;
 import feup.lpoo.riska.logic.MainActivity;
 
 public class Utilities {
 	
 	private static MainActivity activity = MainActivity.getSharedInstance();
+	
+	private static Random r = new Random();
 
 	public static boolean isValidTouch(long lastTouch, long firstTouch, long minTouchInterval)
 	{
@@ -66,10 +67,7 @@ public class Utilities {
 	}
 	
 	public static int randomInt(int min, int max)
-	{
-		Random r = new Random();
-		Log.d("Riska", "Random (int) called, between " + min + " and " + max);
-		
+	{	
 		return (r.nextInt(max) + min);
 	}
 	
@@ -85,16 +83,18 @@ public class Utilities {
 	
 	public static float calculateChanceOfSuccess(int val_1, int val_2)
 	{
-		float prob1 = 1f / (val_1 + 0);
-		float prob2 = 1f / (val_2 + 0);
+		int min = 0;
+		
+		float prob1 = 1f / (val_1 + (1 - min));
+		float prob2 = 1f / (val_2 + (1 - min));
 		
 		float probSum = 0f;
 		
-		for(int i = 1; i <= val_1; i++)
+		for(int i = 0; i <= val_1; i++)
 		{
 			float probSumI = 0f;
 			
-			for(int j = 1; j <= val_2 && j < i; j++)
+			for(int j = 0; j <= val_2 && j < i; j++)
 			{
 				probSumI += prob2;
 			}
@@ -102,7 +102,7 @@ public class Utilities {
 			probSum += prob1 * probSumI;
 		}
 		
-		Log.d("Riska", "Probability for " + val_1 + " and " + val_2 + " : " + probSum);
+		//Log.d("Riska", "Probability for " + val_1 + " and " + val_2 + " : " + probSum);
 		
 		return probSum;
 	}

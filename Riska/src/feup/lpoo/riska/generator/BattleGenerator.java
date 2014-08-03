@@ -17,8 +17,8 @@ public class BattleGenerator {
 
 	public void simulateAttack(int attacker, int defender)
 	{
-		attackerPoints = Utilities.randomInt(1, attacker);
-		defenderPoints = Utilities.randomInt(1, defender);
+		attackerPoints = Utilities.randomInt(0, attacker);
+		defenderPoints = Utilities.randomInt(0, defender);
 		
 		result = attackerPoints > defenderPoints;
 		
