@@ -1,6 +1,7 @@
 package feup.lpoo.riska.resources;
 
 import java.io.IOException;
+
 import org.andengine.audio.music.Music;
 import org.andengine.audio.music.MusicFactory;
 import org.andengine.engine.Engine;
@@ -26,6 +27,7 @@ import feup.lpoo.riska.elements.Map;
 import feup.lpoo.riska.logic.MainActivity;
 import feup.lpoo.riska.music.Conductor;
 import feup.lpoo.riska.scenes.CameraManager;
+import feup.lpoo.riska.utilities.Utilities;
 
 public class ResourceCache {
 
@@ -39,6 +41,8 @@ public class ResourceCache {
 	public Conductor conductor;
 	
 	private static ResourceCache instance = new ResourceCache();
+	
+	private static String currentTheme = Utilities.getString(R.string.path_theme_current);
 	
 	// ==================================================
 	// SPLASH RESOURCES
@@ -110,7 +114,8 @@ public class ResourceCache {
 		
 		int textureWidth = 512, textureHeight = 512;
 		
-		BitmapTextureAtlasTextureRegionFactory.setAssetBasePath("gfx/splash/");
+		BitmapTextureAtlasTextureRegionFactory.setAssetBasePath("gfx/themes/" + currentTheme + "splash/");
+		
 		splashTextureAtlas = new BitmapTextureAtlas(activity.getTextureManager(), 
 				textureWidth, textureHeight, TextureOptions.BILINEAR);
 		splashRegion = BitmapTextureAtlasTextureRegionFactory.createFromAsset(splashTextureAtlas, 
@@ -133,9 +138,9 @@ public class ResourceCache {
 		
 	}
 	
-	private void loadMainMenuGraphics() {
-		
-		BitmapTextureAtlasTextureRegionFactory.setAssetBasePath("gfx/menu/");
+	private void loadMainMenuGraphics()
+	{		
+		BitmapTextureAtlasTextureRegionFactory.setAssetBasePath("gfx/themes/" + currentTheme + "menu/");
 		
 		int bgTextureWidth = 2048, bgTextureHeight = 1024;
 		
@@ -212,7 +217,7 @@ public class ResourceCache {
 	
 	private void loadGameGraphics() {
 		
-		BitmapTextureAtlasTextureRegionFactory.setAssetBasePath("gfx/game/");
+		BitmapTextureAtlasTextureRegionFactory.setAssetBasePath("gfx/themes/" + currentTheme + "game/");
 		
 		int seaTextureWidth = 4096, seaTextureHeight = 2048, seaCols = 2, seaLines = 2;
 		int mapTextureWidth = 4096, mapTextureHeight = 2048;

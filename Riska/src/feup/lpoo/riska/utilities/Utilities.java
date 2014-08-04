@@ -67,7 +67,7 @@ public class Utilities {
 	}
 	
 	public static int randomInt(int min, int max)
-	{	
+	{
 		return (r.nextInt(max) + min);
 	}
 	
@@ -83,26 +83,24 @@ public class Utilities {
 	
 	public static float calculateChanceOfSuccess(int val_1, int val_2)
 	{
-		int min = 0;
+		int min = 1;
 		
 		float prob1 = 1f / (val_1 + (1 - min));
 		float prob2 = 1f / (val_2 + (1 - min));
 		
 		float probSum = 0f;
 		
-		for(int i = 0; i <= val_1; i++)
+		for(int i = min; i <= val_1; i++)
 		{
 			float probSumI = 0f;
 			
-			for(int j = 0; j <= val_2 && j < i; j++)
+			for(int j = min; j <= val_2 && j < i; j++)
 			{
 				probSumI += prob2;
 			}
 			
 			probSum += prob1 * probSumI;
 		}
-		
-		//Log.d("Riska", "Probability for " + val_1 + " and " + val_2 + " : " + probSum);
 		
 		return probSum;
 	}

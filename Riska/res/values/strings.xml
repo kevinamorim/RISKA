@@ -12,37 +12,11 @@
     
     <string name="csvSplitBy">;</string>
     
-<!--     <string name="waitingForDeployment"> Waiting for deployment! </string>
-    
-    <string name="leftToDeploy">&#160;left to deploy</string> -->
-    
     <string name="name_music_background">background</string>
-    
-    <string name="path_img_logo">logo.png</string>
-    <string name="path_img_background">background.png</string>
-	<string name="path_img_start_button">button.png</string>
-	<string name="path_img_options_button">options_button.png</string>
-	<string name="path_img_return_button">return_button.png</string>
-	<string name="path_img_slider_button">slider_button.png</string>
-	<string name="path_img_map">map.png</string>
-	<string name="path_img_region_button">region_button.png</string>
-	<string name="path_img_flags">flags.png</string>
-	<string name="path_img_sea">sea.png</string>
-	<string name="path_img_attack_button">attack_button_7.png</string>
-	<string name="path_img_info_tab">info_tab.png</string>
-	<string name="path_img_details_button">details_button_2.png</string>
-	<string name="path_img_auto_deploy_button">auto_deploy_button.png</string>
-	<string name="path_img_window">window.png</string>
-	<string name="path_img_result_button">result_button.png</string>
-	
-	<string name="path_file_regions">regions.csv</string>
-	<string name="path_file_neighbours">neighbours.csv</string>
 	
 	<string name="path_music_background">music.mp3</string>
 	
-	<string name="path_font_splash">AlexisMarie.ttf</string>
-	<string name="path_font_menu">reprise.ttf</string>
-	<string name="path_font_game">reprise.ttf</string>
+	<string name="path_theme_current">themes/vanilla/</string>
 	
 	<string name="game_info_wait">Wait</string>
 	<string name="game_info_wait_for_CPU">Waiting for CPU</string>
