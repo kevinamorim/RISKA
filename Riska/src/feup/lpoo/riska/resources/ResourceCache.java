@@ -1,6 +1,7 @@
 package feup.lpoo.riska.resources;
 
 import java.io.IOException;
+import java.util.ArrayList;
 
 import org.andengine.audio.music.Music;
 import org.andengine.audio.music.MusicFactory;
@@ -42,6 +43,8 @@ public class ResourceCache {
 	private static ResourceCache instance = new ResourceCache();
 
 	private static String currentTheme = "wood/";
+	private static int numberOfMaps = 1;
+	private final int INITIAL_MAP = 1;
 
 	// ==================================================
 	// SPLASH RESOURCES
@@ -81,7 +84,7 @@ public class ResourceCache {
 	private BuildableBitmapTextureAtlas gameTextureAtlas;
 	private BitmapTextureAtlas mapTextureAtlas;
 	private BitmapTextureAtlas seaTextureAtlas;
-	public Map map;
+	public ArrayList<Map> maps;
 
 	// ======================================================
 	// FONTS
@@ -96,7 +99,7 @@ public class ResourceCache {
 
 	protected BitmapTextureAtlas mGameFontTexture;
 
-
+	
 	// ==================================================
 	// SPLASH SCENE
 	// ==================================================
@@ -205,11 +208,27 @@ public class ResourceCache {
 
 		loadGameGraphics();
 		loadGameFonts();
-		map = new Map("regions.csv", "neighbours.csv");
+		
+		loadMaps();
+		
 
 	}
+	
+	public void loadMaps()
+	{
+		if(maps == null)
+		{
+			maps = new ArrayList<Map>();
+		}
+		
+		for(int i = INITIAL_MAP; i <= numberOfMaps; i++)
+		{
+			maps.add(new Map("maps/" + i + "/regions.csv", "maps/" + i + "/neighbours.csv"));
+		}
+	}
 
-	public void unloadGameSceneResources() {
+	public void unloadGameSceneResources()
+	{
 		gameTextureAtlas.unload();
 		seaTextureAtlas.unload();
 		mapTextureAtlas.unload();

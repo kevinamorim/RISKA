@@ -24,8 +24,12 @@ public class MainMenuScene extends BaseScene implements Displayable, IOnMenuItem
 	private MenuScene mainMenu;
 	private MenuScene optionsMenu;
 	private MenuScene startGameMenu;
+	
+	private MenuScene chooseMapMenu;
+	private MenuScene chooseFactionMenu;
+	private MenuScene chooseDifficultyMenu;
 
-	private enum CHILD { MAIN, START_GAME, OPTIONS};
+	private enum CHILD { MAIN, OPTIONS, START_GAME, CHOOSE_MAP, CHOOSE_FACTION, CHOOSE_DIFFICULTY};
 
 	private final int MAIN_START = 0;
 	private final int MAIN_OPTIONS = 1;
@@ -107,6 +111,10 @@ public class MainMenuScene extends BaseScene implements Displayable, IOnMenuItem
 		createChildScene(CHILD.OPTIONS);
 		createChildScene(CHILD.START_GAME);
 		
+		createChildScene(CHILD.CHOOSE_MAP);
+		createChildScene(CHILD.CHOOSE_FACTION);
+		createChildScene(CHILD.CHOOSE_DIFFICULTY);
+		
 		setChildScene(CHILD.MAIN);
 	}
 
@@ -149,16 +157,25 @@ public class MainMenuScene extends BaseScene implements Displayable, IOnMenuItem
 	{
 		switch(x)
 		{
+		
 		case MAIN:
 			createMainMenu();
 			break;
+			
 		case START_GAME:
 			createStartGameMenu();
 			break;
+			
 		case OPTIONS:
 			createOptionsMenu();
 			break;
+			
+		case CHOOSE_FACTION:
+			//createChooseFactionMenu();
+			break;
+			
 		default:
+			Log.e("Riska","MainMenuScene > createChildScene() > Child not in the featured options.");
 			break;
 		}
 	}

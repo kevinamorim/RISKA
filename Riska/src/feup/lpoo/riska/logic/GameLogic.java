@@ -14,6 +14,7 @@ import feup.lpoo.riska.elements.Region;
 import feup.lpoo.riska.generator.BattleGenerator;
 import feup.lpoo.riska.resources.ResourceCache;
 import feup.lpoo.riska.scenes.GameScene;
+import feup.lpoo.riska.utilities.Utils;
 
 public class GameLogic
 {
@@ -34,8 +35,8 @@ public class GameLogic
 	private final int MIN_PLAYERS_IN_GAME = 2;
 	private final int SOLDIER_INC = 1;
 	
-	private Color[] PLAYER_COLOR = { new Color(0f, 0.447f, 0.898f), new Color(1f, 1f, 0f) };
-	private Color[] CPU_COLOR = { new Color(1f, 0f, 0f), new Color(0f, 0f, 0f) };
+	private Color[] PLAYER_COLOR = Utils.getColors(0);
+	private Color[] CPU_COLOR = Utils.getColors(1);
 
 	public enum GAME_STATE { PAUSED, SETUP,  DEPLOYMENT, ATTACK, MOVE, CPU, PLAY, GAMEOVER };
 
@@ -64,7 +65,6 @@ public class GameLogic
 	public GameLogic(GameScene scene) {
 
 		resources = ResourceCache.getSharedInstance();
-		SceneManager.getSharedInstance();
 
 		gameScene = scene;
 
@@ -96,8 +96,9 @@ public class GameLogic
 		currentPlayer = players.get(0);	
 	}
 
-	private void createMap() {
-		map = resources.map;
+	private void createMap()
+	{
+		map = resources.maps.get(0); // TODO : maps
 
 		map.handOutRegions(players);
 

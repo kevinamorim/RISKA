@@ -73,7 +73,7 @@ public class GameScene extends BaseScene implements IOnSceneTouchListener, IScro
 	{
 		logic = new GameLogic(this);
 
-		map = resources.map;
+		map = resources.maps.get(0);
 
 		regionButtons = new ArrayList<ButtonSprite>();
 		regionButtonsText = new ArrayList<Text>();
@@ -168,7 +168,7 @@ public class GameScene extends BaseScene implements IOnSceneTouchListener, IScro
 		Text buttonText;
 		ButtonSprite regionButton;
 
-		for(Region region : resources.map.getRegions()) {
+		for(Region region : map.getRegions()) {
 
 			int x = (int)((region.getStratCenter().x * camera.getWidth()) / 100);
 			int y = (int)((region.getStratCenter().y * camera.getHeight()) / 100);
@@ -500,7 +500,7 @@ public class GameScene extends BaseScene implements IOnSceneTouchListener, IScro
 
 		if((now - lastTouchTimeInRegion) > REGION_BUTTON_MIN_TOUCH_INTERVAL)
 		{
-			logic.onRegionTouched(resources.map.getRegionById(regionID));
+			logic.onRegionTouched(map.getRegionById(regionID));
 			updateRegionButton(regionID);
 		}
 
