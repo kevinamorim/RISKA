@@ -24,10 +24,9 @@ import feup.lpoo.riska.R;
 import android.graphics.Color;
 import android.graphics.Typeface;
 import feup.lpoo.riska.elements.Map;
+import feup.lpoo.riska.gameInterface.CameraManager;
 import feup.lpoo.riska.logic.MainActivity;
 import feup.lpoo.riska.music.Conductor;
-import feup.lpoo.riska.scenes.CameraManager;
-import feup.lpoo.riska.utilities.Utils;
 
 public class ResourceCache {
 
@@ -42,7 +41,7 @@ public class ResourceCache {
 	
 	private static ResourceCache instance = new ResourceCache();
 	
-	private static String currentTheme = Utils.getString(R.string.path_theme_current);
+	private static String currentTheme = "wood/";
 	
 	// ==================================================
 	// SPLASH RESOURCES

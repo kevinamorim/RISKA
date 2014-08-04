@@ -12,9 +12,8 @@ import org.andengine.opengl.font.Font;
 import org.andengine.ui.activity.BaseGameActivity;
 
 import android.view.KeyEvent;
+import feup.lpoo.riska.gameInterface.CameraManager;
 import feup.lpoo.riska.resources.ResourceCache;
-import feup.lpoo.riska.scenes.CameraManager;
-import feup.lpoo.riska.scenes.SceneManager;
 
 public class MainActivity extends BaseGameActivity {	
 	

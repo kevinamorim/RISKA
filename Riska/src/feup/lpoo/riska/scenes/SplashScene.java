@@ -4,34 +4,34 @@ import org.andengine.entity.scene.background.Background;
 import org.andengine.entity.sprite.Sprite;
 import org.andengine.util.adt.color.Color;
 
-import feup.lpoo.riska.scenes.SceneManager.SceneType;
+import feup.lpoo.riska.interfaces.Displayable;
+import feup.lpoo.riska.logic.SceneManager.SceneType;
 
-public class SplashScene extends BaseScene {
+public class SplashScene extends BaseScene implements Displayable {
 	
 	// ==================================================
 	// FIELDS
 	// ==================================================
 	private Sprite splash;
 	
+	
+	// ==================================================
+	// ==================================================
 	@Override
-	public void createScene() {
-		
-		setBackground(new Background(Color.BLACK));
-
-		splash = new Sprite(resources.camera.getWidth()/2, resources.camera.getHeight()/2, 
-				resources.splashRegion, resources.vbom);
-		
-		attachChild(splash);
-		
+	public void createScene()
+	{
+		createDisplay();
 	}
 
 	@Override
-	public void onBackKeyPressed() {
+	public void onBackKeyPressed()
+	{
 		return;
 	}
 
 	@Override
-	public void disposeScene() {
+	public void disposeScene()
+	{
 		splash.detachSelf();
 		splash.dispose();
 		detachSelf();
@@ -39,8 +39,34 @@ public class SplashScene extends BaseScene {
 	}
 	
 	@Override
-	public SceneType getSceneType() {
+	public SceneType getSceneType()
+	{
 		return SceneType.SPLASH;
+	}
+
+	// ==================================================
+	// ==================================================
+	@Override
+	public void createDisplay()
+	{
+		createBackground();
+		createSplashLogo();
+	}
+
+	private void createBackground()
+	{
+		setBackground(new Background(Color.BLACK));
+	}
+	
+	private void createSplashLogo()
+	{
+		splash = new Sprite(
+				0.5f * camera.getWidth(),
+				0.5f * camera.getHeight(), 
+				resources.splashRegion,
+				vbom);
+		
+		attachChild(splash);
 	}
 	
 }

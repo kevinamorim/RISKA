@@ -15,18 +15,19 @@ import org.andengine.input.touch.detector.ScrollDetector;
 import org.andengine.input.touch.detector.ScrollDetector.IScrollDetectorListener;
 import org.andengine.input.touch.detector.SurfaceScrollDetector;
 
-import feup.lpoo.riska.HUD.GameHUD;
-import feup.lpoo.riska.HUD.GameHUD.BUTTON;
-import feup.lpoo.riska.HUD.GameHUD.SPRITE;
 import feup.lpoo.riska.elements.Map;
 import feup.lpoo.riska.elements.Region;
+import feup.lpoo.riska.gameInterface.GameHUD;
+import feup.lpoo.riska.gameInterface.GameHUD.BUTTON;
+import feup.lpoo.riska.gameInterface.GameHUD.SPRITE;
 import feup.lpoo.riska.generator.BattleGenerator;
 import feup.lpoo.riska.io.LoadGame;
 import feup.lpoo.riska.io.SaveGame;
 import feup.lpoo.riska.logic.GameLogic;
+import feup.lpoo.riska.logic.SceneManager;
 import feup.lpoo.riska.logic.GameLogic.GAME_STATE;
+import feup.lpoo.riska.logic.SceneManager.SceneType;
 import feup.lpoo.riska.logic.MainActivity;
-import feup.lpoo.riska.scenes.SceneManager.SceneType;
 import feup.lpoo.riska.utilities.Utils;
 import feup.lpoo.riska.R;
 import android.graphics.Point;
@@ -56,6 +57,8 @@ public class GameScene extends BaseScene implements IOnSceneTouchListener, IScro
 	private DetailScene detailScene;
 	private BattleScene battleScene;
 	private PreBattleScene preBattleScene;
+	
+	private Sprite mapSprite;
 
 	private ScrollDetector scrollDetector;
 	private Map map;		
@@ -67,7 +70,8 @@ public class GameScene extends BaseScene implements IOnSceneTouchListener, IScro
 
 
 	@Override
-	public void createScene() {
+	public void createScene()
+	{
 		logic = new GameLogic(this);
 
 		map = resources.map;
@@ -111,34 +115,30 @@ public class GameScene extends BaseScene implements IOnSceneTouchListener, IScro
 	private void createDisplay() {
 
 		createBackground();
-
 		createMap();
-
 		createHUD();
-
 		createScrollDetector();
-
 		createRegionButtons();
-
 		createChildScenes();
 
 		setTouchAreaBindingOnActionDownEnabled(true);
 		setOnSceneTouchListener(this);	
 	}
 
-	private void createMap() {
-
-		Sprite mapSprite = new Sprite(
-				MainActivity.CAMERA_WIDTH/2,
-				MainActivity.CAMERA_HEIGHT/2,
-				MainActivity.CAMERA_WIDTH, MainActivity.CAMERA_HEIGHT,
+	private void createMap()
+	{
+		mapSprite = new Sprite(
+				camera.getCenterX(),
+				camera.getCenterY(),
+				camera.getWidth(),
+				camera.getHeight(),
 				resources.mapRegion, vbom);
 
 		attachChild(mapSprite);	
 	}
 
-	private void createBackground() {
-
+	private void createBackground()
+	{
 		//		int ANIMATION_TILES = 4;
 		//		
 		//		AnimatedSprite background = new AnimatedSprite(MainActivity.CAMERA_WIDTH/2, MainActivity.CAMERA_HEIGHT/2, 
@@ -152,20 +152,20 @@ public class GameScene extends BaseScene implements IOnSceneTouchListener, IScro
 		//		background.animate(duration, 0, (ANIMATION_TILES - 1), true);
 		//		
 		//		attachChild(background);
-
 	}
 
-	private void createHUD() {
-
+	private void createHUD()
+	{
 		hud = new GameHUD(this);
-		activity.mCamera.setHUD(hud);
-
+		
 		hud.show(SPRITE.INFO_TAB);
-		hud.show(BUTTON.AUTO_DEPLOY);
+		//hud.show(BUTTON.AUTO_DEPLOY);
+		
+		camera.setHUD(hud);
 	}
 
-	private void createRegionButtons() {
-
+	private void createRegionButtons()
+	{
 		Text buttonText;
 		ButtonSprite regionButton;
 
@@ -279,6 +279,7 @@ public class GameScene extends BaseScene implements IOnSceneTouchListener, IScro
 		{
 			return;
 		}
+		
 		if(logic.selectedRegion == null)
 		{
 			showAllRegions();
@@ -287,6 +288,7 @@ public class GameScene extends BaseScene implements IOnSceneTouchListener, IScro
 		detailScene.update(logic.selectedRegion, logic.targetedRegion);
 
 		drawRegionButtons();
+		
 		hud.draw(logic);
 		hud.setInfoTabText(logic);
 	}
@@ -297,10 +299,12 @@ public class GameScene extends BaseScene implements IOnSceneTouchListener, IScro
 		{
 			hideDetailScene();
 		}
+		
 		if(battleScene.isVisible())
 		{
 			hideBattleScene();
 		}
+		
 		if(preBattleScene.isVisible())
 		{
 			hidePreBattleScene();

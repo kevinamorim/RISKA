@@ -4,9 +4,11 @@ import org.andengine.engine.Engine;
 import org.andengine.entity.scene.Scene;
 import org.andengine.opengl.vbo.VertexBufferObjectManager;
 
+import feup.lpoo.riska.gameInterface.CameraManager;
 import feup.lpoo.riska.logic.MainActivity;
+import feup.lpoo.riska.logic.SceneManager;
+import feup.lpoo.riska.logic.SceneManager.SceneType;
 import feup.lpoo.riska.resources.ResourceCache;
-import feup.lpoo.riska.scenes.SceneManager.SceneType;
 
 public abstract class BaseScene extends Scene {
 

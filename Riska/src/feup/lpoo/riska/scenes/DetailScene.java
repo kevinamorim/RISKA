@@ -2,17 +2,14 @@ package feup.lpoo.riska.scenes;
 
 import org.andengine.entity.sprite.Sprite;
 import org.andengine.entity.text.Text;
+
 import feup.lpoo.riska.elements.Region;
-import feup.lpoo.riska.scenes.SceneManager.SceneType;
+import feup.lpoo.riska.logic.SceneManager.SceneType;
 import feup.lpoo.riska.utilities.Utils;
 
 public class DetailScene extends BaseScene {
 
 	/* TODO : increase details */
-
-	// ======================================================
-	// CONSTANTS
-	// ======================================================
 
 	// ======================================================
 	// FIELDS
@@ -43,18 +40,14 @@ public class DetailScene extends BaseScene {
 	// ======================================================
 	private void createDisplay()
 	{
-		setBackgroundEnabled(false);
-		
 		createBackground();
 		createText();
-		
-		attachChild(window);
-		window.attachChild(playerRegionName);
-		window.attachChild(enemyRegionName);
 	}
 
 	private void createBackground()
 	{
+		
+		this.setBackgroundEnabled(false);
 
 		window = new Sprite(
 				camera.getCenterX(),
@@ -65,6 +58,8 @@ public class DetailScene extends BaseScene {
 				vbom);
 		
 		window.setScale(0.9f);
+		
+		attachChild(window);
 	}
 
 	private void createText()
@@ -78,19 +73,23 @@ public class DetailScene extends BaseScene {
 				0.75f * Utils.getBoundsX(window),
 				0.75f * Utils.getBoundsY(window),
 				resources.mGameFont, "", 1000, resources.vbom);
+		
+		window.attachChild(playerRegionName);
+		window.attachChild(enemyRegionName);
 	}
 
 	// ======================================================
 	// UPDATE DATA
 	// ======================================================
-	public void update(Region playerRegion, Region enemyRegion) {
-
-		playerRegionName.setText(Utils.wrapText(resources.mGameFont, 
-				(playerRegion != null) ? playerRegion.getName() : "", this.getWidth()/2));
-
-		enemyRegionName.setText(Utils.wrapText(resources.mGameFont, 
-				(enemyRegion != null) ? enemyRegion.getName() : "", this.getWidth()/2));	
-
+	public void update(Region playerRegion, Region enemyRegion)
+	{
+		String text = (playerRegion != null ? playerRegion.getName() : "");
+		
+		playerRegionName.setText(Utils.wrapText(resources.mGameFont, text, 0.5f * window.getWidth()));
+	
+		text = (enemyRegion != null ? enemyRegion.getName() : "");
+		
+		enemyRegionName.setText(Utils.wrapText(resources.mGameFont, text, 0.5f * window.getWidth()));	
 	}
 
 }

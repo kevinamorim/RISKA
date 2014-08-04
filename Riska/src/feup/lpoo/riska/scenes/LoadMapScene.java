@@ -1,32 +1,47 @@
 package feup.lpoo.riska.scenes;
 
-import org.andengine.entity.scene.Scene;
 import org.andengine.entity.scene.background.Background;
 import org.andengine.util.adt.color.Color;
 
-import feup.lpoo.riska.logic.MainActivity;
+import feup.lpoo.riska.interfaces.Displayable;
+import feup.lpoo.riska.logic.SceneManager.SceneType;
 
-public class LoadMapScene extends Scene {
-	
-	MainActivity activity;
-	SceneManager instance;
+public class LoadMapScene extends BaseScene implements Displayable {
 	
 	final int VALUES = 3;
 	final int REGIONS = 5;
 	
-	public LoadMapScene() {
-		
-		activity = MainActivity.getSharedInstance();
-		instance = SceneManager.getSharedInstance();
-		
-		setBackground(new Background(Color.BLACK));
-		
+	@Override
+	public void createScene()
+	{
+		createDisplay();
+
 		loadMapResources();
-		
 	}
 
-	private void loadMapResources() {
-		
+	@Override
+	public void onBackKeyPressed() { }
+
+	@Override
+	public SceneType getSceneType()
+	{
+		return SceneType.LOAD_MAP;
+	}
+
+	@Override
+	public void disposeScene()
+	{
+		dispose();
+	}
+
+	@Override
+	public void createDisplay()
+	{
+		setBackground(new Background(Color.BLACK));
+	}
+	
+	private void loadMapResources()
+	{
 //		ArrayList<String> mapData = new String[VALUES * REGIONS];
 //		String filename = "regions.txt";
 //		
@@ -38,7 +53,6 @@ public class LoadMapScene extends Scene {
 //			instance.map.regions[i] = newRegion;
 //		
 //		}
-		
 	}
-
+	
 }

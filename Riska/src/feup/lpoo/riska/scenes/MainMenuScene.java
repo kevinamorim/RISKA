@@ -13,7 +13,7 @@ import feup.lpoo.riska.gameInterface.AnimatedButtonSpriteMenuItem;
 import feup.lpoo.riska.gameInterface.AnimatedTextButtonSpriteMenuItem;
 import feup.lpoo.riska.interfaces.Displayable;
 import feup.lpoo.riska.io.SharedPreferencesManager;
-import feup.lpoo.riska.scenes.SceneManager.SceneType;
+import feup.lpoo.riska.logic.SceneManager.SceneType;
 import feup.lpoo.riska.utilities.Utils;
 
 public class MainMenuScene extends BaseScene implements Displayable, IOnMenuItemClickListener {

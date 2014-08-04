@@ -14,7 +14,6 @@ import feup.lpoo.riska.elements.Region;
 import feup.lpoo.riska.generator.BattleGenerator;
 import feup.lpoo.riska.resources.ResourceCache;
 import feup.lpoo.riska.scenes.GameScene;
-import feup.lpoo.riska.scenes.SceneManager;
 
 public class GameLogic {
 

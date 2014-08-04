@@ -7,7 +7,7 @@ import org.andengine.util.adt.color.Color;
 import feup.lpoo.riska.elements.Player;
 import feup.lpoo.riska.elements.Region;
 import feup.lpoo.riska.generator.BattleGenerator;
-import feup.lpoo.riska.scenes.SceneManager.SceneType;
+import feup.lpoo.riska.logic.SceneManager.SceneType;
 import feup.lpoo.riska.utilities.Utils;
 
 public class BattleScene extends BaseScene {
@@ -67,7 +67,7 @@ public class BattleScene extends BaseScene {
 				vbom);
 
 		window.setScale(0.9f);
-		window.setAlpha(1f);
+		//window.setAlpha(1f);
 
 		vsText = new Text(
 				0.5f * Utils.getBoundsX(window),
@@ -75,7 +75,7 @@ public class BattleScene extends BaseScene {
 				resources.mGameFont, "X", vbom);
 
 		vsText.setColor(Color.BLACK);
-		vsText.setScale(1.4f);
+		vsText.setScale(1f);
 
 		typePlayer1 = new Text(0,0,resources.mGameFont,"",10,resources.vbom);
 		typePlayer2 = new Text(0,0,resources.mGameFont,"",10,resources.vbom);

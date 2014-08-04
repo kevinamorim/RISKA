@@ -4,24 +4,31 @@ import org.andengine.entity.scene.background.Background;
 import org.andengine.entity.text.Text;
 import org.andengine.util.adt.color.Color;
 
-import feup.lpoo.riska.scenes.SceneManager.SceneType;
+import feup.lpoo.riska.logic.SceneManager.SceneType;
 
 public class LoadingScene extends BaseScene {
 
+	//private Sprite background;
+	private Text loadingText;
+	
 	@Override
-	public void createScene() {
+	public void createScene()
+	{
 		setBackground(new Background(Color.BLACK));
 		
-		Text loadingTxt = new Text(camera.getCenterX(), camera.getCenterY(), 
+		loadingText = new Text(
+				camera.getCenterX(),
+				camera.getCenterY(), 
 				resources.mainMenuFont, "Loading...", vbom);
-		loadingTxt.setScale(0.5f);
 		
-		attachChild(loadingTxt);
+		loadingText.setScale(0.5f);
 		
+		attachChild(loadingText);	
 	}
 
 	@Override
-	public void onBackKeyPressed() {
+	public void onBackKeyPressed()
+	{
 		return;
 	}
 
@@ -30,7 +37,8 @@ public class LoadingScene extends BaseScene {
 	}
 
 	@Override
-	public SceneType getSceneType() {
+	public SceneType getSceneType()
+	{
 		return SceneType.LOADING;
 	}
 

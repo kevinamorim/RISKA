@@ -5,7 +5,7 @@ import org.andengine.entity.text.Text;
 import org.andengine.util.adt.color.Color;
 
 import feup.lpoo.riska.interfaces.Displayable;
-import feup.lpoo.riska.scenes.SceneManager.SceneType;
+import feup.lpoo.riska.logic.SceneManager.SceneType;
 import feup.lpoo.riska.utilities.Utils;
 
 public class PreBattleScene extends BaseScene implements Displayable {
@@ -35,7 +35,8 @@ public class PreBattleScene extends BaseScene implements Displayable {
 	// ======================================================
 
 	@Override
-	public void createScene() {
+	public void createScene()
+	{
 		createDisplay();
 	}
 
