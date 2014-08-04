@@ -20,7 +20,7 @@ public class SceneManager {
 	private BaseScene splashScene;
 	private BaseScene loadingScene;
 	private BaseScene mainMenuScene;
-	private BaseScene optionsScene;
+	//private BaseScene optionsScene;
 	private BaseScene gameScene;
 
 	
@@ -36,7 +36,7 @@ public class SceneManager {
 		SPLASH, 
 		LOADING,
 		MAIN_MENU,
-		OPTIONS,
+		/*OPTIONS,*/
 		LOAD_MAP,
 		GAME,
 		NEWGAME,
@@ -90,10 +90,10 @@ public class SceneManager {
 		}));
 	}
 	
-	public void createOptionsScene() {
-		optionsScene = new OptionsScene();
-		setScene(optionsScene);
-	}
+//	public void createOptionsScene() {
+//		optionsScene = new OptionsScene();
+//		setScene(optionsScene);
+//	}
 	
 	// ==================================================
 	// LOAD SCENES
@@ -143,9 +143,9 @@ public class SceneManager {
 		case MAIN_MENU:
 			setScene(mainMenuScene);
 			break;
-		case OPTIONS:
-			setScene(optionsScene);
-			break;
+//		case OPTIONS:
+//			setScene(optionsScene);
+//			break;
 		case GAME:
 			setScene(gameScene);
 			break;

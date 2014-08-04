@@ -27,7 +27,7 @@ import feup.lpoo.riska.logic.GameLogic;
 import feup.lpoo.riska.logic.GameLogic.GAME_STATE;
 import feup.lpoo.riska.logic.MainActivity;
 import feup.lpoo.riska.scenes.SceneManager.SceneType;
-import feup.lpoo.riska.utilities.Utilities;
+import feup.lpoo.riska.utilities.Utils;
 import feup.lpoo.riska.R;
 import android.graphics.Point;
 import android.util.Log;
@@ -308,11 +308,11 @@ public class GameScene extends BaseScene implements IOnSceneTouchListener, IScro
 
 		if(logic.getCurrentPlayerIndex() == PLAYER_NUM)
 		{
-			hud.setInfoTabText(logic.getCurrentPlayer().soldiersToDeploy + Utilities.getString(R.string.game_info_left_to_deploy));
+			hud.setInfoTabText(logic.getCurrentPlayer().soldiersToDeploy + Utils.getString(R.string.game_info_left_to_deploy));
 		}
 		else
 		{
-			hud.setInfoTabText(Utilities.getString(R.string.game_info_wait_for_CPU));
+			hud.setInfoTabText(Utils.getString(R.string.game_info_wait_for_CPU));
 			hud.hide(BUTTON.AUTO_DEPLOY);
 		}
 

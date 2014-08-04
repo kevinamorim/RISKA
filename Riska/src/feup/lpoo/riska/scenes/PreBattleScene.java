@@ -6,7 +6,7 @@ import org.andengine.util.adt.color.Color;
 
 import feup.lpoo.riska.interfaces.Displayable;
 import feup.lpoo.riska.scenes.SceneManager.SceneType;
-import feup.lpoo.riska.utilities.Utilities;
+import feup.lpoo.riska.utilities.Utils;
 
 public class PreBattleScene extends BaseScene implements Displayable {
 
@@ -81,35 +81,35 @@ public class PreBattleScene extends BaseScene implements Displayable {
 		
 		
 		soldierNumBox = new Sprite(
-				0.5f * Utilities.getBoundsX(window),
-				0.5f * Utilities.getBoundsY(window),
-				resources.windowButtonGenericInverted,
+				0.5f * Utils.getBoundsX(window),
+				0.5f * Utils.getBoundsY(window),
+				resources.windowRegionGenericInverted,
 				vbom);
 
-		soldierNumBox.setScaleX(1.1f);
+		soldierNumBox.setScaleY(0.5f);
 	}
 	
 	private void createText()
 	{
 		soldiersToSend = new Text(
-				0.5f * Utilities.getBoundsX(window),
-				0.8f * Utilities.getBoundsY(window),
+				0.5f * Utils.getBoundsX(window),
+				0.8f * Utils.getBoundsY(window),
 				resources.mGameFont, "SOLDIERS TO SEND ON ATTACK", 100, vbom);
 
 		soldiersToSend.setColor(Color.WHITE);
 		soldiersToSend.setScale(1.2f);
 
 		soldierNum = new Text(
-				0.5f * Utilities.getBoundsX(window),
-				0.5f * Utilities.getBoundsY(window),
+				0.5f * Utils.getBoundsX(window),
+				0.5f * Utils.getBoundsY(window),
 				resources.mGameFont, "X", 500, vbom);
 
 		soldierNum.setColor(Color.BLACK);
 		soldierNum.setScale(1.4f);
 		
 		successNum = new Text(
-				0.5f * Utilities.getBoundsX(window),
-				0.20f * Utilities.getBoundsY(window),
+				0.5f * Utils.getBoundsX(window),
+				0.20f * Utils.getBoundsY(window),
 				resources.mGameFont, "INSERT", 500, vbom);
 
 		successNum.setColor(Color.BLACK);
@@ -119,14 +119,16 @@ public class PreBattleScene extends BaseScene implements Displayable {
 	// ======================================================
 	// UPDATE DATA
 	// ======================================================
-	public void increaseSoldiers() {
+	public void increaseSoldiers()
+	{
 		this.currentSoldiers++;
 		this.currentSoldiers = Math.min(soldierMax, currentSoldiers);
 
 		updateText();
 	}
-
-	public void decreaseSoldiers() {
+	
+	public void decreaseSoldiers()
+	{
 		this.currentSoldiers--;
 		this.currentSoldiers = Math.max(soldierMin, currentSoldiers);
 
@@ -146,7 +148,7 @@ public class PreBattleScene extends BaseScene implements Displayable {
 
 	private void updateText()
 	{
-		int successChance = (int)(Utilities.calculateChanceOfSuccess(currentSoldiers, defendingSoldiers) * 100);
+		int successChance = (int)(Utils.calculateChanceOfSuccess(currentSoldiers, defendingSoldiers) * 100);
 		
 		soldierNum.setText(currentSoldiers + " (" + soldierMax + " max)");
 		successNum.setText("Chance of success: " + successChance + " %");

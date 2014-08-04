@@ -5,174 +5,336 @@ import org.andengine.entity.scene.menu.MenuScene;
 import org.andengine.entity.scene.menu.item.IMenuItem;
 import org.andengine.entity.scene.menu.MenuScene.IOnMenuItemClickListener;
 import org.andengine.entity.sprite.Sprite;
+import org.andengine.entity.text.Text;
+
+import android.graphics.Color;
+import android.util.Log;
 import feup.lpoo.riska.gameInterface.AnimatedButtonSpriteMenuItem;
 import feup.lpoo.riska.gameInterface.AnimatedTextButtonSpriteMenuItem;
+import feup.lpoo.riska.interfaces.Displayable;
+import feup.lpoo.riska.io.SharedPreferencesManager;
 import feup.lpoo.riska.scenes.SceneManager.SceneType;
+import feup.lpoo.riska.utilities.Utils;
 
-public class MainMenuScene extends BaseScene implements IOnMenuItemClickListener {
-		
+public class MainMenuScene extends BaseScene implements Displayable, IOnMenuItemClickListener {
+
 	// ==================================================
 	// FIELDS
 	// ==================================================
-	private MenuScene mainMenuChildScene;
-	private MenuScene startGameMenuChildScene;
+	private MenuScene mainMenu;
+	private MenuScene optionsMenu;
+	private MenuScene startGameMenu;
 
-	final int MENU_START = 0;
-	final int MENU_NEW = 1;
-	final int MENU_LOAD = 2;
-	final int MENU_RETURN = 3;
-	final int MENU_OPTIONS = 4;
+	private enum CHILD { MAIN, START_GAME, OPTIONS};
+
+	private final int MAIN_START = 0;
+	private final int MAIN_OPTIONS = 1;
 	
+	private final int START_NEW = 2;
+	private final int START_LOAD = 3;
+	private final int START_RETURN = 4;
+	
+	private final int OPTIONS_SFX = 5;
+	private final int OPTIONS_MUSIC = 6;
+	private final int OPTIONS_RETURN = 7;
+
+
+	private SpriteBackground background;	
+	
+	private AnimatedTextButtonSpriteMenuItem startButton;
+	private AnimatedButtonSpriteMenuItem optionsButton;
+	
+	private AnimatedTextButtonSpriteMenuItem newGameButton;
+	private AnimatedTextButtonSpriteMenuItem loadGameButton;
+	private AnimatedButtonSpriteMenuItem returnButtonStart;
+	
+	private AnimatedButtonSpriteMenuItem returnButtonOptions;
+	private AnimatedButtonSpriteMenuItem sliderSFX;
+	private AnimatedButtonSpriteMenuItem sliderMusic;
+	private Text textSFX;
+	private Text textMusic;
+	
+	// Music options
+	private boolean musicOn = true;
+	private boolean sfxOn = false;
+
+
+	// ==================================================
+	// ==================================================
+
 	@Override
-	public void createScene() {
-		createBackground();
-		createMenuChildScene();
-		createStartGameMenuChildScene();
-		createBorder();
+	public void createScene()
+	{
+		createDisplay();
 	}
 
 	@Override
-	public void onBackKeyPressed() {
-		if(this.getChildScene().equals(mainMenuChildScene))
+	public void onBackKeyPressed()
+	{
+		if(this.getChildScene().equals(mainMenu))
 		{
 			System.exit(0);
 		}
-		else if(this.getChildScene().equals(startGameMenuChildScene))
+		else
 		{
 			detachChildren();
-			setChildScene(mainMenuChildScene);
+			setChildScene(mainMenu);
 		}
 	}
 
 	@Override
-	public void disposeScene() {
+	public void disposeScene()
+	{
 		detachChildren();
-		mainMenuChildScene = null;
-		startGameMenuChildScene = null;
 		dispose();
 	}
-	
+
 	@Override
-	public SceneType getSceneType() {
+	public SceneType getSceneType()
+	{
 		return SceneType.MAIN_MENU;
 	}
-	
-	private void createBackground() {
+
+	// ==================================================
+	// ==================================================
+
+	@Override
+	public void createDisplay()
+	{
+		createBackground();
+		createChildScene(CHILD.MAIN);
+		createChildScene(CHILD.OPTIONS);
+		createChildScene(CHILD.START_GAME);
 		
-		SpriteBackground background = new SpriteBackground(new Sprite(camera.getWidth()/2, 
-				camera.getHeight()/2, 
+		setChildScene(CHILD.MAIN);
+	}
+
+	private void setChildScene(CHILD x)
+	{
+		switch(x)
+		{
+		
+		case MAIN:
+			if(startGameMenu.hasParent())
+			{
+				startGameMenu.detachSelf();
+			}
+			setChildScene(mainMenu);
+			break;
+			
+		case START_GAME:
+			if(startGameMenu.hasParent())
+			{
+				startGameMenu.detachSelf();
+			}
+			setChildScene(startGameMenu);
+			break;
+			
+		case OPTIONS:
+			if(optionsMenu.hasParent())
+			{
+				optionsMenu.detachSelf();
+			}
+			setChildScene(optionsMenu);
+			break;
+			
+		default:
+			Log.e("Riska","MainMenuScene > setChildScene() > No valid child provided.");
+			break;
+		}
+	}
+
+	private void createChildScene(CHILD x)
+	{
+		switch(x)
+		{
+		case MAIN:
+			createMainMenu();
+			break;
+		case START_GAME:
+			createStartGameMenu();
+			break;
+		case OPTIONS:
+			createOptionsMenu();
+			break;
+		default:
+			break;
+		}
+	}
+
+	private void createBackground() {
+
+		background = new SpriteBackground(new Sprite(
+				camera.getCenterX(), 
+				camera.getCenterY(),
+				camera.getWidth() + 2,
+				camera.getHeight() + 2,
 				resources.menuBackgroundRegion, 
 				vbom));
 		
 		setBackground(background);
 	}
 
-	private void createMenuChildScene() {
-		
-		mainMenuChildScene = new MenuScene(camera);
-		
-		final AnimatedTextButtonSpriteMenuItem startBtn = new AnimatedTextButtonSpriteMenuItem(MENU_START, 
-						resources.textBtnRegion.getWidth(), 
-						resources.textBtnRegion.getHeight(),
-						resources.textBtnRegion, 
-						vbom, "START", resources.mainMenuFont);
-		
-		final AnimatedButtonSpriteMenuItem optionsBtn = new AnimatedButtonSpriteMenuItem(MENU_OPTIONS, 
-						0.3f*resources.optionsBtnRegion.getWidth(),
-						0.3f*resources.optionsBtnRegion.getHeight(), 
-						resources.optionsBtnRegion, 
-						vbom);
-		
-		startBtn.setPosition(camera.getCenterX(), camera.getCenterY());
-		optionsBtn.setPosition(optionsBtn.getWidth()/2, optionsBtn.getHeight()/2);
-		
-		mainMenuChildScene.addMenuItem(startBtn);
-		mainMenuChildScene.addMenuItem(optionsBtn);
-		mainMenuChildScene.setBackgroundEnabled(false);
-		mainMenuChildScene.setOnMenuItemClickListener(this);
-
-		setChildScene(mainMenuChildScene);	
-	}
-	
-	private void createStartGameMenuChildScene() {
-		
-		startGameMenuChildScene = new MenuScene(camera);
-		
-		final AnimatedTextButtonSpriteMenuItem newGameBtn = new AnimatedTextButtonSpriteMenuItem(MENU_NEW,
-						resources.textBtnRegion.getWidth(),
-						resources.textBtnRegion.getHeight(),
-						resources.textBtnRegion,
-						vbom, "NEW", resources.mainMenuFont);
-		
-		final AnimatedTextButtonSpriteMenuItem loadGameBtn = new AnimatedTextButtonSpriteMenuItem(MENU_LOAD,
-						resources.textBtnRegion.getWidth(),
-						resources.textBtnRegion.getHeight(),
-						resources.textBtnRegion,
-						vbom, "LOAD", resources.mainMenuFont);
-
-		final AnimatedButtonSpriteMenuItem returnBtn = new AnimatedButtonSpriteMenuItem(MENU_RETURN,
-				0.3f*resources.returnBtnRegion.getWidth(), 
-				0.3f*resources.returnBtnRegion.getHeight(),
-				resources.returnBtnRegion,
-				vbom);
-		
-		newGameBtn.setPosition(camera.getCenterX(), camera.getCenterY() + newGameBtn.getHeight()/2);
-		loadGameBtn.setPosition(camera.getCenterX(), camera.getCenterY() - loadGameBtn.getHeight()/2);
-		returnBtn.setPosition(returnBtn.getWidth()/2, returnBtn.getHeight()/2);
-		
-		startGameMenuChildScene.addMenuItem(returnBtn);
-		startGameMenuChildScene.addMenuItem(newGameBtn);
-		startGameMenuChildScene.addMenuItem(loadGameBtn);
-		startGameMenuChildScene.setBackgroundEnabled(false);
-		startGameMenuChildScene.setOnMenuItemClickListener(this);
-		
-	}
-	
-	private void createBorder()
+	private void createMainMenu()
 	{
-		Sprite border = new Sprite(camera.getWidth()/2, camera.getHeight()/2, resources.menuBorderRegion, vbom);
-		border.setSize(camera.getWidth(), camera.getHeight());
+		mainMenu = new MenuScene(camera);
+		
+		mainMenu.setBackgroundEnabled(false);
 
-		mainMenuChildScene.attachChild(border);
+		startButton = new AnimatedTextButtonSpriteMenuItem(MAIN_START, 
+				resources.textBtnRegion.getWidth(), 
+				resources.textBtnRegion.getHeight(),
+				resources.textBtnRegion, 
+				vbom, "START", resources.mainMenuFont);
+
+		optionsButton = new AnimatedButtonSpriteMenuItem(MAIN_OPTIONS, 
+				resources.optionsBtnRegion.getWidth(),
+				resources.optionsBtnRegion.getHeight(), 
+				resources.optionsBtnRegion, 
+				vbom);
+
+		startButton.setPosition(camera.getCenterX(), camera.getCenterY());
 		
-		Sprite border2 = new Sprite(camera.getWidth()/2, camera.getHeight()/2, resources.menuBorderRegion, vbom);
-		border2.setSize(camera.getWidth(), camera.getHeight());
+		optionsButton.setScale(0.3f);
+		optionsButton.setPosition(0.5f * Utils.getWidth(optionsButton) - 2, 0.5f * Utils.getHeight(optionsButton) - 2);
 		
-		startGameMenuChildScene.attachChild(border2);
+		mainMenu.addMenuItem(startButton);
+		mainMenu.addMenuItem(optionsButton);
+		mainMenu.setOnMenuItemClickListener(this);	
 	}
 
+	private void createStartGameMenu()
+	{
+		startGameMenu = new MenuScene(camera);
+		
+		startGameMenu.setBackgroundEnabled(false);
+
+		
+		newGameButton = new AnimatedTextButtonSpriteMenuItem(START_NEW,
+				resources.textBtnRegion.getWidth(),
+				resources.textBtnRegion.getHeight(),
+				resources.textBtnRegion,
+				vbom, "NEW", resources.mainMenuFont);
+
+		loadGameButton = new AnimatedTextButtonSpriteMenuItem(START_LOAD,
+				resources.textBtnRegion.getWidth(),
+				resources.textBtnRegion.getHeight(),
+				resources.textBtnRegion,
+				vbom, "LOAD", resources.mainMenuFont);
+
+		returnButtonStart = new AnimatedButtonSpriteMenuItem(START_RETURN,
+				resources.returnBtnRegion.getWidth(),
+				resources.returnBtnRegion.getHeight(),
+				resources.returnBtnRegion, vbom);
+		
+		
+		newGameButton.setPosition(camera.getCenterX(), 0.66f * camera.getCenterY());
+		
+		loadGameButton.setPosition(camera.getCenterX(), 0.33f * camera.getCenterY());
+		
+		returnButtonStart.setScale(0.3f);
+		returnButtonStart.setPosition(0.5f * Utils.getWidth(returnButtonStart) - 2, 0.5f * Utils.getHeight(returnButtonStart) - 2);	
+		
+		startGameMenu.addMenuItem(newGameButton);
+		startGameMenu.addMenuItem(loadGameButton);
+		startGameMenu.addMenuItem(returnButtonStart);
+		
+		startGameMenu.setOnMenuItemClickListener(this);
+	}
+
+	private void createOptionsMenu()
+	{
+		optionsMenu = new MenuScene(camera);
+		
+		optionsMenu.setBackgroundEnabled(false);
+		
+
+		returnButtonOptions = new AnimatedButtonSpriteMenuItem(OPTIONS_RETURN,
+				resources.returnBtnRegion.getWidth(),
+				resources.returnBtnRegion.getHeight(),
+				resources.returnBtnRegion, vbom);
+		
+		sliderSFX= new AnimatedButtonSpriteMenuItem(OPTIONS_SFX,
+				resources.sliderBtnRegion.getWidth(),
+				resources.sliderBtnRegion.getHeight(),
+				resources.sliderBtnRegion, vbom);
+
+		sliderMusic = new AnimatedButtonSpriteMenuItem(OPTIONS_MUSIC,
+				resources.sliderBtnRegion.getWidth(),
+				resources.sliderBtnRegion.getHeight(),
+				resources.sliderBtnRegion, vbom);
+
+
+		textMusic = new Text(0, 0, resources.mainMenuFont, "MUSIC", vbom);
+		textMusic.setPosition( 0.25f * camera.getWidth(), 0.75f * camera.getHeight());
+		textMusic.setColor(Color.BLACK);
+
+		textSFX = new Text(0, 0, resources.mainMenuFont, "SFX", vbom);
+		textSFX.setPosition(0.25f * camera.getWidth(), 0.50f * camera.getHeight());
+		textSFX.setColor(Color.BLACK);
+
+		
+		sliderMusic.setScale(0.3f);
+		sliderMusic.setPosition(0.75f * camera.getWidth(), textMusic.getY());
+		sliderMusic.setCurrentTileIndex(musicOn ? 0 : 1);
+		
+		sliderSFX.setScale(0.3f);
+		sliderSFX.setPosition(0.75f * camera.getWidth(), textSFX.getY());
+		sliderSFX.setCurrentTileIndex(sfxOn ? 0 : 1);
+		
+		returnButtonOptions.setScale(0.3f);
+		returnButtonOptions.setPosition(0.5f * Utils.getWidth(returnButtonOptions) - 2, 0.5f * Utils.getHeight(returnButtonOptions) - 2);
+		
+		
+		optionsMenu.addMenuItem(returnButtonOptions);
+		optionsMenu.addMenuItem(sliderMusic);
+		optionsMenu.addMenuItem(sliderSFX);
+
+		optionsMenu.attachChild(textMusic);
+		optionsMenu.attachChild(textSFX);
+
+		optionsMenu.setOnMenuItemClickListener(this);	
+	}
+	
 	@Override
 	public boolean onMenuItemClicked(MenuScene pMenuScene, IMenuItem pMenuItem, float pX, float pY)
 	{
+		
 		switch(pMenuItem.getID())
 		{
-		case MENU_START:
-			setChildScene(startGameMenuChildScene);
+		case MAIN_START:
+			setChildScene(startGameMenu);
 			break;
-		case MENU_OPTIONS:
-			sceneManager.createOptionsScene();
+		case MAIN_OPTIONS:
+			setChildScene(optionsMenu);
 			break;
-		case MENU_NEW:
+		case START_NEW:
 			sceneManager.createGameScene();
 			break;
-		case MENU_LOAD:
+		case START_LOAD:
 			//sceneManager.loadGameScene(engine);
 			break;
-		case MENU_RETURN:
-			setChildScene(mainMenuChildScene);
+		case START_RETURN:
+			setChildScene(mainMenu);
+			break;
+		case OPTIONS_SFX:
+			sfxOn = !sfxOn;
+			sliderSFX.setCurrentTileIndex(sfxOn ? 0 : 1);
+			break;
+		case OPTIONS_MUSIC:
+			musicOn = !musicOn;
+			sliderMusic.setCurrentTileIndex(musicOn ? 0 : 1);
+			break;
+		case OPTIONS_RETURN:
+			// TODO: implement music conductor
+			SharedPreferencesManager.SaveBoolean("musicOn", true);
+			setChildScene(mainMenu);
 			break;
 		default:
 			break;
 		}
-		
+
 		return false;
 	}
-
-
-
-
-
-	
-	
 
 }

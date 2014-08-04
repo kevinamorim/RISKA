@@ -104,7 +104,8 @@ public class LoadGame {
 		
 		Log.d("Loading", "Loading soldiers: " + size);
 		
-		for(int i = 0; i < size; i++) {
+		for(int i = 0; i < size; i++)
+		{
 			int soldiers = prefs.getInt("soldiers_" + i, 1);
 			Log.d("Loading", "Soldiers: " + soldiers);
 			logic.map.getRegionById(i).setSoldiers(soldiers);

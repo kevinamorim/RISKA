@@ -13,7 +13,7 @@ import feup.lpoo.riska.logic.GameLogic;
 import feup.lpoo.riska.logic.MainActivity;
 import feup.lpoo.riska.resources.ResourceCache;
 import feup.lpoo.riska.scenes.GameScene;
-import feup.lpoo.riska.utilities.Utilities;
+import feup.lpoo.riska.utilities.Utils;
 import android.view.MotionEvent;
 
 public class GameHUD extends HUD implements Displayable {
@@ -538,21 +538,21 @@ public class GameHUD extends HUD implements Displayable {
 	{
 		if(logic.getCurrentPlayer().isCPU)
 		{
-			setInfoTabText(Utilities.getString(R.string.game_info_wait_for_CPU));
+			setInfoTabText(Utils.getString(R.string.game_info_wait_for_CPU));
 		}
 		else
 		{
 			if(logic.selectedRegion != null && logic.targetedRegion != null)
 			{
-				setInfoTabText(Utilities.getString(R.string.game_info_attack));
+				setInfoTabText(Utils.getString(R.string.game_info_attack));
 			}
 			else if(logic.selectedRegion != null)
 			{
-				setInfoTabText(Utilities.getString(R.string.game_info_tap_enemy_region));
+				setInfoTabText(Utils.getString(R.string.game_info_tap_enemy_region));
 			}
 			else
 			{
-				setInfoTabText(Utilities.getString(R.string.game_info_tap_allied_region));
+				setInfoTabText(Utils.getString(R.string.game_info_tap_allied_region));
 			}
 		}
 	}

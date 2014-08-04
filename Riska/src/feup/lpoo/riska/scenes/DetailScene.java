@@ -4,7 +4,7 @@ import org.andengine.entity.sprite.Sprite;
 import org.andengine.entity.text.Text;
 import feup.lpoo.riska.elements.Region;
 import feup.lpoo.riska.scenes.SceneManager.SceneType;
-import feup.lpoo.riska.utilities.Utilities;
+import feup.lpoo.riska.utilities.Utils;
 
 public class DetailScene extends BaseScene {
 
@@ -70,13 +70,13 @@ public class DetailScene extends BaseScene {
 	private void createText()
 	{
 		playerRegionName = new Text(
-				0.25f * Utilities.getBoundsX(window), 
-				0.75f * Utilities.getBoundsY(window),
+				0.25f * Utils.getBoundsX(window), 
+				0.75f * Utils.getBoundsY(window),
 				resources.mGameFont, "", 1000, resources.vbom);
 
 		enemyRegionName = new Text(
-				0.75f * Utilities.getBoundsX(window),
-				0.75f * Utilities.getBoundsY(window),
+				0.75f * Utils.getBoundsX(window),
+				0.75f * Utils.getBoundsY(window),
 				resources.mGameFont, "", 1000, resources.vbom);
 	}
 
@@ -85,10 +85,10 @@ public class DetailScene extends BaseScene {
 	// ======================================================
 	public void update(Region playerRegion, Region enemyRegion) {
 
-		playerRegionName.setText(Utilities.wrapText(resources.mGameFont, 
+		playerRegionName.setText(Utils.wrapText(resources.mGameFont, 
 				(playerRegion != null) ? playerRegion.getName() : "", this.getWidth()/2));
 
-		enemyRegionName.setText(Utilities.wrapText(resources.mGameFont, 
+		enemyRegionName.setText(Utils.wrapText(resources.mGameFont, 
 				(enemyRegion != null) ? enemyRegion.getName() : "", this.getWidth()/2));	
 
 	}

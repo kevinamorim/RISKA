@@ -16,7 +16,7 @@
 	
 	<string name="path_music_background">music.mp3</string>
 	
-	<string name="path_theme_current">themes/vanilla/</string>
+	<string name="path_theme_current">wood/</string>
 	
 	<string name="game_info_wait">Wait</string>
 	<string name="game_info_wait_for_CPU">Waiting for CPU</string>

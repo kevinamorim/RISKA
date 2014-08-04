@@ -27,7 +27,7 @@ import feup.lpoo.riska.elements.Map;
 import feup.lpoo.riska.logic.MainActivity;
 import feup.lpoo.riska.music.Conductor;
 import feup.lpoo.riska.scenes.CameraManager;
-import feup.lpoo.riska.utilities.Utilities;
+import feup.lpoo.riska.utilities.Utils;
 
 public class ResourceCache {
 
@@ -42,7 +42,7 @@ public class ResourceCache {
 	
 	private static ResourceCache instance = new ResourceCache();
 	
-	private static String currentTheme = Utilities.getString(R.string.path_theme_current);
+	private static String currentTheme = Utils.getString(R.string.path_theme_current);
 	
 	// ==================================================
 	// SPLASH RESOURCES
@@ -75,7 +75,7 @@ public class ResourceCache {
 	public ITiledTextureRegion infoTabRegion;
 	public ITextureRegion windowRegion;
 	public ITextureRegion windowRegionGeneric;
-	public ITextureRegion windowButtonGenericInverted;
+	public ITextureRegion windowRegionGenericInverted;
 	public ITiledTextureRegion arrowRightRegion;
 	public ITiledTextureRegion seaRegion;
 	public ITextureRegion mapRegion;
@@ -120,6 +120,7 @@ public class ResourceCache {
 				textureWidth, textureHeight, TextureOptions.BILINEAR);
 		splashRegion = BitmapTextureAtlasTextureRegionFactory.createFromAsset(splashTextureAtlas, 
 				activity, "splash.png", 0, 0);
+		
 		splashTextureAtlas.load();
 		
 	}
@@ -221,7 +222,7 @@ public class ResourceCache {
 		
 		int seaTextureWidth = 4096, seaTextureHeight = 2048, seaCols = 2, seaLines = 2;
 		int mapTextureWidth = 4096, mapTextureHeight = 2048;
-		int gameTextureWidth = 1024, gameTextureHeight = 1024;
+		int gameTextureWidth = 2048, gameTextureHeight = 2048;
 		
 		seaTextureAtlas = new BitmapTextureAtlas(activity.getTextureManager(), seaTextureWidth, seaTextureHeight,
 				TextureOptions.DEFAULT);
@@ -233,7 +234,7 @@ public class ResourceCache {
 		mapTextureAtlas = new BitmapTextureAtlas(activity.getTextureManager(), mapTextureWidth, mapTextureHeight, 
 				TextureOptions.DEFAULT);
 		mapRegion = BitmapTextureAtlasTextureRegionFactory.createFromAsset(mapTextureAtlas, activity,
-				"map_2.png", 0, 0);
+				"map.png", 0, 0);
 		
 
 		
@@ -241,7 +242,7 @@ public class ResourceCache {
 				gameTextureWidth, gameTextureHeight, TextureOptions.BILINEAR);
 		
 		regionBtnRegion = BitmapTextureAtlasTextureRegionFactory.createTiledFromAsset(gameTextureAtlas, activity, 
-				"region.png", 1, 2);
+				"region_2.png", 1, 2);
 		
 		attackBtnRegion = BitmapTextureAtlasTextureRegionFactory.createTiledFromAsset(gameTextureAtlas, activity, 
 				"attack.png", 2, 1);
@@ -261,7 +262,7 @@ public class ResourceCache {
 		windowRegionGeneric = BitmapTextureAtlasTextureRegionFactory.createFromAsset(gameTextureAtlas, activity,
 				"window_general.png");
 		
-		windowButtonGenericInverted = BitmapTextureAtlasTextureRegionFactory.createFromAsset(gameTextureAtlas, activity, 
+		windowRegionGenericInverted = BitmapTextureAtlasTextureRegionFactory.createFromAsset(gameTextureAtlas, activity, 
 				"window_general_inverted.png");
 		
 		arrowRightRegion = BitmapTextureAtlasTextureRegionFactory.createTiledFromAsset(gameTextureAtlas, activity,
