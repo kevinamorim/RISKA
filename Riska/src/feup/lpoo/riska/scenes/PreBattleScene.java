@@ -5,7 +5,7 @@ import org.andengine.entity.text.Text;
 import org.andengine.util.adt.color.Color;
 
 import feup.lpoo.riska.interfaces.Displayable;
-import feup.lpoo.riska.logic.SceneManager.SceneType;
+import feup.lpoo.riska.logic.SceneManager.SCENE_TYPE;
 import feup.lpoo.riska.utilities.Utils;
 
 public class PreBattleScene extends BaseScene implements Displayable {
@@ -41,10 +41,16 @@ public class PreBattleScene extends BaseScene implements Displayable {
 	}
 
 	@Override
-	public void onBackKeyPressed() { }
+	public void onBackKeyPressed()
+	{
+		((GameScene)getParent()).onBackKeyPressed();
+	}
 
 	@Override
-	public SceneType getSceneType() { return null; }
+	public SCENE_TYPE getSceneType()
+	{
+		return SCENE_TYPE.PRE_BATTLE;
+	}
 
 	@Override
 	public void disposeScene() { }

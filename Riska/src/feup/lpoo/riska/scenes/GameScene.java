@@ -26,8 +26,7 @@ import feup.lpoo.riska.io.SaveGame;
 import feup.lpoo.riska.logic.GameLogic;
 import feup.lpoo.riska.logic.SceneManager;
 import feup.lpoo.riska.logic.GameLogic.GAME_STATE;
-import feup.lpoo.riska.logic.SceneManager.SceneType;
-import feup.lpoo.riska.logic.MainActivity;
+import feup.lpoo.riska.logic.SceneManager.SCENE_TYPE;
 import feup.lpoo.riska.utilities.Utils;
 import feup.lpoo.riska.R;
 import android.graphics.Point;
@@ -96,8 +95,8 @@ public class GameScene extends BaseScene implements IOnSceneTouchListener, IScro
 	}
 
 	@Override
-	public SceneType getSceneType() {
-		return SceneType.GAME;
+	public SCENE_TYPE getSceneType() {
+		return SCENE_TYPE.GAME;
 	}
 
 	@Override
@@ -130,8 +129,8 @@ public class GameScene extends BaseScene implements IOnSceneTouchListener, IScro
 		mapSprite = new Sprite(
 				camera.getCenterX(),
 				camera.getCenterY(),
-				camera.getWidth(),
-				camera.getHeight(),
+				camera.getWidth() + 2,
+				camera.getHeight() + 2,
 				resources.mapRegion, vbom);
 
 		attachChild(mapSprite);	
@@ -171,8 +170,8 @@ public class GameScene extends BaseScene implements IOnSceneTouchListener, IScro
 
 		for(Region region : resources.map.getRegions()) {
 
-			int x = (region.getStratCenter().x * MainActivity.CAMERA_WIDTH)/100;
-			int y = (region.getStratCenter().y * MainActivity.CAMERA_HEIGHT)/100;
+			int x = (int)((region.getStratCenter().x * camera.getWidth()) / 100);
+			int y = (int)((region.getStratCenter().y * camera.getHeight()) / 100);
 
 			buttonText = new Text(0, 0, resources.mGameFont, "", MAX_REGION_CHARS, vbom);
 
@@ -200,13 +199,12 @@ public class GameScene extends BaseScene implements IOnSceneTouchListener, IScro
 
 			regionButton.setTag(region.ID);
 			regionButton.setPosition(x, y);
-			regionButton.setScale((float) 0.8);
+			regionButton.setScale(0.8f);
 
 			regionButton.setColor(region.getPrimaryColor());
 
 			buttonText.setText("" + logic.MIN_SOLDIERS_PER_REGION);
-			buttonText.setScale((float) 1.1);
-			buttonText.setPosition(regionButton.getWidth()/2, regionButton.getHeight()/2);
+			buttonText.setPosition(Utils.getCenterX(regionButton), Utils.getCenterY(regionButton));
 			buttonText.setColor(region.getSecundaryColor());
 
 			regionButton.attachChild(buttonText);
@@ -239,8 +237,8 @@ public class GameScene extends BaseScene implements IOnSceneTouchListener, IScro
 	// ======================================================
 
 	@Override
-	protected void onManagedUpdate(float pSecondsElapsed) {
-
+	protected void onManagedUpdate(float pSecondsElapsed)
+	{
 		super.onManagedUpdate(pSecondsElapsed);
 
 		switch(logic.getState())

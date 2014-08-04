@@ -27,6 +27,7 @@ import feup.lpoo.riska.elements.Map;
 import feup.lpoo.riska.gameInterface.CameraManager;
 import feup.lpoo.riska.logic.MainActivity;
 import feup.lpoo.riska.music.Conductor;
+import feup.lpoo.riska.utilities.Utils;
 
 public class ResourceCache {
 
@@ -37,33 +38,32 @@ public class ResourceCache {
 	public Engine engine;
 	public CameraManager camera;
 	public VertexBufferObjectManager vbom;
-	public Conductor conductor;
-	
+
 	private static ResourceCache instance = new ResourceCache();
-	
+
 	private static String currentTheme = "wood/";
-	
+
 	// ==================================================
 	// SPLASH RESOURCES
 	// ==================================================
 	private BitmapTextureAtlas splashTextureAtlas;
 	public ITextureRegion splashRegion;
-	
+
 	// ==================================================
 	// MAIN MENU RESOURCES
 	// ==================================================
 	private BitmapTextureAtlas menuBackgroundTextureAtlas;
 	public ITextureRegion menuBackgroundRegion;
-	
+
 	private BitmapTextureAtlas menuBorderTextureAtlas;
 	public ITextureRegion menuBorderRegion;
-	
+
 	private BuildableBitmapTextureAtlas mainMenuTextureAtlas;
 	public TiledTextureRegion textBtnRegion;
 	public TiledTextureRegion optionsBtnRegion;
 	public TiledTextureRegion returnBtnRegion;
 	public TiledTextureRegion sliderBtnRegion;
-	
+
 	// ==================================================
 	// GAME RESOURCES
 	// ==================================================
@@ -82,7 +82,7 @@ public class ResourceCache {
 	private BitmapTextureAtlas mapTextureAtlas;
 	private BitmapTextureAtlas seaTextureAtlas;
 	public Map map;
-	
+
 	// ======================================================
 	// FONTS
 	// ======================================================
@@ -95,7 +95,7 @@ public class ResourceCache {
 	protected Font mFont;
 
 	protected BitmapTextureAtlas mGameFontTexture;
-		
+
 
 	// ==================================================
 	// SPLASH SCENE
@@ -103,27 +103,27 @@ public class ResourceCache {
 	public void loadSplashSceneResources() {
 		loadSplashGraphics();
 	}
-	
+
 	public void unloadSplashSceneResources() {
 		splashTextureAtlas.unload();
 		splashRegion = null;
 	}
 
 	private void loadSplashGraphics() {
-		
+
 		int textureWidth = 512, textureHeight = 512;
-		
+
 		BitmapTextureAtlasTextureRegionFactory.setAssetBasePath("gfx/themes/" + currentTheme + "splash/");
-		
+
 		splashTextureAtlas = new BitmapTextureAtlas(activity.getTextureManager(), 
 				textureWidth, textureHeight, TextureOptions.BILINEAR);
 		splashRegion = BitmapTextureAtlasTextureRegionFactory.createFromAsset(splashTextureAtlas, 
 				activity, "splash.png", 0, 0);
-		
+
 		splashTextureAtlas.load();
-		
+
 	}
-	
+
 	// ==================================================
 	// MAIN MENU SCENE
 	// ==================================================
@@ -131,50 +131,50 @@ public class ResourceCache {
 		loadMainMenuGraphics();
 		loadMainMenuFonts();
 	}
-	
+
 	public void unloadMainMenuResources() {
 		mainMenuTextureAtlas.unload();
 		menuBackgroundTextureAtlas.unload();
-		
+
 	}
-	
+
 	private void loadMainMenuGraphics()
 	{		
 		BitmapTextureAtlasTextureRegionFactory.setAssetBasePath("gfx/themes/" + currentTheme + "menu/");
-		
+
 		int bgTextureWidth = 2048, bgTextureHeight = 1024;
-		
+
 		menuBackgroundTextureAtlas = new BitmapTextureAtlas(activity.getTextureManager(), 
 				bgTextureWidth, bgTextureHeight, TextureOptions.DEFAULT);
 		menuBackgroundRegion = BitmapTextureAtlasTextureRegionFactory.createFromAsset(menuBackgroundTextureAtlas, 
 				activity, "background.png", 0, 0);
-		
+
 		menuBackgroundTextureAtlas.load();
-		
+
 		menuBorderTextureAtlas = new BitmapTextureAtlas(activity.getTextureManager(), 
 				bgTextureWidth, bgTextureHeight, TextureOptions.DEFAULT);
 		menuBorderRegion = BitmapTextureAtlasTextureRegionFactory.createFromAsset(menuBorderTextureAtlas, 
 				activity, "border.png", 0, 0);
-		
+
 		menuBorderTextureAtlas.load();
-		
+
 		int mainTextureWidth = 1024, mainTextureHeight = 2048;
-		
+
 		mainMenuTextureAtlas = new BuildableBitmapTextureAtlas(activity.getTextureManager(), 
 				mainTextureWidth, mainTextureHeight, TextureOptions.BILINEAR);
-		
+
 		textBtnRegion = BitmapTextureAtlasTextureRegionFactory.createTiledFromAsset(mainMenuTextureAtlas, activity, 
 				"button.png", 1, 2);
-		
+
 		optionsBtnRegion = BitmapTextureAtlasTextureRegionFactory.createTiledFromAsset(mainMenuTextureAtlas, activity, 
 				"options.png", 1, 2); 
-		
+
 		returnBtnRegion = BitmapTextureAtlasTextureRegionFactory.createTiledFromAsset(mainMenuTextureAtlas, activity, 
 				"return.png", 1, 2);
-		
+
 		sliderBtnRegion = BitmapTextureAtlasTextureRegionFactory.createTiledFromAsset(mainMenuTextureAtlas, activity, 
 				"slider.png", 1, 2);
-			
+
 		try {
 			mainMenuTextureAtlas.build(
 					new BlackPawnTextureAtlasBuilder<IBitmapTextureAtlasSource, BitmapTextureAtlas>(0, 1, 0));
@@ -182,11 +182,11 @@ public class ResourceCache {
 		} catch(final TextureAtlasBuilderException e) {
 			Debug.e(e);
 		}	
-		
+
 	}
-	
+
 	private void loadMainMenuFonts() {
-		
+
 		FontFactory.setAssetBasePath("fonts/");
 
 		mainMenuFont = FontFactory.createFromAsset(engine.getFontManager(),
@@ -195,14 +195,14 @@ public class ResourceCache {
 				Color.WHITE);
 
 		mainMenuFont.load();
-		
+
 	}
-		
+
 	// ==================================================
 	// GAME SCENE
 	// ==================================================
 	public void loadGameSceneResources() {
-		
+
 		loadGameGraphics();
 		loadGameFonts();
 		map = new Map("regions.csv", "neighbours.csv");
@@ -214,59 +214,59 @@ public class ResourceCache {
 		seaTextureAtlas.unload();
 		mapTextureAtlas.unload();
 	}
-	
+
 	private void loadGameGraphics() {
-		
+
 		BitmapTextureAtlasTextureRegionFactory.setAssetBasePath("gfx/themes/" + currentTheme + "game/");
-		
+
 		int seaTextureWidth = 4096, seaTextureHeight = 2048, seaCols = 2, seaLines = 2;
 		int mapTextureWidth = 4096, mapTextureHeight = 2048;
 		int gameTextureWidth = 2048, gameTextureHeight = 2048;
-		
+
 		seaTextureAtlas = new BitmapTextureAtlas(activity.getTextureManager(), seaTextureWidth, seaTextureHeight,
 				TextureOptions.DEFAULT);
 		seaRegion = BitmapTextureAtlasTextureRegionFactory.createTiledFromAsset(seaTextureAtlas, activity.getAssets(),
 				"sea.png", 0, 0, seaCols, seaLines);
-		
-		
-		
+
+
+
 		mapTextureAtlas = new BitmapTextureAtlas(activity.getTextureManager(), mapTextureWidth, mapTextureHeight, 
 				TextureOptions.DEFAULT);
 		mapRegion = BitmapTextureAtlasTextureRegionFactory.createFromAsset(mapTextureAtlas, activity,
 				"map.png", 0, 0);
-		
 
-		
+
+
 		gameTextureAtlas = new BuildableBitmapTextureAtlas(activity.getTextureManager(),
 				gameTextureWidth, gameTextureHeight, TextureOptions.BILINEAR);
-		
+
 		regionBtnRegion = BitmapTextureAtlasTextureRegionFactory.createTiledFromAsset(gameTextureAtlas, activity, 
-				"region_2.png", 1, 2);
-		
+				"region.png", 1, 2);
+
 		attackBtnRegion = BitmapTextureAtlasTextureRegionFactory.createTiledFromAsset(gameTextureAtlas, activity, 
 				"attack.png", 2, 1);
-		
+
 		detailsBtnRegion = BitmapTextureAtlasTextureRegionFactory.createTiledFromAsset(gameTextureAtlas, activity, 
 				"details.png", 2, 1);
-		
+
 		autoDeployBtnRegion = BitmapTextureAtlasTextureRegionFactory.createTiledFromAsset(gameTextureAtlas, activity,
 				"auto_deploy.png", 2, 1);
-		
+
 		infoTabRegion = BitmapTextureAtlasTextureRegionFactory.createTiledFromAsset(gameTextureAtlas, activity, 
 				"info_tab.png", 1, 2);
-		
+
 		windowRegion = BitmapTextureAtlasTextureRegionFactory.createFromAsset(gameTextureAtlas, activity,
 				"window.png");
 
 		windowRegionGeneric = BitmapTextureAtlasTextureRegionFactory.createFromAsset(gameTextureAtlas, activity,
 				"window_general.png");
-		
+
 		windowRegionGenericInverted = BitmapTextureAtlasTextureRegionFactory.createFromAsset(gameTextureAtlas, activity, 
 				"window_general_inverted.png");
-		
+
 		arrowRightRegion = BitmapTextureAtlasTextureRegionFactory.createTiledFromAsset(gameTextureAtlas, activity,
 				"arrow_right.png", 2, 1);
-		
+
 		try {		
 			gameTextureAtlas.build(new BlackPawnTextureAtlasBuilder<IBitmapTextureAtlasSource, BitmapTextureAtlas>(0, 1, 0));
 			gameTextureAtlas.load();
@@ -275,11 +275,11 @@ public class ResourceCache {
 		} catch(final TextureAtlasBuilderException e) {
 			Debug.e(e);
 		}
-		
+
 	}
-	
+
 	private void loadGameFonts() {
-		
+
 		FontFactory.setAssetBasePath("fonts/");
 
 		mGameFont = FontFactory.create(
@@ -287,7 +287,7 @@ public class ResourceCache {
 				engine.getTextureManager(), 512, 512, 
 				Typeface.create(Typeface.DEFAULT, Typeface.BOLD), 32f,
 				Color.WHITE);
-		
+
 		mInfoTabFont = FontFactory.create(engine.getFontManager(), 
 				engine.getTextureManager(), 512, 512, 
 				Typeface.create(Typeface.DEFAULT, Typeface.BOLD), 28f,
@@ -295,35 +295,25 @@ public class ResourceCache {
 
 		mGameFont.load();
 		mInfoTabFont.load();
-		
+
 	}
-	
+
 	// ==================================================
 	// SFX
 	// ==================================================
-	public void loadMusicResources() {
+	public void loadMusicResources()
+	{
+		String musicBackground = Utils.getString(R.string.path_music_background);
 
-		try
-		{
+		MusicFactory.setAssetBasePath("sounds/");
 
-			String musicBackground = activity.getResources().getString(R.string.path_music_background);
+		Music backgroundMusic = loadMusic(musicBackground);
 
-			MusicFactory.setAssetBasePath("sounds/");
-
-			Music backgroundMusic = loadMusic(musicBackground);
-
-			conductor = new Conductor();
-			conductor.addMusic(backgroundMusic, activity.getResources().getString(R.string.name_music_background));
-
-		}
-		catch (Exception e)
-		{
-			e.printStackTrace();
-		}
+		Conductor.getSharedInstance().addMusic(backgroundMusic, activity.getResources().getString(R.string.name_music_background));
 	}
 
-	private Music loadMusic(String filename) {
-
+	private Music loadMusic(String filename)
+	{
 		try
 		{
 			return MusicFactory.createMusicFromAsset(engine.getMusicManager(), activity, filename);
@@ -335,21 +325,20 @@ public class ResourceCache {
 		}
 	}
 
-
-	
 	public static void prepareManager(Engine engine, MainActivity activity, 
-			CameraManager camera, VertexBufferObjectManager vbom) {
-		getSharedInstance().engine = engine;
-		getSharedInstance().activity = activity;
-		getSharedInstance().camera = camera;
-		getSharedInstance().vbom = vbom;
+			CameraManager camera, VertexBufferObjectManager vbom)
+	{
+		instance.engine = engine;
+		instance.activity = activity;
+		instance.camera = camera;
+		instance.vbom = vbom;
 	}
-	
+
 	// ==================================================
 	// GETTERS & SETTERS
 	// ==================================================
 	public static ResourceCache getSharedInstance() {
 		return instance;	
 	}
-	
+
 }

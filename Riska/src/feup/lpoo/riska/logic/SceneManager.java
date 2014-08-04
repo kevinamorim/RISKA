@@ -19,25 +19,8 @@ public class SceneManager {
 	// ==================================================
 	private final float MIN_LOAD_SECONDS = 1f;
 	
-	// ==================================================
-	// SCENES
-	// ==================================================
-	private BaseScene splashScene;
-	private BaseScene loadingScene;
-	private BaseScene mainMenuScene;
-	//private BaseScene optionsScene;
-	private BaseScene gameScene;
-
 	
-	// ==================================================
-	// FIELDS
-	// ==================================================
-	public static SceneManager instance = new SceneManager();
-	private BaseScene currentScene;
-	private SceneType currentSceneType = SceneType.SPLASH;
-	private Engine engine = ResourceCache.getSharedInstance().engine;
-	
-	public enum SceneType {
+	public enum SCENE_TYPE {
 		SPLASH, 
 		LOADING,
 		MAIN_MENU,
@@ -47,13 +30,32 @@ public class SceneManager {
 		NEWGAME,
 		LOADGAME,
 		GAME_OVER,
+		DETAIL,
+		PRE_BATTLE,
+		BATTLE
 	};
 
+	// ==================================================
+	// FIELDS
+	// ==================================================
+	private BaseScene splashScene;
+	private BaseScene loadingScene;
+	private BaseScene mainMenuScene;
+	private BaseScene gameScene;
+	//private BaseScene optionsScene;	
 	
+	public static SceneManager instance = new SceneManager();
+	private BaseScene currentScene;
+	private Engine engine = ResourceCache.getSharedInstance().engine;
+	
+	private SCENE_TYPE currentSceneType = SCENE_TYPE.SPLASH;
+
+
 	// ==================================================
 	// CREATE SCENES
 	// ==================================================
-	public void createSplashScene(OnCreateSceneCallback pOnCreateSceneCallback) {
+	public void createSplashScene(OnCreateSceneCallback pOnCreateSceneCallback)
+	{
 		
 		ResourceCache.getSharedInstance().loadSplashSceneResources();
 		splashScene = new SplashScene();
@@ -62,13 +64,15 @@ public class SceneManager {
 		
 	}
 	
-	public void disposeSplashScene() {
+	public void disposeSplashScene()
+	{
 		ResourceCache.getSharedInstance().unloadSplashSceneResources();
 		splashScene.dispose();
 		splashScene = null;
 	}
 	
-	public void createMainMenuScene() {
+	public void createMainMenuScene()
+	{
 		ResourceCache.getSharedInstance().loadMainMenuResources();
 		mainMenuScene = new MainMenuScene();
 		loadingScene = new LoadingScene();
@@ -126,21 +130,24 @@ public class SceneManager {
 	// ==================================================
 	// GETTERS & SETTERS
 	// ==================================================
-	public SceneType getCurrentSceneType() {
+	public SCENE_TYPE getCurrentSceneType()
+	{
 		return currentSceneType;
 	}
 	
-	public BaseScene getCurrentScene() {
+	public BaseScene getCurrentScene()
+	{
 		return currentScene;
 	}
 	
-	public void setScene(BaseScene scene) {
+	public void setScene(BaseScene scene)
+	{
 		engine.setScene(scene);
 		currentScene = scene;
 		currentSceneType = scene.getSceneType();
 	}
 	
-	public void setScene(SceneType sceneType) {
+	public void setScene(SCENE_TYPE sceneType) {
 		switch(sceneType) {
 		case SPLASH:
 			setScene(splashScene);

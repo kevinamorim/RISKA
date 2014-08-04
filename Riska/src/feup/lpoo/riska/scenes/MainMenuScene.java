@@ -13,7 +13,7 @@ import feup.lpoo.riska.gameInterface.AnimatedButtonSpriteMenuItem;
 import feup.lpoo.riska.gameInterface.AnimatedTextButtonSpriteMenuItem;
 import feup.lpoo.riska.interfaces.Displayable;
 import feup.lpoo.riska.io.SharedPreferencesManager;
-import feup.lpoo.riska.logic.SceneManager.SceneType;
+import feup.lpoo.riska.logic.SceneManager.SCENE_TYPE;
 import feup.lpoo.riska.utilities.Utils;
 
 public class MainMenuScene extends BaseScene implements Displayable, IOnMenuItemClickListener {
@@ -90,9 +90,9 @@ public class MainMenuScene extends BaseScene implements Displayable, IOnMenuItem
 	}
 
 	@Override
-	public SceneType getSceneType()
+	public SCENE_TYPE getSceneType()
 	{
-		return SceneType.MAIN_MENU;
+		return SCENE_TYPE.MAIN_MENU;
 	}
 
 	// ==================================================
@@ -102,6 +102,7 @@ public class MainMenuScene extends BaseScene implements Displayable, IOnMenuItem
 	public void createDisplay()
 	{
 		createBackground();
+		
 		createChildScene(CHILD.MAIN);
 		createChildScene(CHILD.OPTIONS);
 		createChildScene(CHILD.START_GAME);
@@ -228,9 +229,9 @@ public class MainMenuScene extends BaseScene implements Displayable, IOnMenuItem
 				resources.returnBtnRegion, vbom);
 		
 		
-		newGameButton.setPosition(camera.getCenterX(), 0.66f * camera.getCenterY());
+		newGameButton.setPosition(camera.getCenterX(), 0.66f * camera.getHeight());
 		
-		loadGameButton.setPosition(camera.getCenterX(), 0.33f * camera.getCenterY());
+		loadGameButton.setPosition(camera.getCenterX(), 0.33f * camera.getHeight());
 		
 		returnButtonStart.setScale(0.3f);
 		returnButtonStart.setPosition(0.5f * Utils.getWidth(returnButtonStart) - 2, 0.5f * Utils.getHeight(returnButtonStart) - 2);	
@@ -302,34 +303,44 @@ public class MainMenuScene extends BaseScene implements Displayable, IOnMenuItem
 		
 		switch(pMenuItem.getID())
 		{
+		
 		case MAIN_START:
 			setChildScene(startGameMenu);
 			break;
+			
 		case MAIN_OPTIONS:
 			setChildScene(optionsMenu);
 			break;
+			
 		case START_NEW:
 			sceneManager.createGameScene();
 			break;
+			
 		case START_LOAD:
 			//sceneManager.loadGameScene(engine);
 			break;
+			
 		case START_RETURN:
 			setChildScene(mainMenu);
 			break;
+			
 		case OPTIONS_SFX:
 			sfxOn = !sfxOn;
 			sliderSFX.setCurrentTileIndex(sfxOn ? 0 : 1);
 			break;
+			
 		case OPTIONS_MUSIC:
 			musicOn = !musicOn;
 			sliderMusic.setCurrentTileIndex(musicOn ? 0 : 1);
 			break;
+			
 		case OPTIONS_RETURN:
 			// TODO: implement music conductor
-			SharedPreferencesManager.SaveBoolean("musicOn", true);
+			SharedPreferencesManager.SaveBoolean("musicOn", musicOn);
+			SharedPreferencesManager.SaveBoolean("sfxOn", sfxOn);
 			setChildScene(mainMenu);
 			break;
+			
 		default:
 			break;
 		}

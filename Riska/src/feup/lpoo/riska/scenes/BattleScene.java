@@ -7,7 +7,7 @@ import org.andengine.util.adt.color.Color;
 import feup.lpoo.riska.elements.Player;
 import feup.lpoo.riska.elements.Region;
 import feup.lpoo.riska.generator.BattleGenerator;
-import feup.lpoo.riska.logic.SceneManager.SceneType;
+import feup.lpoo.riska.logic.SceneManager.SCENE_TYPE;
 import feup.lpoo.riska.utilities.Utils;
 
 public class BattleScene extends BaseScene {
@@ -43,13 +43,22 @@ public class BattleScene extends BaseScene {
 	}
 
 	@Override
-	public void onBackKeyPressed() { }
+	public void onBackKeyPressed()
+	{ 
+		((GameScene)getParent()).onBackKeyPressed();
+	}
 
 	@Override
-	public SceneType getSceneType() { return null; }
+	public SCENE_TYPE getSceneType()
+	{
+		return SCENE_TYPE.BATTLE;
+	}
 
 	@Override
-	public void disposeScene() { }
+	public void disposeScene()
+	{
+		dispose();
+	}
 
 	// ======================================================
 	// CREATE DISPLAY

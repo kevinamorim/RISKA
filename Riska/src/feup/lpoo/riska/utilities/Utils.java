@@ -120,4 +120,14 @@ public class Utils {
 	{
 		return (e.getScaleY() * e.getHeight());
 	}
+
+	public static float getCenterX(Entity e1)
+	{
+		return (0.5f * e1.getWidth());
+	}
+	
+	public static float getCenterY(Entity e1)
+	{
+		return (0.5f * e1.getHeight());
+	}
 }

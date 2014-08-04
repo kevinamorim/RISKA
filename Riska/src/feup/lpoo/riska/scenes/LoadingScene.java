@@ -4,7 +4,7 @@ import org.andengine.entity.scene.background.Background;
 import org.andengine.entity.text.Text;
 import org.andengine.util.adt.color.Color;
 
-import feup.lpoo.riska.logic.SceneManager.SceneType;
+import feup.lpoo.riska.logic.SceneManager.SCENE_TYPE;
 
 public class LoadingScene extends BaseScene {
 
@@ -37,9 +37,9 @@ public class LoadingScene extends BaseScene {
 	}
 
 	@Override
-	public SceneType getSceneType()
+	public SCENE_TYPE getSceneType()
 	{
-		return SceneType.LOADING;
+		return SCENE_TYPE.LOADING;
 	}
 
 }

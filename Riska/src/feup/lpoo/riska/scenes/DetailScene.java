@@ -4,7 +4,7 @@ import org.andengine.entity.sprite.Sprite;
 import org.andengine.entity.text.Text;
 
 import feup.lpoo.riska.elements.Region;
-import feup.lpoo.riska.logic.SceneManager.SceneType;
+import feup.lpoo.riska.logic.SceneManager.SCENE_TYPE;
 import feup.lpoo.riska.utilities.Utils;
 
 public class DetailScene extends BaseScene {
@@ -27,10 +27,16 @@ public class DetailScene extends BaseScene {
 	}
 
 	@Override
-	public void onBackKeyPressed() { }
+	public void onBackKeyPressed()
+	{
+		((GameScene)getParent()).onBackKeyPressed();
+	}
 
 	@Override
-	public SceneType getSceneType() { return null; }
+	public SCENE_TYPE getSceneType()
+	{
+		return SCENE_TYPE.DETAIL;
+	}
 
 	@Override
 	public void disposeScene() { }

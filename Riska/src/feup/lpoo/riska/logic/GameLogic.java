@@ -15,7 +15,8 @@ import feup.lpoo.riska.generator.BattleGenerator;
 import feup.lpoo.riska.resources.ResourceCache;
 import feup.lpoo.riska.scenes.GameScene;
 
-public class GameLogic {
+public class GameLogic
+{
 
 	// ======================================================
 	// SINGLETONS
@@ -32,6 +33,7 @@ public class GameLogic {
 	private final int MIN_SOLDIERS_FOR_AN_ATTACK = 2;
 	private final int MIN_PLAYERS_IN_GAME = 2;
 	private final int SOLDIER_INC = 1;
+	
 	private Color[] PLAYER_COLOR = { new Color(0f, 0.447f, 0.898f), new Color(1f, 1f, 0f) };
 	private Color[] CPU_COLOR = { new Color(1f, 0f, 0f), new Color(0f, 0f, 0f) };
 
@@ -46,8 +48,10 @@ public class GameLogic {
 	private GAME_STATE state;
 	private Player currentPlayer;
 	private GameScene gameScene;
+	
 	private boolean attackDone;
 	private boolean turnDone;
+	
 	public Region selectedRegion;
 	public Region targetedRegion;
 

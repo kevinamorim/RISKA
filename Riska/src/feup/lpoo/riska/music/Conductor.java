@@ -14,36 +14,31 @@ public class Conductor {
 	private ArrayList<Music> playlist;
 	private ArrayList<String> playlistNames;
 	
-	private static Conductor instance;
+	private static Conductor instance = new Conductor();
 	
-	public Conductor() {
+	public Conductor()
+	{
 		instance = this;
 		
 		playlist = new ArrayList<Music>();
 		playlistNames = new ArrayList<String>();
 	}
 	
-	public static Conductor getSharedInstance() {
+	public static Conductor getSharedInstance()
+	{
 		return instance;
 	}
-	
-	/**
-	 * Changes the background music.
-	 * 
-	 * @param music : new background music.
-	 */
-	public void addMusic(Music music, String name) {
+
+	public void addMusic(Music music, String name)
+	{
 		if(music != null)
 		{
 			playlist.add(music);
 			playlistNames.add(name);
 		}
 	}
-	
-	/**
-	 * Plays the current music.
-	 */
-	public void play(String musicName)
+
+	public void playMusic(String musicName)
 	{
 		if(playlistNames.contains(musicName))
 		{
@@ -65,11 +60,8 @@ public class Conductor {
 			Log.e("Music", "Music requested for playing not in playlist. <" + musicName + ">");
 		}
 	}
-	
-	/**
-	 * Plays all musics (not recomended with more than one music).
-	 */
-	public void play()
+
+	public void playAll()
 	{
 		for(Music music : playlist)
 		{
@@ -81,10 +73,7 @@ public class Conductor {
 		}
 	}
 
-	/**
-	 * Pauses a music.
-	 */
-	public void pause(String musicName)
+	public void pauseMusic(String musicName)
 	{
 		if(playlistNames.contains(musicName))
 		{
@@ -107,10 +96,7 @@ public class Conductor {
 		}
 	}
 
-	/**
-	 * Pauses all music.
-	 */
-	public void pause()
+	public void pauseAll()
 	{
 		for(Music m : playlist)
 		{
@@ -118,13 +104,7 @@ public class Conductor {
 		}
 	}
 
-	/**
-	 * Sets the loop parameter for a music.
-	 * 
-	 * @param music : music to change
-	 * @param value : loop value to set
-	 */
-	public void setLooping(String musicName, boolean value)
+	public void setLoopingMusic(String musicName, boolean value)
 	{
 		if(playlistNames.contains(musicName))
 		{
@@ -139,29 +119,20 @@ public class Conductor {
 				}
 			}
 		}
-		else {
+		else
+		{
 			Log.e("Music", "Music requested for looping not in playlist. <" + musicName + ">");
 		}
 	}
-	
-	/**
-	 * Sets the loop parameter for the current music.
-	 * 
-	 * @param value : loop value to set
-	 */
-	public void setLooping(boolean value)
+
+	public void setLoopingAll(boolean value)
 	{
 		for(Music m : playlist)
 		{
 			m.setLooping(value);
 		}
 	}
-	
-	/**
-	 * Sets the loop parameter for the current music.
-	 * 
-	 * @param value : loop value to set
-	 */
+
 	public boolean isMusicPlaying()
 	{
 		for(Music m : playlist)

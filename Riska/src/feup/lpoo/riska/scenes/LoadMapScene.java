@@ -4,7 +4,7 @@ import org.andengine.entity.scene.background.Background;
 import org.andengine.util.adt.color.Color;
 
 import feup.lpoo.riska.interfaces.Displayable;
-import feup.lpoo.riska.logic.SceneManager.SceneType;
+import feup.lpoo.riska.logic.SceneManager.SCENE_TYPE;
 
 public class LoadMapScene extends BaseScene implements Displayable {
 	
@@ -23,9 +23,9 @@ public class LoadMapScene extends BaseScene implements Displayable {
 	public void onBackKeyPressed() { }
 
 	@Override
-	public SceneType getSceneType()
+	public SCENE_TYPE getSceneType()
 	{
-		return SceneType.LOAD_MAP;
+		return SCENE_TYPE.LOAD_MAP;
 	}
 
 	@Override
