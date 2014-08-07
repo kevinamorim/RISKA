@@ -6,38 +6,11 @@ import org.andengine.engine.camera.Camera;
 import org.andengine.entity.Entity;
 import org.andengine.entity.text.Text;
 import org.andengine.opengl.font.Font;
-import org.andengine.util.adt.color.Color;
-
 import android.util.Log;
-import feup.lpoo.riska.gameInterface.CameraManager;
 import feup.lpoo.riska.logic.MainActivity;
 
-public class Utils {
-	
-	public static Color COLORS[][] = {
-		{
-			new Color(0f, 0.45f, 0.9f),		// Blue
-			new Color(1f, 1f, 1f)},			// White
-		{
-			new Color(0.78f, 0f, 0f),			// Red
-			new Color(0.88f, 0.74f, 0.31f)},	// Burned Yellow
-		{
-			new Color(0f,0f,0f),
-			new Color(0f,0f,0f)},
-		{
-			new Color(0f,0f,0f),
-			new Color(0f,0f,0f)},
-	};
-	
-	public static Color[] getColors(int index)
-	{
-		Color[] toReturn = new Color[2];
-		
-		toReturn[0] = COLORS[index][0];
-		toReturn[1] = COLORS[index][1];
-		
-		return toReturn;
-	}
+public class Utils
+{
 	
 	private static MainActivity activity = MainActivity.getSharedInstance();
 	

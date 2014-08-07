@@ -182,7 +182,7 @@ public class ResourceCache {
 				"slider.png", 1, 2);
 		
 		factionSpriteRegion = BitmapTextureAtlasTextureRegionFactory.createTiledFromAsset(mainMenuTextureAtlas, activity, 
-				"faction.png", 1, 2);
+				"faction.png", 1, 3);
 
 		try {
 			mainMenuTextureAtlas.build(

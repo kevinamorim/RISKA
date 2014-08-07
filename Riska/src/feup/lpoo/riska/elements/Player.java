@@ -22,9 +22,14 @@ public class Player extends Object {
 	
 	private String playerName;
 	
+	
+	public Player(boolean isCPU, Color[] colors, String name)
+	{
+		this(isCPU, colors[0], colors[1], name);
+	}
+	
 	public Player(boolean isCPU, Color primaryColor, Color secondaryColor, String name)
 	{
-		
 		this.isCPU = isCPU;
 		if(isCPU)
 		{
@@ -39,7 +44,6 @@ public class Player extends Object {
 		
 		this.priColor = primaryColor;
 		this.secColor = secondaryColor;
-
 	}
 	
 	public void addRegion(Region region)

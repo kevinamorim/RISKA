@@ -14,6 +14,7 @@ import feup.lpoo.riska.elements.Region;
 import feup.lpoo.riska.generator.BattleGenerator;
 import feup.lpoo.riska.resources.ResourceCache;
 import feup.lpoo.riska.scenes.GameScene;
+import feup.lpoo.riska.utilities.Info;
 import feup.lpoo.riska.utilities.Utils;
 
 public class GameLogic
@@ -34,9 +35,6 @@ public class GameLogic
 	private final int MIN_SOLDIERS_FOR_AN_ATTACK = 2;
 	private final int MIN_PLAYERS_IN_GAME = 2;
 	private final int SOLDIER_INC = 1;
-	
-	private Color[] PLAYER_COLOR = Utils.getColors(0);
-	private Color[] CPU_COLOR = Utils.getColors(1);
 
 	public enum GAME_STATE { PAUSED, SETUP,  DEPLOYMENT, ATTACK, MOVE, CPU, PLAY, GAMEOVER };
 
@@ -62,8 +60,8 @@ public class GameLogic
 	// ======================================================
 	// ======================================================
 
-	public GameLogic(GameScene scene) {
-
+	public GameLogic(GameScene scene)
+	{
 		resources = ResourceCache.getSharedInstance();
 
 		gameScene = scene;
@@ -78,20 +76,19 @@ public class GameLogic
 		battleGenerator = new BattleGenerator();
 	}
 
-	private void createsPlayers() {
-
+	private void createsPlayers()
+	{
 		players = new ArrayList<Player>();
 
 		int INITIAL_SOLDIERS_TO_DEPLOY = 38;
 
-		Player player = new Player(false, PLAYER_COLOR[0], PLAYER_COLOR[1], "PLAYER");
-		player.setSoldiersToDeploy(INITIAL_SOLDIERS_TO_DEPLOY);
-
-		Player cpu = new Player(true, CPU_COLOR[0], CPU_COLOR[1], "CPU");
-		cpu.setSoldiersToDeploy(INITIAL_SOLDIERS_TO_DEPLOY);
-
-		players.add(player);
-		players.add(cpu);
+		for(int i = 0; i < Info.numberOfPlayers; i++)
+		{
+			Player player = new Player(Info.getPlayerType(i), Info.getPlayerColors(i), "PLAYER " + i);
+			player.setSoldiersToDeploy(INITIAL_SOLDIERS_TO_DEPLOY);
+			
+			players.add(player);
+		}
 
 		currentPlayer = players.get(0);	
 	}

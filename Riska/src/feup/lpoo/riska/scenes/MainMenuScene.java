@@ -7,14 +7,15 @@ import org.andengine.entity.scene.menu.MenuScene.IOnMenuItemClickListener;
 import org.andengine.entity.sprite.ButtonSprite;
 import org.andengine.entity.sprite.Sprite;
 import org.andengine.entity.text.Text;
+import org.andengine.util.adt.color.Color;
 
-import android.graphics.Color;
 import android.util.Log;
 import feup.lpoo.riska.gameInterface.AnimatedButtonSpriteMenuItem;
 import feup.lpoo.riska.gameInterface.AnimatedTextButtonSpriteMenuItem;
 import feup.lpoo.riska.interfaces.Displayable;
 import feup.lpoo.riska.io.SharedPreferencesManager;
 import feup.lpoo.riska.logic.SceneManager.SCENE_TYPE;
+import feup.lpoo.riska.utilities.Info;
 import feup.lpoo.riska.utilities.Utils;
 
 public class MainMenuScene extends BaseScene implements Displayable, IOnMenuItemClickListener {
@@ -47,7 +48,6 @@ public class MainMenuScene extends BaseScene implements Displayable, IOnMenuItem
 	private final int FACTION_PREVIOUS = 9;
 	private final int FACTION_SELECT = 10;
 
-
 	private SpriteBackground background;	
 	
 	private AnimatedTextButtonSpriteMenuItem startButton;
@@ -70,6 +70,10 @@ public class MainMenuScene extends BaseScene implements Displayable, IOnMenuItem
 	private Sprite factionBorder;
 	private ButtonSprite factionSprite;
 	private ButtonSprite factionSpriteCenter;
+	private ButtonSprite factionSpriteBorder;
+	
+	private int currentPlayer = 0;
+	private int selectedFaction = 0;
 	
 	// Music options
 	private boolean musicOn = true;
@@ -298,6 +302,8 @@ public class MainMenuScene extends BaseScene implements Displayable, IOnMenuItem
 		
 		chooseFactionMenu.setBackgroundEnabled(false);
 		
+		Info.clearFactions();
+		
 		titleTextChooseFaction = new Text(0, 0, resources.mainMenuFont, "CHOOSE YOUR FACTION COLORS", vbom);
 		
 		Utils.wrapText(titleTextChooseFaction, 0.9f * camera.getWidth(), 0.15f * camera.getHeight(), 1f);
@@ -332,32 +338,37 @@ public class MainMenuScene extends BaseScene implements Displayable, IOnMenuItem
 				vbom);
 		
 		factionSprite = new ButtonSprite(0, 0, resources.factionSpriteRegion, vbom);
-		
 		factionSpriteCenter = new ButtonSprite(0, 0, resources.factionSpriteRegion, vbom);
+		factionSpriteBorder = new ButtonSprite(0, 0, resources.factionSpriteRegion, vbom);
+		
 		
 		nextFactionButton.setTextScale(0.5f);
 		nextFactionButton.setSize(0.2f * camera.getWidth(), 0.2f * camera.getHeight());
 		nextFactionButton.setPosition(0.75f * camera.getWidth(), 0.2f * camera.getHeight());
 		
 		previousFactionButton.setTextScale(0.5f);
-		previousFactionButton.setSize(0.2f* camera.getWidth(), 0.2f * camera.getHeight());
+		previousFactionButton.setSize(0.2f * camera.getWidth(), 0.2f * camera.getHeight());
 		previousFactionButton.setPosition(0.25f * camera.getWidth(), 0.2f * camera.getHeight());
 		
-		selectFactionButton.setSize(0.2f* camera.getWidth(), 0.2f * camera.getHeight());
+		selectFactionButton.setSize(0.2f * camera.getWidth(), 0.2f * camera.getHeight());
 		selectFactionButton.setPosition(0.5f * camera.getWidth(), 0.2f * camera.getHeight());
 		
-		factionBorder.setSize(0.45f* camera.getHeight(), 0.45f * camera.getHeight());
+		factionBorder.setSize(0.45f * camera.getHeight(), 0.45f * camera.getHeight());
 		factionBorder.setPosition(0.5f * camera.getWidth(), 0.6f * camera.getHeight());
 		
-		factionSprite.setCurrentTileIndex(0);
-		factionSprite.setColor(Color.WHITE);
+		factionSprite.setCurrentTileIndex(1);
 		factionSprite.setSize(factionBorder.getWidth() - 2, factionBorder.getHeight() - 2);
 		factionSprite.setPosition(factionBorder.getX(), factionBorder.getY());
 		
-		factionSpriteCenter.setCurrentTileIndex(1);
-		factionSpriteCenter.setColor(Color.BLACK);
+		factionSpriteCenter.setCurrentTileIndex(2);
 		factionSpriteCenter.setSize(0.8f * factionSprite.getWidth(), 0.8f * factionSprite.getHeight());
 		factionSpriteCenter.setPosition(factionSprite.getX(), factionSprite.getY());
+		
+		updateFaction();
+		
+		factionSpriteBorder.setCurrentTileIndex(0);
+		factionSpriteBorder.setSize(0.9f * factionSprite.getWidth(), 0.9f * factionSprite.getHeight());
+		factionSpriteBorder.setPosition(factionSprite.getX(), factionSprite.getY());
 		
 		chooseFactionMenu.addMenuItem(nextFactionButton);
 		chooseFactionMenu.addMenuItem(previousFactionButton);
@@ -365,6 +376,7 @@ public class MainMenuScene extends BaseScene implements Displayable, IOnMenuItem
 		
 		chooseFactionMenu.attachChild(factionSprite);
 		chooseFactionMenu.attachChild(factionSpriteCenter);
+		chooseFactionMenu.attachChild(factionSpriteBorder);
 		chooseFactionMenu.attachChild(factionBorder);
 		
 		chooseFactionMenu.attachChild(titleTextChooseFaction);
@@ -454,13 +466,17 @@ public class MainMenuScene extends BaseScene implements Displayable, IOnMenuItem
 			break;
 			
 		case FACTION_NEXT:
+			selectFaction(1);
+			updateFaction();
 			break;
 			
 		case FACTION_PREVIOUS:
+			selectFaction(-1);
+			updateFaction();
 			break;
 			
 		case FACTION_SELECT:
-			sceneManager.createGameScene();
+			nextScreen();
 			break;
 			
 		default:
@@ -468,6 +484,48 @@ public class MainMenuScene extends BaseScene implements Displayable, IOnMenuItem
 		}
 
 		return false;
+	}
+
+	private void selectFaction(int direction)
+	{
+		if(direction > 0)
+		{
+			selectedFaction += 1;
+			selectedFaction = selectedFaction % Info.getNumberOfColors();
+		}
+		
+		if(direction < 0)
+		{
+			if(selectedFaction - 1 < 0)
+			{
+				selectedFaction = Info.getNumberOfColors() - 1;
+			}
+			else
+			{
+				selectedFaction -= 1;
+			}
+		}
+	}
+
+	private void updateFaction()
+	{
+		factionSprite.setColor(Info.getPriColor(selectedFaction));
+		factionSpriteCenter.setColor(Info.getSecColor(selectedFaction));
+	}
+
+	private void nextScreen()
+	{
+		// TODO : right now next screen is the game screen, but it could be any other
+		Info.assignPlayerFaction(currentPlayer, selectedFaction);
+
+		//if(currentPlayer < Info.numberOfPlayers - 1)
+		//{
+		//	currentPlayer++;
+		//}
+		//else
+		
+		Info.assignRemainingFactions(currentPlayer);
+		sceneManager.createGameScene();
 	}
 
 }
