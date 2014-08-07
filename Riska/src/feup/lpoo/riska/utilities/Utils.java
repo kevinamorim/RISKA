@@ -2,10 +2,11 @@ package feup.lpoo.riska.utilities;
 
 import java.util.Random;
 
-import org.andengine.engine.camera.Camera;
 import org.andengine.entity.Entity;
 import org.andengine.entity.text.Text;
 import org.andengine.opengl.font.Font;
+import org.andengine.opengl.vbo.VertexBufferObjectManager;
+
 import feup.lpoo.riska.logic.MainActivity;
 
 public class Utils
@@ -14,19 +15,41 @@ public class Utils
 	private static MainActivity activity = MainActivity.getSharedInstance();
 	
 	private static Random r = new Random();
+	
+	public static boolean isBetween(int value, int min, int max)
+	{
+		return (value >= min && value <= max);
+	}
+	
+	public static boolean isBetween(float value, float min, float max)
+	{
+		return (value >= min && value <= max);
+	}
+	
+	public static int randomInt(int min, int max)
+	{
+		return (r.nextInt(max) + min);
+	}
+	
+	// ======================================================
+	// ======================================================
 
 	public static boolean isValidTouch(long lastTouch, long firstTouch, long minTouchInterval)
 	{
 		return ((lastTouch - firstTouch) > minTouchInterval);
 	}
 
-	public static String getString(int resID) {
+	public static String getString(int resID)
+	{
 		return activity.getString(resID);
 	}
 	
-	public static String wrapText(Font pFont, String pString, float maxWidth) {
+	// ======================================================
+	// ======================================================
+	
+	public static String wrapText(Font pFont, String pString, float maxWidth, VertexBufferObjectManager vbom) {
 
-		Text pText = new Text(0, 0, pFont, pString, 1000, activity.getVertexBufferObjectManager());
+		Text pText = new Text(0, 0, pFont, pString, 1000, vbom);
 
 		if(pText.getWidth() < maxWidth) {
 			return pString;
@@ -56,54 +79,99 @@ public class Utils
 		return wrappedText;
 	}
 	
-	public static void wrapText(Text pText, Entity e, float textBoundingFactor)
+	public static void wrap(Entity child, Entity parent, float boundingFactor)
 	{
-		wrapText(pText, e.getWidth(), e.getHeight(), textBoundingFactor);
+		wrap(child, parent.getWidth(), parent.getHeight(), boundingFactor);
 	}
 	
-	public static void wrapText(Text pText, Camera camera, float textBoundingFactor)
+	public static void wrap(Entity child, float pWidth, float pHeight, float boundingFactor)
 	{
-		wrapText(pText, camera.getWidth(), camera.getHeight(), textBoundingFactor);
-	}
-	
-	public static void wrapText(Text pText, float pWidth, float pHeight, float textBoundingFactor)
-	{
-		if(pText.getWidth() / pWidth > pText.getHeight() / pHeight)
+		if(child.getWidth() / pWidth > child.getHeight() / pHeight)
 		{
 			// Dealing in X
-			pText.setScale(textBoundingFactor * pWidth / pText.getWidth());
+			child.setScale(boundingFactor * pWidth / child.getWidth());
 		}
 		else
 		{
 			// Dealing in Y
-			pText.setScale(textBoundingFactor * pHeight / pText.getHeight());
+			child.setScale(boundingFactor * pHeight / child.getHeight());
 		}
 	}
 	
-	public static boolean isBetween(int value, int min, int max)
+	public static void expand(Entity child, Entity parent, float boundingFactor)
 	{
-		return (value >= min && value <= max);
+		expand(child, parent.getWidth(), parent.getHeight(), boundingFactor);
 	}
 	
-	public static boolean isBetween(float value, float min, float max)
+	public static void expand(Entity child, float pWidth, float pHeight, float boundingFactor)
 	{
-		return (value >= min && value <= max);
+		if(child.getWidth() / pWidth < child.getHeight() / pHeight)
+		{
+			// Dealing in X
+			child.setScale(boundingFactor * pWidth / child.getWidth());
+		}
+		else
+		{
+			// Dealing in Y
+			child.setScale(boundingFactor * pHeight / child.getHeight());
+		}
+	}
+
+	public static boolean outOfBounds(Entity child, Entity parent, float factor)
+	{
+		return (child.getWidth() > (factor * parent.getWidth()) || child.getHeight() > (factor * parent.getHeight()));
 	}
 	
-	public static int randomInt(int min, int max)
+	public static boolean notFilling(Entity child, Entity parent, float factor)
 	{
-		return (r.nextInt(max) + min);
+		return (child.getWidth() < (factor * parent.getWidth()) || child.getHeight() < (factor * parent.getHeight()));
+	}
+
+	// ======================================================
+	// ======================================================
+	
+	public static float getRightBoundsX(Entity e)
+	{
+		return getRightBoundsX(e.getX(), e.getWidth());
 	}
 	
-	public static float getBoundsX(Entity e)
+	public static float getRightBoundsX(float pX, float pWidth)
 	{
-		return (e.getX() + (0.5f * e.getWidth()));
+		return (pX + 0.5f * pWidth);
 	}
 	
-	public static float getBoundsY(Entity e)
+	public static float getLeftBoundsX(Entity e)
 	{
-		return (e.getY() + (0.5f * e.getHeight()));
+		return getLeftBoundsX(e.getX(), e.getWidth());
 	}
+	
+	public static float getLeftBoundsX(float pX, float pWidth)
+	{
+		return (pX - 0.5f * pWidth);
+	}
+	
+	public static float getUpperBoundsY(Entity e)
+	{
+		return getUpperBoundsY(e.getY(), e.getHeight());
+	}
+	
+	public static float getUpperBoundsY(float pY, float pHeight)
+	{
+		return (pY + 0.5f * pHeight);
+	}
+	
+	public static float getLowerBoundsY(Entity e)
+	{
+		return getLowerBoundsY(e.getY(), e.getHeight());
+	}
+	
+	public static float getLowerBoundsY(float pY, float pHeight)
+	{
+		return (pY - 0.5f * pHeight);
+	}
+	
+	// ======================================================
+	// ======================================================
 	
 	public static float calculateChanceOfSuccess(int val_1, int val_2)
 	{
@@ -129,6 +197,9 @@ public class Utils
 		return probSum;
 	}
 
+	// ======================================================
+	// ======================================================
+	
 	/**
 	 * Works with scale
 	 */
@@ -153,11 +224,6 @@ public class Utils
 	public static float getCenterY(Entity e1)
 	{
 		return (0.5f * e1.getHeight());
-	}
-
-	public static boolean outOfBounds(Text pText, Entity e, float factor)
-	{
-		return (pText.getWidth() > (factor * e.getWidth()) || pText.getHeight() > (factor * e.getHeight()));
 	}
 
 }

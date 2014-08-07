@@ -79,8 +79,8 @@ public class BattleScene extends BaseScene {
 		//window.setAlpha(1f);
 
 		vsText = new Text(
-				0.5f * Utils.getBoundsX(window),
-				0.5f * Utils.getBoundsY(window),
+				0.5f * Utils.getRightBoundsX(window),
+				0.5f * Utils.getUpperBoundsY(window),
 				resources.mGameFont, "X", vbom);
 
 		vsText.setColor(Color.BLACK);
@@ -103,8 +103,8 @@ public class BattleScene extends BaseScene {
 		result1 = new Sprite(0,0,resources.regionBtnRegion, resources.vbom);
 		result2 = new Sprite(0,0,resources.regionBtnRegion, resources.vbom);
 
-		result1.setPosition(0.25f * Utils.getBoundsX(window), 0.3f * Utils.getBoundsY(window));
-		result2.setPosition(0.75f * Utils.getBoundsX(window), 0.3f * Utils.getBoundsY(window));
+		result1.setPosition(0.25f * Utils.getRightBoundsX(window), 0.3f * Utils.getUpperBoundsY(window));
+		result2.setPosition(0.75f * Utils.getRightBoundsX(window), 0.3f * Utils.getUpperBoundsY(window));
 		
 		attachChild(window);
 		window.attachChild(result1);
@@ -125,8 +125,8 @@ public class BattleScene extends BaseScene {
 	// ======================================================
 	public void update(Region pRegion1, Region pRegion2, BattleGenerator battleGenerator)
 	{
-		float width = Utils.getBoundsX(window);
-		float height = Utils.getBoundsY(window);
+		float width = Utils.getRightBoundsX(window);
+		float height = Utils.getUpperBoundsY(window);
 		
 		boolean result = battleGenerator.result;
 

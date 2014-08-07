@@ -31,7 +31,7 @@ public class AnimatedTextButtonSpriteMenuItem extends AnimatedSpriteMenuItem {
 		
 		if(Utils.outOfBounds(buttonText, this, textBoundingFactor))
 		{
-			Utils.wrapText(buttonText, this, textBoundingFactor);
+			Utils.wrap(buttonText, this, textBoundingFactor);
 		}
 		buttonText.setPosition(0.5f * getWidth(), 0.5f * getHeight());	
 		buttonText.setColor(Color.BLACK);
@@ -72,7 +72,7 @@ public class AnimatedTextButtonSpriteMenuItem extends AnimatedSpriteMenuItem {
 		{
 			if(Utils.outOfBounds(buttonText, this, textBoundingFactor))
 			{
-				Utils.wrapText(buttonText, this, textBoundingFactor);
+				Utils.wrap(buttonText, this, textBoundingFactor);
 			}
 			
 			buttonText.setPosition(0.5f * getWidth(), 0.5f * getHeight());
@@ -85,7 +85,7 @@ public class AnimatedTextButtonSpriteMenuItem extends AnimatedSpriteMenuItem {
 		
 		if(buttonText != null)
 		{
-			Utils.wrapText(buttonText, this, textBoundingFactor);
+			Utils.wrap(buttonText, this, textBoundingFactor);
 			
 			buttonText.setPosition(0.5f * getWidth(), 0.5f * getHeight());
 		}

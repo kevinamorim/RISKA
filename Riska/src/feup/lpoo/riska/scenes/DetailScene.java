@@ -71,13 +71,13 @@ public class DetailScene extends BaseScene {
 	private void createText()
 	{
 		playerRegionName = new Text(
-				0.25f * Utils.getBoundsX(window), 
-				0.75f * Utils.getBoundsY(window),
+				0.25f * Utils.getRightBoundsX(window), 
+				0.75f * Utils.getUpperBoundsY(window),
 				resources.mGameFont, "", 1000, resources.vbom);
 
 		enemyRegionName = new Text(
-				0.75f * Utils.getBoundsX(window),
-				0.75f * Utils.getBoundsY(window),
+				0.75f * Utils.getRightBoundsX(window),
+				0.75f * Utils.getUpperBoundsY(window),
 				resources.mGameFont, "", 1000, resources.vbom);
 		
 		window.attachChild(playerRegionName);
@@ -91,11 +91,11 @@ public class DetailScene extends BaseScene {
 	{
 		String text = (playerRegion != null ? playerRegion.getName() : "");
 		
-		playerRegionName.setText(Utils.wrapText(resources.mGameFont, text, 0.5f * window.getWidth()));
+		playerRegionName.setText(Utils.wrapText(resources.mGameFont, text, 0.5f * window.getWidth(), vbom));
 	
 		text = (enemyRegion != null ? enemyRegion.getName() : "");
 		
-		enemyRegionName.setText(Utils.wrapText(resources.mGameFont, text, 0.5f * window.getWidth()));	
+		enemyRegionName.setText(Utils.wrapText(resources.mGameFont, text, 0.5f * window.getWidth(), vbom));	
 	}
 
 }

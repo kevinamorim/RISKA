@@ -194,9 +194,10 @@ public class MainMenuScene extends BaseScene implements Displayable, IOnMenuItem
 				resources.optionsBtnRegion, 
 				vbom);
 
+		Utils.wrap(startButton, 0.4f * camera.getWidth(), 0.4f * camera.getHeight(), 1f);
 		startButton.setPosition(camera.getCenterX(), camera.getCenterY());
 		
-		optionsButton.setScale(0.3f);
+		Utils.wrap(optionsButton, 0.2f * camera.getWidth(), 0.2f * camera.getHeight(), 1f);
 		optionsButton.setPosition(0.5f * Utils.getWidth(optionsButton) - 2, 0.5f * Utils.getHeight(optionsButton) - 2);
 		
 		mainMenu.addMenuItem(startButton);
@@ -229,11 +230,13 @@ public class MainMenuScene extends BaseScene implements Displayable, IOnMenuItem
 				resources.returnBtnRegion, vbom);
 		
 		
+		Utils.wrap(newGameButton, 0.4f * camera.getWidth(), 0.4f * camera.getHeight(), 1f);
 		newGameButton.setPosition(camera.getCenterX(), 0.66f * camera.getHeight());
 		
+		Utils.wrap(loadGameButton, 0.4f * camera.getWidth(), 0.4f * camera.getHeight(), 1f);
 		loadGameButton.setPosition(camera.getCenterX(), 0.33f * camera.getHeight());
 		
-		returnButtonStart.setScale(0.3f);
+		Utils.wrap(returnButtonStart, 0.2f * camera.getWidth(), 0.2f * camera.getHeight(), 1f);
 		returnButtonStart.setPosition(0.5f * Utils.getWidth(returnButtonStart) - 2, 0.5f * Utils.getHeight(returnButtonStart) - 2);	
 		
 		startGameMenu.addMenuItem(newGameButton);
@@ -266,24 +269,26 @@ public class MainMenuScene extends BaseScene implements Displayable, IOnMenuItem
 				resources.sliderBtnRegion, vbom);
 
 
+		
 		textMusic = new Text(0, 0, resources.mainMenuFont, "MUSIC", vbom);
+		Utils.wrap(textMusic, 1f * camera.getWidth(), 0.2f * camera.getHeight(), 0.9f);
 		textMusic.setPosition( 0.25f * camera.getWidth(), 0.75f * camera.getHeight());
 		textMusic.setColor(Color.BLACK);
 
 		textSFX = new Text(0, 0, resources.mainMenuFont, "SFX", vbom);
+		Utils.wrap(textSFX, 1f * camera.getWidth(), 0.2f * camera.getHeight(), 0.9f);
 		textSFX.setPosition(0.25f * camera.getWidth(), 0.50f * camera.getHeight());
 		textSFX.setColor(Color.BLACK);
 
-		
-		sliderMusic.setScale(0.3f);
+		Utils.wrap(sliderMusic, 0.3f * camera.getWidth(), 0.2f * camera.getHeight(), 1f);
 		sliderMusic.setPosition(0.75f * camera.getWidth(), textMusic.getY());
 		sliderMusic.setCurrentTileIndex(musicOn ? 0 : 1);
 		
-		sliderSFX.setScale(0.3f);
+		Utils.wrap(sliderSFX, 0.3f * camera.getWidth(), 0.2f * camera.getHeight(), 1f);
 		sliderSFX.setPosition(0.75f * camera.getWidth(), textSFX.getY());
 		sliderSFX.setCurrentTileIndex(sfxOn ? 0 : 1);
 		
-		returnButtonOptions.setScale(0.3f);
+		Utils.wrap(returnButtonOptions, 0.2f * camera.getWidth(), 0.2f * camera.getHeight(), 1f);
 		returnButtonOptions.setPosition(0.5f * Utils.getWidth(returnButtonOptions) - 2, 0.5f * Utils.getHeight(returnButtonOptions) - 2);
 		
 		
@@ -307,7 +312,7 @@ public class MainMenuScene extends BaseScene implements Displayable, IOnMenuItem
 		
 		titleTextChooseFaction = new Text(0, 0, resources.mainMenuFont, "CHOOSE YOUR FACTION COLORS", vbom);
 		
-		Utils.wrapText(titleTextChooseFaction, 0.9f * camera.getWidth(), 0.15f * camera.getHeight(), 1f);
+		Utils.wrap(titleTextChooseFaction, 0.9f * camera.getWidth(), 0.15f * camera.getHeight(), 1f);
 		
 		titleTextChooseFaction.setPosition( 0.5f * camera.getWidth(), 0.90f * camera.getHeight());
 		titleTextChooseFaction.setColor(Color.WHITE);
@@ -342,7 +347,7 @@ public class MainMenuScene extends BaseScene implements Displayable, IOnMenuItem
 		factionSpriteCenter = new ButtonSprite(0, 0, resources.factionSpriteRegion, vbom);
 		factionSpriteBorder = new ButtonSprite(0, 0, resources.factionSpriteRegion, vbom);
 		
-		
+
 		nextFactionButton.setTextScale(0.5f);
 		nextFactionButton.setSize(0.2f * camera.getWidth(), 0.2f * camera.getHeight());
 		nextFactionButton.setPosition(0.75f * camera.getWidth(), 0.2f * camera.getHeight());

@@ -88,8 +88,8 @@ public class PreBattleScene extends BaseScene implements Displayable {
 		
 		
 		soldierNumBox = new Sprite(
-				0.5f * Utils.getBoundsX(window),
-				0.5f * Utils.getBoundsY(window),
+				0.5f * Utils.getRightBoundsX(window),
+				0.5f * Utils.getUpperBoundsY(window),
 				resources.windowRegionGenericInverted,
 				vbom);
 
@@ -99,24 +99,24 @@ public class PreBattleScene extends BaseScene implements Displayable {
 	private void createText()
 	{
 		soldiersToSend = new Text(
-				0.5f * Utils.getBoundsX(window),
-				0.8f * Utils.getBoundsY(window),
+				0.5f * Utils.getRightBoundsX(window),
+				0.8f * Utils.getUpperBoundsY(window),
 				resources.mGameFont, "SOLDIERS TO SEND ON ATTACK", 100, vbom);
 
 		soldiersToSend.setColor(Color.WHITE);
 		soldiersToSend.setScale(1.2f);
 
 		soldierNum = new Text(
-				0.5f * Utils.getBoundsX(window),
-				0.5f * Utils.getBoundsY(window),
+				0.5f * Utils.getRightBoundsX(window),
+				0.5f * Utils.getUpperBoundsY(window),
 				resources.mGameFont, "X", 500, vbom);
 
 		soldierNum.setColor(Color.BLACK);
 		soldierNum.setScale(1.4f);
 		
 		successNum = new Text(
-				0.5f * Utils.getBoundsX(window),
-				0.20f * Utils.getBoundsY(window),
+				0.5f * Utils.getRightBoundsX(window),
+				0.20f * Utils.getUpperBoundsY(window),
 				resources.mGameFont, "INSERT", 500, vbom);
 
 		successNum.setColor(Color.BLACK);
