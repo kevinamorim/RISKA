@@ -6,7 +6,6 @@ import org.andengine.engine.camera.Camera;
 import org.andengine.entity.Entity;
 import org.andengine.entity.text.Text;
 import org.andengine.opengl.font.Font;
-import android.util.Log;
 import feup.lpoo.riska.logic.MainActivity;
 
 public class Utils
@@ -69,14 +68,14 @@ public class Utils
 	
 	public static void wrapText(Text pText, float pWidth, float pHeight, float textBoundingFactor)
 	{
-		
-		Log.d("Riska", "Called wrapText() with Text: " + pText.toString() + ", W: " + pWidth + ", H: " + pHeight + ", F: " + textBoundingFactor);
-		if(pText.getWidth() / pWidth > pText.getHeight() / pHeight) // Dealing in X
+		if(pText.getWidth() / pWidth > pText.getHeight() / pHeight)
 		{
+			// Dealing in X
 			pText.setScale(textBoundingFactor * pWidth / pText.getWidth());
 		}
-		else	// Dealing in Y
+		else
 		{
+			// Dealing in Y
 			pText.setScale(textBoundingFactor * pHeight / pText.getHeight());
 		}
 	}

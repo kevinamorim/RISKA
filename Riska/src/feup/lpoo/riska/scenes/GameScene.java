@@ -45,8 +45,7 @@ public class GameScene extends BaseScene implements IOnSceneTouchListener, IScro
 	private final float CPU_DELAY = 1.0f;
 	//private final int MIN_SOLDIERS_PER_REGION = 1;	
 	private final long REGION_BUTTON_MIN_TOUCH_INTERVAL = 30;
-	private final int MAX_REGION_CHARS = 10;	
-	private final int PLAYER_NUM = 0;
+	private final int MAX_REGION_CHARS = 10;
 
 	// ======================================================
 	// FIELDS
@@ -308,7 +307,7 @@ public class GameScene extends BaseScene implements IOnSceneTouchListener, IScro
 			hidePreBattleScene();
 		}
 
-		if(logic.getCurrentPlayerIndex() == PLAYER_NUM)
+		if(!logic.getCurrentPlayer().isCPU)
 		{
 			hud.setInfoTabText(logic.getCurrentPlayer().soldiersToDeploy + Utils.getString(R.string.game_info_left_to_deploy));
 		}

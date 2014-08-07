@@ -5,17 +5,12 @@ import java.util.Collections;
 import java.util.Comparator;
 import java.util.Random;
 
-import org.andengine.util.adt.color.Color;
-
-import android.util.Log;
 import feup.lpoo.riska.elements.Map;
 import feup.lpoo.riska.elements.Player;
 import feup.lpoo.riska.elements.Region;
 import feup.lpoo.riska.generator.BattleGenerator;
 import feup.lpoo.riska.resources.ResourceCache;
 import feup.lpoo.riska.scenes.GameScene;
-import feup.lpoo.riska.utilities.Info;
-import feup.lpoo.riska.utilities.Utils;
 
 public class GameLogic
 {
@@ -82,9 +77,9 @@ public class GameLogic
 
 		int INITIAL_SOLDIERS_TO_DEPLOY = 38;
 
-		for(int i = 0; i < Info.numberOfPlayers; i++)
+		for(int i = 0; i < GameInfo.numberOfPlayers; i++)
 		{
-			Player player = new Player(Info.getPlayerType(i), Info.getPlayerColors(i), "PLAYER " + i);
+			Player player = new Player(GameInfo.getPlayerType(i), GameInfo.getPlayerColors(i), "PLAYER " + i);
 			player.setSoldiersToDeploy(INITIAL_SOLDIERS_TO_DEPLOY);
 			
 			players.add(player);
@@ -95,7 +90,8 @@ public class GameLogic
 
 	private void createMap()
 	{
-		map = resources.maps.get(0); // TODO : maps
+		 // TODO : maps
+		map = resources.maps.get(GameInfo.currentMapIndex);
 
 		map.handOutRegions(players);
 
@@ -114,21 +110,7 @@ public class GameLogic
 		else
 		{
 			if(turnDone)
-			{	
-				for(Player player : players)
-				{
-					Log.d("Regions","Player " + player.getName() + " has " + player.getRegions().size() + " regions out of " + map.getNumberOfRegions());
-				}
-
-				if(selectedRegion != null)
-				{
-					unselectRegion();
-				}
-				if(targetedRegion != null)
-				{
-					untargetRegion();
-				}
-
+			{
 				if(!getNextPossiblePlayer())
 				{
 					state = GAME_STATE.GAMEOVER;
@@ -138,6 +120,9 @@ public class GameLogic
 				{
 					attackDone = false;
 					turnDone = false;
+					
+					unselectRegion();
+					untargetRegion();
 					gameScene.setInitialHUD();
 					state = GAME_STATE.PLAY;
 				}
@@ -150,8 +135,7 @@ public class GameLogic
 			{
 				if(currentPlayer.isCPU)
 				{
-					pauseGame();
-					automaticMove();
+					cpu();
 				}
 			}
 		}	
@@ -240,8 +224,10 @@ public class GameLogic
 
 	}
 
-	public void cpu() {
-
+	public void cpu()
+	{
+		pauseGame();
+		automaticMove();
 	}
 
 	// ======================================================
@@ -362,16 +348,20 @@ public class GameLogic
 	// ======================================================
 	public void onRegionTouched(Region pRegion)
 	{
-		if(!currentPlayer.isCPU) // some kind of bug
+		if(!currentPlayer.isCPU)
 		{
 			switch(state)
 			{
+			
 			case SETUP:
-				currentPlayer.deploy(SOLDIER_INC, pRegion);
+				deploySoldiers(pRegion);
+				
 				break;
+				
 			case DEPLOYMENT:
-				currentPlayer.deploy(SOLDIER_INC, pRegion);
+				deploySoldiers(pRegion);
 				break;
+				
 			case PLAY:
 				onPlayHandler(pRegion);
 				break;
@@ -380,6 +370,14 @@ public class GameLogic
 				break;
 			}
 		}
+	}
+
+	private void deploySoldiers(Region pRegion)
+	{
+		if(pRegion.hasOwner(currentPlayer))
+		{
+			currentPlayer.deploy(SOLDIER_INC, pRegion);
+		}	
 	}
 
 	private void onPlayHandler(Region pRegion)
@@ -528,14 +526,20 @@ public class GameLogic
 			untargetRegion();
 		}
 
-		selectedRegion.unfocus();
-		selectedRegion = null;
+		if(selectedRegion != null)
+		{
+			selectedRegion.unfocus();
+			selectedRegion = null;
+		}
 	}
 
 	private void untargetRegion() 
 	{
-		targetedRegion.unfocus();	
-		targetedRegion = null;
+		if(targetedRegion != null)
+		{
+			targetedRegion.unfocus();	
+			targetedRegion = null;
+		}	
 	}
 
 	public void pauseGame()

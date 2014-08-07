@@ -4,30 +4,30 @@ import java.util.ArrayList;
 import org.andengine.util.adt.color.Color;
 
 public class Player extends Object {
-	
+
 	// ======================================================
 	// CONSTANTS
 	// ======================================================
-	
+
 	// ======================================================
 	// FIELDS
 	// ======================================================
 	public boolean isCPU;	
-	
+
 	private ArrayList<Region> regions;	
-	
+
 	public int soldiersToDeploy;
 
 	private Color priColor, secColor;
-	
+
 	private String playerName;
-	
-	
+
+
 	public Player(boolean isCPU, Color[] colors, String name)
 	{
 		this(isCPU, colors[0], colors[1], name);
 	}
-	
+
 	public Player(boolean isCPU, Color primaryColor, Color secondaryColor, String name)
 	{
 		this.isCPU = isCPU;
@@ -39,13 +39,13 @@ public class Player extends Object {
 		{
 			playerName = name;
 		}
-		
+
 		this.regions = new ArrayList<Region>();
-		
+
 		this.priColor = primaryColor;
 		this.secColor = secondaryColor;
 	}
-	
+
 	public void addRegion(Region region)
 	{
 		regions.add(region);
@@ -59,7 +59,7 @@ public class Player extends Object {
 	public ArrayList<Region> getRegions() {
 		return regions;
 	}
-	
+
 	public boolean ownsRegion(Region region) {
 		return regions.contains(region);
 	}
@@ -78,7 +78,7 @@ public class Player extends Object {
 		{
 			deployed = number + soldiersToDeploy;
 		}
-		
+
 		pRegion.deploy(deployed);
 	}
 
@@ -102,16 +102,16 @@ public class Player extends Object {
 	 * TODO : heavy deployment
 	 */
 	public void deployAllSoldiers() {
-		
+
 		int i = 0;
 		while(soldiersToDeploy > 0) {
 			regions.get(i).addSoldiers(1);
 			i = (i + 1) % regions.size();
 			soldiersToDeploy--;
 		}
-		
+
 	}
-	
+
 	public String getName()
 	{
 		return playerName;

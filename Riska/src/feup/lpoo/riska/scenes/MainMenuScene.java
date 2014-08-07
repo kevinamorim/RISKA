@@ -14,8 +14,8 @@ import feup.lpoo.riska.gameInterface.AnimatedButtonSpriteMenuItem;
 import feup.lpoo.riska.gameInterface.AnimatedTextButtonSpriteMenuItem;
 import feup.lpoo.riska.interfaces.Displayable;
 import feup.lpoo.riska.io.SharedPreferencesManager;
+import feup.lpoo.riska.logic.GameInfo;
 import feup.lpoo.riska.logic.SceneManager.SCENE_TYPE;
-import feup.lpoo.riska.utilities.Info;
 import feup.lpoo.riska.utilities.Utils;
 
 public class MainMenuScene extends BaseScene implements Displayable, IOnMenuItemClickListener {
@@ -27,9 +27,10 @@ public class MainMenuScene extends BaseScene implements Displayable, IOnMenuItem
 	private MenuScene optionsMenu;
 	private MenuScene startGameMenu;
 	
-	private MenuScene chooseMapMenu;
+	//private MenuScene chooseMapMenu;			// TODO
+	//private MenuScene choosePlayersMenu;		// TODO
 	private MenuScene chooseFactionMenu;
-	private MenuScene chooseDifficultyMenu;
+	//private MenuScene chooseDifficultyMenu;	// TODO
 
 	private enum CHILD { MAIN, OPTIONS, START_GAME, CHOOSE_MAP, CHOOSE_FACTION, CHOOSE_DIFFICULTY};
 
@@ -302,7 +303,7 @@ public class MainMenuScene extends BaseScene implements Displayable, IOnMenuItem
 		
 		chooseFactionMenu.setBackgroundEnabled(false);
 		
-		Info.clearFactions();
+		GameInfo.clearFactions();
 		
 		titleTextChooseFaction = new Text(0, 0, resources.mainMenuFont, "CHOOSE YOUR FACTION COLORS", vbom);
 		
@@ -491,14 +492,14 @@ public class MainMenuScene extends BaseScene implements Displayable, IOnMenuItem
 		if(direction > 0)
 		{
 			selectedFaction += 1;
-			selectedFaction = selectedFaction % Info.getNumberOfColors();
+			selectedFaction = selectedFaction % GameInfo.getNumberOfColors();
 		}
 		
 		if(direction < 0)
 		{
 			if(selectedFaction - 1 < 0)
 			{
-				selectedFaction = Info.getNumberOfColors() - 1;
+				selectedFaction = GameInfo.getNumberOfColors() - 1;
 			}
 			else
 			{
@@ -509,14 +510,14 @@ public class MainMenuScene extends BaseScene implements Displayable, IOnMenuItem
 
 	private void updateFaction()
 	{
-		factionSprite.setColor(Info.getPriColor(selectedFaction));
-		factionSpriteCenter.setColor(Info.getSecColor(selectedFaction));
+		factionSprite.setColor(GameInfo.getPriColor(selectedFaction));
+		factionSpriteCenter.setColor(GameInfo.getSecColor(selectedFaction));
 	}
 
 	private void nextScreen()
 	{
 		// TODO : right now next screen is the game screen, but it could be any other
-		Info.assignPlayerFaction(currentPlayer, selectedFaction);
+		GameInfo.assignPlayerFaction(currentPlayer, selectedFaction);
 
 		//if(currentPlayer < Info.numberOfPlayers - 1)
 		//{
@@ -524,7 +525,7 @@ public class MainMenuScene extends BaseScene implements Displayable, IOnMenuItem
 		//}
 		//else
 		
-		Info.assignRemainingFactions(currentPlayer);
+		GameInfo.assignRemainingFactions(currentPlayer);
 		sceneManager.createGameScene();
 	}
 
