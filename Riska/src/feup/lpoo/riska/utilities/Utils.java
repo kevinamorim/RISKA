@@ -2,23 +2,31 @@ package feup.lpoo.riska.utilities;
 
 import java.util.Random;
 
+import org.andengine.engine.camera.Camera;
 import org.andengine.entity.Entity;
 import org.andengine.entity.text.Text;
 import org.andengine.opengl.font.Font;
 import org.andengine.util.adt.color.Color;
 
+import android.util.Log;
+import feup.lpoo.riska.gameInterface.CameraManager;
 import feup.lpoo.riska.logic.MainActivity;
 
 public class Utils {
 	
 	public static Color COLORS[][] = {
-		{new Color(0f, 0.45f, 0.9f), new Color(1f,1f,1f)},
-		
-		{new Color(0.78f,0f,0f), new Color(0.88f,0.74f,0.31f)},
-		
-		{new Color(0f,0f,0f), new Color(0f,0f,0f)},
-		
-		{new Color(0f,0f,0f), new Color(0f,0f,0f)},
+		{
+			new Color(0f, 0.45f, 0.9f),		// Blue
+			new Color(1f, 1f, 1f)},			// White
+		{
+			new Color(0.78f, 0f, 0f),			// Red
+			new Color(0.88f, 0.74f, 0.31f)},	// Burned Yellow
+		{
+			new Color(0f,0f,0f),
+			new Color(0f,0f,0f)},
+		{
+			new Color(0f,0f,0f),
+			new Color(0f,0f,0f)},
 	};
 	
 	public static Color[] getColors(int index)
@@ -74,7 +82,30 @@ public class Utils {
 		wrappedText += line;
 
 		return wrappedText;
-
+	}
+	
+	public static void wrapText(Text pText, Entity e, float textBoundingFactor)
+	{
+		wrapText(pText, e.getWidth(), e.getHeight(), textBoundingFactor);
+	}
+	
+	public static void wrapText(Text pText, Camera camera, float textBoundingFactor)
+	{
+		wrapText(pText, camera.getWidth(), camera.getHeight(), textBoundingFactor);
+	}
+	
+	public static void wrapText(Text pText, float pWidth, float pHeight, float textBoundingFactor)
+	{
+		
+		Log.d("Riska", "Called wrapText() with Text: " + pText.toString() + ", W: " + pWidth + ", H: " + pHeight + ", F: " + textBoundingFactor);
+		if(pText.getWidth() / pWidth > pText.getHeight() / pHeight) // Dealing in X
+		{
+			pText.setScale(textBoundingFactor * pWidth / pText.getWidth());
+		}
+		else	// Dealing in Y
+		{
+			pText.setScale(textBoundingFactor * pHeight / pText.getHeight());
+		}
 	}
 	
 	public static boolean isBetween(int value, int min, int max)
@@ -151,4 +182,10 @@ public class Utils {
 	{
 		return (0.5f * e1.getHeight());
 	}
+
+	public static boolean outOfBounds(Text pText, Entity e, float factor)
+	{
+		return (pText.getWidth() > (factor * e.getWidth()) || pText.getHeight() > (factor * e.getHeight()));
+	}
+
 }

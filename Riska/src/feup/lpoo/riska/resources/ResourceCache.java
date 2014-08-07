@@ -66,6 +66,8 @@ public class ResourceCache {
 	public TiledTextureRegion optionsBtnRegion;
 	public TiledTextureRegion returnBtnRegion;
 	public TiledTextureRegion sliderBtnRegion;
+	
+	public ITiledTextureRegion factionSpriteRegion;
 
 	// ==================================================
 	// GAME RESOURCES
@@ -149,6 +151,7 @@ public class ResourceCache {
 
 		menuBackgroundTextureAtlas = new BitmapTextureAtlas(activity.getTextureManager(), 
 				bgTextureWidth, bgTextureHeight, TextureOptions.DEFAULT);
+		
 		menuBackgroundRegion = BitmapTextureAtlasTextureRegionFactory.createFromAsset(menuBackgroundTextureAtlas, 
 				activity, "background.png", 0, 0);
 
@@ -161,7 +164,7 @@ public class ResourceCache {
 
 		menuBorderTextureAtlas.load();
 
-		int mainTextureWidth = 1024, mainTextureHeight = 2048;
+		int mainTextureWidth = 2048, mainTextureHeight = 2048;
 
 		mainMenuTextureAtlas = new BuildableBitmapTextureAtlas(activity.getTextureManager(), 
 				mainTextureWidth, mainTextureHeight, TextureOptions.BILINEAR);
@@ -177,6 +180,9 @@ public class ResourceCache {
 
 		sliderBtnRegion = BitmapTextureAtlasTextureRegionFactory.createTiledFromAsset(mainMenuTextureAtlas, activity, 
 				"slider.png", 1, 2);
+		
+		factionSpriteRegion = BitmapTextureAtlasTextureRegionFactory.createTiledFromAsset(mainMenuTextureAtlas, activity, 
+				"faction.png", 1, 2);
 
 		try {
 			mainMenuTextureAtlas.build(

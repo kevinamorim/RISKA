@@ -11,6 +11,7 @@ import org.andengine.entity.scene.Scene;
 import org.andengine.opengl.font.Font;
 import org.andengine.ui.activity.BaseGameActivity;
 
+import android.util.Log;
 import android.view.KeyEvent;
 import feup.lpoo.riska.gameInterface.CameraManager;
 import feup.lpoo.riska.resources.ResourceCache;
@@ -27,7 +28,7 @@ public class MainActivity extends BaseGameActivity {
 	public final static float RES_RATIO = 16f/10f;
 	
 	public Font mFont;
-	public CameraManager  mCamera;
+	public CameraManager mCamera;
 	
 	public Scene mCurrentScene;
 	public static MainActivity instance;
@@ -46,6 +47,9 @@ public class MainActivity extends BaseGameActivity {
 		mCamera.setBoundsEnabled(true);
 		EngineOptions engineOptions = new EngineOptions(true, ScreenOrientation.LANDSCAPE_SENSOR,
 				new RatioResolutionPolicy(RES_RATIO), mCamera);
+		
+		Log.d("Riska", "Camera Size: " + mCamera.getWidth() + ", " + mCamera.getHeight());
+		
 		engineOptions.getAudioOptions().setNeedsMusic(true);
 		return engineOptions;
 	}

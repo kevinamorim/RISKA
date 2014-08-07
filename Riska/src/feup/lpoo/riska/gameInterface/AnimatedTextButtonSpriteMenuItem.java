@@ -5,7 +5,7 @@ import org.andengine.entity.text.Text;
 import org.andengine.opengl.font.Font;
 import org.andengine.opengl.texture.region.ITiledTextureRegion;
 import org.andengine.opengl.vbo.VertexBufferObjectManager;
-
+import feup.lpoo.riska.utilities.Utils;
 import android.graphics.Color;
 
 /**
@@ -14,26 +14,29 @@ import android.graphics.Color;
  * @see AnimatedSpriteMenuItem
  */
 public class AnimatedTextButtonSpriteMenuItem extends AnimatedSpriteMenuItem {
-	
-	private float textX = 0;
-	private float textY = 0;
+
 	private Text buttonText;
+	private Font buttonFont;
+	
+	private float textBoundingFactor = 0.80f;	// Text should never measure beyond 90% of the button size
 	
 	public AnimatedTextButtonSpriteMenuItem(int pID, float pWidth, float pHeight, ITiledTextureRegion pTiledTextureRegion,
-			VertexBufferObjectManager pVertexBufferObjectManager, String pText, Font pFont) {
+			VertexBufferObjectManager vbom, String pString, Font pFont) {
 		
-		super(pID, pWidth, pHeight, pTiledTextureRegion, pVertexBufferObjectManager);
+		super(pID, pWidth, pHeight, pTiledTextureRegion, vbom);
 		
-		buttonText = new Text(0, 0, pFont, pText, pVertexBufferObjectManager);
+		buttonFont = pFont;
 		
-		textX = this.getWidth()/2;
-		textY = this.getHeight()/2;
+		buttonText = new Text(0f, 0f, buttonFont, pString, vbom);
 		
-		buttonText.setPosition(textX, textY);
+		if(Utils.outOfBounds(buttonText, this, textBoundingFactor))
+		{
+			Utils.wrapText(buttonText, this, textBoundingFactor);
+		}
+		buttonText.setPosition(0.5f * getWidth(), 0.5f * getHeight());	
 		buttonText.setColor(Color.BLACK);
 		
 		attachChild(buttonText);
-		
 	}
 	
 	@Override
@@ -54,8 +57,37 @@ public class AnimatedTextButtonSpriteMenuItem extends AnimatedSpriteMenuItem {
 		
 	}
 	
-	public void setText(String pText) {
+	public void setText(String pText)
+	{
 		buttonText.setText(pText);	
 	}
-
+	
+	
+	@Override
+	public void setSize(float pWidth, float pHeight)
+	{
+		super.setSize(pWidth, pHeight);
+		
+		if(buttonText != null)
+		{
+			if(Utils.outOfBounds(buttonText, this, textBoundingFactor))
+			{
+				Utils.wrapText(buttonText, this, textBoundingFactor);
+			}
+			
+			buttonText.setPosition(0.5f * getWidth(), 0.5f * getHeight());
+		}		
+	}
+	
+	public void setTextScale(float newScale)
+	{
+		textBoundingFactor = newScale;
+		
+		if(buttonText != null)
+		{
+			Utils.wrapText(buttonText, this, textBoundingFactor);
+			
+			buttonText.setPosition(0.5f * getWidth(), 0.5f * getHeight());
+		}
+	}
 }
