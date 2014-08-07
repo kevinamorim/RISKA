@@ -28,11 +28,11 @@ public class MainMenuScene extends BaseScene implements Displayable, IOnMenuItem
 	private MenuScene startGameMenu;
 	
 	//private MenuScene chooseMapMenu;			// TODO
-	//private MenuScene choosePlayersMenu;		// TODO
+	private MenuScene choosePlayersMenu;		// TODO
 	private MenuScene chooseFactionMenu;
 	//private MenuScene chooseDifficultyMenu;	// TODO
 
-	private enum CHILD { MAIN, OPTIONS, START_GAME, CHOOSE_MAP, CHOOSE_FACTION, CHOOSE_DIFFICULTY};
+	private enum CHILD { MAIN, OPTIONS, START_GAME, CHOOSE_MAP, CHOOSE_PLAYERS, CHOOSE_FACTION, CHOOSE_DIFFICULTY};
 
 	private final int MAIN_START = 0;
 	private final int MAIN_OPTIONS = 1;
@@ -48,22 +48,37 @@ public class MainMenuScene extends BaseScene implements Displayable, IOnMenuItem
 	private final int FACTION_NEXT = 8;
 	private final int FACTION_PREVIOUS = 9;
 	private final int FACTION_SELECT = 10;
-
+	
+	private int OFFSET = FACTION_SELECT;
+	private int[] PLAYERS_ADD;
+	private int[] PLAYERS_NAME;
+	private int[] PLAYERS_CPU;
+	
 	private SpriteBackground background;	
 	
+	// MAIN MENU
 	private AnimatedTextButtonSpriteMenuItem startButton;
 	private AnimatedButtonSpriteMenuItem optionsButton;
 	
+	// START MENU
 	private AnimatedTextButtonSpriteMenuItem newGameButton;
 	private AnimatedTextButtonSpriteMenuItem loadGameButton;
 	private AnimatedButtonSpriteMenuItem returnButtonStart;
 	
+	// OPTIONS MENU
 	private AnimatedButtonSpriteMenuItem returnButtonOptions;
 	private AnimatedButtonSpriteMenuItem sliderSFX;
 	private AnimatedButtonSpriteMenuItem sliderMusic;
 	private Text textSFX;
 	private Text textMusic;
 	
+	// CHOOSE PLAYERS MENU
+	private AnimatedButtonSpriteMenuItem[] addPlayerButton;
+	private AnimatedTextButtonSpriteMenuItem[] playerName;
+	private AnimatedButtonSpriteMenuItem[] playerCPU;
+	private boolean[] playerIsCPU;
+	
+	// CHOOSE FACTION MENU
 	private Text titleTextChooseFaction;
 	private AnimatedTextButtonSpriteMenuItem nextFactionButton;
 	private AnimatedTextButtonSpriteMenuItem previousFactionButton;
@@ -72,9 +87,9 @@ public class MainMenuScene extends BaseScene implements Displayable, IOnMenuItem
 	private ButtonSprite factionSprite;
 	private ButtonSprite factionSpriteCenter;
 	private ButtonSprite factionSpriteBorder;
-	
 	private int currentPlayer = 0;
 	private int selectedFaction = 0;
+	
 	
 	// Music options
 	private boolean musicOn = true;
@@ -129,9 +144,10 @@ public class MainMenuScene extends BaseScene implements Displayable, IOnMenuItem
 		createChildScene(CHILD.OPTIONS);
 		createChildScene(CHILD.START_GAME);
 		
-		createChildScene(CHILD.CHOOSE_MAP);
+		//createChildScene(CHILD.CHOOSE_MAP);
+		createChildScene(CHILD.CHOOSE_PLAYERS);
 		createChildScene(CHILD.CHOOSE_FACTION);
-		createChildScene(CHILD.CHOOSE_DIFFICULTY);
+		//createChildScene(CHILD.CHOOSE_DIFFICULTY);
 		
 		setChildScene(CHILD.MAIN);
 	}
@@ -164,6 +180,10 @@ public class MainMenuScene extends BaseScene implements Displayable, IOnMenuItem
 			
 		case OPTIONS:
 			createOptionsMenu();
+			break;
+			
+		case CHOOSE_PLAYERS:
+			createChoosePlayersMenu();
 			break;
 			
 		case CHOOSE_FACTION:
@@ -302,6 +322,50 @@ public class MainMenuScene extends BaseScene implements Displayable, IOnMenuItem
 		optionsMenu.setOnMenuItemClickListener(this);	
 	}
 
+	private void createChoosePlayersMenu()
+	{
+		addPlayerButton = new AnimatedButtonSpriteMenuItem[GameInfo.maxPlayers];
+		playerName = new AnimatedTextButtonSpriteMenuItem[GameInfo.maxPlayers];
+		playerCPU = new AnimatedButtonSpriteMenuItem[GameInfo.maxPlayers];
+		playerIsCPU = new boolean[GameInfo.maxPlayers];
+		
+		createPlayerSpots();
+	}
+	
+	private void createPlayerSpots()
+	{
+		// Creates minimal number of human players
+		for(int i = 0; i < GameInfo.minHumanPlayers; i++)
+		{
+			addPlayerButton[i] = new AnimatedButtonSpriteMenuItem(OFFSET++,
+					resources.playerAddRemoveButtonRegion.getWidth(),
+					resources.playerAddRemoveButtonRegion.getHeight(),
+					resources.playerAddRemoveButtonRegion, vbom);
+			
+			playerName[i] = new AnimatedTextButtonSpriteMenuItem(OFFSET++,
+					resources.textBtnRegion.getWidth(),
+					resources.textBtnRegion.getHeight(),
+					resources.textBtnRegion, vbom,
+					"PLAYER " + i, 1000, resources.mainMenuFont);
+			
+			playerIsCPU[i] = false;
+			
+			playerCPU[i] = new AnimatedButtonSpriteMenuItem(OFFSET++,
+					resources.playerCheckBoxButtonRegion.getWidth(),
+					resources.playerCheckBoxButtonRegion.getHeight(),
+					resources.playerCheckBoxButtonRegion, vbom);
+			
+			addPlayerButton[i].setCurrentTileIndex(3);
+			addPlayerButton[i].setTag(0);
+			
+			playerName[i].setCurrentTileIndex(0);
+			playerName[i].setTag(1);
+			
+			playerCPU[i].setCurrentTileIndex(0);
+			playerCPU[i].setTag(0);
+		}
+	}
+
 	private void createChooseFactionMenu()
 	{
 		chooseFactionMenu = new MenuScene(camera);
@@ -389,7 +453,7 @@ public class MainMenuScene extends BaseScene implements Displayable, IOnMenuItem
 		
 		chooseFactionMenu.setOnMenuItemClickListener(this);
 	}
-		
+
 	private void setChildScene(CHILD x)
 	{	
 		MenuScene toSet = getChildScene(x);

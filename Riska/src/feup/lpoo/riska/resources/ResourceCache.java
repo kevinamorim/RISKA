@@ -68,7 +68,9 @@ public class ResourceCache {
 	public TiledTextureRegion sliderBtnRegion;
 	
 	public ITiledTextureRegion factionSpriteRegion;
-
+	
+	public ITiledTextureRegion playerAddRemoveButtonRegion;
+	public ITiledTextureRegion playerCheckBoxButtonRegion;
 	// ==================================================
 	// GAME RESOURCES
 	// ==================================================
@@ -105,16 +107,19 @@ public class ResourceCache {
 	// ==================================================
 	// SPLASH SCENE
 	// ==================================================
-	public void loadSplashSceneResources() {
+	public void loadSplashSceneResources()
+	{
 		loadSplashGraphics();
 	}
 
-	public void unloadSplashSceneResources() {
+	public void unloadSplashSceneResources()
+	{
 		splashTextureAtlas.unload();
 		splashRegion = null;
 	}
 
-	private void loadSplashGraphics() {
+	private void loadSplashGraphics()
+	{
 
 		int textureWidth = 512, textureHeight = 512;
 
@@ -132,12 +137,14 @@ public class ResourceCache {
 	// ==================================================
 	// MAIN MENU SCENE
 	// ==================================================
-	public void loadMainMenuResources() {
+	public void loadMainMenuResources()
+	{
 		loadMainMenuGraphics();
 		loadMainMenuFonts();
 	}
 
-	public void unloadMainMenuResources() {
+	public void unloadMainMenuResources()
+	{
 		mainMenuTextureAtlas.unload();
 		menuBackgroundTextureAtlas.unload();
 
@@ -183,12 +190,21 @@ public class ResourceCache {
 		
 		factionSpriteRegion = BitmapTextureAtlasTextureRegionFactory.createTiledFromAsset(mainMenuTextureAtlas, activity, 
 				"faction.png", 1, 3);
+		
+		playerAddRemoveButtonRegion = BitmapTextureAtlasTextureRegionFactory.createTiledFromAsset(mainMenuTextureAtlas, activity, 
+				"plus_minus_button.png", 1, 4);
+		
+		playerCheckBoxButtonRegion = BitmapTextureAtlasTextureRegionFactory.createTiledFromAsset(mainMenuTextureAtlas, activity, 
+				"check_box.png", 1, 2);
 
-		try {
-			mainMenuTextureAtlas.build(
-					new BlackPawnTextureAtlasBuilder<IBitmapTextureAtlasSource, BitmapTextureAtlas>(0, 1, 0));
+		try
+		{
+			mainMenuTextureAtlas.build(new BlackPawnTextureAtlasBuilder<IBitmapTextureAtlasSource, BitmapTextureAtlas>(0, 1, 0));
+			
 			mainMenuTextureAtlas.load();
-		} catch(final TextureAtlasBuilderException e) {
+		}
+		catch(final TextureAtlasBuilderException e)
+		{
 			Debug.e(e);
 		}	
 

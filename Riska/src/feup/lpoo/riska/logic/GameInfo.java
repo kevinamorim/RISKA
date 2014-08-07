@@ -27,11 +27,12 @@ public class GameInfo
 	// ======================================================
 	public static final int maxPlayers = 4;
 	public static final int minPlayers = 2;
+	public static final int minHumanPlayers = 1;
 	
 	public static int numberOfPlayers = 2;
 	
 	private static int[] playerFaction = new int[maxPlayers]; 
-	private static boolean[] playerIsCPU = new boolean[maxPlayers];
+	public static boolean[] playerIsCPU = new boolean[maxPlayers];
 	
 	public static int currentMapIndex = 0;
 	
@@ -65,7 +66,6 @@ public class GameInfo
 	public static void assignPlayerFaction(int currentPlayer, int selectedFactionIndex)
 	{
 		playerFaction[currentPlayer] = selectedFactionIndex;
-		playerIsCPU[currentPlayer] = false;
 	}
 
 	public static void assignRemainingFactions(int currentPlayer)
@@ -78,7 +78,6 @@ public class GameInfo
 				factionIndex++;
 			}
 			playerFaction[i] = factionIndex;
-			playerIsCPU[i] = true;
 		}
 	}
 

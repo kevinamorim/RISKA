@@ -23,11 +23,17 @@ public class AnimatedTextButtonSpriteMenuItem extends AnimatedSpriteMenuItem {
 	public AnimatedTextButtonSpriteMenuItem(int pID, float pWidth, float pHeight, ITiledTextureRegion pTiledTextureRegion,
 			VertexBufferObjectManager vbom, String pString, Font pFont) {
 		
+		this(pID, pWidth, pHeight, pTiledTextureRegion, vbom, pString, pString.length() + 1, pFont);
+	}
+	
+	public AnimatedTextButtonSpriteMenuItem(int pID, float pWidth, float pHeight, ITiledTextureRegion pTiledTextureRegion,
+			VertexBufferObjectManager vbom, String pString, int maxCharacters, Font pFont) {
+		
 		super(pID, pWidth, pHeight, pTiledTextureRegion, vbom);
 		
 		buttonFont = pFont;
 		
-		buttonText = new Text(0f, 0f, buttonFont, pString, vbom);
+		buttonText = new Text(0f, 0f, buttonFont, pString, maxCharacters, vbom);
 		
 		if(Utils.outOfBounds(buttonText, this, textBoundingFactor))
 		{
