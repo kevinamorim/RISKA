@@ -756,6 +756,7 @@ public class MainMenuScene extends BaseScene implements Displayable, IOnMenuItem
 	private void setInitialFactionsVariables()
 	{
 		Utils.fill(playerFaction, -1);
+		GameInfo.clearFactions();
 		selectedFaction = 0;
 		currentPlayer = 0;
 	}
@@ -777,7 +778,7 @@ public class MainMenuScene extends BaseScene implements Displayable, IOnMenuItem
 					break;
 				}
 
-			}while(playerFaction[index] != -1);
+			}while(Utils.inArray(index, playerFaction));
 		}
 
 		if(direction < 0)
@@ -798,7 +799,7 @@ public class MainMenuScene extends BaseScene implements Displayable, IOnMenuItem
 					break;
 				}
 
-			}while(playerFaction[index] != -1);
+			}while(Utils.inArray(index, playerFaction));
 		}
 
 		selectedFaction = index;
@@ -904,13 +905,14 @@ public class MainMenuScene extends BaseScene implements Displayable, IOnMenuItem
 			break;
 
 		case FACTION_SELECT:
-			if(currentPlayer < GameInfo.humanPlayers - 1)
+			if(currentPlayer < GameInfo.humanPlayers)
 			{
-				playerFaction[selectedFaction] = currentPlayer;
+				playerFaction[currentPlayer] = selectedFaction;
 				currentPlayer++;
 				selectFaction(1);
 			}
-			else
+			
+			if(currentPlayer == GameInfo.humanPlayers)
 			{
 				saveFactionsInfo();
 				sceneManager.createGameScene();
@@ -954,21 +956,21 @@ public class MainMenuScene extends BaseScene implements Displayable, IOnMenuItem
 		GameInfo.numberOfPlayers = numOfPlayers;
 		GameInfo.humanPlayers = human;
 		GameInfo.cpuPlayers = cpu;
-		GameInfo.playerIsCPU = playerIsCPU;
+		Utils.saveFromTo(playerIsCPU, GameInfo.playerIsCPU);
 
-		Log.d("Riska", "Saving players info...");
-		Log.d("Riska", "Number of players: " + GameInfo.numberOfPlayers);
-		Log.d("Riska", "HUMAN players:     " + GameInfo.humanPlayers);
-		Log.d("Riska", "CPU players:     " + GameInfo.cpuPlayers);
+		Log.d("Riska", "[MainMenuScene] Saving players info...");
+		Log.d("Riska", "[MainMenuScene] Number of players: " + GameInfo.numberOfPlayers);
+		Log.d("Riska", "[MainMenuScene] HUMAN players:     " + GameInfo.humanPlayers);
+		Log.d("Riska", "[MainMenuScene] CPU players:     " + GameInfo.cpuPlayers);
 	}
 
 	private void saveFactionsInfo()
 	{
-		for(int i = 0; i < playerFaction.length; i++)
+		for(int i = 0; i < GameInfo.humanPlayers; i++)
 		{
-			if(playerFaction[i] != -1)
+			if(playerFaction[i] != -1) // Precaution
 			{
-				GameInfo.assignPlayerFaction(playerFaction[i], i);
+				GameInfo.assignPlayerFaction(i, playerFaction[i]);
 			}	
 		}
 

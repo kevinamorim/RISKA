@@ -80,7 +80,7 @@ public class GameLogic
 
 		for(int i = 0; i < GameInfo.numberOfPlayers; i++)
 		{
-			Log.d("Riska", "Player " + i + (GameInfo.playerIsCPU[i] ? " is " : " is not ") + "CPU");
+			Log.d("Riska", "[GameLogic] Player " + i + (GameInfo.playerIsCPU[i] ? " is " : " is not ") + "CPU");
 			
 			Player player = new Player(GameInfo.playerIsCPU[i], GameInfo.getPlayerColors(i), "PLAYER " + i);
 			player.setSoldiersToDeploy(INITIAL_SOLDIERS_TO_DEPLOY);

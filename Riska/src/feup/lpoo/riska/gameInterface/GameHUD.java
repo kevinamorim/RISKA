@@ -48,8 +48,8 @@ public class GameHUD extends HUD implements Displayable {
 	// ======================================================
 	// ======================================================
 
-	public GameHUD(GameScene scene) {
-
+	public GameHUD(GameScene scene)
+	{
 		gameScene = scene;
 
 		resources = ResourceCache.getSharedInstance();
@@ -90,8 +90,8 @@ public class GameHUD extends HUD implements Displayable {
 	// ======================================================
 	// CREATE DISPLAY
 	// ======================================================
-	public void createDisplay() {	
-
+	public void createDisplay()
+	{	
 		createAttackButton();
 		createInfoTab();
 		createDetailsButton();
@@ -113,8 +113,8 @@ public class GameHUD extends HUD implements Displayable {
 		attachChild(arrowRight);
 	}
 
-	private void createAttackButton() {
-
+	private void createAttackButton()
+	{
 		attackButton = new ButtonSprite(0, 0, resources.attackBtnRegion, resources.vbom) 
 		{
 			@Override
@@ -143,14 +143,15 @@ public class GameHUD extends HUD implements Displayable {
 			}
 		};
 
-		Utils.wrap(attackButton, 1f * camera.getWidth(), 0.4f * camera.getHeight(), 1f);
-		attackButton.setPosition(camera.getWidth() - 0.45f * Utils.getWidth(attackButton), 0.5f * camera.getHeight());
+		float scale = Utils.getWrapScale(attackButton, 1f * camera.getWidth(), 0.4f * camera.getHeight(), 1f);
+		attackButton.setScale(-scale, scale);
+		attackButton.setPosition(camera.getWidth() - Utils.getCenterX(attackButton), 0.5f * camera.getHeight());
 
 		attackButton.setVisible(false);
 	}
 
-	private void createInfoTab() {
-
+	private void createInfoTab()
+	{
 		infoTab = new Sprite(0, 0, resources.infoTabRegion, resources.vbom);
 
 		//Utils.expand(infoTab, 1f * camera.getWidth(), 0.1f * camera.getHeight(), 0.9f);
@@ -168,100 +169,101 @@ public class GameHUD extends HUD implements Displayable {
 		infoTab.setVisible(false);
 	}
 
-	private void createDetailsButton() {
-
-		detailsButton = new ButtonSprite(
-				resources.detailsBtnRegion.getWidth() / 2,
-				resources.camera.getHeight() / 2,
-				resources.detailsBtnRegion,
-				resources.vbom) {
-
+	private void createDetailsButton()
+	{
+		detailsButton = new ButtonSprite(0, 0, resources.detailsBtnRegion, resources.vbom)
+		{
 			@Override
-			public boolean onAreaTouched(TouchEvent pSceneTouchEvent, 
-					float pTouchAreaLocalX, float pTouchAreaLocalY)
+			public boolean onAreaTouched(TouchEvent ev, float pX, float pY)
 			{
-				switch(pSceneTouchEvent.getAction())
+				switch(ev.getAction())
 				{
+				
 				case MotionEvent.ACTION_DOWN:
 					pressed(BUTTON.DETAILS);
 					break;
+					
 				case MotionEvent.ACTION_UP:
 					touched(BUTTON.DETAILS);
 					break;
+					
 				case MotionEvent.ACTION_OUTSIDE:
 					released(BUTTON.DETAILS);
 					break;
+					
 				default:
 					break;
+					
 				}
 				return true;
 			}
 		};
 
-		detailsButton.setScale(0.5f);
-		detailsButton.setPosition(detailsButton.getScaleX() * detailsButton.getWidth() / 2, detailsButton.getY());
+		Utils.wrap(detailsButton, 1f * camera.getWidth(),  0.3f * camera.getHeight(), 1f);
+		detailsButton.setPosition(Utils.getScaledCenterX(detailsButton) , 0.5f * camera.getHeight());
 
 		detailsButton.setVisible(false);
 	}
 
-	private void createAutoDeployButton() {
-
-		autoDeployButton = new ButtonSprite(0f,0f,
-				resources.autoDeployBtnRegion,
-				resources.vbom) {
-
+	private void createAutoDeployButton()
+	{
+		autoDeployButton = new ButtonSprite(0, 0, resources.autoDeployBtnRegion, resources.vbom)
+		{
 			@Override
-			public boolean onAreaTouched(TouchEvent pSceneTouchEvent, 
-					float pTouchAreaLocalX, float pTouchAreaLocalY)
+			public boolean onAreaTouched(TouchEvent ev, float pX, float pY)
 			{
-				switch(pSceneTouchEvent.getAction())
+				switch(ev.getAction())
 				{
+				
 				case MotionEvent.ACTION_DOWN:
 					pressed(BUTTON.AUTO_DEPLOY);
 					break;
+					
 				case MotionEvent.ACTION_UP:
 					touched(BUTTON.AUTO_DEPLOY);
 					break;
+					
 				case MotionEvent.ACTION_OUTSIDE:
 					released(BUTTON.AUTO_DEPLOY);
 					break;
+					
 				default:
 					break;
 				}
 				return true;
 			}
 		};
+		
+		float scale = Utils.getWrapScale(autoDeployButton, 1f * camera.getWidth(), 0.4f * camera.getHeight(), 1f);
 
-		autoDeployButton.setScaleX(.5f);
-		autoDeployButton.setScaleY(.6f);
-		autoDeployButton.setPosition(
-				(resources.camera.getWidth() - (autoDeployButton.getScaleX() * autoDeployButton.getWidth() / 2f) + 4),
-				(resources.camera.getHeight()/2f));
+		autoDeployButton.setScale(-scale, scale);
+		autoDeployButton.setPosition(camera.getWidth() - Utils.getCenterX(autoDeployButton), 0.5f * camera.getHeight());
 
 		autoDeployButton.setVisible(false);
 	}
 
 	private void createArrows()
 	{
-		arrowLeft = new ButtonSprite(0, 0,
-				resources.arrowRightRegion,
-				resources.vbom) 
+		arrowLeft = new ButtonSprite(0, 0, resources.arrowRightRegion, resources.vbom) 
 		{
-
 			@Override
 			public boolean onAreaTouched(TouchEvent ev, float pX, float pY)
 			{
 				switch(ev.getAction())
 				{
+				
 				case MotionEvent.ACTION_DOWN:
 					pressed(BUTTON.ARROW_LEFT);
 					break;
+					
 				case MotionEvent.ACTION_UP:
 					touched(BUTTON.ARROW_LEFT);
 					break;
+					
 				case MotionEvent.ACTION_OUTSIDE:
 					released(BUTTON.ARROW_LEFT);
 					break;
+					
 				default:
 					break;
 				}
@@ -269,29 +271,30 @@ public class GameHUD extends HUD implements Displayable {
 			}	
 		};
 
-		arrowLeft.setScale(-0.6f);
-		arrowLeft.setPosition(0.25f * MainActivity.CAMERA_WIDTH, 0.5f * MainActivity.CAMERA_HEIGHT);
+		arrowLeft.setScale(-Utils.getWrapScale(arrowLeft, 0.1f * camera.getWidth(), 0.25f * camera.getHeight(), 1f));
+		arrowLeft.setPosition(0.25f * camera.getWidth(), 0.5f * camera.getHeight());
+		
 
-
-		arrowRight = new ButtonSprite(0, 0,
-				resources.arrowRightRegion,
-				resources.vbom) 
+		arrowRight = new ButtonSprite(0, 0, resources.arrowRightRegion, resources.vbom) 
 		{
-
 			@Override
 			public boolean onAreaTouched(TouchEvent ev, float pX, float pY)
 			{
 				switch(ev.getAction())
 				{
+				
 				case MotionEvent.ACTION_DOWN:
 					pressed(BUTTON.ARROW_RIGHT);
 					break;
+					
 				case MotionEvent.ACTION_UP:
 					touched(BUTTON.ARROW_RIGHT);
 					break;
+					
 				case MotionEvent.ACTION_OUTSIDE:
 					released(BUTTON.ARROW_RIGHT);
 					break;
+					
 				default:
 					break;
 				}
@@ -299,8 +302,8 @@ public class GameHUD extends HUD implements Displayable {
 			}	
 		};
 
-		arrowRight.setScale(0.6f);
-		arrowRight.setPosition(0.75f * MainActivity.CAMERA_WIDTH, 0.5f * MainActivity.CAMERA_HEIGHT);
+		arrowRight.setScale(Utils.getWrapScale(arrowRight, 0.1f * camera.getWidth(), 0.25f * camera.getHeight(), 1f));
+		arrowRight.setPosition(0.75f * camera.getWidth(), 0.5f * camera.getHeight());
 
 		arrowLeft.setVisible(false);
 		arrowRight.setVisible(false);

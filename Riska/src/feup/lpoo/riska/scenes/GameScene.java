@@ -89,17 +89,19 @@ public class GameScene extends BaseScene implements IOnSceneTouchListener, IScro
 	{
 		if(getEntityModifierCount() == 0) // NO CPU DELAYS OCCURING
 		{
-			SceneManager.getSharedInstance().loadMainMenuScene(engine);
+			sceneManager.loadMainMenuScene(engine);
 		}	
 	}
 
 	@Override
-	public SCENE_TYPE getSceneType() {
+	public SCENE_TYPE getSceneType()
+	{
 		return SCENE_TYPE.GAME;
 	}
 
 	@Override
-	public void disposeScene() {
+	public void disposeScene()
+	{
 		camera.setHUD(null);
 		//detachChildren();
 		detachSelf();

@@ -3,10 +3,12 @@ package feup.lpoo.riska.utilities;
 import java.util.Random;
 
 import org.andengine.entity.Entity;
+import org.andengine.entity.sprite.ButtonSprite;
 import org.andengine.entity.text.Text;
 import org.andengine.opengl.font.Font;
 import org.andengine.opengl.vbo.VertexBufferObjectManager;
 
+import android.util.Log;
 import feup.lpoo.riska.logic.MainActivity;
 
 public class Utils
@@ -95,6 +97,25 @@ public class Utils
 		{
 			// Dealing in Y
 			child.setScale(boundingFactor * pHeight / child.getHeight());
+		}
+	}
+	
+	public static void getWrapScale(Entity child, Entity parent, float boundingFactor)
+	{
+		getWrapScale(child, parent.getWidth(), parent.getHeight(), boundingFactor);
+	}
+	
+	public static float getWrapScale(Entity child, float pWidth, float pHeight, float boundingFactor)
+	{
+		if(child.getWidth() / pWidth > child.getHeight() / pHeight)
+		{
+			// Dealing in X
+			return boundingFactor * pWidth / child.getWidth();
+		}
+		else
+		{
+			// Dealing in Y
+			return boundingFactor * pHeight / child.getHeight();
 		}
 	}
 
@@ -216,14 +237,24 @@ public class Utils
 		return (e.getScaleY() * e.getHeight());
 	}
 
-	public static float getCenterX(Entity e1)
+	public static float getCenterX(Entity e)
 	{
-		return (0.5f * e1.getWidth());
+		return (0.5f * e.getWidth());
 	}
 
-	public static float getCenterY(Entity e1)
+	public static float getCenterY(Entity e)
 	{
-		return (0.5f * e1.getHeight());
+		return (0.5f * e.getHeight());
+	}
+
+	public static float getScaledCenterX(Entity e)
+	{
+		return (0.5f * getWidth(e));
+	}
+
+	public static float getScaledCenterY(Entity e)
+	{
+		return (0.5f * getHeight(e));
 	}
 
 	// ======================================================
@@ -243,4 +274,46 @@ public class Utils
 			array[i] = value;
 		}
 	}
+	
+	public static <X> boolean inArray(X value, X[] array)
+	{
+		for(int i = 0; i < array.length; i++)
+		{
+			if(array[i] == value)
+			{
+				return true;
+			}
+		}
+		
+		return false;
+	}
+	
+	public static boolean inArray(int value, int[] array)
+	{
+		for(int i = 0; i < array.length; i++)
+		{
+			if(array[i] == value)
+			{
+				return true;
+			}
+		}
+		
+		return false;
+	}
+	
+	public static <X> void saveFromTo(X[] from, X[] to)
+	{		
+		for(int i = 0; i < from.length && i < to.length; i++)
+		{
+			to[i] = from[i];
+		}
+	}
+
+	public static void saveFromTo(boolean[] from, boolean[] to)
+	{		
+		for(int i = 0; i < from.length && i < to.length; i++)
+		{
+			to[i] = from[i];
+		}
+	} 
 }

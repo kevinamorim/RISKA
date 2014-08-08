@@ -2,6 +2,8 @@ package feup.lpoo.riska.logic;
 
 import org.andengine.util.adt.color.Color;
 
+import feup.lpoo.riska.utilities.Utils;
+
 public class GameInfo
 {
 	// ======================================================
@@ -31,13 +33,12 @@ public class GameInfo
 	public static final int maxPlayers = 5; // IMPORTANT : COLORS[][] size is depending on this number!
 	public static final int minPlayers = 2;
 	public static final int minHumanPlayers = 1;
-	
-	public static int numberOfPlayers = 2;
+	public static final int numberOfFactions = COLORS.length;
 	
 	private static int[] playerFaction = new int[maxPlayers]; 
-	public static int numberOfFactions = COLORS.length;
-	
 	public static boolean[] playerIsCPU = new boolean[maxPlayers];
+	
+	public static int numberOfPlayers = 0;
 	public static int cpuPlayers = 0;
 	public static int humanPlayers = 0;
 	
@@ -64,40 +65,29 @@ public class GameInfo
 	{
 		return COLORS[playerFaction[playerIndex]];
 	}
-	
-	public static int getNumberOfColors()
-	{
-		return COLORS.length;
-	}
 
 	public static void assignPlayerFaction(int currentPlayer, int selectedFactionIndex)
 	{
 		playerFaction[currentPlayer] = selectedFactionIndex;
 	}
 
-	public static void assignRemainingFactions(int currentPlayer)
+	public static void assignRemainingFactions(int index)
 	{
-		for(int i = currentPlayer + 1; i < numberOfPlayers; i++)
+		for(int i = index + 1; i < numberOfPlayers; i++)
 		{
 			int factionIndex = 0;
-			while(inArray(factionIndex, playerFaction))
+			
+			while(Utils.inArray(factionIndex, playerFaction))
 			{
 				factionIndex++;
 			}
+			
 			playerFaction[i] = factionIndex;
 		}
 	}
 
-	private static boolean inArray(int factionIndex, int[] playerFaction)
+	public static void clearFactions()
 	{
-		for(int i = 0; i < playerFaction.length; i++)
-		{
-			if(playerFaction[i] == factionIndex)
-			{
-				return true;
-			}
-		}
-		
-		return false;
+		Utils.fill(playerFaction, -1);
 	}
 }
