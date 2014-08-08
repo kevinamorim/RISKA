@@ -34,6 +34,7 @@ public class GameHUD extends HUD implements Displayable {
 	// ======================================================
 	// FIELDS
 	// ======================================================
+	private CameraManager camera;
 	private ButtonSprite attackButton;
 	private ButtonSprite detailsButton;
 	private ButtonSprite autoDeployButton;
@@ -52,6 +53,8 @@ public class GameHUD extends HUD implements Displayable {
 		gameScene = scene;
 
 		resources = ResourceCache.getSharedInstance();
+		
+		camera = resources.camera;
 
 		createDisplay();
 	}
@@ -112,58 +115,56 @@ public class GameHUD extends HUD implements Displayable {
 
 	private void createAttackButton() {
 
-		attackButton = new ButtonSprite(0, 0,
-				resources.attackBtnRegion,
-				resources.vbom) 
+		attackButton = new ButtonSprite(0, 0, resources.attackBtnRegion, resources.vbom) 
 		{
-
 			@Override
-			public boolean onAreaTouched(TouchEvent pSceneTouchEvent, 
-					float pTouchAreaLocalX, float pTouchAreaLocalY)
+			public boolean onAreaTouched(TouchEvent ev, float pX, float pY)
 			{
-				switch(pSceneTouchEvent.getAction())
+				switch(ev.getAction())
 				{
+				
 				case MotionEvent.ACTION_DOWN:
 					pressed(BUTTON.ATTACK);
 					break;
+					
 				case MotionEvent.ACTION_UP:
 					touched(BUTTON.ATTACK);
 					break;
+					
 				case MotionEvent.ACTION_OUTSIDE:
 					released(BUTTON.ATTACK);
 					break;
+					
 				default:
 					break;
+					
 				}
 				return true;
 			}
 		};
 
-		attackButton.setScaleX(.5f);
-		attackButton.setScaleY(.6f);
-		attackButton.setPosition(
-				(resources.camera.getWidth() - (attackButton.getScaleX() * attackButton.getWidth() / 2f) + 4),
-				(resources.camera.getHeight()/2f));
+		Utils.wrap(attackButton, 1f * camera.getWidth(), 0.4f * camera.getHeight(), 1f);
+		attackButton.setPosition(camera.getWidth() - 0.45f * Utils.getWidth(attackButton), 0.5f * camera.getHeight());
 
 		attackButton.setVisible(false);
 	}
 
 	private void createInfoTab() {
 
-		infoTab = new Sprite(0f,0f,
-				resources.infoTabRegion,
-				resources.vbom);
+		infoTab = new Sprite(0, 0, resources.infoTabRegion, resources.vbom);
 
-		infoTab.setSize(resources.camera.getWidth(), 0.10f * resources.camera.getHeight());
-		infoTab.setPosition(resources.camera.getWidth() / 2, resources.camera.getHeight() - infoTab.getHeight() / 2);
+		//Utils.expand(infoTab, 1f * camera.getWidth(), 0.1f * camera.getHeight(), 0.9f);
+		infoTab.setSize(1f * camera.getWidth(), 0.1f * camera.getHeight());
+		infoTab.setPosition(0.5f * camera.getWidth(), camera.getHeight() - 0.5f * infoTab.getHeight());
+		infoTab.setAlpha(0.8f);
+		
+		infoTabText = new Text(0, 0, resources.mInfoTabFont, "", 1000, resources.vbom);
 
-		infoTabText = new Text(infoTab.getWidth() / 2, infoTab.getHeight() / 2,
-				resources.mInfoTabFont, "NO INFO", 1000, resources.vbom);
-
+		Utils.wrap(infoTabText, infoTab, 0.9f);
+		infoTabText.setPosition(0.5f * infoTab.getWidth(), 0.5f * infoTab.getHeight());
 		infoTabText.setColor(Color.BLACK);
 
 		infoTab.attachChild(infoTabText);
-
 		infoTab.setVisible(false);
 	}
 
@@ -530,8 +531,10 @@ public class GameHUD extends HUD implements Displayable {
 	// ======================================================
 	// INFO TAB
 	// ======================================================
-	public void setInfoTabText(String info) {
+	public void setInfoTabText(String info)
+	{
 		infoTabText.setText(info);
+		Utils.wrap(infoTabText, infoTab, 0.9f);
 	}
 
 	public void setInfoTabText(GameLogic logic)

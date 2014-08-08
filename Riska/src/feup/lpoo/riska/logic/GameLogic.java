@@ -5,6 +5,7 @@ import java.util.Collections;
 import java.util.Comparator;
 import java.util.Random;
 
+import android.util.Log;
 import feup.lpoo.riska.elements.Map;
 import feup.lpoo.riska.elements.Player;
 import feup.lpoo.riska.elements.Region;
@@ -79,6 +80,8 @@ public class GameLogic
 
 		for(int i = 0; i < GameInfo.numberOfPlayers; i++)
 		{
+			Log.d("Riska", "Player " + i + (GameInfo.playerIsCPU[i] ? " is " : " is not ") + "CPU");
+			
 			Player player = new Player(GameInfo.playerIsCPU[i], GameInfo.getPlayerColors(i), "PLAYER " + i);
 			player.setSoldiersToDeploy(INITIAL_SOLDIERS_TO_DEPLOY);
 			
@@ -101,7 +104,8 @@ public class GameLogic
 	// ======================================================
 	// ======================================================
 
-	public void update() {
+	public void update()
+	{
 
 		if(gameOver())
 		{
@@ -217,7 +221,6 @@ public class GameLogic
 			state = GAME_STATE.PLAY;
 			turnDone = true;
 		}
-
 	}
 
 	public void move() {

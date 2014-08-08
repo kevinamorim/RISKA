@@ -954,6 +954,7 @@ public class MainMenuScene extends BaseScene implements Displayable, IOnMenuItem
 		GameInfo.numberOfPlayers = numOfPlayers;
 		GameInfo.humanPlayers = human;
 		GameInfo.cpuPlayers = cpu;
+		GameInfo.playerIsCPU = playerIsCPU;
 
 		Log.d("Riska", "Saving players info...");
 		Log.d("Riska", "Number of players: " + GameInfo.numberOfPlayers);
