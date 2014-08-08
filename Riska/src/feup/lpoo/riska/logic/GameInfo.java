@@ -35,9 +35,11 @@ public class GameInfo
 	public static int numberOfPlayers = 2;
 	
 	private static int[] playerFaction = new int[maxPlayers]; 
+	public static int numberOfFactions = COLORS.length;
+	
 	public static boolean[] playerIsCPU = new boolean[maxPlayers];
-	public static int CPUplayers = 0;
-	public static int HUMANplayers = 0;
+	public static int cpuPlayers = 0;
+	public static int humanPlayers = 0;
 	
 	public static int currentMapIndex = 0;
 	
@@ -98,48 +100,4 @@ public class GameInfo
 		
 		return false;
 	}
-
-	public static void clearFactions()
-	{
-		for(int i = 0; i < playerFaction.length; i++)
-		{
-			playerFaction[i] = -1;
-		}
-	}
-
-	public static boolean getPlayerType(int i)
-	{
-		return playerIsCPU[i];
-	}
-
-	public static void setPlayerAsCPU(int index, boolean value)
-	{
-		if(value)
-		{
-			CPUplayers++;
-			playerIsCPU[index] = true;
-		}
-		else
-		{
-			HUMANplayers++;
-			playerIsCPU[index] = false;
-		}
-	}
-
-	public static void updatePlayerStatus(int index, boolean isCPU)
-	{
-		if(isCPU)
-		{
-			CPUplayers++;
-			HUMANplayers--;
-			playerIsCPU[index] = true;
-		}
-		else
-		{
-			CPUplayers--;
-			HUMANplayers++;
-			playerIsCPU[index] = false;
-		}
-	}
-	
 }

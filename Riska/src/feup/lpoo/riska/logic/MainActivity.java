@@ -11,7 +11,6 @@ import org.andengine.entity.scene.Scene;
 import org.andengine.opengl.font.Font;
 import org.andengine.ui.activity.BaseGameActivity;
 
-import android.util.Log;
 import android.view.KeyEvent;
 import feup.lpoo.riska.gameInterface.CameraManager;
 import feup.lpoo.riska.resources.ResourceCache;

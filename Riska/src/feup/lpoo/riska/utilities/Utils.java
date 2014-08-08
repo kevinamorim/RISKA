@@ -11,26 +11,26 @@ import feup.lpoo.riska.logic.MainActivity;
 
 public class Utils
 {
-	
+
 	private static MainActivity activity = MainActivity.getSharedInstance();
-	
+
 	private static Random r = new Random();
-	
+
 	public static boolean isBetween(int value, int min, int max)
 	{
 		return (value >= min && value <= max);
 	}
-	
+
 	public static boolean isBetween(float value, float min, float max)
 	{
 		return (value >= min && value <= max);
 	}
-	
+
 	public static int randomInt(int min, int max)
 	{
 		return (r.nextInt(max) + min);
 	}
-	
+
 	// ======================================================
 	// ======================================================
 
@@ -43,10 +43,10 @@ public class Utils
 	{
 		return activity.getString(resID);
 	}
-	
+
 	// ======================================================
 	// ======================================================
-	
+
 	public static String wrapText(Font pFont, String pString, float maxWidth, VertexBufferObjectManager vbom) {
 
 		Text pText = new Text(0, 0, pFont, pString, 1000, vbom);
@@ -78,12 +78,12 @@ public class Utils
 
 		return wrappedText;
 	}
-	
+
 	public static void wrap(Entity child, Entity parent, float boundingFactor)
 	{
 		wrap(child, parent.getWidth(), parent.getHeight(), boundingFactor);
 	}
-	
+
 	public static void wrap(Entity child, float pWidth, float pHeight, float boundingFactor)
 	{
 		if(child.getWidth() / pWidth > child.getHeight() / pHeight)
@@ -97,12 +97,12 @@ public class Utils
 			child.setScale(boundingFactor * pHeight / child.getHeight());
 		}
 	}
-	
+
 	public static void expand(Entity child, Entity parent, float boundingFactor)
 	{
 		expand(child, parent.getWidth(), parent.getHeight(), boundingFactor);
 	}
-	
+
 	public static void expand(Entity child, float pWidth, float pHeight, float boundingFactor)
 	{
 		if(child.getWidth() / pWidth < child.getHeight() / pHeight)
@@ -121,7 +121,7 @@ public class Utils
 	{
 		return (child.getWidth() > (factor * parent.getWidth()) || child.getHeight() > (factor * parent.getHeight()));
 	}
-	
+
 	public static boolean notFilling(Entity child, Entity parent, float factor)
 	{
 		return (child.getWidth() < (factor * parent.getWidth()) || child.getHeight() < (factor * parent.getHeight()));
@@ -129,77 +129,77 @@ public class Utils
 
 	// ======================================================
 	// ======================================================
-	
+
 	public static float getRightBoundsX(Entity e)
 	{
 		return getRightBoundsX(e.getX(), e.getWidth());
 	}
-	
+
 	public static float getRightBoundsX(float pX, float pWidth)
 	{
 		return (pX + 0.5f * pWidth);
 	}
-	
+
 	public static float getLeftBoundsX(Entity e)
 	{
 		return getLeftBoundsX(e.getX(), e.getWidth());
 	}
-	
+
 	public static float getLeftBoundsX(float pX, float pWidth)
 	{
 		return (pX - 0.5f * pWidth);
 	}
-	
+
 	public static float getUpperBoundsY(Entity e)
 	{
 		return getUpperBoundsY(e.getY(), e.getHeight());
 	}
-	
+
 	public static float getUpperBoundsY(float pY, float pHeight)
 	{
 		return (pY + 0.5f * pHeight);
 	}
-	
+
 	public static float getLowerBoundsY(Entity e)
 	{
 		return getLowerBoundsY(e.getY(), e.getHeight());
 	}
-	
+
 	public static float getLowerBoundsY(float pY, float pHeight)
 	{
 		return (pY - 0.5f * pHeight);
 	}
-	
+
 	// ======================================================
 	// ======================================================
-	
+
 	public static float calculateChanceOfSuccess(int val_1, int val_2)
 	{
 		int min = 1;
-		
+
 		float prob1 = 1f / (val_1 + (1 - min));
 		float prob2 = 1f / (val_2 + (1 - min));
-		
+
 		float probSum = 0f;
-		
+
 		for(int i = min; i <= val_1; i++)
 		{
 			float probSumI = 0f;
-			
+
 			for(int j = min; j <= val_2 && j < i; j++)
 			{
 				probSumI += prob2;
 			}
-			
+
 			probSum += prob1 * probSumI;
 		}
-		
+
 		return probSum;
 	}
 
 	// ======================================================
 	// ======================================================
-	
+
 	/**
 	 * Works with scale
 	 */
@@ -207,7 +207,7 @@ public class Utils
 	{
 		return (e.getScaleX() * e.getWidth());
 	}
-	
+
 	/**
 	 * Works with scale
 	 */
@@ -220,10 +220,27 @@ public class Utils
 	{
 		return (0.5f * e1.getWidth());
 	}
-	
+
 	public static float getCenterY(Entity e1)
 	{
 		return (0.5f * e1.getHeight());
 	}
 
+	// ======================================================
+	// ======================================================
+	public static <X> void fill(X[] array, X value)
+	{
+		for(int i = 0; i < array.length; i++)
+		{
+			array[i] = value;
+		}
+	}
+	
+	public static void fill(int[] array, int value)
+	{
+		for(int i = 0; i < array.length; i++)
+		{
+			array[i] = value;
+		}
+	}
 }

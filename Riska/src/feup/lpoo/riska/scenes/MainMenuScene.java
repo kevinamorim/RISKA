@@ -55,7 +55,7 @@ public class MainMenuScene extends BaseScene implements Displayable, IOnMenuItem
 	private final int FACTION_NEXT = 8;
 	private final int FACTION_PREVIOUS = 9;
 	private final int FACTION_SELECT = 10;
-	
+
 	private final int PLAYERS_SELECT = 11;
 
 	private SpriteBackground background;	
@@ -80,12 +80,13 @@ public class MainMenuScene extends BaseScene implements Displayable, IOnMenuItem
 	private AnimatedTextButtonSpriteMenuItem choosePlayerNextButton;
 	private Text titleTextChoosePlayers;
 	private Text textIsCPU;
-	
+
 	private ButtonSprite[] addPlayerButton;
 	private ButtonSprite[] removePlayerButton;
 	private ButtonSprite[] playerNameButton;
 	private Text[] playerName;
 	private ButtonSprite[] cpuCheckBox;
+
 	private boolean[] playerIsCPU;
 	private boolean[] playerActive;
 	private boolean[] playerRemovable;
@@ -100,8 +101,11 @@ public class MainMenuScene extends BaseScene implements Displayable, IOnMenuItem
 	private ButtonSprite factionSprite;
 	private ButtonSprite factionSpriteCenter;
 	private ButtonSprite factionSpriteBorder;
+
 	private int currentPlayer = 0;
 	private int selectedFaction = 0;
+	private int[] playerFaction;
+
 
 	// MUSIC OPTIONS
 	private boolean musicOn = true;
@@ -125,10 +129,11 @@ public class MainMenuScene extends BaseScene implements Displayable, IOnMenuItem
 			System.exit(0);
 		}
 		else
-		{
-			setInitialPlayersVariables();
-			
+		{				
 			detachChildren();
+
+			resetGameInfo();
+
 			setChildScene(mainMenu);
 		}
 	}
@@ -360,30 +365,30 @@ public class MainMenuScene extends BaseScene implements Displayable, IOnMenuItem
 		playerNameButton = new ButtonSprite[GameInfo.maxPlayers];
 		playerName = new Text[GameInfo.maxPlayers];
 		cpuCheckBox = new ButtonSprite[GameInfo.maxPlayers];
-		
+
 		playerIsCPU = new boolean[GameInfo.maxPlayers];
 		playerActive = new boolean[GameInfo.maxPlayers];
 		playerEditable = new boolean[GameInfo.maxPlayers];
 		playerRemovable = new boolean[GameInfo.maxPlayers];
 
 		createPlayerSpots();
-		
+
 		titleTextChoosePlayers = new Text(0, 0, resources.mainMenuFont, "EDIT PLAYERS", vbom);
 		Utils.wrap(titleTextChoosePlayers, 0.9f * camera.getWidth(), 0.1f * camera.getHeight(), 0.9f);
 		titleTextChoosePlayers.setPosition( 0.5f * camera.getWidth(), 0.90f * camera.getHeight());
 		titleTextChoosePlayers.setColor(Color.WHITE);
-		
+
 		choosePlayerNextButton = new AnimatedTextButtonSpriteMenuItem(PLAYERS_SELECT,
 				resources.textBtnRegion.getWidth(),
 				resources.textBtnRegion.getHeight(),
 				resources.textBtnRegion,
 				vbom, "Choose Faction", resources.mainMenuFont);
-		
+
 		choosePlayerNextButton.setSize(0.5f * camera.getWidth(), 0.15f * camera.getHeight());
 		choosePlayerNextButton.setPosition(0.5f * camera.getWidth(), 0.1f * camera.getHeight());
-		
+
 		choosePlayersMenu.addMenuItem(choosePlayerNextButton);
-		
+
 		choosePlayersMenu.attachChild(titleTextChoosePlayers);
 		choosePlayersMenu.attachChild(textIsCPU);
 
@@ -492,26 +497,17 @@ public class MainMenuScene extends BaseScene implements Displayable, IOnMenuItem
 			cpuCheckBox[i].setTag(i);
 			registerTouchArea(cpuCheckBox[i]);
 		}
-		
-		// Defines players' status
-		for(int i = 0; i < GameInfo.maxPlayers; i++)
-		{
-			playerIsCPU[i] = (i < GameInfo.minHumanPlayers) ? false : true;
-			playerActive[i] = (i < GameInfo.minPlayers) ? true : false;
-			playerEditable[i] = (i < GameInfo.minHumanPlayers) ? false : true;
-			playerRemovable[i] = (i < GameInfo.minPlayers) ? false : true;
-		}
-		
+
 		setInitialPlayersVariables();
-		
+
 		float heightFactor = 1f / (GameInfo.maxPlayers + 1);	
 		float buttonsHeight = heightFactor * 0.8f * camera.getHeight();
-		
+
 		textIsCPU = new Text(0, 0, resources.mainMenuFont, "cpu?", vbom);
 		Utils.wrap(textIsCPU, 0.2f * camera.getWidth(), buttonsHeight, 0.5f);
 		textIsCPU.setPosition(0.85f * camera.getWidth(), (1f - heightFactor) * 0.75f * camera.getHeight() + 0.15f * camera.getHeight());
 		textIsCPU.setColor(Color.WHITE);
-		
+
 		// Places all players buttons
 		for(int i = 0; i < GameInfo.maxPlayers; i++)
 		{	
@@ -545,12 +541,17 @@ public class MainMenuScene extends BaseScene implements Displayable, IOnMenuItem
 	{
 		for(int i = 0; i < GameInfo.maxPlayers; i++)
 		{
+			playerIsCPU[i] = (i < GameInfo.minHumanPlayers) ? false : true;
+			playerActive[i] = (i < GameInfo.minPlayers) ? true : false;
+			playerEditable[i] = (i < GameInfo.minHumanPlayers) ? false : true;
+			playerRemovable[i] = (i < GameInfo.minPlayers) ? false : true;
+
 			playerName[i].setText(playerIsCPU[i] ? "CPU": "Player");
-			
+
 			addPlayerButton[i].setVisible((i < GameInfo.minPlayers) ? false : true);
-			
+
 			removePlayerButton[i].setVisible(false);
-			
+
 			cpuCheckBox[i].setCurrentTileIndex(playerIsCPU[i] ? 1 : 0);
 			cpuCheckBox[i].setVisible(playerActive[i] && playerEditable[i]);
 
@@ -573,10 +574,10 @@ public class MainMenuScene extends BaseScene implements Displayable, IOnMenuItem
 			playerNameButton[tag].setVisible(true);
 			playerName[tag].setVisible(true);
 			addPlayerButton[tag].setVisible(false);
-			
+
 			removePlayerButton[tag].setVisible(true);
 			cpuCheckBox[tag].setVisible(true);
-			
+
 			//TODO : should this happen or not?
 			//setPlayerAsCPU(tag, true);
 
@@ -589,7 +590,7 @@ public class MainMenuScene extends BaseScene implements Displayable, IOnMenuItem
 			playerNameButton[tag].setVisible(false);
 			playerName[tag].setVisible(false);
 			addPlayerButton[tag].setVisible(true);
-			
+
 			removePlayerButton[tag].setVisible(false);
 			cpuCheckBox[tag].setVisible(false);
 
@@ -669,7 +670,8 @@ public class MainMenuScene extends BaseScene implements Displayable, IOnMenuItem
 
 		chooseFactionMenu.setBackgroundEnabled(false);
 
-		GameInfo.clearFactions();
+		playerFaction = new int[GameInfo.numberOfFactions];
+		setInitialFactionsVariables();
 
 		titleTextChooseFaction = new Text(0, 0, resources.mainMenuFont, "CHOOSE YOUR FACTION COLORS", vbom);
 
@@ -731,7 +733,7 @@ public class MainMenuScene extends BaseScene implements Displayable, IOnMenuItem
 		factionSpriteCenter.setSize(0.8f * factionSprite.getWidth(), 0.8f * factionSprite.getHeight());
 		factionSpriteCenter.setPosition(factionSprite.getX(), factionSprite.getY());
 
-		updateFaction();
+		updateFactionVisual();
 
 		factionSpriteBorder.setCurrentTileIndex(0);
 		factionSpriteBorder.setSize(0.9f * factionSprite.getWidth(), 0.9f * factionSprite.getHeight());
@@ -751,28 +753,59 @@ public class MainMenuScene extends BaseScene implements Displayable, IOnMenuItem
 		chooseFactionMenu.setOnMenuItemClickListener(this);
 	}
 
+	private void setInitialFactionsVariables()
+	{
+		Utils.fill(playerFaction, -1);
+		selectedFaction = 0;
+		currentPlayer = 0;
+	}
+
 	private void selectFaction(int direction)
 	{
+		int index = selectedFaction;
+
 		if(direction > 0)
 		{
-			selectedFaction += 1;
-			selectedFaction = selectedFaction % GameInfo.getNumberOfColors();
+			do
+			{
+				index += 1;
+				index = index % playerFaction.length;
+
+				if(index == selectedFaction)
+				{
+					Log.e("Riska", "Circled through all factions. None available for chosing!");
+					break;
+				}
+
+			}while(playerFaction[index] != -1);
 		}
 
 		if(direction < 0)
 		{
-			if(selectedFaction - 1 < 0)
+			do
 			{
-				selectedFaction = GameInfo.getNumberOfColors() - 1;
-			}
-			else
-			{
-				selectedFaction -= 1;
-			}
+
+				index -= 1;
+
+				if(index - 1 < 0)
+				{
+					index = playerFaction.length - 1;
+				}
+
+				if(index == selectedFaction)
+				{
+					Log.e("Riska", "Circled through all factions. None available for chosing!");
+					break;
+				}
+
+			}while(playerFaction[index] != -1);
 		}
+
+		selectedFaction = index;
+		updateFactionVisual();
 	}
 
-	private void updateFaction()
+	private void updateFactionVisual()
 	{
 		factionSprite.setColor(GameInfo.getPriColor(selectedFaction));
 		factionSpriteCenter.setColor(GameInfo.getSecColor(selectedFaction));
@@ -863,20 +896,27 @@ public class MainMenuScene extends BaseScene implements Displayable, IOnMenuItem
 			break;
 
 		case FACTION_NEXT:
-			selectFaction(1);
-			updateFaction();
+			selectFaction(1);			
 			break;
 
 		case FACTION_PREVIOUS:
 			selectFaction(-1);
-			updateFaction();
 			break;
 
 		case FACTION_SELECT:
-			saveFactionsInfo();
-			sceneManager.createGameScene();
+			if(currentPlayer < GameInfo.humanPlayers - 1)
+			{
+				playerFaction[selectedFaction] = currentPlayer;
+				currentPlayer++;
+				selectFaction(1);
+			}
+			else
+			{
+				saveFactionsInfo();
+				sceneManager.createGameScene();
+			}
 			break;
-			
+
 		case PLAYERS_SELECT:
 			savePlayersInfo();
 			setChildScene(chooseFactionMenu);
@@ -894,7 +934,7 @@ public class MainMenuScene extends BaseScene implements Displayable, IOnMenuItem
 		int numOfPlayers = 0;
 		int cpu = 0;
 		int human = 0;
-		
+
 		for(int i = 0; i < GameInfo.maxPlayers; i++)
 		{
 			if(playerActive[i])
@@ -910,28 +950,33 @@ public class MainMenuScene extends BaseScene implements Displayable, IOnMenuItem
 				}
 			}
 		}
+
 		GameInfo.numberOfPlayers = numOfPlayers;
-		GameInfo.HUMANplayers = human;
-		GameInfo.CPUplayers = cpu;
-		
+		GameInfo.humanPlayers = human;
+		GameInfo.cpuPlayers = cpu;
+
 		Log.d("Riska", "Saving players info...");
 		Log.d("Riska", "Number of players: " + GameInfo.numberOfPlayers);
-		Log.d("Riska", "HUMAN players:     " + GameInfo.HUMANplayers);
-		Log.d("Riska", "CPU players:     " + GameInfo.CPUplayers);
+		Log.d("Riska", "HUMAN players:     " + GameInfo.humanPlayers);
+		Log.d("Riska", "CPU players:     " + GameInfo.cpuPlayers);
 	}
 
 	private void saveFactionsInfo()
 	{
-		GameInfo.assignPlayerFaction(currentPlayer, selectedFaction);
-
-		//if(currentPlayer < Info.numberOfPlayers - 1)
-		//{
-		//	currentPlayer++;
-		//}
-		//else
+		for(int i = 0; i < playerFaction.length; i++)
+		{
+			if(playerFaction[i] != -1)
+			{
+				GameInfo.assignPlayerFaction(playerFaction[i], i);
+			}	
+		}
 
 		GameInfo.assignRemainingFactions(currentPlayer);
-
 	}
-	
+
+	private void resetGameInfo()
+	{
+		setInitialPlayersVariables();	
+		setInitialFactionsVariables();
+	}
 }

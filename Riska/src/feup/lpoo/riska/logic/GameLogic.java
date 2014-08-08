@@ -79,7 +79,7 @@ public class GameLogic
 
 		for(int i = 0; i < GameInfo.numberOfPlayers; i++)
 		{
-			Player player = new Player(GameInfo.getPlayerType(i), GameInfo.getPlayerColors(i), "PLAYER " + i);
+			Player player = new Player(GameInfo.playerIsCPU[i], GameInfo.getPlayerColors(i), "PLAYER " + i);
 			player.setSoldiersToDeploy(INITIAL_SOLDIERS_TO_DEPLOY);
 			
 			players.add(player);
