@@ -23,6 +23,10 @@ import feup.lpoo.riska.utilities.Utils;
 public class MainMenuScene extends BaseScene implements Displayable, IOnMenuItemClickListener {
 
 	// ==================================================
+	// CONSTANTS
+	// ==================================================
+	private final int MAX_NAME_CHARS = 50;
+	// ==================================================
 	// FIELDS
 	// ==================================================
 	private MenuScene mainMenu;
@@ -35,6 +39,7 @@ public class MainMenuScene extends BaseScene implements Displayable, IOnMenuItem
 	//private MenuScene chooseDifficultyMenu;	// TODO
 
 	private enum CHILD { MAIN, OPTIONS, START_GAME, CHOOSE_MAP, CHOOSE_PLAYERS, CHOOSE_FACTION, CHOOSE_DIFFICULTY};
+	private enum BUTTON { ADD, REMOVE, NAME, CPU_BOX};
 
 	private final int MAIN_START = 0;
 	private final int MAIN_OPTIONS = 1;
@@ -50,6 +55,8 @@ public class MainMenuScene extends BaseScene implements Displayable, IOnMenuItem
 	private final int FACTION_NEXT = 8;
 	private final int FACTION_PREVIOUS = 9;
 	private final int FACTION_SELECT = 10;
+	
+	private final int PLAYERS_SELECT = 11;
 
 	private SpriteBackground background;	
 
@@ -70,11 +77,19 @@ public class MainMenuScene extends BaseScene implements Displayable, IOnMenuItem
 	private Text textMusic;
 
 	// CHOOSE PLAYERS MENU
+	private AnimatedTextButtonSpriteMenuItem choosePlayerNextButton;
+	private Text titleTextChoosePlayers;
+	private Text textIsCPU;
+	
 	private ButtonSprite[] addPlayerButton;
 	private ButtonSprite[] removePlayerButton;
-	private ButtonSprite[] playerName;
-	private ButtonSprite[] playerCPU;
+	private ButtonSprite[] playerNameButton;
+	private Text[] playerName;
+	private ButtonSprite[] cpuCheckBox;
+	private boolean[] playerIsCPU;
 	private boolean[] playerActive;
+	private boolean[] playerRemovable;
+	private boolean[] playerEditable;
 
 	// CHOOSE FACTION MENU
 	private Text titleTextChooseFaction;
@@ -88,8 +103,7 @@ public class MainMenuScene extends BaseScene implements Displayable, IOnMenuItem
 	private int currentPlayer = 0;
 	private int selectedFaction = 0;
 
-
-	// Music options
+	// MUSIC OPTIONS
 	private boolean musicOn = true;
 	private boolean sfxOn = false;
 
@@ -112,10 +126,13 @@ public class MainMenuScene extends BaseScene implements Displayable, IOnMenuItem
 		}
 		else
 		{
+			setInitialPlayersVariables();
+			
 			detachChildren();
 			setChildScene(mainMenu);
 		}
 	}
+
 
 	@Override
 	public void disposeScene()
@@ -131,8 +148,8 @@ public class MainMenuScene extends BaseScene implements Displayable, IOnMenuItem
 	}
 
 	// ==================================================
+	// CREATE DISPLAY
 	// ==================================================
-
 	@Override
 	public void createDisplay()
 	{
@@ -194,6 +211,9 @@ public class MainMenuScene extends BaseScene implements Displayable, IOnMenuItem
 		}
 	}
 
+	// ==================================================
+	// MAIN MENU
+	// ==================================================
 	private void createMainMenu()
 	{
 		mainMenu = new MenuScene(camera);
@@ -212,7 +232,7 @@ public class MainMenuScene extends BaseScene implements Displayable, IOnMenuItem
 				resources.optionsBtnRegion, 
 				vbom);
 
-		Utils.wrap(startButton, 0.4f * camera.getWidth(), 0.4f * camera.getHeight(), 1f);
+		Utils.wrap(startButton, 1f * camera.getWidth(), 0.2f * camera.getHeight(), 1f);
 		startButton.setPosition(camera.getCenterX(), camera.getCenterY());
 
 		Utils.wrap(optionsButton, 0.2f * camera.getWidth(), 0.2f * camera.getHeight(), 1f);
@@ -223,6 +243,9 @@ public class MainMenuScene extends BaseScene implements Displayable, IOnMenuItem
 		mainMenu.setOnMenuItemClickListener(this);	
 	}
 
+	// ==================================================
+	// START GAME
+	// ==================================================
 	private void createStartGameMenu()
 	{
 		startGameMenu = new MenuScene(camera);
@@ -248,10 +271,10 @@ public class MainMenuScene extends BaseScene implements Displayable, IOnMenuItem
 				resources.returnBtnRegion, vbom);
 
 
-		Utils.wrap(newGameButton, 0.4f * camera.getWidth(), 0.4f * camera.getHeight(), 1f);
+		Utils.wrap(newGameButton, 1f * camera.getWidth(), 0.2f * camera.getHeight(), 1f);
 		newGameButton.setPosition(camera.getCenterX(), 0.66f * camera.getHeight());
 
-		Utils.wrap(loadGameButton, 0.4f * camera.getWidth(), 0.4f * camera.getHeight(), 1f);
+		Utils.wrap(loadGameButton, 1f * camera.getWidth(), 0.2f * camera.getHeight(), 1f);
 		loadGameButton.setPosition(camera.getCenterX(), 0.33f * camera.getHeight());
 
 		Utils.wrap(returnButtonStart, 0.2f * camera.getWidth(), 0.2f * camera.getHeight(), 1f);
@@ -264,6 +287,9 @@ public class MainMenuScene extends BaseScene implements Displayable, IOnMenuItem
 		startGameMenu.setOnMenuItemClickListener(this);
 	}
 
+	// ==================================================
+	// OPTIONS
+	// ==================================================
 	private void createOptionsMenu()
 	{
 		optionsMenu = new MenuScene(camera);
@@ -320,20 +346,47 @@ public class MainMenuScene extends BaseScene implements Displayable, IOnMenuItem
 		optionsMenu.setOnMenuItemClickListener(this);	
 	}
 
+	// ==================================================
+	// CHOOSE PLAYERS
+	// ==================================================
 	private void createChoosePlayersMenu()
 	{
 		choosePlayersMenu = new MenuScene(camera);
-		
+
 		choosePlayersMenu.setBackgroundEnabled(false);
-		
+
 		addPlayerButton = new ButtonSprite[GameInfo.maxPlayers];
 		removePlayerButton = new ButtonSprite[GameInfo.maxPlayers];
-		playerName = new ButtonSprite[GameInfo.maxPlayers];
-		playerCPU = new ButtonSprite[GameInfo.maxPlayers];
+		playerNameButton = new ButtonSprite[GameInfo.maxPlayers];
+		playerName = new Text[GameInfo.maxPlayers];
+		cpuCheckBox = new ButtonSprite[GameInfo.maxPlayers];
+		
+		playerIsCPU = new boolean[GameInfo.maxPlayers];
 		playerActive = new boolean[GameInfo.maxPlayers];
+		playerEditable = new boolean[GameInfo.maxPlayers];
+		playerRemovable = new boolean[GameInfo.maxPlayers];
 
 		createPlayerSpots();
 		
+		titleTextChoosePlayers = new Text(0, 0, resources.mainMenuFont, "EDIT PLAYERS", vbom);
+		Utils.wrap(titleTextChoosePlayers, 0.9f * camera.getWidth(), 0.1f * camera.getHeight(), 0.9f);
+		titleTextChoosePlayers.setPosition( 0.5f * camera.getWidth(), 0.90f * camera.getHeight());
+		titleTextChoosePlayers.setColor(Color.WHITE);
+		
+		choosePlayerNextButton = new AnimatedTextButtonSpriteMenuItem(PLAYERS_SELECT,
+				resources.textBtnRegion.getWidth(),
+				resources.textBtnRegion.getHeight(),
+				resources.textBtnRegion,
+				vbom, "Choose Faction", resources.mainMenuFont);
+		
+		choosePlayerNextButton.setSize(0.5f * camera.getWidth(), 0.15f * camera.getHeight());
+		choosePlayerNextButton.setPosition(0.5f * camera.getWidth(), 0.1f * camera.getHeight());
+		
+		choosePlayersMenu.addMenuItem(choosePlayerNextButton);
+		
+		choosePlayersMenu.attachChild(titleTextChoosePlayers);
+		choosePlayersMenu.attachChild(textIsCPU);
+
 		choosePlayersMenu.setOnMenuItemClickListener(this);
 	}
 
@@ -350,13 +403,13 @@ public class MainMenuScene extends BaseScene implements Displayable, IOnMenuItem
 					switch(ev.getAction()) 
 					{
 					case MotionEvent.ACTION_DOWN:
-						onAddButtonPressed(this, getTag());
+						onButtonPressed(this, getTag(), BUTTON.ADD);
 						break;
 					case MotionEvent.ACTION_UP:
-						onAddButtonTouched(this, getTag());
+						onButtonTouched(this, getTag(), BUTTON.ADD);
 						break;
 					case MotionEvent.ACTION_OUTSIDE:
-						onAddButtonReleased(this, getTag());
+						onButtonReleased(this, getTag(), BUTTON.ADD);
 						break;
 					}
 
@@ -365,7 +418,7 @@ public class MainMenuScene extends BaseScene implements Displayable, IOnMenuItem
 			};
 			addPlayerButton[i].setTag(i);
 			registerTouchArea(addPlayerButton[i]);
-			
+
 			removePlayerButton[i] = new ButtonSprite(0, 0, resources.playerRemoveButtonRegion, vbom)
 			{
 				@Override
@@ -374,13 +427,13 @@ public class MainMenuScene extends BaseScene implements Displayable, IOnMenuItem
 					switch(ev.getAction()) 
 					{
 					case MotionEvent.ACTION_DOWN:
-						onRemoveButtonPressed(this, getTag());
+						onButtonPressed(this, getTag(), BUTTON.REMOVE);
 						break;
 					case MotionEvent.ACTION_UP:
-						onRemovedButtonTouched(this, getTag());
+						onButtonTouched(this, getTag(), BUTTON.REMOVE);
 						break;
 					case MotionEvent.ACTION_OUTSIDE:
-						onRemoveButtonReleased(this, getTag());
+						onButtonReleased(this, getTag(), BUTTON.REMOVE);
 						break;
 					}
 
@@ -389,78 +442,227 @@ public class MainMenuScene extends BaseScene implements Displayable, IOnMenuItem
 			};
 			removePlayerButton[i].setTag(i);
 			registerTouchArea(removePlayerButton[i]);
-			
-			playerName[i] = new ButtonSprite(0, 0, resources.textBtnRegion, vbom);
 
-			GameInfo.playerIsCPU[i] = (i < GameInfo.minHumanPlayers) ? false : true;
-			playerActive[i] = (i < GameInfo.minPlayers) ? true : false;
+			playerName[i] = new Text(0, 0, resources.mainMenuFont, "", MAX_NAME_CHARS, vbom);
+			playerNameButton[i] = new ButtonSprite(0, 0, resources.textBtnRegion, vbom)
+			{
+				@Override
+				public boolean onAreaTouched(TouchEvent ev, float pX, float pY) 
+				{
+					switch(ev.getAction()) 
+					{
+					case MotionEvent.ACTION_DOWN:
+						onButtonPressed(this, getTag(), BUTTON.NAME);
+						break;
+					case MotionEvent.ACTION_UP:
+						onButtonTouched(this, getTag(), BUTTON.NAME);
+						break;
+					case MotionEvent.ACTION_OUTSIDE:
+						onButtonReleased(this, getTag(), BUTTON.NAME);
+						break;
+					}
 
-			playerCPU[i] = new ButtonSprite(0, 0, resources.playerCheckBoxButtonRegion, vbom);
+					return true;
+				}
+			};
+			playerNameButton[i].setTag(i);
+			registerTouchArea(playerNameButton[i]);
 
-			//addPlayerButton[i].setVisible((i < GameInfo.minPlayers) ? false : true);
-			//removePlayerButton[i].setVisible(false);
-			addPlayerButton[i].setVisible(true);
+			cpuCheckBox[i] = new ButtonSprite(0, 0, resources.playerCheckBoxButtonRegion, vbom)
+			{
+				@Override
+				public boolean onAreaTouched(TouchEvent ev, float pX, float pY) 
+				{
+					switch(ev.getAction()) 
+					{
+					case MotionEvent.ACTION_DOWN:
+						onButtonPressed(this, getTag(), BUTTON.CPU_BOX);
+						break;
+					case MotionEvent.ACTION_UP:
+						onButtonTouched(this, getTag(), BUTTON.CPU_BOX);
+						break;
+					case MotionEvent.ACTION_OUTSIDE:
+						onButtonReleased(this, getTag(), BUTTON.CPU_BOX);
+						break;
+					}
+
+					return true;
+				}
+			};
+			cpuCheckBox[i].setTag(i);
+			registerTouchArea(cpuCheckBox[i]);
 		}
+		
+		// Defines players' status
+		for(int i = 0; i < GameInfo.maxPlayers; i++)
+		{
+			playerIsCPU[i] = (i < GameInfo.minHumanPlayers) ? false : true;
+			playerActive[i] = (i < GameInfo.minPlayers) ? true : false;
+			playerEditable[i] = (i < GameInfo.minHumanPlayers) ? false : true;
+			playerRemovable[i] = (i < GameInfo.minPlayers) ? false : true;
+		}
+		
+		setInitialPlayersVariables();
+		
+		float heightFactor = 1f / (GameInfo.maxPlayers + 1);	
+		float buttonsHeight = heightFactor * 0.8f * camera.getHeight();
+		
+		textIsCPU = new Text(0, 0, resources.mainMenuFont, "cpu?", vbom);
+		Utils.wrap(textIsCPU, 0.2f * camera.getWidth(), buttonsHeight, 0.5f);
+		textIsCPU.setPosition(0.85f * camera.getWidth(), (1f - heightFactor) * 0.75f * camera.getHeight() + 0.15f * camera.getHeight());
+		textIsCPU.setColor(Color.WHITE);
 		
 		// Places all players buttons
 		for(int i = 0; i < GameInfo.maxPlayers; i++)
-		{
-			float heightFactor = 1f / (GameInfo.maxPlayers + 1);
-			
-			Utils.wrap(addPlayerButton[i], 0.2f * camera.getWidth(), heightFactor * camera.getHeight(), 0.9f);
-			addPlayerButton[i].setPosition(0.15f * camera.getWidth(), (1f - ((i + 1) * heightFactor)) * camera.getHeight());
-			
-			//Utils.wrap(removePlayerButton[i], 0.2f * camera.getWidth(), heightFactor * camera.getHeight(), 0.9f);
-			removePlayerButton[i].setSize(addPlayerButton[i].getWidth(), addPlayerButton[i].getHeight());
-			removePlayerButton[i].setPosition(addPlayerButton[i].getX(), addPlayerButton[i].getY());
-			
-			Utils.wrap(playerName[i], 0.5f * camera.getWidth(), heightFactor * camera.getHeight(), 0.9f);
-			//playerName[i].setSize(0.3f * camera.getWidth(), heightFactor * camera.getHeight());
-			playerName[i].setPosition(0.5f * camera.getWidth(), (1f - ((i + 1) * heightFactor)) * camera.getHeight());
-			
-			Utils.wrap(playerCPU[i], 1f * camera.getWidth(), heightFactor * camera.getHeight(), 0.9f);
-			playerCPU[i].setPosition(0.85f * camera.getWidth(), (1f - ((i + 1) * heightFactor)) * camera.getHeight());
-			
-			choosePlayersMenu.attachChild(playerName[i]);
+		{	
+			float buttonsY = (1f - ((i + 1) * heightFactor)) * 0.75f * camera.getHeight() + 0.15f * camera.getHeight();
+
+			Utils.wrap(addPlayerButton[i], 0.2f * camera.getWidth(), buttonsHeight, 0.9f);
+			addPlayerButton[i].setPosition(0.15f * camera.getWidth(), buttonsY);
+
+			Utils.wrap(removePlayerButton[i], 0.2f * camera.getWidth(), buttonsHeight, 0.9f);
+			removePlayerButton[i].setPosition(addPlayerButton[i]);
+
+			Utils.wrap(playerNameButton[i], 0.5f * camera.getWidth(), buttonsHeight, 0.9f);
+			playerNameButton[i].setPosition(0.5f * camera.getWidth(), buttonsY);
+
+			Utils.wrap(playerName[i], 1f * playerNameButton[i].getWidth(), 0.8f * playerNameButton[i].getHeight(), 0.9f);
+			playerName[i].setPosition(Utils.getCenterX(playerNameButton[i]), Utils.getCenterY(playerNameButton[i]));
+			playerName[i].setColor(Color.BLACK);
+			playerNameButton[i].attachChild(playerName[i]);
+
+			Utils.wrap(cpuCheckBox[i], 1f * camera.getWidth(), buttonsHeight, 1f);
+			cpuCheckBox[i].setPosition(0.85f * camera.getWidth(), buttonsY);
+
+			choosePlayersMenu.attachChild(playerNameButton[i]);
 			choosePlayersMenu.attachChild(addPlayerButton[i]);
-			choosePlayersMenu.attachChild(playerCPU[i]);
+			choosePlayersMenu.attachChild(removePlayerButton[i]);
+			choosePlayersMenu.attachChild(cpuCheckBox[i]);
 		}
 	}
 
+	private void setInitialPlayersVariables()
+	{
+		for(int i = 0; i < GameInfo.maxPlayers; i++)
+		{
+			playerName[i].setText(playerIsCPU[i] ? "CPU": "Player");
+			
+			addPlayerButton[i].setVisible((i < GameInfo.minPlayers) ? false : true);
+			
+			removePlayerButton[i].setVisible(false);
+			
+			cpuCheckBox[i].setCurrentTileIndex(playerIsCPU[i] ? 1 : 0);
+			cpuCheckBox[i].setVisible(playerActive[i] && playerEditable[i]);
 
-	protected void onRemoveButtonReleased(ButtonSprite buttonSprite, int tag)
+			playerNameButton[i].setVisible(playerActive[i]);
+			playerName[i].setVisible(playerActive[i]);
+		}
+	}
+
+	private void onButtonReleased(ButtonSprite buttonSprite, int tag, BUTTON x)
 	{
 		buttonSprite.setCurrentTileIndex(0);
 	}
-	
-	protected void onRemovedButtonTouched(ButtonSprite buttonSprite, int tag)
+
+	private void onButtonTouched(ButtonSprite buttonSprite, int tag, BUTTON x)
 	{
-		onRemoveButtonReleased(buttonSprite, tag);
-		
+		switch(x)
+		{
+
+		case ADD:
+			playerNameButton[tag].setVisible(true);
+			playerName[tag].setVisible(true);
+			addPlayerButton[tag].setVisible(false);
+			
+			removePlayerButton[tag].setVisible(true);
+			cpuCheckBox[tag].setVisible(true);
+			
+			//TODO : should this happen or not?
+			//setPlayerAsCPU(tag, true);
+
+			playerActive[tag] = true;
+
+			onButtonReleased(buttonSprite, tag, x);
+			break;
+
+		case REMOVE:
+			playerNameButton[tag].setVisible(false);
+			playerName[tag].setVisible(false);
+			addPlayerButton[tag].setVisible(true);
+			
+			removePlayerButton[tag].setVisible(false);
+			cpuCheckBox[tag].setVisible(false);
+
+			playerActive[tag] = false;
+
+			onButtonReleased(buttonSprite, tag, x);
+			break;
+
+		case NAME:
+			// TODO : edit name
+			onButtonReleased(buttonSprite, tag, x);
+			break;
+
+		case CPU_BOX:
+			setPlayerAsCPU(tag, !playerIsCPU[tag]);
+			break;
+
+		default:
+			break;
+		}
 	}
 
-	protected void onRemoveButtonPressed(ButtonSprite buttonSprite, int tag)
+	private void setPlayerAsCPU(int tag, boolean value)
 	{
-		buttonSprite.setCurrentTileIndex(1);
+		if(value)
+		{
+			playerIsCPU[tag] = true;
+			updatePlayerName(tag, "CPU");
+			cpuCheckBox[tag].setCurrentTileIndex(1);
+		}
+		else
+		{
+			playerIsCPU[tag] = false;
+			updatePlayerName(tag, "Player");
+			cpuCheckBox[tag].setCurrentTileIndex(0);
+		}
 	}
 
-	
-	protected void onAddButtonReleased(ButtonSprite buttonSprite, int tag)
+	private void updatePlayerName(int tag, String pName)
 	{
-		buttonSprite.setCurrentTileIndex(0);
+		playerName[tag].setText(pName);
+		Utils.wrap(playerName[tag], 1f * playerNameButton[tag].getWidth(), 0.8f * playerNameButton[tag].getHeight(), 0.9f);
 	}
 
-	protected void onAddButtonTouched(ButtonSprite buttonSprite, int tag)
+	private void onButtonPressed(ButtonSprite buttonSprite, int tag, BUTTON x)
 	{
-		onAddButtonReleased(buttonSprite, tag);
+		switch(x)
+		{
+
+		case ADD:
+			buttonSprite.setCurrentTileIndex(1);
+			break;
+
+		case REMOVE:
+			buttonSprite.setCurrentTileIndex(1);
+			break;
+
+		case NAME:
+			buttonSprite.setCurrentTileIndex(1);
+			break;
+
+		case CPU_BOX:
+			// Nothing now
+			break;
+
+		default:
+			break;
+		}	
 	}
 
-	protected void onAddButtonPressed(ButtonSprite buttonSprite, int tag)
-	{
-		buttonSprite.setCurrentTileIndex(1);
-	}
-
-	
+	// ==================================================
+	// CHOOSE FACTION
+	// ==================================================	
 	private void createChooseFactionMenu()
 	{
 		chooseFactionMenu = new MenuScene(camera);
@@ -549,6 +751,36 @@ public class MainMenuScene extends BaseScene implements Displayable, IOnMenuItem
 		chooseFactionMenu.setOnMenuItemClickListener(this);
 	}
 
+	private void selectFaction(int direction)
+	{
+		if(direction > 0)
+		{
+			selectedFaction += 1;
+			selectedFaction = selectedFaction % GameInfo.getNumberOfColors();
+		}
+
+		if(direction < 0)
+		{
+			if(selectedFaction - 1 < 0)
+			{
+				selectedFaction = GameInfo.getNumberOfColors() - 1;
+			}
+			else
+			{
+				selectedFaction -= 1;
+			}
+		}
+	}
+
+	private void updateFaction()
+	{
+		factionSprite.setColor(GameInfo.getPriColor(selectedFaction));
+		factionSpriteCenter.setColor(GameInfo.getSecColor(selectedFaction));
+	}
+
+	// ==================================================
+	// UPDATE DATA
+	// ==================================================
 	private void setChildScene(CHILD x)
 	{	
 		MenuScene toSet = getChildScene(x);
@@ -641,7 +873,13 @@ public class MainMenuScene extends BaseScene implements Displayable, IOnMenuItem
 			break;
 
 		case FACTION_SELECT:
-			nextScreen();
+			saveFactionsInfo();
+			sceneManager.createGameScene();
+			break;
+			
+		case PLAYERS_SELECT:
+			savePlayersInfo();
+			setChildScene(chooseFactionMenu);
 			break;
 
 		default:
@@ -651,36 +889,39 @@ public class MainMenuScene extends BaseScene implements Displayable, IOnMenuItem
 		return false;
 	}
 
-	private void selectFaction(int direction)
+	private void savePlayersInfo()
 	{
-		if(direction > 0)
+		int numOfPlayers = 0;
+		int cpu = 0;
+		int human = 0;
+		
+		for(int i = 0; i < GameInfo.maxPlayers; i++)
 		{
-			selectedFaction += 1;
-			selectedFaction = selectedFaction % GameInfo.getNumberOfColors();
-		}
-
-		if(direction < 0)
-		{
-			if(selectedFaction - 1 < 0)
+			if(playerActive[i])
 			{
-				selectedFaction = GameInfo.getNumberOfColors() - 1;
-			}
-			else
-			{
-				selectedFaction -= 1;
+				numOfPlayers++;
+				if(playerIsCPU[i])
+				{
+					cpu++;
+				}
+				else
+				{
+					human++;
+				}
 			}
 		}
+		GameInfo.numberOfPlayers = numOfPlayers;
+		GameInfo.HUMANplayers = human;
+		GameInfo.CPUplayers = cpu;
+		
+		Log.d("Riska", "Saving players info...");
+		Log.d("Riska", "Number of players: " + GameInfo.numberOfPlayers);
+		Log.d("Riska", "HUMAN players:     " + GameInfo.HUMANplayers);
+		Log.d("Riska", "CPU players:     " + GameInfo.CPUplayers);
 	}
 
-	private void updateFaction()
+	private void saveFactionsInfo()
 	{
-		factionSprite.setColor(GameInfo.getPriColor(selectedFaction));
-		factionSpriteCenter.setColor(GameInfo.getSecColor(selectedFaction));
-	}
-
-	private void nextScreen()
-	{
-		// TODO : right now next screen is the game screen, but it could be any other
 		GameInfo.assignPlayerFaction(currentPlayer, selectedFaction);
 
 		//if(currentPlayer < Info.numberOfPlayers - 1)
@@ -690,7 +931,7 @@ public class MainMenuScene extends BaseScene implements Displayable, IOnMenuItem
 		//else
 
 		GameInfo.assignRemainingFactions(currentPlayer);
-		sceneManager.createGameScene();
-	}
 
+	}
+	
 }

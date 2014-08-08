@@ -20,12 +20,15 @@ public class GameInfo
 		{
 			new Color(0f,0f,0f),			// Black
 			new Color(1f,0.40f,0f)},		// Orange
+		{
+			new Color(1f,1f,1f),			// White
+			new Color(0f,0f,0f)},			// Black
 	};
 	
 	// ======================================================
 	// FIELDS
 	// ======================================================
-	public static final int maxPlayers = 4;
+	public static final int maxPlayers = 5; // IMPORTANT : COLORS[][] size is depending on this number!
 	public static final int minPlayers = 2;
 	public static final int minHumanPlayers = 1;
 	
@@ -33,6 +36,8 @@ public class GameInfo
 	
 	private static int[] playerFaction = new int[maxPlayers]; 
 	public static boolean[] playerIsCPU = new boolean[maxPlayers];
+	public static int CPUplayers = 0;
+	public static int HUMANplayers = 0;
 	
 	public static int currentMapIndex = 0;
 	
@@ -102,8 +107,39 @@ public class GameInfo
 		}
 	}
 
-	public static boolean getPlayerType(int i) {
+	public static boolean getPlayerType(int i)
+	{
 		return playerIsCPU[i];
+	}
+
+	public static void setPlayerAsCPU(int index, boolean value)
+	{
+		if(value)
+		{
+			CPUplayers++;
+			playerIsCPU[index] = true;
+		}
+		else
+		{
+			HUMANplayers++;
+			playerIsCPU[index] = false;
+		}
+	}
+
+	public static void updatePlayerStatus(int index, boolean isCPU)
+	{
+		if(isCPU)
+		{
+			CPUplayers++;
+			HUMANplayers--;
+			playerIsCPU[index] = true;
+		}
+		else
+		{
+			CPUplayers--;
+			HUMANplayers++;
+			playerIsCPU[index] = false;
+		}
 	}
 	
 }

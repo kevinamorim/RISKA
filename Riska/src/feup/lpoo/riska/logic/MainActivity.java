@@ -48,7 +48,7 @@ public class MainActivity extends BaseGameActivity {
 		EngineOptions engineOptions = new EngineOptions(true, ScreenOrientation.LANDSCAPE_SENSOR,
 				new RatioResolutionPolicy(RES_RATIO), mCamera);
 		
-		Log.d("Riska", "Camera Size: " + mCamera.getWidth() + ", " + mCamera.getHeight());
+		//Log.d("Riska", "Camera Size: " + mCamera.getWidth() + ", " + mCamera.getHeight());
 		
 		engineOptions.getAudioOptions().setNeedsMusic(true);
 		return engineOptions;
