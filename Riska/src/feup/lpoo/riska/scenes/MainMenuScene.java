@@ -968,13 +968,19 @@ public class MainMenuScene extends BaseScene implements Displayable, IOnMenuItem
 	{
 		for(int i = 0; i < GameInfo.humanPlayers; i++)
 		{
-			if(playerFaction[i] != -1) // Precaution
-			{
-				GameInfo.assignPlayerFaction(i, playerFaction[i]);
-			}	
+			GameInfo.assignPlayerFaction(i, playerFaction[i]);
 		}
-
-		GameInfo.assignRemainingFactions(currentPlayer);
+		
+		for(int i = GameInfo.humanPlayers; i < GameInfo.numberOfPlayers; i++)
+		{
+			GameInfo.assignPlayerFaction(i);
+		}
+		
+//		// DEBUG
+//		for(int i = 0; i < GameInfo.numberOfPlayers; i++)
+//		{
+//			Log.d("Riska", "Player " + i + " as color[" + i + "]: (" + GameInfo.getPlayerColors(i)[0].toString() + "," + GameInfo.getPlayerColors(i)[1].toString() + ")");
+//		}
 	}
 
 	private void resetGameInfo()

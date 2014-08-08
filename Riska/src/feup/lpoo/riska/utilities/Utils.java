@@ -3,12 +3,10 @@ package feup.lpoo.riska.utilities;
 import java.util.Random;
 
 import org.andengine.entity.Entity;
-import org.andengine.entity.sprite.ButtonSprite;
 import org.andengine.entity.text.Text;
 import org.andengine.opengl.font.Font;
 import org.andengine.opengl.vbo.VertexBufferObjectManager;
 
-import android.util.Log;
 import feup.lpoo.riska.logic.MainActivity;
 
 public class Utils
@@ -226,7 +224,7 @@ public class Utils
 	 */
 	public static float getWidth(Entity e)
 	{
-		return (e.getScaleX() * e.getWidth());
+		return (Math.abs(e.getScaleX() * e.getWidth()));
 	}
 
 	/**
@@ -234,7 +232,7 @@ public class Utils
 	 */
 	public static float getHeight(Entity e)
 	{
-		return (e.getScaleY() * e.getHeight());
+		return (Math.abs(e.getScaleY() * e.getHeight()));
 	}
 
 	public static float getCenterX(Entity e)

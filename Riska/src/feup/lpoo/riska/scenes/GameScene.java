@@ -24,7 +24,6 @@ import feup.lpoo.riska.generator.BattleGenerator;
 import feup.lpoo.riska.io.LoadGame;
 import feup.lpoo.riska.io.SaveGame;
 import feup.lpoo.riska.logic.GameLogic;
-import feup.lpoo.riska.logic.SceneManager;
 import feup.lpoo.riska.logic.GameLogic.GAME_STATE;
 import feup.lpoo.riska.logic.SceneManager.SCENE_TYPE;
 import feup.lpoo.riska.utilities.Utils;

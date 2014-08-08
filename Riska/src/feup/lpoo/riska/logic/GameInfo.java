@@ -66,24 +66,21 @@ public class GameInfo
 		return COLORS[playerFaction[playerIndex]];
 	}
 
-	public static void assignPlayerFaction(int currentPlayer, int selectedFactionIndex)
+	public static void assignPlayerFaction(int index, int factionIndex)
 	{
-		playerFaction[currentPlayer] = selectedFactionIndex;
+		playerFaction[index] = factionIndex;
 	}
-
-	public static void assignRemainingFactions(int index)
+	
+	public static void assignPlayerFaction(int index)
 	{
-		for(int i = index + 1; i < numberOfPlayers; i++)
+		int factionIndex = 0;
+		
+		while(Utils.inArray(factionIndex, playerFaction))
 		{
-			int factionIndex = 0;
-			
-			while(Utils.inArray(factionIndex, playerFaction))
-			{
-				factionIndex++;
-			}
-			
-			playerFaction[i] = factionIndex;
+			factionIndex++;
 		}
+		
+		playerFaction[index] = factionIndex;
 	}
 
 	public static void clearFactions()
