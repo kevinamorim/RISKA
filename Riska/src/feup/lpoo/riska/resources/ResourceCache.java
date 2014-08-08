@@ -67,10 +67,11 @@ public class ResourceCache {
 	public TiledTextureRegion returnBtnRegion;
 	public TiledTextureRegion sliderBtnRegion;
 	
-	public ITiledTextureRegion factionSpriteRegion;
+	public TiledTextureRegion factionSpriteRegion;
 	
-	public ITiledTextureRegion playerAddRemoveButtonRegion;
-	public ITiledTextureRegion playerCheckBoxButtonRegion;
+	public TiledTextureRegion playerAddButtonRegion;
+	public TiledTextureRegion playerRemoveButtonRegion;
+	public TiledTextureRegion playerCheckBoxButtonRegion;
 	// ==================================================
 	// GAME RESOURCES
 	// ==================================================
@@ -191,8 +192,11 @@ public class ResourceCache {
 		factionSpriteRegion = BitmapTextureAtlasTextureRegionFactory.createTiledFromAsset(mainMenuTextureAtlas, activity, 
 				"faction.png", 1, 3);
 		
-		playerAddRemoveButtonRegion = BitmapTextureAtlasTextureRegionFactory.createTiledFromAsset(mainMenuTextureAtlas, activity, 
-				"plus_minus_button.png", 1, 4);
+		playerAddButtonRegion = BitmapTextureAtlasTextureRegionFactory.createTiledFromAsset(mainMenuTextureAtlas, activity, 
+				"plus_button.png", 1, 2);
+		
+		playerRemoveButtonRegion = BitmapTextureAtlasTextureRegionFactory.createTiledFromAsset(mainMenuTextureAtlas, activity, 
+				"minus_button.png", 1, 2);
 		
 		playerCheckBoxButtonRegion = BitmapTextureAtlasTextureRegionFactory.createTiledFromAsset(mainMenuTextureAtlas, activity, 
 				"check_box.png", 1, 2);
