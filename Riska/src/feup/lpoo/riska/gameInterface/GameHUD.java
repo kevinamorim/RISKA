@@ -142,7 +142,7 @@ public class GameHUD extends HUD implements Displayable {
 			}
 		};
 
-		float scale = Utils.getWrapScale(attackButton, 1f * camera.getWidth(), 0.4f * camera.getHeight(), 1f);
+		float scale = Utils.getWrapScale(attackButton, 1f * camera.getWidth(), 0.3f * camera.getHeight(), 1f);
 		attackButton.setScale(-scale, scale);
 		attackButton.setPosition(camera.getWidth() - Utils.getScaledCenterX(attackButton), 0.5f * camera.getHeight());
 
@@ -233,7 +233,7 @@ public class GameHUD extends HUD implements Displayable {
 			}
 		};
 		
-		float scale = Utils.getWrapScale(autoDeployButton, 1f * camera.getWidth(), 0.4f * camera.getHeight(), 1f);
+		float scale = Utils.getWrapScale(autoDeployButton, 1f * camera.getWidth(), 0.3f * camera.getHeight(), 1f);
 
 		autoDeployButton.setScale(-scale, scale);
 		autoDeployButton.setPosition(camera.getWidth() - Utils.getScaledCenterX(autoDeployButton), 0.5f * camera.getHeight());

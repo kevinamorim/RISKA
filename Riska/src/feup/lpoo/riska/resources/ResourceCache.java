@@ -42,7 +42,7 @@ public class ResourceCache {
 
 	private static ResourceCache instance = new ResourceCache();
 
-	private static String currentTheme = "wood/";
+	private static String currentTheme = "vanilla/";
 	private static int numberOfMaps = 1;
 	private final int INITIAL_MAP = 1;
 
@@ -51,7 +51,7 @@ public class ResourceCache {
 	// ==================================================
 	private BitmapTextureAtlas splashTextureAtlas;
 	public ITextureRegion splashRegion;
-
+	
 	// ==================================================
 	// MAIN MENU RESOURCES
 	// ==================================================
