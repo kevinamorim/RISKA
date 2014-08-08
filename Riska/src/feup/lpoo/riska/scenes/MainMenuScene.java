@@ -26,6 +26,7 @@ public class MainMenuScene extends BaseScene implements Displayable, IOnMenuItem
 	// CONSTANTS
 	// ==================================================
 	private final int MAX_NAME_CHARS = 50;
+
 	// ==================================================
 	// FIELDS
 	// ==================================================
@@ -237,11 +238,11 @@ public class MainMenuScene extends BaseScene implements Displayable, IOnMenuItem
 				resources.optionsBtnRegion, 
 				vbom);
 
-		Utils.wrap(startButton, 1f * camera.getWidth(), 0.2f * camera.getHeight(), 1f);
+		Utils.wrap(startButton, 1f * camera.getWidth(), 0.3f * camera.getHeight(), 1f);
 		startButton.setPosition(camera.getCenterX(), camera.getCenterY());
 
-		Utils.wrap(optionsButton, 0.2f * camera.getWidth(), 0.2f * camera.getHeight(), 1f);
-		optionsButton.setPosition(0.5f * Utils.getWidth(optionsButton) - 2, 0.5f * Utils.getHeight(optionsButton) - 2);
+		Utils.wrap(optionsButton, 0.25f * camera.getWidth(), 0.25f * camera.getHeight(), 1f);
+		optionsButton.setPosition(0.5f * Utils.getScaledWidth(optionsButton) - 2, 0.5f * Utils.getScaledHeight(optionsButton) - 2);
 
 		mainMenu.addMenuItem(startButton);
 		mainMenu.addMenuItem(optionsButton);
@@ -276,14 +277,14 @@ public class MainMenuScene extends BaseScene implements Displayable, IOnMenuItem
 				resources.returnBtnRegion, vbom);
 
 
-		Utils.wrap(newGameButton, 1f * camera.getWidth(), 0.2f * camera.getHeight(), 1f);
+		Utils.wrap(newGameButton, 1f * camera.getWidth(), 0.3f * camera.getHeight(), 1f);
 		newGameButton.setPosition(camera.getCenterX(), 0.66f * camera.getHeight());
 
-		Utils.wrap(loadGameButton, 1f * camera.getWidth(), 0.2f * camera.getHeight(), 1f);
+		Utils.wrap(loadGameButton, 1f * camera.getWidth(), 0.3f * camera.getHeight(), 1f);
 		loadGameButton.setPosition(camera.getCenterX(), 0.33f * camera.getHeight());
 
-		Utils.wrap(returnButtonStart, 0.2f * camera.getWidth(), 0.2f * camera.getHeight(), 1f);
-		returnButtonStart.setPosition(0.5f * Utils.getWidth(returnButtonStart) - 2, 0.5f * Utils.getHeight(returnButtonStart) - 2);	
+		Utils.wrap(returnButtonStart, 0.25f * camera.getWidth(), 0.25f * camera.getHeight(), 1f);
+		returnButtonStart.setPosition(0.5f * Utils.getScaledWidth(returnButtonStart) - 2, 0.5f * Utils.getScaledHeight(returnButtonStart) - 2);	
 
 		startGameMenu.addMenuItem(newGameButton);
 		startGameMenu.addMenuItem(loadGameButton);
@@ -320,25 +321,25 @@ public class MainMenuScene extends BaseScene implements Displayable, IOnMenuItem
 
 
 		textMusic = new Text(0, 0, resources.mainMenuFont, "MUSIC", vbom);
-		Utils.wrap(textMusic, 1f * camera.getWidth(), 0.2f * camera.getHeight(), 0.9f);
+		Utils.wrap(textMusic, 1f * camera.getWidth(), 0.2f * camera.getHeight(), 0.8f);
 		textMusic.setPosition( 0.25f * camera.getWidth(), 0.75f * camera.getHeight());
 		textMusic.setColor(Color.BLACK);
 
 		textSFX = new Text(0, 0, resources.mainMenuFont, "SFX", vbom);
-		Utils.wrap(textSFX, 1f * camera.getWidth(), 0.2f * camera.getHeight(), 0.9f);
+		Utils.wrap(textSFX, 1f * camera.getWidth(), 0.2f * camera.getHeight(), 0.8f);
 		textSFX.setPosition(0.25f * camera.getWidth(), 0.50f * camera.getHeight());
 		textSFX.setColor(Color.BLACK);
 
-		Utils.wrap(sliderMusic, 0.3f * camera.getWidth(), 0.2f * camera.getHeight(), 1f);
+		Utils.wrap(sliderMusic, 0.3f * camera.getWidth(), 0.3f * camera.getHeight(), 1f);
 		sliderMusic.setPosition(0.75f * camera.getWidth(), textMusic.getY());
 		sliderMusic.setCurrentTileIndex(musicOn ? 0 : 1);
 
-		Utils.wrap(sliderSFX, 0.3f * camera.getWidth(), 0.2f * camera.getHeight(), 1f);
+		Utils.wrap(sliderSFX, 0.3f * camera.getWidth(), 0.3f * camera.getHeight(), 1f);
 		sliderSFX.setPosition(0.75f * camera.getWidth(), textSFX.getY());
 		sliderSFX.setCurrentTileIndex(sfxOn ? 0 : 1);
 
-		Utils.wrap(returnButtonOptions, 0.2f * camera.getWidth(), 0.2f * camera.getHeight(), 1f);
-		returnButtonOptions.setPosition(0.5f * Utils.getWidth(returnButtonOptions) - 2, 0.5f * Utils.getHeight(returnButtonOptions) - 2);
+		Utils.wrap(returnButtonOptions, 0.25f * camera.getWidth(), 0.25f * camera.getHeight(), 1f);
+		returnButtonOptions.setPosition(0.5f * Utils.getScaledWidth(returnButtonOptions) - 2, 0.5f * Utils.getScaledHeight(returnButtonOptions) - 2);
 
 
 		optionsMenu.addMenuItem(returnButtonOptions);

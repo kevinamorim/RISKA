@@ -222,7 +222,7 @@ public class Utils
 	/**
 	 * Works with scale
 	 */
-	public static float getWidth(Entity e)
+	public static float getScaledWidth(Entity e)
 	{
 		return (Math.abs(e.getScaleX() * e.getWidth()));
 	}
@@ -230,7 +230,7 @@ public class Utils
 	/**
 	 * Works with scale
 	 */
-	public static float getHeight(Entity e)
+	public static float getScaledHeight(Entity e)
 	{
 		return (Math.abs(e.getScaleY() * e.getHeight()));
 	}
@@ -247,12 +247,12 @@ public class Utils
 
 	public static float getScaledCenterX(Entity e)
 	{
-		return (0.5f * getWidth(e));
+		return (0.5f * getScaledWidth(e));
 	}
 
 	public static float getScaledCenterY(Entity e)
 	{
-		return (0.5f * getHeight(e));
+		return (0.5f * getScaledHeight(e));
 	}
 
 	// ======================================================

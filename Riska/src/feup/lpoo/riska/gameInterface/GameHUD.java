@@ -13,7 +13,6 @@ import feup.lpoo.riska.logic.GameLogic;
 import feup.lpoo.riska.resources.ResourceCache;
 import feup.lpoo.riska.scenes.GameScene;
 import feup.lpoo.riska.utilities.Utils;
-import android.util.Log;
 import android.view.MotionEvent;
 
 public class GameHUD extends HUD implements Displayable {
@@ -145,7 +144,6 @@ public class GameHUD extends HUD implements Displayable {
 
 		float scale = Utils.getWrapScale(attackButton, 1f * camera.getWidth(), 0.4f * camera.getHeight(), 1f);
 		attackButton.setScale(-scale, scale);
-		//Log.d("Riska", "[GameHUD] attackButton scaleX: " + scale + " , " + Utils.getScaledCenterX(attackButton));
 		attackButton.setPosition(camera.getWidth() - Utils.getScaledCenterX(attackButton), 0.5f * camera.getHeight());
 
 		attackButton.setVisible(false);
