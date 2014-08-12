@@ -32,7 +32,8 @@ public class SceneManager {
 		GAME_OVER,
 		DETAIL,
 		PRE_BATTLE,
-		BATTLE
+		BATTLE,
+		PRE_MOVE
 	};
 
 	// ==================================================

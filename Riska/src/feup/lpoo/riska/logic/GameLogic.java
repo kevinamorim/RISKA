@@ -44,13 +44,15 @@ public class GameLogic
 	private GameScene gameScene;
 	
 	private boolean attackDone;
+	private boolean movingDone;
 	private boolean turnDone;
 	
 	public Region selectedRegion;
 	public Region targetedRegion;
 
-	public int attackingSoldiers = MIN_SOLDIERS_PER_REGION;
-	public int defendingSoldiers = MIN_SOLDIERS_PER_REGION;
+	public int attackingSoldiers;
+	public int defendingSoldiers;
+	public int movingSoldiers;
 	
 	// ======================================================
 	// ======================================================
@@ -66,9 +68,14 @@ public class GameLogic
 
 		state = GAME_STATE.SETUP;
 		attackDone = false;
+		movingDone = false;
 		turnDone = false;
 
 		battleGenerator = new BattleGenerator();
+		
+		attackingSoldiers = MIN_SOLDIERS_PER_REGION;
+		defendingSoldiers = MIN_SOLDIERS_PER_REGION;
+		movingSoldiers = 0;
 	}
 
 	private void createsPlayers()
@@ -122,6 +129,7 @@ public class GameLogic
 				else
 				{
 					attackDone = false;
+					movingDone = false;
 					turnDone = false;
 					
 					unselectRegion();
@@ -130,9 +138,11 @@ public class GameLogic
 					state = GAME_STATE.PLAY;
 				}
 			}
-			else if(attackDone)
+			else if(movingDone)
 			{
-				state = GAME_STATE.DEPLOYMENT;
+				state = GAME_STATE.DEPLOYMENT;	
+			} else if(attackDone) {
+				state = GAME_STATE.MOVE;
 			}
 			else
 			{
@@ -205,8 +215,13 @@ public class GameLogic
 		unselectRegion();
 
 		attackDone = true;
+		
+		/* TODO: Temporary */
+		if(currentPlayer.isCPU) {
+			turnDone = true;
+		}
 	}
-
+	
 	public void deploy() {
 
 		if(currentPlayer.hasSoldiersLeftToDeploy() && currentPlayer.isCPU)
@@ -223,6 +238,19 @@ public class GameLogic
 	}
 
 	public void move() {
+		
+		if(selectedRegion != null && targetedRegion != null) {
+			Region pRegion1 = selectedRegion;
+			Region pRegion2 = targetedRegion;
+			
+			pRegion1.setSoldiers(pRegion1.getNumberOfSoldiers() - movingSoldiers);
+			pRegion2.setSoldiers(pRegion2.getNumberOfSoldiers() + movingSoldiers);
+			
+			untargetRegion();
+			unselectRegion();
+			state = GAME_STATE.DEPLOYMENT;
+			movingDone = true;
+		}
 
 	}
 
@@ -367,9 +395,32 @@ public class GameLogic
 			case PLAY:
 				onPlayHandler(pRegion);
 				break;
+				
+			case MOVE:
+				onMoveHandler(pRegion);
+				break;
 
 			default:
 				break;
+			}
+		}
+	}
+	
+	private void onMoveHandler(Region pRegion) {
+		if(!pRegion.isFocused()) {
+			if(pRegion.hasOwner(currentPlayer)) {
+				if(this.selectedRegion == null) {
+					selectRegion(pRegion);
+					gameScene.showOnlyPlayerNeighbourRegions(pRegion);
+				} else {
+					targetRegion(pRegion);
+				}
+			}
+		} else {
+			if(pRegion.ID == this.selectedRegion.ID) {
+				unselectRegion();
+			} else {
+				untargetRegion();
 			}
 		}
 	}

@@ -10,6 +10,7 @@ import org.andengine.util.adt.color.Color;
 import feup.lpoo.riska.R;
 import feup.lpoo.riska.interfaces.Displayable;
 import feup.lpoo.riska.logic.GameLogic;
+import feup.lpoo.riska.logic.GameLogic.GAME_STATE;
 import feup.lpoo.riska.resources.ResourceCache;
 import feup.lpoo.riska.scenes.GameScene;
 import feup.lpoo.riska.utilities.Utils;
@@ -21,7 +22,7 @@ public class GameHUD extends HUD implements Displayable {
 	// CONSTANTS
 	// ======================================================
 
-	public enum BUTTON { ATTACK, DETAILS, AUTO_DEPLOY, ARROW_LEFT, ARROW_RIGHT };
+	public enum BUTTON { ATTACK, MOVE, DETAILS, AUTO_DEPLOY, ARROW_LEFT, ARROW_RIGHT };
 
 	public enum SPRITE { INFO_TAB };
 
@@ -35,6 +36,7 @@ public class GameHUD extends HUD implements Displayable {
 	// ======================================================
 	private CameraManager camera;
 	private ButtonSprite attackButton;
+	private ButtonSprite moveButton;
 	private ButtonSprite detailsButton;
 	private ButtonSprite autoDeployButton;
 	private ButtonSprite arrowLeft;
@@ -62,21 +64,35 @@ public class GameHUD extends HUD implements Displayable {
 	{
 		if(!logic.getCurrentPlayer().isCPU)
 		{
-			if(logic.selectedRegion != null)
-			{
-				show(BUTTON.DETAILS);
-				if(logic.targetedRegion != null)
+			if(logic.getState() == GAME_STATE.PLAY) {
+				
+				if(logic.selectedRegion != null)
 				{
-					show(BUTTON.ATTACK);
+					show(BUTTON.DETAILS);
+					if(logic.targetedRegion != null)
+					{
+						show(BUTTON.ATTACK);
+					}
+					else
+					{
+						hide(BUTTON.ATTACK);
+					}
 				}
 				else
 				{
-					hide(BUTTON.ATTACK);
+					hide(BUTTON.DETAILS);
 				}
-			}
-			else
-			{
+			} else if(logic.getState() == GAME_STATE.MOVE) {
+				hide(BUTTON.AUTO_DEPLOY);
 				hide(BUTTON.DETAILS);
+				hide(BUTTON.ATTACK);
+				hide(BUTTON.MOVE);
+				if(logic.selectedRegion != null) {
+					if(logic.targetedRegion != null) {
+						show(BUTTON.MOVE);
+					} 
+				}
+				
 			}
 		}
 		else
@@ -96,6 +112,7 @@ public class GameHUD extends HUD implements Displayable {
 		createDetailsButton();
 		createAutoDeployButton();
 		createArrows();
+		createMoveButton();
 
 		registerTouchArea(attackButton);
 		//registerTouchArea(infoTab);
@@ -103,6 +120,7 @@ public class GameHUD extends HUD implements Displayable {
 		registerTouchArea(autoDeployButton);
 		registerTouchArea(arrowLeft);
 		registerTouchArea(arrowRight);
+		registerTouchArea(moveButton);
 
 		attachChild(attackButton);
 		attachChild(infoTab);
@@ -110,6 +128,7 @@ public class GameHUD extends HUD implements Displayable {
 		attachChild(autoDeployButton);
 		attachChild(arrowLeft);
 		attachChild(arrowRight);
+		attachChild(moveButton);
 	}
 
 	private void createAttackButton()
@@ -307,6 +326,42 @@ public class GameHUD extends HUD implements Displayable {
 		arrowLeft.setVisible(false);
 		arrowRight.setVisible(false);
 	}
+	
+	private void createMoveButton() {
+		moveButton = new ButtonSprite(0, 0, resources.moveBtnRegion, resources.vbom) 
+		{
+			@Override
+			public boolean onAreaTouched(TouchEvent ev, float pX, float pY)
+			{
+				switch(ev.getAction())
+				{
+				
+				case MotionEvent.ACTION_DOWN:
+					pressed(BUTTON.MOVE);
+					break;
+					
+				case MotionEvent.ACTION_UP:
+					touched(BUTTON.MOVE);
+					break;
+					
+				case MotionEvent.ACTION_OUTSIDE:
+					released(BUTTON.MOVE);
+					break;
+					
+				default:
+					break;
+					
+				}
+				return true;
+			}
+		};
+
+		float scale = Utils.getWrapScale(moveButton, 1f * camera.getWidth(), 0.3f * camera.getHeight(), 1f);
+		moveButton.setScale(-scale, scale);
+		moveButton.setPosition(camera.getWidth() - Utils.getScaledCenterX(moveButton), 0.5f * camera.getHeight());
+
+		moveButton.setVisible(false);
+	}
 
 	// ======================================================
 	// LOCK / UNLOCK
@@ -337,6 +392,10 @@ public class GameHUD extends HUD implements Displayable {
 
 		case ATTACK:
 			attackButton.setCurrentTileIndex(1);
+			break;
+			
+		case MOVE:
+			moveButton.setCurrentTileIndex(1);
 			break;
 
 		case DETAILS:
@@ -369,6 +428,11 @@ public class GameHUD extends HUD implements Displayable {
 		case ATTACK:
 			released(x);
 			gameScene.onAttackButtonTouched();
+			break;
+			
+		case MOVE:
+			released(x);
+			gameScene.onMoveButtonTouched();
 			break;
 
 		case DETAILS:
@@ -495,6 +559,8 @@ public class GameHUD extends HUD implements Displayable {
 			return attackButton;
 		case DETAILS:
 			return detailsButton;
+		case MOVE:
+			return moveButton;
 		case AUTO_DEPLOY:
 			return autoDeployButton;
 		case ARROW_LEFT:

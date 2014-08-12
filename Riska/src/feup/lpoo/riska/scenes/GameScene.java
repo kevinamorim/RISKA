@@ -54,6 +54,7 @@ public class GameScene extends BaseScene implements IOnSceneTouchListener, IScro
 	private DetailScene detailScene;
 	private BattleScene battleScene;
 	private PreBattleScene preBattleScene;
+	private PreMoveScene preMoveScene;
 	
 	private Sprite mapSprite;
 
@@ -222,6 +223,7 @@ public class GameScene extends BaseScene implements IOnSceneTouchListener, IScro
 		detailScene = new DetailScene();
 		battleScene = new BattleScene();
 		preBattleScene = new PreBattleScene();
+		preMoveScene = new PreMoveScene();
 
 		detailScene.setVisible(false);
 		attachChild(detailScene);
@@ -231,6 +233,9 @@ public class GameScene extends BaseScene implements IOnSceneTouchListener, IScro
 
 		preBattleScene.setVisible(false);
 		attachChild(preBattleScene);
+		
+		preMoveScene.setVisible(false);
+		attachChild(preMoveScene);
 	}
 
 	// ======================================================
@@ -258,6 +263,8 @@ public class GameScene extends BaseScene implements IOnSceneTouchListener, IScro
 		case ATTACK:
 			break;
 		case MOVE:
+			moveUpdate();
+			logic.update();
 			break;
 		case PLAY:
 			draw();
@@ -292,21 +299,8 @@ public class GameScene extends BaseScene implements IOnSceneTouchListener, IScro
 	}
 
 	private void deploymentUpdate()
-	{	
-		if(detailScene.isVisible())
-		{
-			hideDetailScene();
-		}
-		
-		if(battleScene.isVisible())
-		{
-			hideBattleScene();
-		}
-		
-		if(preBattleScene.isVisible())
-		{
-			hidePreBattleScene();
-		}
+	{		
+		hideAllChildScenes();
 
 		if(!logic.getCurrentPlayer().isCPU)
 		{
@@ -318,12 +312,21 @@ public class GameScene extends BaseScene implements IOnSceneTouchListener, IScro
 			hud.hide(BUTTON.AUTO_DEPLOY);
 		}
 
-		hud.hide(BUTTON.ATTACK);
-		hud.hide(BUTTON.DETAILS);
+		hideAllButtons();
 		hud.show(BUTTON.AUTO_DEPLOY);
 		drawRegionButtons();
 	}
 
+	private void moveUpdate() {
+		hideAllButtons(); 
+		drawRegionButtons();
+		if(logic.selectedRegion == null)
+		{
+			showAllRegions();
+		}
+		hud.draw(logic);
+	}
+	
 	public void saveGame()
 	{
 
@@ -538,6 +541,30 @@ public class GameScene extends BaseScene implements IOnSceneTouchListener, IScro
 		}		
 	}
 
+	public void showOnlyPlayerNeighbourRegions(Region pRegion) {
+		for(int i = 0; i < map.getRegions().size(); i++) {
+
+			Region comp = map.getRegions().get(i);
+
+			if (comp != pRegion)
+			{
+				if(!comp.isNeighbourOf(pRegion))
+				{
+					regionButtons.get(i).setVisible(false);
+					//regionButtons.get(i).first.setEnabled(false);
+				}
+				else
+				{
+					if(comp.getOwner() != logic.getCurrentPlayer())
+					{
+						regionButtons.get(i).setVisible(false);
+						//regionButtons.get(i).first.setEnabled(false);
+					}
+				}
+			}
+		}	
+	}
+	
 	private void showAllRegions()
 	{
 		for(int i = 0; i < regionButtons.size(); i++)
@@ -645,9 +672,23 @@ public class GameScene extends BaseScene implements IOnSceneTouchListener, IScro
 			hud.show(BUTTON.ARROW_RIGHT);
 			preBattleScene.update(attackingSoldiers, defendingSoldiers);
 			preBattleScene.setVisible(true);
+			preBattleScene.setSuccessTextEnabled();
 			lockUserInput();
 		}
 
+	}
+	
+	private void showPreMoveScene(int maxSoldiers) {
+		if(preMoveScene != null) {
+			camera.zoomOut();
+			hideAllButtons();
+			hud.show(BUTTON.MOVE);
+			hud.show(BUTTON.ARROW_LEFT);
+			hud.show(BUTTON.ARROW_RIGHT);
+			preMoveScene.update(maxSoldiers);
+			preMoveScene.setVisible(true);
+			lockUserInput();
+		}
 	}
 
 	private void hidePreBattleScene()
@@ -660,6 +701,18 @@ public class GameScene extends BaseScene implements IOnSceneTouchListener, IScro
 			hud.hide(BUTTON.ARROW_LEFT);
 			hud.hide(BUTTON.ARROW_RIGHT);
 			preBattleScene.setVisible(false);
+			unlockUserInput();
+		}
+	}
+	
+	private void hidePreMoveScene() {
+		if(preMoveScene != null) {
+			hud.setDetailButtonToQuestion();
+			hideAllButtons();
+			hud.show(SPRITE.INFO_TAB);
+			hud.hide(BUTTON.ARROW_LEFT);
+			hud.hide(BUTTON.ARROW_RIGHT);
+			preMoveScene.setVisible(false);
 			unlockUserInput();
 		}
 	}
@@ -684,6 +737,30 @@ public class GameScene extends BaseScene implements IOnSceneTouchListener, IScro
 		return false;
 	}
 
+	private void hideAllChildScenes() {
+		if(detailScene.isVisible())
+		{
+			hideDetailScene();
+		}
+		
+		if(battleScene.isVisible())
+		{
+			hideBattleScene();
+		}
+		
+		if(preBattleScene.isVisible())
+		{
+			hidePreBattleScene();
+		}
+
+	}
+	
+	private void hideAllButtons() {
+		hud.hide(BUTTON.ATTACK);
+		hud.hide(BUTTON.DETAILS);
+		hud.hide(BUTTON.AUTO_DEPLOY);
+		hud.hide(BUTTON.MOVE);
+	}
 	// ======================================================
 	// HUD
 	// ======================================================
@@ -745,6 +822,8 @@ public class GameScene extends BaseScene implements IOnSceneTouchListener, IScro
 		if(preBattleScene != null)
 		{
 			preBattleScene.decreaseSoldiers();
+		} else if(preMoveScene != null) {
+			preMoveScene.decreaseSoldiers();
 		}
 	}
 
@@ -753,6 +832,19 @@ public class GameScene extends BaseScene implements IOnSceneTouchListener, IScro
 		if(preBattleScene != null)
 		{
 			preBattleScene.increaseSoldiers();
+		} else if(preMoveScene != null) {
+			preMoveScene.increaseSoldiers();
+		}
+	}
+	
+	public void onMoveButtonTouched() {
+		if(!preMoveScene.isVisible()) {
+			logic.pauseGame();
+			showPreMoveScene(logic.selectedRegion.getNumberOfSoldiers() - logic.MIN_SOLDIERS_PER_REGION);
+		} else {
+			hidePreMoveScene();
+			logic.movingSoldiers = preMoveScene.getAttackingSoldiers();
+			logic.move();
 		}
 	}
 }

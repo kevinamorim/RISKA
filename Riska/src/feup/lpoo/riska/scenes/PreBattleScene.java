@@ -70,7 +70,6 @@ public class PreBattleScene extends BaseScene implements Displayable {
 		window.attachChild(soldiersToSend);
 		window.attachChild(soldierNumBox);
 		window.attachChild(soldierNum);
-		window.attachChild(successNum);
 	}
 
 	private void createBackground()
@@ -164,5 +163,9 @@ public class PreBattleScene extends BaseScene implements Displayable {
 	public int getAttackingSoldiers()
 	{
 		return currentSoldiers;
+	}
+	
+	public void setSuccessTextEnabled() {
+		window.attachChild(successNum);
 	}
 }
