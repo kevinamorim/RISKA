@@ -256,7 +256,6 @@ public class GameScene extends BaseScene implements IOnSceneTouchListener, IScro
 			logic.setup();
 			break;		
 		case DEPLOYMENT:
-			//Log.d("user", "deployment");
 			deploymentUpdate();
 			logic.deploy();
 			break;	
@@ -608,10 +607,9 @@ public class GameScene extends BaseScene implements IOnSceneTouchListener, IScro
 		if(detailScene != null)
 		{
 			camera.zoomOut();
+			hideAllButtons();
 			hud.setDetailButtonToExit();
 			hud.show(BUTTON.DETAILS);
-			hud.hide(BUTTON.ATTACK);
-			hud.hide(SPRITE.INFO_TAB);
 			detailScene.setVisible(true);
 			lockUserInput();
 			logic.pauseGame();
@@ -622,8 +620,8 @@ public class GameScene extends BaseScene implements IOnSceneTouchListener, IScro
 	{
 		if(detailScene != null)
 		{
+			hideAllButtons();
 			hud.setDetailButtonToQuestion();
-			hud.hide(BUTTON.DETAILS);
 			hud.show(SPRITE.INFO_TAB);		
 			detailScene.setVisible(false);
 			unlockUserInput();
@@ -637,9 +635,8 @@ public class GameScene extends BaseScene implements IOnSceneTouchListener, IScro
 		{
 			camera.zoomOut();
 			hud.setDetailButtonToExit();
+			hideAllButtons();
 			hud.show(BUTTON.DETAILS);
-			hud.hide(BUTTON.ATTACK);
-			hud.hide(SPRITE.INFO_TAB);
 			battleScene.update(pRegion1, pRegion2, battleGenerator);
 			battleScene.setVisible(true);
 			lockUserInput();
@@ -650,8 +647,8 @@ public class GameScene extends BaseScene implements IOnSceneTouchListener, IScro
 	{
 		if(battleScene != null)
 		{
+			hideAllButtons();
 			hud.setDetailButtonToQuestion();
-			hud.hide(BUTTON.DETAILS);
 			hud.show(SPRITE.INFO_TAB);
 			battleScene.setVisible(false);
 			unlockUserInput();
@@ -664,15 +661,12 @@ public class GameScene extends BaseScene implements IOnSceneTouchListener, IScro
 		if(preBattleScene != null)
 		{
 			camera.zoomOut();
-			//hud.setDetailButtonToExit();
-			//hud.hide(BUTTON.ATTACK);
-			hud.hide(BUTTON.DETAILS);
-			hud.hide(SPRITE.INFO_TAB);
+			hideAllButtons();
+			hud.show(BUTTON.ATTACK);
 			hud.show(BUTTON.ARROW_LEFT);
 			hud.show(BUTTON.ARROW_RIGHT);
 			preBattleScene.update(attackingSoldiers, defendingSoldiers);
 			preBattleScene.setVisible(true);
-			preBattleScene.setSuccessTextEnabled();
 			lockUserInput();
 		}
 
@@ -696,10 +690,8 @@ public class GameScene extends BaseScene implements IOnSceneTouchListener, IScro
 		if(preBattleScene != null)
 		{
 			hud.setDetailButtonToQuestion();
-			hud.hide(BUTTON.DETAILS);
+			hideAllButtons();
 			hud.show(SPRITE.INFO_TAB);
-			hud.hide(BUTTON.ARROW_LEFT);
-			hud.hide(BUTTON.ARROW_RIGHT);
 			preBattleScene.setVisible(false);
 			unlockUserInput();
 		}
@@ -710,8 +702,6 @@ public class GameScene extends BaseScene implements IOnSceneTouchListener, IScro
 			hud.setDetailButtonToQuestion();
 			hideAllButtons();
 			hud.show(SPRITE.INFO_TAB);
-			hud.hide(BUTTON.ARROW_LEFT);
-			hud.hide(BUTTON.ARROW_RIGHT);
 			preMoveScene.setVisible(false);
 			unlockUserInput();
 		}
@@ -752,14 +742,32 @@ public class GameScene extends BaseScene implements IOnSceneTouchListener, IScro
 		{
 			hidePreBattleScene();
 		}
+		
+		if(preMoveScene.isVisible()) {
+			hidePreMoveScene();
+		}
 
 	}
 	
 	private void hideAllButtons() {
-		hud.hide(BUTTON.ATTACK);
-		hud.hide(BUTTON.DETAILS);
-		hud.hide(BUTTON.AUTO_DEPLOY);
-		hud.hide(BUTTON.MOVE);
+		if(hud.get(BUTTON.ATTACK).isVisible()) {
+			hud.hide(BUTTON.ATTACK);
+		}
+		if(hud.get(BUTTON.DETAILS).isVisible()) {
+			hud.hide(BUTTON.DETAILS);
+		}
+		if(hud.get(BUTTON.AUTO_DEPLOY).isVisible()) {
+			hud.hide(BUTTON.AUTO_DEPLOY);
+		}
+		if(hud.get(BUTTON.MOVE).isVisible()) {
+			hud.hide(BUTTON.MOVE);
+		}
+		if(hud.get(BUTTON.ARROW_LEFT).isVisible()) {
+			hud.hide(BUTTON.ARROW_LEFT);
+		}
+		if(hud.get(BUTTON.ARROW_RIGHT).isVisible()) {
+			hud.hide(BUTTON.ARROW_RIGHT);
+		}
 	}
 	// ======================================================
 	// HUD

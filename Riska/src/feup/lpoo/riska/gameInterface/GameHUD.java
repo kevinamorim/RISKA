@@ -551,7 +551,7 @@ public class GameHUD extends HUD implements Displayable {
 		}
 	}
 
-	private ButtonSprite get(BUTTON x)
+	public ButtonSprite get(BUTTON x)
 	{
 		switch(x)
 		{
