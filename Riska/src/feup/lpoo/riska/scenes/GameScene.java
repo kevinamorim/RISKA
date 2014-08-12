@@ -613,13 +613,9 @@ public class GameScene extends BaseScene implements IOnSceneTouchListener, IScro
 	{
 		if(detailScene != null)
 		{
-			camera.zoomOut();
-			hideAllButtons();
-			hud.hide(SPRITE.INFO_TAB);
-			hud.setDetailButtonToExit();
+			showChildScene();
 			hud.show(BUTTON.DETAILS);
 			detailScene.setVisible(true);
-			lockUserInput();
 			logic.pauseGame();
 		}
 	}
@@ -628,11 +624,8 @@ public class GameScene extends BaseScene implements IOnSceneTouchListener, IScro
 	{
 		if(detailScene != null)
 		{
-			hideAllButtons();
-			hud.setDetailButtonToQuestion();
-			hud.show(SPRITE.INFO_TAB);		
+			hideChildScene();		
 			detailScene.setVisible(false);
-			unlockUserInput();
 			logic.resumeGame();
 		}
 	}
@@ -641,14 +634,10 @@ public class GameScene extends BaseScene implements IOnSceneTouchListener, IScro
 	{
 		if(battleScene != null)
 		{
-			camera.zoomOut();
-			hud.setDetailButtonToExit();
-			hideAllButtons();
-			hud.hide(SPRITE.INFO_TAB);
+			showChildScene();
 			hud.show(BUTTON.DETAILS);
 			battleScene.update(pRegion1, pRegion2, battleGenerator);
 			battleScene.setVisible(true);
-			lockUserInput();
 		}
 	}
 
@@ -656,11 +645,8 @@ public class GameScene extends BaseScene implements IOnSceneTouchListener, IScro
 	{
 		if(battleScene != null)
 		{
-			hideAllButtons();
-			hud.setDetailButtonToQuestion();
-			hud.show(SPRITE.INFO_TAB);
+			hideChildScene();
 			battleScene.setVisible(false);
-			unlockUserInput();
 			logic.resumeGame();
 		}
 	}
@@ -669,30 +655,24 @@ public class GameScene extends BaseScene implements IOnSceneTouchListener, IScro
 	{
 		if(preBattleScene != null)
 		{
-			camera.zoomOut();
-			hideAllButtons();
-			hud.hide(SPRITE.INFO_TAB);
+			showChildScene();
 			hud.show(BUTTON.ATTACK);
 			hud.show(BUTTON.ARROW_LEFT);
 			hud.show(BUTTON.ARROW_RIGHT);
 			preBattleScene.update(attackingSoldiers, defendingSoldiers);
 			preBattleScene.setVisible(true);
-			lockUserInput();
 		}
 
 	}
 	
 	private void showPreMoveScene(int maxSoldiers) {
 		if(preMoveScene != null) {
-			camera.zoomOut();
-			hideAllButtons();
-			hud.hide(SPRITE.INFO_TAB);
+			showChildScene();
 			hud.show(BUTTON.MOVE);
 			hud.show(BUTTON.ARROW_LEFT);
 			hud.show(BUTTON.ARROW_RIGHT);
 			preMoveScene.update(maxSoldiers);
 			preMoveScene.setVisible(true);
-			lockUserInput();
 		}
 	}
 
@@ -700,21 +680,15 @@ public class GameScene extends BaseScene implements IOnSceneTouchListener, IScro
 	{
 		if(preBattleScene != null)
 		{
-			hud.setDetailButtonToQuestion();
-			hideAllButtons();
-			hud.show(SPRITE.INFO_TAB);
+			hideChildScene();
 			preBattleScene.setVisible(false);
-			unlockUserInput();
 		}
 	}
 	
 	private void hidePreMoveScene() {
 		if(preMoveScene != null) {
-			hud.setDetailButtonToQuestion();
-			hideAllButtons();
-			hud.show(SPRITE.INFO_TAB);
+			hideChildScene();
 			preMoveScene.setVisible(false);
-			unlockUserInput();
 		}
 	}
 
@@ -779,6 +753,23 @@ public class GameScene extends BaseScene implements IOnSceneTouchListener, IScro
 		if(hud.get(BUTTON.ARROW_RIGHT).isVisible()) {
 			hud.hide(BUTTON.ARROW_RIGHT);
 		}
+	}
+	
+	/* Common operations when showing a child scene. */
+	private void showChildScene() {
+		camera.zoomOut();
+		hideAllButtons();
+		hud.hide(SPRITE.INFO_TAB);
+		hud.setDetailButtonToExit();
+		lockUserInput();
+	}
+	
+	/* Common operations when hiding a child scene. */
+	private void hideChildScene() {
+		hideAllButtons();
+		hud.show(SPRITE.INFO_TAB);	
+		hud.setDetailButtonToQuestion();	
+		unlockUserInput();
 	}
 	// ======================================================
 	// HUD
