@@ -611,24 +611,63 @@ public class GameHUD extends HUD implements Displayable {
 
 	public void setInfoTabText(GameLogic logic)
 	{
-		if(logic.getCurrentPlayer().isCPU)
+		if(logic.getCurrentPlayer().isCPU) {
+			setInfoTabForCPU(logic);
+		} else {
+			switch(logic.getState()) {
+			case PLAY:
+				setInfoTabForAttack(logic);
+				break;
+			case ATTACK:
+				/* TODO: PLAY should be in there */ 
+				break;
+			case MOVE:
+				setInfoTabForMove(logic);
+				break;
+			case DEPLOYMENT:
+				setInfoTabForDeployment(logic);
+				break;
+			default:
+				break;
+			}
+		}
+	}
+	
+	private void setInfoTabForAttack(GameLogic logic) {
+		if(logic.selectedRegion != null && logic.targetedRegion != null)
 		{
-			setInfoTabText(Utils.getString(R.string.game_info_wait_for_CPU));
+			setInfoTabText(Utils.getString(R.string.game_info_attack));
+		}
+		else if(logic.selectedRegion != null)
+		{
+			setInfoTabText(Utils.getString(R.string.game_info_tap_enemy_region));
 		}
 		else
 		{
-			if(logic.selectedRegion != null && logic.targetedRegion != null)
-			{
-				setInfoTabText(Utils.getString(R.string.game_info_attack));
-			}
-			else if(logic.selectedRegion != null)
-			{
-				setInfoTabText(Utils.getString(R.string.game_info_tap_enemy_region));
-			}
-			else
-			{
-				setInfoTabText(Utils.getString(R.string.game_info_tap_allied_region));
-			}
+			setInfoTabText(Utils.getString(R.string.game_info_tap_allied_region));
 		}
+	}
+	
+	private void setInfoTabForMove(GameLogic logic) {
+		if(logic.selectedRegion != null && logic.targetedRegion != null)
+		{
+			setInfoTabText(Utils.getString(R.string.game_info_confirm_moving));
+		}
+		else if(logic.selectedRegion != null)
+		{
+			setInfoTabText(Utils.getString(R.string.game_info_choose_dest_move_troops));
+		}
+		else
+		{
+			setInfoTabText(Utils.getString(R.string.game_info_choose_src_move_troops));
+		}
+	}
+	
+	private void setInfoTabForDeployment(GameLogic logic) {
+		setInfoTabText(Utils.getString(R.string.game_info_left_to_deploy));
+	}
+	
+	private void setInfoTabForCPU(GameLogic logic) {
+		setInfoTabText(Utils.getString(R.string.game_info_wait_for_CPU));
 	}
 }

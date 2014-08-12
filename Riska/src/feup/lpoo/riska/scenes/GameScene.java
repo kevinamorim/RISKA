@@ -318,6 +318,7 @@ public class GameScene extends BaseScene implements IOnSceneTouchListener, IScro
 
 		hideAllButtons();
 		hud.show(BUTTON.AUTO_DEPLOY);
+		hud.setInfoTabText(logic);
 		drawRegionButtons();
 	}
 
@@ -329,6 +330,7 @@ public class GameScene extends BaseScene implements IOnSceneTouchListener, IScro
 			showAllRegions();
 		}
 		hud.draw(logic);
+		hud.setInfoTabText(logic);
 	}
 	
 	public void saveGame()

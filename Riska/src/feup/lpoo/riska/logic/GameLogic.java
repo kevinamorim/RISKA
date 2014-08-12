@@ -410,8 +410,11 @@ public class GameLogic
 		if(!pRegion.isFocused()) {
 			if(pRegion.hasOwner(currentPlayer)) {
 				if(this.selectedRegion == null) {
-					selectRegion(pRegion);
-					gameScene.showOnlyPlayerNeighbourRegions(pRegion);
+					if(canAttack(pRegion)) { /* Using canAttack because the criteria is the same */
+						selectRegion(pRegion);
+						gameScene.showOnlyPlayerNeighbourRegions(pRegion);
+					}
+
 				} else {
 					targetRegion(pRegion);
 				}
