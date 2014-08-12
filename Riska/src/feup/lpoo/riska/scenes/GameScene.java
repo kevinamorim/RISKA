@@ -827,20 +827,20 @@ public class GameScene extends BaseScene implements IOnSceneTouchListener, IScro
 
 	public void onLeftArrowTouched()
 	{
-		if(preBattleScene != null)
+		if(preBattleScene != null && preBattleScene.isVisible())
 		{
 			preBattleScene.decreaseSoldiers();
-		} else if(preMoveScene != null) {
+		} else if(preMoveScene != null && preMoveScene.isVisible()) {
 			preMoveScene.decreaseSoldiers();
 		}
 	}
 
 	public void onRightArrowTouched()
 	{
-		if(preBattleScene != null)
+		if(preBattleScene != null && preBattleScene.isVisible())
 		{
 			preBattleScene.increaseSoldiers();
-		} else if(preMoveScene != null) {
+		} else if(preMoveScene != null && preMoveScene.isVisible()) {
 			preMoveScene.increaseSoldiers();
 		}
 	}
