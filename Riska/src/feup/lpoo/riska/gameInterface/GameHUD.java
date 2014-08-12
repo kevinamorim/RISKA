@@ -468,6 +468,10 @@ public class GameHUD extends HUD implements Displayable {
 		case ATTACK:
 			attackButton.setCurrentTileIndex(0);
 			break;
+			
+		case MOVE:
+			moveButton.setCurrentTileIndex(0);
+			break;
 
 		case DETAILS:
 			// Do something
