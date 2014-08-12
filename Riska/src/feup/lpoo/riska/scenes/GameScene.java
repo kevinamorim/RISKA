@@ -300,6 +300,11 @@ public class GameScene extends BaseScene implements IOnSceneTouchListener, IScro
 	private void deploymentUpdate()
 	{		
 		hideAllChildScenes();
+		
+		if(logic.selectedRegion == null)
+		{
+			showAllRegions();
+		}
 
 		if(!logic.getCurrentPlayer().isCPU)
 		{
