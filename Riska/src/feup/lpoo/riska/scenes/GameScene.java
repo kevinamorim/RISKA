@@ -615,6 +615,7 @@ public class GameScene extends BaseScene implements IOnSceneTouchListener, IScro
 		{
 			camera.zoomOut();
 			hideAllButtons();
+			hud.hide(SPRITE.INFO_TAB);
 			hud.setDetailButtonToExit();
 			hud.show(BUTTON.DETAILS);
 			detailScene.setVisible(true);
@@ -643,6 +644,7 @@ public class GameScene extends BaseScene implements IOnSceneTouchListener, IScro
 			camera.zoomOut();
 			hud.setDetailButtonToExit();
 			hideAllButtons();
+			hud.hide(SPRITE.INFO_TAB);
 			hud.show(BUTTON.DETAILS);
 			battleScene.update(pRegion1, pRegion2, battleGenerator);
 			battleScene.setVisible(true);
@@ -669,6 +671,7 @@ public class GameScene extends BaseScene implements IOnSceneTouchListener, IScro
 		{
 			camera.zoomOut();
 			hideAllButtons();
+			hud.hide(SPRITE.INFO_TAB);
 			hud.show(BUTTON.ATTACK);
 			hud.show(BUTTON.ARROW_LEFT);
 			hud.show(BUTTON.ARROW_RIGHT);
@@ -683,6 +686,7 @@ public class GameScene extends BaseScene implements IOnSceneTouchListener, IScro
 		if(preMoveScene != null) {
 			camera.zoomOut();
 			hideAllButtons();
+			hud.hide(SPRITE.INFO_TAB);
 			hud.show(BUTTON.MOVE);
 			hud.show(BUTTON.ARROW_LEFT);
 			hud.show(BUTTON.ARROW_RIGHT);
