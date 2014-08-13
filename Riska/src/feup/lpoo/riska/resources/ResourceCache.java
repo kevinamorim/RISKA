@@ -90,8 +90,11 @@ public class ResourceCache {
 	private BuildableBitmapTextureAtlas gameTextureAtlas;
 	private BitmapTextureAtlas mapTextureAtlas;
 	private BitmapTextureAtlas seaTextureAtlas;
-	public ArrayList<Map> maps;
-
+	public ArrayList<Map> maps;	
+	// ==================================================
+	// GAMEOVER RESOURCES
+	// ==================================================
+	
 	// ======================================================
 	// FONTS
 	// ======================================================
@@ -99,6 +102,7 @@ public class ResourceCache {
 	public Font mainMenuFont;
 	public Font mInfoTabFont;
 	public Font mGameFont;
+	public Font mGameOverFont;
 
 	protected BitmapTextureAtlas mFontTexture;
 	protected Font mFont;
@@ -347,6 +351,31 @@ public class ResourceCache {
 
 	}
 
+	// ==================================================
+	// GAMEOVER SCENE
+	// ==================================================
+	public void loadGameOverSceneResources() {
+		loadGameOverSceneFonts();
+	}
+	
+	public void unloadGameOverSceneResources() {
+		mGameOverFont.unload();
+	}
+	
+	private void loadGameOverSceneFonts() {
+		
+		FontFactory.setAssetBasePath("fonts/");
+		
+		int textureWidth = 512, textureHeight = 512;
+		
+		mGameOverFont = FontFactory.create(
+				engine.getFontManager(), 
+				engine.getTextureManager(), textureWidth, textureHeight, 
+				Typeface.create(Typeface.DEFAULT, Typeface.BOLD), 32f, Color.WHITE);
+		
+		mGameOverFont.load();
+		
+	}
 	// ==================================================
 	// SFX
 	// ==================================================

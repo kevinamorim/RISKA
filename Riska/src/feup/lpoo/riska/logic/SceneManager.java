@@ -7,6 +7,7 @@ import org.andengine.ui.IGameInterface.OnCreateSceneCallback;
 
 import feup.lpoo.riska.resources.ResourceCache;
 import feup.lpoo.riska.scenes.BaseScene;
+import feup.lpoo.riska.scenes.GameOverScene;
 import feup.lpoo.riska.scenes.GameScene;
 import feup.lpoo.riska.scenes.LoadingScene;
 import feup.lpoo.riska.scenes.MainMenuScene;
@@ -24,16 +25,15 @@ public class SceneManager {
 		SPLASH, 
 		LOADING,
 		MAIN_MENU,
-		/*OPTIONS,*/
 		LOAD_MAP,
 		GAME,
 		NEWGAME,
 		LOADGAME,
-		GAME_OVER,
 		DETAIL,
 		PRE_BATTLE,
 		BATTLE,
-		PRE_MOVE
+		PRE_MOVE,
+		GAMEOVER
 	};
 
 	// ==================================================
@@ -43,7 +43,7 @@ public class SceneManager {
 	private BaseScene loadingScene;
 	private BaseScene mainMenuScene;
 	private BaseScene gameScene;
-	//private BaseScene optionsScene;	
+	private BaseScene gameOverScene;
 	
 	public static SceneManager instance = new SceneManager();
 	private BaseScene currentScene;
@@ -100,20 +100,48 @@ public class SceneManager {
 		}));
 	}
 	
-//	public void createOptionsScene() {
-//		optionsScene = new OptionsScene();
-//		setScene(optionsScene);
-//	}
+	public void createGameOverScene() {
+		setScene(loadingScene);
+		ResourceCache.getSharedInstance().unloadGameSceneResources();
+		gameScene.dispose();
+		gameScene = null;
+		engine.registerUpdateHandler(new TimerHandler(MIN_LOAD_SECONDS, new ITimerCallback() {
+
+			@Override
+			public void onTimePassed(TimerHandler pTimerHandler) {
+				engine.unregisterUpdateHandler(pTimerHandler);
+				ResourceCache.getSharedInstance().loadGameOverSceneResources();
+				gameOverScene = new GameOverScene();
+				setScene(gameOverScene);
+			}
+			
+		}));
+	}
 	
 	// ==================================================
 	// LOAD SCENES
 	// ==================================================
 	public void loadMainMenuScene(final Engine mEngine)
 	{
-		setScene(loadingScene);
-		gameScene.disposeScene();
-		ResourceCache.getSharedInstance().unloadGameSceneResources();
 		
+		SCENE_TYPE type = currentSceneType;
+		
+		setScene(loadingScene);
+
+		switch(type) {
+		case GAME:
+			gameScene.disposeScene();
+			ResourceCache.getSharedInstance().unloadGameSceneResources();
+			break;
+		case GAMEOVER:
+			gameOverScene.disposeScene();
+			ResourceCache.getSharedInstance().unloadGameOverSceneResources();
+			break;
+		default:
+			/* Not an handled scene. */
+			return;
+		}
+
 		mEngine.registerUpdateHandler(new TimerHandler(MIN_LOAD_SECONDS, new ITimerCallback()
 		{
 
@@ -156,9 +184,9 @@ public class SceneManager {
 		case MAIN_MENU:
 			setScene(mainMenuScene);
 			break;
-//		case OPTIONS:
-//			setScene(optionsScene);
-//			break;
+		case GAMEOVER:
+			setScene(gameOverScene);
+			break;
 		case GAME:
 			setScene(gameScene);
 			break;

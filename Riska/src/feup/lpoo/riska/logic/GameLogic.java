@@ -14,7 +14,6 @@ import feup.lpoo.riska.scenes.GameScene;
 
 public class GameLogic
 {
-
 	// ======================================================
 	// SINGLETONS
 	// ======================================================
@@ -116,6 +115,7 @@ public class GameLogic
 		if(gameOver())
 		{
 			state = GAME_STATE.GAMEOVER;
+			SceneManager.getSharedInstance().createGameOverScene();
 		}
 		else
 		{
