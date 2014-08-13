@@ -8,6 +8,7 @@ public class Player extends Object {
 	// ======================================================
 	// CONSTANTS
 	// ======================================================
+	final private String[] names = { "Hitler", "Salazar", "Estaline" };
 
 	// ======================================================
 	// FIELDS
