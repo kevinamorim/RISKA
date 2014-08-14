@@ -54,5 +54,11 @@ public class LoadMapScene extends BaseScene implements Displayable {
 //		
 //		}
 	}
+
+	@Override
+	public void onSceneShow() {
+		// TODO Auto-generated method stub
+		
+	}
 	
 }

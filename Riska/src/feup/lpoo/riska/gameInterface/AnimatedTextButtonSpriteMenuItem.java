@@ -18,7 +18,7 @@ public class AnimatedTextButtonSpriteMenuItem extends AnimatedSpriteMenuItem {
 	private Text buttonText;
 	private Font buttonFont;
 	
-	private float textBoundingFactor = 0.80f;	// Text should never measure beyond 90% of the button size
+	private float textBoundingFactor = 0.5f;	// Text should never measure beyond 55% of the button size
 	
 	public AnimatedTextButtonSpriteMenuItem(int pID, float pWidth, float pHeight, ITiledTextureRegion pTiledTextureRegion,
 			VertexBufferObjectManager vbom, String pString, Font pFont) {
@@ -48,7 +48,7 @@ public class AnimatedTextButtonSpriteMenuItem extends AnimatedSpriteMenuItem {
 	@Override
 	public void onSelected() {
 		
-		buttonText.setColor(Color.DKGRAY);
+		buttonText.setVisible(false);
 		setCurrentTileIndex(1);
 		super.onSelected();
 		
@@ -57,7 +57,7 @@ public class AnimatedTextButtonSpriteMenuItem extends AnimatedSpriteMenuItem {
 	@Override
 	public void onUnselected() {
 		
-		buttonText.setColor(Color.BLACK);
+		buttonText.setVisible(true);
 		setCurrentTileIndex(0);
 		super.onUnselected();
 		

@@ -98,4 +98,10 @@ public class DetailScene extends BaseScene {
 		enemyRegionName.setText(Utils.wrapText(resources.mGameFont, text, 0.5f * window.getWidth(), vbom));	
 	}
 
+	@Override
+	public void onSceneShow() {
+		// TODO Auto-generated method stub
+		
+	}
+
 }

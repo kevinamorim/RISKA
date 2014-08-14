@@ -21,8 +21,11 @@ public class MainActivity extends BaseGameActivity {
 	// CONSTANTS
 	// ======================================================
 	public final static int CAMERA_WIDTH = 800;
-	public final static int CAMERA_HEIGHT = 480;
+	public final static int CAMERA_HEIGHT = 500;
 	private final float MAX_VELOCITY = 700f;
+	
+	public final float FRAME_RATE = 1 / 60f;
+	public final float LIMIT_FRAME_RATE = 1 / 30f;
 	
 	public final static float RES_RATIO = 16f/10f;
 	
@@ -67,7 +70,8 @@ public class MainActivity extends BaseGameActivity {
 
 	@Override
 	public void onCreateScene(OnCreateSceneCallback pOnCreateSceneCallback)
-			throws IOException {
+			throws IOException
+			{
 		SceneManager.getSharedInstance().createSplashScene(pOnCreateSceneCallback);
 	}
 
@@ -81,7 +85,8 @@ public class MainActivity extends BaseGameActivity {
 		mEngine.registerUpdateHandler(new TimerHandler(seconds, new ITimerCallback() {
 
 			@Override
-			public void onTimePassed(TimerHandler pTimerHandler) {
+			public void onTimePassed(TimerHandler pTimerHandler)
+			{
 				mEngine.unregisterUpdateHandler(pTimerHandler);
 				SceneManager.getSharedInstance().createMainMenuScene();
 			}
@@ -92,7 +97,8 @@ public class MainActivity extends BaseGameActivity {
 	}
 	
 	@Override
-	public boolean onKeyDown(int keyCode, KeyEvent event) {
+	public boolean onKeyDown(int keyCode, KeyEvent event)
+	{
 		if(keyCode == KeyEvent.KEYCODE_BACK) {
 			SceneManager.getSharedInstance().getCurrentScene().onBackKeyPressed();
 		}

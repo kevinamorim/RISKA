@@ -3,6 +3,7 @@ package feup.lpoo.riska.utilities;
 import java.util.Random;
 
 import org.andengine.entity.Entity;
+import org.andengine.entity.sprite.Sprite;
 import org.andengine.entity.text.Text;
 import org.andengine.opengl.font.Font;
 import org.andengine.opengl.vbo.VertexBufferObjectManager;
@@ -151,22 +152,22 @@ public class Utils
 
 	public static float getRightBoundsX(Entity e)
 	{
-		return getRightBoundsX(e.getX(), e.getWidth());
+		return getRightBoundsX(e.getX(), e);
 	}
 
-	public static float getRightBoundsX(float pX, float pWidth)
+	public static float getRightBoundsX(float pX, Entity e)
 	{
-		return (pX + 0.5f * pWidth);
+		return (pX + 0.5f * getScaledWidth(e));
 	}
 
 	public static float getLeftBoundsX(Entity e)
 	{
-		return getLeftBoundsX(e.getX(), e.getWidth());
+		return getLeftBoundsX(e.getX(), e);
 	}
 
-	public static float getLeftBoundsX(float pX, float pWidth)
+	public static float getLeftBoundsX(float pX, Entity e)
 	{
-		return (pX - 0.5f * pWidth);
+		return (pX - 0.5f * getScaledWidth(e));
 	}
 
 	public static float getUpperBoundsY(Entity e)
@@ -272,6 +273,14 @@ public class Utils
 			array[i] = value;
 		}
 	}
+
+	public static void fill(long[] array, long value)
+	{
+		for(int i = 0; i < array.length; i++)
+		{
+			array[i] = value;
+		}
+	} 
 	
 	public static <X> boolean inArray(X value, X[] array)
 	{
@@ -313,5 +322,10 @@ public class Utils
 		{
 			to[i] = from[i];
 		}
-	} 
+	}
+
+	public static void slideX(Entity e, float distance)
+	{
+		e.setX(e.getX() + distance);
+	}
 }

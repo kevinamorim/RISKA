@@ -196,4 +196,10 @@ public class BattleScene extends BaseScene {
 		}
 	}
 
+	@Override
+	public void onSceneShow() {
+		// TODO Auto-generated method stub
+		
+	}
+
 }

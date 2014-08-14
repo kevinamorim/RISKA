@@ -41,6 +41,8 @@ public abstract class BaseScene extends Scene {
 	// ABSTRACTION
 	// ==================================================
 	public abstract void createScene();
+	
+	public abstract void onSceneShow();
 
 	public abstract void onBackKeyPressed();
 

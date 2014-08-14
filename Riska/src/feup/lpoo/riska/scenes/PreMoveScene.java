@@ -150,4 +150,10 @@ public class PreMoveScene extends BaseScene implements Displayable {
 	{
 		return currentSoldiers;
 	}
+
+	@Override
+	public void onSceneShow() {
+		// TODO Auto-generated method stub
+		
+	}
 }

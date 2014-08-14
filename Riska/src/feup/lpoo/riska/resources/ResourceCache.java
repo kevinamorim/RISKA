@@ -42,7 +42,7 @@ public class ResourceCache {
 
 	private static ResourceCache instance = new ResourceCache();
 
-	private static String currentTheme = "vanilla/";
+	private static String currentTheme = "new/";
 	private static int numberOfMaps = 1;
 	private final int INITIAL_MAP = 1;
 
@@ -91,6 +91,15 @@ public class ResourceCache {
 	private BitmapTextureAtlas mapTextureAtlas;
 	private BitmapTextureAtlas seaTextureAtlas;
 	public ArrayList<Map> maps;	
+	
+	// NEW
+	private BuildableBitmapTextureAtlas propsTextureAtlas;
+	public ITextureRegion doorLeftRegion;
+	public ITextureRegion doorRightRegion;
+	public ITiledTextureRegion switchRegion;
+	public ITextureRegion pipeRegion;
+	public ITextureRegion frameRegion;
+	
 	// ==================================================
 	// GAMEOVER RESOURCES
 	// ==================================================
@@ -167,20 +176,17 @@ public class ResourceCache {
 		
 		menuBackgroundRegion = BitmapTextureAtlasTextureRegionFactory.createFromAsset(menuBackgroundTextureAtlas, 
 				activity, "background.png", 0, 0);
-
-		menuBackgroundTextureAtlas.load();
-
+	
 		menuBorderTextureAtlas = new BitmapTextureAtlas(activity.getTextureManager(), 
 				bgTextureWidth, bgTextureHeight, TextureOptions.DEFAULT);
+		
 		menuBorderRegion = BitmapTextureAtlasTextureRegionFactory.createFromAsset(menuBorderTextureAtlas, 
 				activity, "border.png", 0, 0);
-
-		menuBorderTextureAtlas.load();
 
 		int mainTextureWidth = 2048, mainTextureHeight = 2048;
 
 		mainMenuTextureAtlas = new BuildableBitmapTextureAtlas(activity.getTextureManager(), 
-				mainTextureWidth, mainTextureHeight, TextureOptions.BILINEAR);
+				mainTextureWidth, mainTextureHeight, TextureOptions.DEFAULT);
 
 		textBtnRegion = BitmapTextureAtlasTextureRegionFactory.createTiledFromAsset(mainMenuTextureAtlas, activity, 
 				"button.png", 1, 2);
@@ -204,13 +210,42 @@ public class ResourceCache {
 				"minus_button.png", 1, 2);
 		
 		playerCheckBoxButtonRegion = BitmapTextureAtlasTextureRegionFactory.createTiledFromAsset(mainMenuTextureAtlas, activity, 
-				"check_box.png", 1, 2);
+				"switch.png", 1, 2);
 
+		
+		int propsTextureWidth = 2048, propsTextureHeight = 2048;
+		
+		propsTextureAtlas = new BuildableBitmapTextureAtlas(activity.getTextureManager(), 
+				propsTextureWidth, propsTextureHeight, TextureOptions.DEFAULT);
+		
+		doorLeftRegion = BitmapTextureAtlasTextureRegionFactory.createFromAsset(propsTextureAtlas, activity, 
+				"door_left.png");
+		
+		doorRightRegion = BitmapTextureAtlasTextureRegionFactory.createFromAsset(propsTextureAtlas, activity, 
+				"door_right.png");
+		
+		switchRegion = BitmapTextureAtlasTextureRegionFactory.createTiledFromAsset(propsTextureAtlas, activity, 
+				"switch.png", 1, 2);
+		
+		pipeRegion = BitmapTextureAtlasTextureRegionFactory.createFromAsset(propsTextureAtlas, activity, 
+				"pipe.png");
+		
+		frameRegion = BitmapTextureAtlasTextureRegionFactory.createFromAsset(propsTextureAtlas, activity, 
+				"frame.png");
+		
 		try
 		{
+			menuBorderTextureAtlas.load();
+			
+			menuBackgroundTextureAtlas.load();
+			
 			mainMenuTextureAtlas.build(new BlackPawnTextureAtlasBuilder<IBitmapTextureAtlasSource, BitmapTextureAtlas>(0, 1, 0));
 			
 			mainMenuTextureAtlas.load();
+			
+			propsTextureAtlas.build(new BlackPawnTextureAtlasBuilder<IBitmapTextureAtlasSource, BitmapTextureAtlas>(0, 1, 0));
+			
+			propsTextureAtlas.load();
 		}
 		catch(final TextureAtlasBuilderException e)
 		{
@@ -224,7 +259,7 @@ public class ResourceCache {
 		FontFactory.setAssetBasePath("fonts/");
 
 		mainMenuFont = FontFactory.createFromAsset(engine.getFontManager(),
-				engine.getTextureManager(), 512, 512, TextureOptions.BILINEAR,
+				engine.getTextureManager(), 512, 512, TextureOptions.DEFAULT,
 				activity.getAssets(), "reprise.ttf", 125f, true,
 				Color.WHITE);
 

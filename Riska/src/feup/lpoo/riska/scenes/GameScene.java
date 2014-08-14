@@ -857,6 +857,12 @@ public class GameScene extends BaseScene implements IOnSceneTouchListener, IScro
 			logic.move();
 		}
 	}
+
+	@Override
+	public void onSceneShow() {
+		// TODO Auto-generated method stub
+		
+	}
 }
 
 

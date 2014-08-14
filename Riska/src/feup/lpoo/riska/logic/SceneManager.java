@@ -146,7 +146,8 @@ public class SceneManager {
 		{
 
 			@Override
-			public void onTimePassed(TimerHandler pTimerHandler) {
+			public void onTimePassed(TimerHandler pTimerHandler)
+			{
 				mEngine.unregisterUpdateHandler(pTimerHandler);
 				ResourceCache.getSharedInstance().loadMainMenuResources();
 				mainMenuScene = new MainMenuScene();
@@ -174,6 +175,7 @@ public class SceneManager {
 		engine.setScene(scene);
 		currentScene = scene;
 		currentSceneType = scene.getSceneType();
+		scene.onSceneShow();
 	}
 	
 	public void setScene(SCENE_TYPE sceneType) {
