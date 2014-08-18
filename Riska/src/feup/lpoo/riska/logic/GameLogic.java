@@ -5,6 +5,9 @@ import java.util.Collections;
 import java.util.Comparator;
 import java.util.Random;
 
+import android.content.res.Resources;
+import android.util.Log;
+
 import feup.lpoo.riska.elements.Map;
 import feup.lpoo.riska.elements.Player;
 import feup.lpoo.riska.elements.Region;
@@ -17,15 +20,14 @@ public class GameLogic
 	// ======================================================
 	// SINGLETONS
 	// ======================================================
-	private ResourceCache resources;
 	private BattleGenerator battleGenerator;
 
 	// ======================================================
 	// CONSTANTS
 	// ======================================================
+	public final int MIN_SOLDIERS_PER_REGION = 1;
 	private final int WIN_BONUS = 2;
 	private final int TURN_REPLENISHMENT = 3;
-	public final int MIN_SOLDIERS_PER_REGION = 1;
 	private final int MIN_SOLDIERS_FOR_AN_ATTACK = 2;
 	private final int MIN_PLAYERS_IN_GAME = 2;
 	private final int SOLDIER_INC = 1;
@@ -36,42 +38,34 @@ public class GameLogic
 	// FIELDS
 	// ======================================================
 	public Map map;
-	
+
 	private ArrayList<Player> players;
 	private GAME_STATE state;
+	private GAME_STATE tempState;
 	private Player currentPlayer;
 	private GameScene gameScene;
-	
-	private boolean attackDone;
-	private boolean movingDone;
-	private boolean turnDone;
-	
+
 	public Region selectedRegion;
 	public Region targetedRegion;
 
 	public int attackingSoldiers;
 	public int defendingSoldiers;
 	public int movingSoldiers;
-	
+
 	// ======================================================
 	// ======================================================
 
 	public GameLogic(GameScene scene)
 	{
-		resources = ResourceCache.getSharedInstance();
-
 		gameScene = scene;
 
 		createsPlayers();
 		createMap();
 
 		state = GAME_STATE.SETUP;
-		attackDone = false;
-		movingDone = false;
-		turnDone = false;
 
 		battleGenerator = new BattleGenerator();
-		
+
 		attackingSoldiers = MIN_SOLDIERS_PER_REGION;
 		defendingSoldiers = MIN_SOLDIERS_PER_REGION;
 		movingSoldiers = 0;
@@ -86,10 +80,10 @@ public class GameLogic
 		for(int i = 0; i < GameInfo.numberOfPlayers; i++)
 		{
 			//Log.d("Riska", "[GameLogic] Player " + i + (GameInfo.playerIsCPU[i] ? " is " : " is not ") + "CPU");
-			
+
 			Player player = new Player(GameInfo.playerIsCPU[i], GameInfo.getPlayerColors(i), "PLAYER " + i);
 			player.setSoldiersToDeploy(INITIAL_SOLDIERS_TO_DEPLOY);
-			
+
 			players.add(player);
 		}
 
@@ -98,8 +92,7 @@ public class GameLogic
 
 	private void createMap()
 	{
-		 // TODO : maps
-		map = resources.maps.get(GameInfo.currentMapIndex);
+		map = ResourceCache.getSharedInstance().maps.get(GameInfo.currentMapIndex);
 
 		map.handOutRegions(players);
 
@@ -108,50 +101,51 @@ public class GameLogic
 
 	// ======================================================
 	// ======================================================
-
-	public void update()
-	{
-
-		if(gameOver())
-		{
+	private void nextTurn() {
+		
+		if(!getNextPossiblePlayer()) {
 			state = GAME_STATE.GAMEOVER;
-			SceneManager.getSharedInstance().createGameOverScene();
+		} else {
+			unselectRegion();
+			untargetRegion();
+			gameScene.setInitialHUD();
 		}
-		else
-		{
-			if(turnDone)
-			{
-				if(!getNextPossiblePlayer())
-				{
-					state = GAME_STATE.GAMEOVER;
-					return;
-				}
-				else
-				{
-					attackDone = false;
-					movingDone = false;
-					turnDone = false;
-					
-					unselectRegion();
-					untargetRegion();
-					gameScene.setInitialHUD();
-					state = GAME_STATE.PLAY;
-				}
-			}
-			else if(movingDone)
-			{
-				state = GAME_STATE.DEPLOYMENT;	
-			} else if(attackDone) {
-				state = GAME_STATE.MOVE;
-			}
-			else
-			{
-				if(currentPlayer.isCPU)
-				{
-					cpu();
-				}
-			}
-		}	
+		
+		/* TODO: Not here. Just testing.(temporary) */
+		if(currentPlayer.isCPU) {
+			pauseGame();
+			automaticMove();
+		}
+		
+	}
+
+	private void setNextState() {
+		
+		Log.d("debug", "STATE: " + state);
+		
+		if(gameOver()) {
+			state = GAME_STATE.GAMEOVER;
+		}
+		
+		switch(state) {
+		case SETUP:
+			state = GAME_STATE.PLAY; /* Change to attack */
+			break;
+		case PLAY: /* Change to attack */
+			state = GAME_STATE.MOVE;
+			break;
+		case MOVE:
+			state = GAME_STATE.DEPLOYMENT;
+			break;
+		case DEPLOYMENT:
+			state = GAME_STATE.PLAY; /* Change to attack */
+			break;
+		case PAUSED:
+			state = GAME_STATE.PLAY;
+			break;
+		default:
+			break;
+		}
 	}
 
 	public void setup()
@@ -163,7 +157,7 @@ public class GameLogic
 			if(currentPlayer.equals(players.get(0))) /* If all players have deployed their soldiers. */
 			{
 				gameScene.setInitialHUD();
-				state = GAME_STATE.PLAY;
+				setNextState();
 			}
 			else
 			{
@@ -178,6 +172,7 @@ public class GameLogic
 
 	public void attack()
 	{
+				
 		boolean attackerWon;
 
 		if(selectedRegion == null || targetedRegion == null)
@@ -191,8 +186,6 @@ public class GameLogic
 		battleGenerator.simulateAttack(attackingSoldiers, defendingSoldiers);
 
 		attackerWon = battleGenerator.result;
-
-		gameScene.showBattleScene(selectedRegion, targetedRegion, battleGenerator);
 
 		if(attackerWon)
 		{
@@ -210,18 +203,15 @@ public class GameLogic
 
 			currentPlayer.setSoldiersToDeploy(TURN_REPLENISHMENT);
 		}
+		
+		setNextState();
+		gameScene.showBattleScene(selectedRegion, targetedRegion, battleGenerator);
 
 		untargetRegion();
-		unselectRegion();
-
-		attackDone = true;
+		unselectRegion();	
 		
-		/* TODO: Temporary */
-		if(currentPlayer.isCPU) {
-			turnDone = true;
-		}
 	}
-	
+
 	public void deploy() {
 
 		if(currentPlayer.hasSoldiersLeftToDeploy() && currentPlayer.isCPU)
@@ -231,25 +221,24 @@ public class GameLogic
 
 		if(!currentPlayer.hasSoldiersLeftToDeploy())
 		{
-			//state = GAME_STATE.ATTACK;
-			state = GAME_STATE.PLAY;
-			turnDone = true;
+			nextTurn();
+			setNextState();
 		}
 	}
 
 	public void move() {
-		
+
 		if(selectedRegion != null && targetedRegion != null) {
 			Region pRegion1 = selectedRegion;
 			Region pRegion2 = targetedRegion;
-			
+
 			pRegion1.setSoldiers(pRegion1.getNumberOfSoldiers() - movingSoldiers);
 			pRegion2.setSoldiers(pRegion2.getNumberOfSoldiers() + movingSoldiers);
-			
+
 			untargetRegion();
 			unselectRegion();
-			state = GAME_STATE.DEPLOYMENT;
-			movingDone = true;
+			
+			setNextState();
 		}
 
 	}
@@ -273,6 +262,10 @@ public class GameLogic
 		this.state = state;
 	}
 
+	public boolean isPaused() {
+		return state == GAME_STATE.PAUSED;
+	}
+
 	private boolean gameOver()
 	{
 		int remainingPlayers = players.size();
@@ -288,7 +281,7 @@ public class GameLogic
 		return (remainingPlayers < MIN_PLAYERS_IN_GAME);
 
 	}
-	
+
 	// ======================================================
 	// PLAYERS
 	// ======================================================
@@ -382,20 +375,20 @@ public class GameLogic
 		{
 			switch(state)
 			{
-			
+
 			case SETUP:
 				deploySoldiers(pRegion);
-				
+
 				break;
-				
+
 			case DEPLOYMENT:
 				deploySoldiers(pRegion);
 				break;
-				
+
 			case PLAY:
 				onPlayHandler(pRegion);
 				break;
-				
+
 			case MOVE:
 				onMoveHandler(pRegion);
 				break;
@@ -405,7 +398,7 @@ public class GameLogic
 			}
 		}
 	}
-	
+
 	private void onMoveHandler(Region pRegion) {
 		if(!pRegion.isFocused()) {
 			if(pRegion.hasOwner(currentPlayer)) {
@@ -600,11 +593,12 @@ public class GameLogic
 
 	public void pauseGame()
 	{
+		tempState = state;
 		state = GAME_STATE.PAUSED;
 	}
 
 	public void resumeGame()
 	{
-		if(state.equals(GAME_STATE.PAUSED)) state = GAME_STATE.PLAY;
+		if(state.equals(GAME_STATE.PAUSED)) state = tempState;
 	}
 }

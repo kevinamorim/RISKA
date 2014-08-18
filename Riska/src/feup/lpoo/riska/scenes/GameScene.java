@@ -40,9 +40,7 @@ public class GameScene extends BaseScene implements IOnSceneTouchListener, IScro
 	private final int MIN_SCROLLING_DIST = 30; /* Bigger the number, slower the scrolling. */
 	private final long MIN_TOUCH_INTERVAL = 70;
 	private final long MAX_TOUCH_INTERVAL = 400;
-	//private final int ANIM_DURATION = 200;
 	private final float CPU_DELAY = 1.0f;
-	//private final int MIN_SOLDIERS_PER_REGION = 1;	
 	private final long REGION_BUTTON_MIN_TOUCH_INTERVAL = 30;
 	private final int MAX_REGION_CHARS = 10;
 
@@ -263,11 +261,9 @@ public class GameScene extends BaseScene implements IOnSceneTouchListener, IScro
 			break;
 		case MOVE:
 			moveUpdate();
-			logic.update();
 			break;
 		case PLAY:
 			draw();
-			logic.update();
 			break;	
 		case CPU:
 			break;
@@ -616,7 +612,6 @@ public class GameScene extends BaseScene implements IOnSceneTouchListener, IScro
 			showChildScene();
 			hud.show(BUTTON.DETAILS);
 			detailScene.setVisible(true);
-			logic.pauseGame();
 		}
 	}
 
@@ -757,6 +752,7 @@ public class GameScene extends BaseScene implements IOnSceneTouchListener, IScro
 	
 	/* Common operations when showing a child scene. */
 	private void showChildScene() {
+		logic.pauseGame();
 		camera.zoomOut();
 		hideAllButtons();
 		hud.hide(SPRITE.INFO_TAB);
@@ -766,6 +762,7 @@ public class GameScene extends BaseScene implements IOnSceneTouchListener, IScro
 	
 	/* Common operations when hiding a child scene. */
 	private void hideChildScene() {
+		logic.resumeGame();
 		hideAllButtons();
 		hud.show(SPRITE.INFO_TAB);	
 		hud.setDetailButtonToQuestion();	
@@ -817,7 +814,6 @@ public class GameScene extends BaseScene implements IOnSceneTouchListener, IScro
 		}
 		else
 		{
-			logic.pauseGame();
 			showPreBattleScene(logic.attackingSoldiers, logic.defendingSoldiers); // TODO alter this, maybe, no?
 		}
 	}
@@ -849,7 +845,6 @@ public class GameScene extends BaseScene implements IOnSceneTouchListener, IScro
 	
 	public void onMoveButtonTouched() {
 		if(!preMoveScene.isVisible()) {
-			logic.pauseGame();
 			showPreMoveScene(logic.selectedRegion.getNumberOfSoldiers() - logic.MIN_SOLDIERS_PER_REGION);
 		} else {
 			hidePreMoveScene();
