@@ -1,11 +1,8 @@
 package feup.lpoo.riska.logic;
 
 import java.util.ArrayList;
-import java.util.Collections;
-import java.util.Comparator;
 import java.util.Random;
 
-import android.content.res.Resources;
 import android.util.Log;
 
 import feup.lpoo.riska.elements.Map;
