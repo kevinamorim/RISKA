@@ -3,6 +3,8 @@ package feup.lpoo.riska.elements;
 import java.util.ArrayList;
 import org.andengine.util.adt.color.Color;
 
+import feup.lpoo.riska.utilities.Utils;
+
 public class Player extends Object {
 
 	// ======================================================
@@ -97,7 +99,7 @@ public class Player extends Object {
 	{
 		return this.secColor;
 	}
-
+	
 	/**
 	 * Called only with non-human players
 	 * TODO : heavy deployment
@@ -117,4 +119,54 @@ public class Player extends Object {
 	{
 		return playerName;
 	}
+	
+	public Region pickRegion() {
+		
+		ArrayList<Region> allowedRegions = new ArrayList<Region>();
+		
+		for(Region item : regions) {
+			if(item.canAttack()) {
+				allowedRegions.add(item);
+			}
+		}
+		return allowedRegions.get(Utils.randomInt(0, regions.size() - 1));
+	}
+	
+	public Region pickNeighbourAlliedRegion(Region pRegion) {
+		ArrayList<Region> neighbours = pRegion.getNeighbours();
+		
+		for(Region item : neighbours) {
+			if(!regions.contains(item)) {
+				neighbours.remove(item);
+			}
+		}
+		
+		return neighbours.get(Utils.randomInt(0, neighbours.size() - 1));
+	}
+	
+	public Region pickNeighbourEnemyRegion(Region pRegion) {
+		ArrayList<Region> neighbours = pRegion.getNeighbours();
+		
+		for(Region item : neighbours) {
+			if(regions.contains(item)) {
+				neighbours.remove(item);
+			}
+		}
+		
+		return neighbours.get(Utils.randomInt(0, neighbours.size() - 1));
+	}
+	
+	public boolean hasPossibleMoves() {
+		
+		for(Region item : regions)
+		{
+			if(item.hasEnemyNeighbor() && item.canAttack())
+			{
+				return true;
+			}
+		}
+
+		return false;
+	}
+	
 }

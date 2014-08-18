@@ -9,6 +9,8 @@ import feup.lpoo.riska.io.FileRead;
 
 
 public class Map {
+	
+	public final int MIN_SOLDIERS_PER_REGION = 1;
 
 	private ArrayList<Region> regions;
 
@@ -36,6 +38,13 @@ public class Map {
 		return regions.size();
 	}
 
+	public void initRegions() {
+		for(Region region : regions)
+		{
+			region.setSoldiers(Math.max(MIN_SOLDIERS_PER_REGION, region.getNumberOfSoldiers()));
+		}
+	}
+	
 	private ArrayList<Region> readRegions(String filename) {
 		ArrayList<String> mapData = new ArrayList<String>();
 
@@ -129,4 +138,6 @@ public class Map {
 			}
 		}
 	}
+	
+	
 }

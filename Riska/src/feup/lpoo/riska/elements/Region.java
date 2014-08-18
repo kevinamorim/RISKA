@@ -9,6 +9,7 @@ public class Region extends Element {
 
 	private static final int SOLDIER_ATT = 10;
 	private static final int SOLDIER_DEF = 10;
+	private static final int MIN_SOLDIERS_FOR_AN_ATTACK = 2;
 
 	// ======================================================
 	// FIELDS
@@ -240,4 +241,20 @@ public class Region extends Element {
 		return (owner.equals(player));
 	}
 	
+	public boolean canAttack() {
+		return soldiers.size() >= MIN_SOLDIERS_FOR_AN_ATTACK;
+	}
+	
+	public boolean hasEnemyNeighbor()
+	{
+		for(Region neighbour : neighbours)
+		{
+			if(!neighbour.getOwner().equals(owner))
+			{
+				return true;
+			}
+		}
+
+		return false;
+	}
 }

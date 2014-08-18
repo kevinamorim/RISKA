@@ -28,7 +28,6 @@ public class GameLogic
 	public final int MIN_SOLDIERS_PER_REGION = 1;
 	private final int WIN_BONUS = 2;
 	private final int TURN_REPLENISHMENT = 3;
-	private final int MIN_SOLDIERS_FOR_AN_ATTACK = 2;
 	private final int MIN_PLAYERS_IN_GAME = 2;
 	private final int SOLDIER_INC = 1;
 
@@ -95,8 +94,7 @@ public class GameLogic
 		map = ResourceCache.getSharedInstance().maps.get(GameInfo.currentMapIndex);
 
 		map.handOutRegions(players);
-
-		verifiyNumberOfSoldiersInRegions();
+		map.initRegions();
 	}
 
 	// ======================================================
@@ -323,7 +321,7 @@ public class GameLogic
 
 		while(count < players.size())
 		{
-			if(hasPossibleMoves(currentPlayer))
+			if(currentPlayer.hasPossibleMoves())
 			{
 				return true;
 			}
@@ -339,7 +337,7 @@ public class GameLogic
 
 	private void automaticMove()
 	{	
-		Region pRegion1 = selectRegion(currentPlayer);
+		Region pRegion1 = currentPlayer.pickRegion();
 
 		if(pRegion1 != null)
 		{
@@ -352,19 +350,6 @@ public class GameLogic
 		}		
 	}
 
-	private boolean hasPossibleMoves(Player player)
-	{
-		for(Region pRegion : player.getRegions())
-		{
-			if(hasEnemyNeighbor(pRegion) && canAttack(pRegion))
-			{
-				//Log.d("Region", "True" + pRegion.getName());
-				return true;
-			}
-		}
-
-		return false;
-	}
 
 	// ======================================================
 	// REGIONS RELATED
@@ -400,10 +385,11 @@ public class GameLogic
 	}
 
 	private void onMoveHandler(Region pRegion) {
+		
 		if(!pRegion.isFocused()) {
 			if(pRegion.hasOwner(currentPlayer)) {
 				if(this.selectedRegion == null) {
-					if(canAttack(pRegion)) { /* Using canAttack because the criteria is the same */
+					if(pRegion.canAttack()) { /* Using canAttack because the criteria is the same */
 						selectRegion(pRegion);
 						gameScene.showOnlyPlayerNeighbourRegions(pRegion);
 					}
@@ -419,6 +405,7 @@ public class GameLogic
 				untargetRegion();
 			}
 		}
+		
 	}
 
 	private void deploySoldiers(Region pRegion)
@@ -435,7 +422,7 @@ public class GameLogic
 		{
 			if(pRegion.hasOwner(currentPlayer))
 			{
-				if(canAttack(pRegion))
+				if(pRegion.canAttack())
 				{
 					selectRegion(pRegion);
 					gameScene.showOnlyNeighbourRegions(pRegion);
@@ -462,7 +449,7 @@ public class GameLogic
 
 	private Region selectTargetRegion(Region pRegion1)
 	{
-		if(hasEnemyNeighbor(pRegion1))
+		if(pRegion1.hasEnemyNeighbor())
 		{
 			ArrayList<Region> neighbours = getEnemyNeighbours(pRegion1);
 			Random r = new Random();
@@ -471,14 +458,6 @@ public class GameLogic
 		}
 
 		return null;
-	}
-
-	private void verifiyNumberOfSoldiersInRegions()
-	{
-		for(Region region : map.getRegions())
-		{
-			region.setSoldiers(Math.max(MIN_SOLDIERS_PER_REGION, region.getNumberOfSoldiers()));
-		}
 	}
 
 	private ArrayList<Region> getEnemyNeighbours(Region pRegion)
@@ -494,45 +473,6 @@ public class GameLogic
 		}
 
 		return result;
-	}
-
-	private boolean hasEnemyNeighbor(Region pRegion)
-	{
-		for(Region neighbour : pRegion.getNeighbours())
-		{
-			if(!neighbour.getOwner().equals(pRegion.getOwner()))
-			{
-				return true;
-			}
-		}
-
-		return false;
-	}
-
-	private boolean canAttack(Region pRegion)
-	{
-		return pRegion.getNumberOfSoldiers() >= MIN_SOLDIERS_FOR_AN_ATTACK;
-	}
-
-	private Region selectRegion(Player player) {
-		Collections.sort(player.getRegions(), new Comparator<Region>()
-				{
-			@Override
-			public int compare(Region region1, Region region2)
-			{
-				return region1.getNumberOfSoldiers() - region2.getNumberOfSoldiers();
-			}
-				});
-
-		for(Region pRegion : player.getRegions())
-		{
-			if(hasEnemyNeighbor(pRegion) && canAttack(pRegion))
-			{
-				return pRegion;
-			}
-		}
-
-		return null;
 	}
 
 	public void selectRegion(Region pRegion) {
