@@ -21,6 +21,7 @@ import feup.lpoo.riska.gameInterface.GameHUD.BUTTON;
 import feup.lpoo.riska.gameInterface.GameHUD.SPRITE;
 import feup.lpoo.riska.generator.BattleGenerator;
 import feup.lpoo.riska.logic.GameLogic;
+import feup.lpoo.riska.logic.GameLogic.GAME_STATE;
 import feup.lpoo.riska.logic.SceneManager.SCENE_TYPE;
 import feup.lpoo.riska.utilities.Utils;
 import android.graphics.Point;
@@ -210,6 +211,12 @@ public class GameScene extends BaseScene implements IOnSceneTouchListener, IScro
 		if(logic.selectedRegion == null)
 		{
 			showAllRegions();
+		} else {
+			if(logic.getState() == GAME_STATE.ATTACK) {
+				showOnlyNeighbourRegions(logic.selectedRegion);
+			} else if(logic.getState() == GAME_STATE.MOVE) {
+				showOnlyPlayerNeighbourRegions(logic.selectedRegion);
+			}
 		}
 
 		detailScene.update(logic.selectedRegion, logic.targetedRegion);
@@ -232,6 +239,16 @@ public class GameScene extends BaseScene implements IOnSceneTouchListener, IScro
 			switch(logic.getState()) {
 			case SETUP:
 				hud.show(BUTTON.AUTO_DEPLOY);
+				break;
+			case ATTACK:
+				if(logic.selectedRegion != null && logic.targetedRegion != null) {
+					hud.show(BUTTON.ATTACK);
+				}
+				break;
+			case MOVE:
+				if(logic.selectedRegion != null && logic.targetedRegion != null) {
+					hud.show(BUTTON.MOVE);
+				}
 				break;
 			case DEPLOYMENT:
 				hud.show(BUTTON.AUTO_DEPLOY);
@@ -273,7 +290,7 @@ public class GameScene extends BaseScene implements IOnSceneTouchListener, IScro
 			@Override
 			protected void onModifierFinished(IEntity pItem)
 			{
-				logic.attack();
+				//logic.attack();
 				unlockUserInput();
 				unlockHUD();
 			}
@@ -401,6 +418,7 @@ public class GameScene extends BaseScene implements IOnSceneTouchListener, IScro
 		{
 			logic.onRegionTouched(map.getRegionById(regionID));
 			updateRegionButton(regionID);
+			draw();
 		}
 
 		lastTouchTimeInRegion = System.currentTimeMillis();
@@ -694,6 +712,8 @@ public class GameScene extends BaseScene implements IOnSceneTouchListener, IScro
 		{
 			return;
 		}
+		
+		buttonTouched();
 	}
 
 	public void setInitialHUD() 
@@ -707,7 +727,7 @@ public class GameScene extends BaseScene implements IOnSceneTouchListener, IScro
 		{
 			hidePreBattleScene();
 			logic.attackingSoldiers = preBattleScene.getAttackingSoldiers();
-			logic.attack();
+			logic.update();
 		}
 		else
 		{
@@ -718,7 +738,6 @@ public class GameScene extends BaseScene implements IOnSceneTouchListener, IScro
 	public void onAutoDeployButtonTouched()
 	{
 		logic.getCurrentPlayer().deployAllSoldiers();
-		logic.setup();
 		buttonTouched();
 	}
 
@@ -748,14 +767,8 @@ public class GameScene extends BaseScene implements IOnSceneTouchListener, IScro
 		} else {
 			hidePreMoveScene();
 			logic.movingSoldiers = preMoveScene.getAttackingSoldiers();
-			logic.move();
+			buttonTouched();
 		}
-	}
-
-	@Override
-	public void onSceneShow() {
-		// TODO Auto-generated method stub
-
 	}
 
 	private void initVars() {
@@ -772,7 +785,14 @@ public class GameScene extends BaseScene implements IOnSceneTouchListener, IScro
 	}
 	
 	private void buttonTouched() {
+		logic.update();
 		draw();
+	}
+
+	@Override
+	public void onSceneShow() {
+		// TODO Auto-generated method stub
+		
 	}
 }
 

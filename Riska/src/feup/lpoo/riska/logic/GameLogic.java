@@ -96,8 +96,27 @@ public class GameLogic
 
 	// ======================================================
 	// ======================================================
+	public void update() {
+		switch(state) {
+		case SETUP:
+			setup();
+			break;
+		case ATTACK:
+			attack();
+			break;
+		case MOVE:
+			move();
+			break;
+		case DEPLOYMENT:
+			deploy();
+			break;
+		default:
+			break;
+		}
+	}
+
 	private void nextTurn() {
-		
+
 		if(!getNextPossiblePlayer()) {
 			state = GAME_STATE.GAMEOVER;
 		} else {
@@ -105,45 +124,39 @@ public class GameLogic
 			untargetRegion();
 			gameScene.setInitialHUD();
 		}
-		
-		/* TODO: Not here. Just testing.(temporary) */
-		if(currentPlayer.isCPU) {
-			pauseGame();
-			automaticMove();
-		}
-		
+
 	}
 
 	private void setNextState() {
-		
+
 		Log.d("debug", "STATE: " + state);
-		
+
 		if(gameOver()) {
 			state = GAME_STATE.GAMEOVER;
 		}
-		
+
 		switch(state) {
 		case SETUP:
-			state = GAME_STATE.PLAY; /* Change to attack */
+			state = GAME_STATE.ATTACK; /* Change to attack */
 			break;
-		case PLAY: /* Change to attack */
+		case ATTACK: /* Change to attack */
 			state = GAME_STATE.MOVE;
 			break;
 		case MOVE:
 			state = GAME_STATE.DEPLOYMENT;
 			break;
 		case DEPLOYMENT:
-			state = GAME_STATE.PLAY; /* Change to attack */
+			state = GAME_STATE.ATTACK; /* Change to attack */
 			break;
 		case PAUSED:
-			state = GAME_STATE.PLAY;
+			state = GAME_STATE.ATTACK;
 			break;
 		default:
 			break;
 		}
 	}
 
-	public void setup()
+	private void setup()
 	{
 		if(!currentPlayer.hasSoldiersLeftToDeploy()) /* If player has deployed all of his soldiers. */
 		{
@@ -168,7 +181,12 @@ public class GameLogic
 
 	public void attack()
 	{
-				
+		
+		if(currentPlayer.isCPU && (selectedRegion == null || targetedRegion == null)) {
+			Region region1 = currentPlayer.pickRegion();
+			gameScene.showCpuMove(region1, currentPlayer.pickNeighbourEnemyRegion(region1));
+		}
+
 		boolean attackerWon;
 
 		if(selectedRegion == null || targetedRegion == null)
@@ -199,16 +217,16 @@ public class GameLogic
 
 			currentPlayer.setSoldiersToDeploy(TURN_REPLENISHMENT);
 		}
-		
+
 		setNextState();
 		gameScene.showBattleScene(selectedRegion, targetedRegion, battleGenerator);
 
 		untargetRegion();
 		unselectRegion();	
-		
+
 	}
 
-	public void deploy() {
+	private void deploy() {
 
 		if(currentPlayer.hasSoldiersLeftToDeploy() && currentPlayer.isCPU)
 		{
@@ -233,7 +251,7 @@ public class GameLogic
 
 			untargetRegion();
 			unselectRegion();
-			
+
 			setNextState();
 		}
 
@@ -361,14 +379,13 @@ public class GameLogic
 
 			case SETUP:
 				deploySoldiers(pRegion);
-
 				break;
 
 			case DEPLOYMENT:
 				deploySoldiers(pRegion);
 				break;
 
-			case PLAY:
+			case ATTACK:
 				onPlayHandler(pRegion);
 				break;
 
@@ -383,15 +400,13 @@ public class GameLogic
 	}
 
 	private void onMoveHandler(Region pRegion) {
-		
+
 		if(!pRegion.isFocused()) {
 			if(pRegion.hasOwner(currentPlayer)) {
 				if(this.selectedRegion == null) {
-					if(pRegion.canAttack()) { /* Using canAttack because the criteria is the same */
+					if(pRegion.canAttack()) {
 						selectRegion(pRegion);
-						gameScene.showOnlyPlayerNeighbourRegions(pRegion);
 					}
-
 				} else {
 					targetRegion(pRegion);
 				}
@@ -403,7 +418,7 @@ public class GameLogic
 				untargetRegion();
 			}
 		}
-		
+
 	}
 
 	private void deploySoldiers(Region pRegion)
@@ -423,7 +438,6 @@ public class GameLogic
 				if(pRegion.canAttack())
 				{
 					selectRegion(pRegion);
-					gameScene.showOnlyNeighbourRegions(pRegion);
 				}
 			}
 			else
