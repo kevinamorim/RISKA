@@ -159,6 +159,7 @@ public class GameLogic
 				if(currentPlayer.isCPU)
 				{
 					currentPlayer.deployAllSoldiers();
+					setup();
 				}
 			}
 		}

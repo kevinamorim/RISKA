@@ -718,6 +718,8 @@ public class GameScene extends BaseScene implements IOnSceneTouchListener, IScro
 	public void onAutoDeployButtonTouched()
 	{
 		logic.getCurrentPlayer().deployAllSoldiers();
+		logic.setup();
+		buttonTouched();
 	}
 
 	public void onLeftArrowTouched()
@@ -767,6 +769,10 @@ public class GameScene extends BaseScene implements IOnSceneTouchListener, IScro
 		lastTouchTime = 0;
 		lastTouchTimeInRegion = 0;
 		doubleTapAllowed = true;
+	}
+	
+	private void buttonTouched() {
+		draw();
 	}
 }
 
