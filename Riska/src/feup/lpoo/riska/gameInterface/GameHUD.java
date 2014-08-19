@@ -22,7 +22,7 @@ public class GameHUD extends HUD implements Displayable {
 	// CONSTANTS
 	// ======================================================
 
-	public enum BUTTON { ATTACK, MOVE, DETAILS, AUTO_DEPLOY, ARROW_LEFT, ARROW_RIGHT };
+	public enum BUTTON { ATTACK, MOVE, DETAILS, AUTO_DEPLOY, NEXT_TURN, ARROW_LEFT, ARROW_RIGHT };
 
 	public enum SPRITE { INFO_TAB };
 
@@ -39,6 +39,7 @@ public class GameHUD extends HUD implements Displayable {
 	private ButtonSprite moveButton;
 	private ButtonSprite detailsButton;
 	private ButtonSprite autoDeployButton;
+	private ButtonSprite nextTurnButton;
 	private ButtonSprite arrowLeft;
 	private ButtonSprite arrowRight;
 	private Sprite infoTab;
@@ -111,6 +112,7 @@ public class GameHUD extends HUD implements Displayable {
 		createInfoTab();
 		createDetailsButton();
 		createAutoDeployButton();
+		createNextTurnButton();
 		createArrows();
 		createMoveButton();
 
@@ -363,6 +365,13 @@ public class GameHUD extends HUD implements Displayable {
 		moveButton.setVisible(false);
 	}
 
+	private void createNextTurnButton() {
+		nextTurnButton = new ButtonSprite(0, 0, resources.nextTurnBtnRegion, resources.vbom);
+		float scale = Utils.getWrapScale(nextTurnButton, 1f * camera.getWidth(), 0.3f * camera.getHeight(), 1f);
+		nextTurnButton.setScale(-scale, scale);
+		nextTurnButton.setPosition(camera.getWidth() - Utils.getScaledCenterX(nextTurnButton), 0.5f * camera.getHeight());
+		nextTurnButton.setVisible(false);
+	}
 	// ======================================================
 	// LOCK / UNLOCK
 	// ======================================================
@@ -567,6 +576,8 @@ public class GameHUD extends HUD implements Displayable {
 			return moveButton;
 		case AUTO_DEPLOY:
 			return autoDeployButton;
+		case NEXT_TURN:
+			return nextTurnButton;
 		case ARROW_LEFT:
 			return arrowLeft;
 		case ARROW_RIGHT:

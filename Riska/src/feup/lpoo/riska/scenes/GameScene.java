@@ -253,6 +253,9 @@ public class GameScene extends BaseScene implements IOnSceneTouchListener, IScro
 			case DEPLOYMENT:
 				hud.show(BUTTON.AUTO_DEPLOY);
 				break;
+			case ENDTURN:
+				hud.show(BUTTON.NEXT_TURN);
+				break;
 			default:
 				break;
 			}

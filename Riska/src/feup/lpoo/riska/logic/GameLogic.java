@@ -28,7 +28,7 @@ public class GameLogic
 	private final int MIN_PLAYERS_IN_GAME = 2;
 	private final int SOLDIER_INC = 1;
 
-	public enum GAME_STATE { PAUSED, SETUP,  DEPLOYMENT, ATTACK, MOVE, CPU, PLAY, GAMEOVER };
+	public enum GAME_STATE { PAUSED, SETUP,  DEPLOYMENT, ATTACK, MOVE, CPU, PLAY, ENDTURN, GAMEOVER };
 
 	// ======================================================
 	// FIELDS
@@ -110,6 +110,9 @@ public class GameLogic
 		case DEPLOYMENT:
 			deploy();
 			break;
+		case ENDTURN:
+			nextTurn();
+			break;
 		default:
 			break;
 		}
@@ -122,6 +125,7 @@ public class GameLogic
 		} else {
 			unselectRegion();
 			untargetRegion();
+			setNextState();
 			gameScene.setInitialHUD();
 		}
 
@@ -137,18 +141,21 @@ public class GameLogic
 
 		switch(state) {
 		case SETUP:
-			state = GAME_STATE.ATTACK; /* Change to attack */
+			state = GAME_STATE.ATTACK;
 			break;
-		case ATTACK: /* Change to attack */
+		case ATTACK: 
 			state = GAME_STATE.MOVE;
 			break;
 		case MOVE:
 			state = GAME_STATE.DEPLOYMENT;
 			break;
 		case DEPLOYMENT:
-			state = GAME_STATE.ATTACK; /* Change to attack */
+			state = GAME_STATE.ENDTURN;
 			break;
 		case PAUSED:
+			state = GAME_STATE.ATTACK;
+			break;
+		case ENDTURN:
 			state = GAME_STATE.ATTACK;
 			break;
 		default:
@@ -235,7 +242,6 @@ public class GameLogic
 
 		if(!currentPlayer.hasSoldiersLeftToDeploy())
 		{
-			nextTurn();
 			setNextState();
 		}
 	}

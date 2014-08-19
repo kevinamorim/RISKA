@@ -80,6 +80,7 @@ public class ResourceCache {
 	public ITiledTextureRegion detailsBtnRegion;
 	public ITiledTextureRegion autoDeployBtnRegion;
 	public ITiledTextureRegion moveBtnRegion;
+	public ITiledTextureRegion nextTurnBtnRegion;
 	public ITiledTextureRegion infoTabRegion;
 	public ITextureRegion windowRegion;
 	public ITextureRegion windowRegionGeneric;
@@ -339,6 +340,9 @@ public class ResourceCache {
 		
 		moveBtnRegion = BitmapTextureAtlasTextureRegionFactory.createTiledFromAsset(gameTextureAtlas, activity, 
 				"move.png", 2, 1);
+		
+		nextTurnBtnRegion = BitmapTextureAtlasTextureRegionFactory.createTiledFromAsset(gameTextureAtlas, activity, 
+				"next_turn.png", 2, 1);
 
 		infoTabRegion = BitmapTextureAtlasTextureRegionFactory.createTiledFromAsset(gameTextureAtlas, activity, 
 				"info_tab.png", 1, 2);
