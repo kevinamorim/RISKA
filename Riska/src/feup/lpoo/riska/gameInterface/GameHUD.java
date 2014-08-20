@@ -656,11 +656,11 @@ public class GameHUD extends HUD implements Displayable {
 			setInfoTabForCPU(logic);
 		} else {
 			switch(logic.getState()) {
-			case PLAY:
-				setInfoTabForAttack(logic);
+			case SETUP:
+				setInfoTabForDeployment(logic);
 				break;
 			case ATTACK:
-				/* TODO: PLAY should be in there */ 
+				setInfoTabForAttack(logic);
 				break;
 			case MOVE:
 				setInfoTabForMove(logic);
