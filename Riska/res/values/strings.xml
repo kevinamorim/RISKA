@@ -27,5 +27,6 @@
 	<string name="game_info_choose_src_move_troops">Tap an allied region to select from where to move troops.</string>
 	<string name="game_info_choose_dest_move_troops">Tap an allied region to target your moving troops.</string>
 	<string name="game_info_confirm_moving">Press the move button to proceed.</string>
+	<string name="game_info_end_turn">Press the button to end your turn.</string>
 	
 </resources>

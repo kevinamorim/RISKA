@@ -174,7 +174,6 @@ public class GameHUD extends HUD implements Displayable {
 	{
 		infoTab = new Sprite(0, 0, resources.infoTabRegion, resources.vbom);
 
-		//Utils.expand(infoTab, 1f * camera.getWidth(), 0.1f * camera.getHeight(), 0.9f);
 		infoTab.setSize(1f * camera.getWidth(), 0.1f * camera.getHeight());
 		infoTab.setPosition(0.5f * camera.getWidth(), camera.getHeight() - 0.5f * infoTab.getHeight());
 		infoTab.setAlpha(0.8f);
@@ -638,6 +637,9 @@ public class GameHUD extends HUD implements Displayable {
 			case DEPLOYMENT:
 				setInfoTabForDeployment(logic);
 				break;
+			case ENDTURN:
+				setInfoTabForEndTurn(logic);
+				break;
 			default:
 				break;
 			}
@@ -675,7 +677,11 @@ public class GameHUD extends HUD implements Displayable {
 	}
 	
 	private void setInfoTabForDeployment(GameLogic logic) {
-		setInfoTabText(Utils.getString(R.string.game_info_left_to_deploy));
+		setInfoTabText(logic.getCurrentPlayer().soldiersToDeploy + Utils.getString(R.string.game_info_left_to_deploy));
+	}
+	
+	private void setInfoTabForEndTurn(GameLogic logic) {
+		setInfoTabText(Utils.getString(R.string.game_info_end_turn));
 	}
 	
 	private void setInfoTabForCPU(GameLogic logic) {

@@ -133,8 +133,6 @@ public class GameLogic
 
 	private void setNextState() {
 
-		Log.d("debug", "STATE: " + state);
-
 		if(gameOver()) {
 			state = GAME_STATE.GAMEOVER;
 		}
@@ -161,6 +159,8 @@ public class GameLogic
 		default:
 			break;
 		}
+		
+		Log.d("debug", "STATE: " + state);
 	}
 
 	private void setup()
