@@ -774,6 +774,10 @@ public class GameScene extends BaseScene implements IOnSceneTouchListener, IScro
 		}
 	}
 
+	public void onNextTurnButtonTouched() {
+		buttonTouched();
+	}
+	
 	private void initVars() {
 		logic = new GameLogic(this);
 

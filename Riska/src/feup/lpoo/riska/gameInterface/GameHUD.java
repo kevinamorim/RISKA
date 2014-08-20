@@ -366,7 +366,33 @@ public class GameHUD extends HUD implements Displayable {
 	}
 
 	private void createNextTurnButton() {
-		nextTurnButton = new ButtonSprite(0, 0, resources.nextTurnBtnRegion, resources.vbom);
+		nextTurnButton = new ButtonSprite(0, 0, resources.nextTurnBtnRegion, resources.vbom)
+		{
+			@Override
+			public boolean onAreaTouched(TouchEvent ev, float pX, float pY)
+			{
+				switch(ev.getAction())
+				{
+				
+				case MotionEvent.ACTION_DOWN:
+					pressed(BUTTON.NEXT_TURN);
+					break;
+					
+				case MotionEvent.ACTION_UP:
+					touched(BUTTON.NEXT_TURN);
+					break;
+					
+				case MotionEvent.ACTION_OUTSIDE:
+					released(BUTTON.NEXT_TURN);
+					break;
+					
+				default:
+					break;
+					
+				}
+				return true;
+			}
+		};
 		float scale = Utils.getWrapScale(nextTurnButton, 1f * camera.getWidth(), 0.3f * camera.getHeight(), 1f);
 		nextTurnButton.setScale(-scale, scale);
 		nextTurnButton.setPosition(camera.getWidth() - Utils.getScaledCenterX(nextTurnButton), 0.5f * camera.getHeight());
@@ -414,6 +440,10 @@ public class GameHUD extends HUD implements Displayable {
 		case AUTO_DEPLOY:
 			autoDeployButton.setCurrentTileIndex(1);
 			break;
+			
+		case NEXT_TURN:
+			nextTurnButton.setCurrentTileIndex(1);
+			break;
 
 		case ARROW_LEFT:
 			arrowLeft.setCurrentTileIndex(1);
@@ -431,41 +461,41 @@ public class GameHUD extends HUD implements Displayable {
 
 	private void touched(BUTTON x)
 	{
+		
+		released(x);
+		
 		switch(x)
 		{
 
 		case ATTACK:
-			released(x);
 			gameScene.onAttackButtonTouched();
 			break;
 			
 		case MOVE:
-			released(x);
 			gameScene.onMoveButtonTouched();
 			break;
 
 		case DETAILS:
-			released(x);
 			gameScene.onDetailButtonTouched();
 			break;
 
 		case AUTO_DEPLOY:
-			released(x);
 			gameScene.onAutoDeployButtonTouched();
+			break;
+			
+		case NEXT_TURN:
+			gameScene.onNextTurnButtonTouched();
 			break;
 
 		case ARROW_LEFT:
-			released(x);
 			gameScene.onLeftArrowTouched();
 			break;
 
 		case ARROW_RIGHT:
-			released(x);
 			gameScene.onRightArrowTouched();
 			break;
 
 		default:
-			// Do nothing
 			break;
 		}
 	}
