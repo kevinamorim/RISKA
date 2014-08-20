@@ -307,7 +307,7 @@ public class ResourceCache {
 
 		int seaTextureWidth = 4096, seaTextureHeight = 2048, seaCols = 2, seaLines = 2;
 		int mapTextureWidth = 4096, mapTextureHeight = 2048;
-		int gameTextureWidth = 2048, gameTextureHeight = 2048;
+		int gameTextureWidth = 4096, gameTextureHeight = 2048;
 
 		seaTextureAtlas = new BitmapTextureAtlas(activity.getTextureManager(), seaTextureWidth, seaTextureHeight,
 				TextureOptions.DEFAULT);

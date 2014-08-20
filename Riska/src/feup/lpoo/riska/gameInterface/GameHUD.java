@@ -117,9 +117,9 @@ public class GameHUD extends HUD implements Displayable {
 		createMoveButton();
 
 		registerTouchArea(attackButton);
-		//registerTouchArea(infoTab);
 		registerTouchArea(detailsButton);
 		registerTouchArea(autoDeployButton);
+		registerTouchArea(nextTurnButton);
 		registerTouchArea(arrowLeft);
 		registerTouchArea(arrowRight);
 		registerTouchArea(moveButton);
@@ -128,6 +128,7 @@ public class GameHUD extends HUD implements Displayable {
 		attachChild(infoTab);
 		attachChild(detailsButton);
 		attachChild(autoDeployButton);
+		attachChild(nextTurnButton);
 		attachChild(arrowLeft);
 		attachChild(arrowRight);
 		attachChild(moveButton);

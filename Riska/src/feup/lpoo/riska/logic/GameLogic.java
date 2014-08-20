@@ -432,6 +432,7 @@ public class GameLogic
 		if(pRegion.hasOwner(currentPlayer))
 		{
 			currentPlayer.deploy(SOLDIER_INC, pRegion);
+			deploy();
 		}	
 	}
 
