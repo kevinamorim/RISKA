@@ -63,8 +63,6 @@ public class ResourceCache {
 
 	private BuildableBitmapTextureAtlas mainMenuTextureAtlas;
 	public TiledTextureRegion textBtnRegion;
-	public TiledTextureRegion optionsBtnRegion;
-	public TiledTextureRegion returnBtnRegion;
 	public TiledTextureRegion sliderBtnRegion;
 	
 	public TiledTextureRegion factionSpriteRegion;
@@ -96,10 +94,10 @@ public class ResourceCache {
 	// NEW
 	private BuildableBitmapTextureAtlas propsTextureAtlas;
 	public ITextureRegion doorLeftRegion;
+	public ITextureRegion doorBottomRegion;
+	public ITextureRegion doorTopRegion;
 	public ITextureRegion doorRightRegion;
 	public ITiledTextureRegion switchRegion;
-	public ITextureRegion pipeRegion;
-	public ITextureRegion frameRegion;
 	
 	// ==================================================
 	// GAMEOVER RESOURCES
@@ -193,12 +191,6 @@ public class ResourceCache {
 		textBtnRegion = BitmapTextureAtlasTextureRegionFactory.createTiledFromAsset(mainMenuTextureAtlas, activity, 
 				"button.png", 1, 2);
 
-		optionsBtnRegion = BitmapTextureAtlasTextureRegionFactory.createTiledFromAsset(mainMenuTextureAtlas, activity, 
-				"options.png", 1, 2); 
-
-		returnBtnRegion = BitmapTextureAtlasTextureRegionFactory.createTiledFromAsset(mainMenuTextureAtlas, activity, 
-				"return.png", 1, 2);
-
 		sliderBtnRegion = BitmapTextureAtlasTextureRegionFactory.createTiledFromAsset(mainMenuTextureAtlas, activity, 
 				"slider.png", 1, 2);
 		
@@ -226,14 +218,14 @@ public class ResourceCache {
 		doorRightRegion = BitmapTextureAtlasTextureRegionFactory.createFromAsset(propsTextureAtlas, activity, 
 				"door_right.png");
 		
+		doorBottomRegion = BitmapTextureAtlasTextureRegionFactory.createFromAsset(propsTextureAtlas, activity, 
+				"door_bottom.png");
+		
+		doorTopRegion = BitmapTextureAtlasTextureRegionFactory.createFromAsset(propsTextureAtlas, activity, 
+				"door_top.png");
+		
 		switchRegion = BitmapTextureAtlasTextureRegionFactory.createTiledFromAsset(propsTextureAtlas, activity, 
 				"switch.png", 1, 2);
-		
-		pipeRegion = BitmapTextureAtlasTextureRegionFactory.createFromAsset(propsTextureAtlas, activity, 
-				"pipe.png");
-		
-		frameRegion = BitmapTextureAtlasTextureRegionFactory.createFromAsset(propsTextureAtlas, activity, 
-				"frame.png");
 		
 		try
 		{

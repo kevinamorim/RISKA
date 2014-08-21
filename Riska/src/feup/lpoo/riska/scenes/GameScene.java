@@ -74,11 +74,7 @@ public class GameScene extends BaseScene implements IOnSceneTouchListener, IScro
 	@Override
 	public void onBackKeyPressed()
 	{
-		// NO CPU DELAYS OCCURING
-		if(getEntityModifierCount() == 0) 
-		{
-			sceneManager.loadMainMenuScene(engine);
-		}	
+		sceneManager.loadMainMenuScene(engine);
 	}
 
 	@Override
