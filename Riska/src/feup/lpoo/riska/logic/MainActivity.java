@@ -26,8 +26,9 @@ public class MainActivity extends BaseGameActivity {
 	
 	public final float FRAME_RATE = 1 / 60f;
 	public final float LIMIT_FRAME_RATE = 1 / 30f;
+
 	
-	public final static float RES_RATIO = 16f/10f;
+	public final static float RES_RATIO = 8f/5f;
 	
 	public Font mFont;
 	public CameraManager mCamera;

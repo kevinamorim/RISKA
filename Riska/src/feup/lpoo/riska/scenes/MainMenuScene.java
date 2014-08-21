@@ -14,14 +14,12 @@ import org.andengine.util.adt.color.Color;
 
 import android.util.Log;
 import android.view.MotionEvent;
-import android.widget.ImageButton;
 import feup.lpoo.riska.gameInterface.AnimatedButtonSpriteMenuItem;
 import feup.lpoo.riska.gameInterface.AnimatedTextButtonSpriteMenuItem;
 import feup.lpoo.riska.gameInterface.MenuHUD;
 import feup.lpoo.riska.interfaces.Displayable;
 import feup.lpoo.riska.io.SharedPreferencesManager;
 import feup.lpoo.riska.logic.GameInfo;
-import feup.lpoo.riska.logic.MainActivity;
 import feup.lpoo.riska.logic.SceneManager.SCENE_TYPE;
 import feup.lpoo.riska.utilities.Utils;
 
@@ -75,7 +73,6 @@ public class MainMenuScene extends BaseScene implements Displayable, IOnMenuItem
 	// START MENU
 	private AnimatedTextButtonSpriteMenuItem newGameButton;
 	private AnimatedTextButtonSpriteMenuItem loadGameButton;
-	private AnimatedButtonSpriteMenuItem returnButtonStart;
 
 	// OPTIONS MENU
 	private AnimatedButtonSpriteMenuItem returnButtonOptions;
@@ -204,8 +201,8 @@ public class MainMenuScene extends BaseScene implements Displayable, IOnMenuItem
 		background = new SpriteBackground(new Sprite(
 				camera.getCenterX(), 
 				camera.getCenterY(),
-				camera.getWidth() + 2,
-				camera.getHeight() + 2,
+				camera.getWidth() + 4,
+				camera.getHeight() + 4,
 				resources.menuBackgroundRegion, 
 				vbom));
 
@@ -271,10 +268,10 @@ public class MainMenuScene extends BaseScene implements Displayable, IOnMenuItem
 				resources.textBtnRegion, 
 				vbom, "OPTIONS", resources.mainMenuFont);
 
-		Utils.wrap(startButton, camera.getWidth(), 0.3f * camera.getHeight(), 1f);
+		Utils.wrap(startButton, 0.65f * camera.getWidth(), 0.3f * camera.getHeight(), 1f);
 		startButton.setPosition(camera.getCenterX(), 0.66f * camera.getHeight());
 
-		Utils.wrap(optionsButton, camera.getWidth(), 0.3f * camera.getHeight(), 1f);
+		Utils.wrap(optionsButton, 0.65f * camera.getWidth(), 0.3f * camera.getHeight(), 1f);
 		optionsButton.setPosition(camera.getCenterX(), 0.33f * camera.getHeight());
 
 		mainMenu.addMenuItem(startButton);
@@ -304,24 +301,15 @@ public class MainMenuScene extends BaseScene implements Displayable, IOnMenuItem
 				resources.textBtnRegion,
 				vbom, "LOAD", resources.mainMenuFont);
 
-		returnButtonStart = new AnimatedButtonSpriteMenuItem(START_RETURN,
-				resources.returnBtnRegion.getWidth(),
-				resources.returnBtnRegion.getHeight(),
-				resources.returnBtnRegion, vbom);
 
-
-		Utils.wrap(newGameButton, 1f * camera.getWidth(), 0.3f * camera.getHeight(), 1f);
+		Utils.wrap(newGameButton, 0.65f * camera.getWidth(), 0.3f * camera.getHeight(), 1f);
 		newGameButton.setPosition(camera.getCenterX(), 0.66f * camera.getHeight());
 
-		Utils.wrap(loadGameButton, 1f * camera.getWidth(), 0.3f * camera.getHeight(), 1f);
+		Utils.wrap(loadGameButton, 0.65f * camera.getWidth(), 0.3f * camera.getHeight(), 1f);
 		loadGameButton.setPosition(camera.getCenterX(), 0.33f * camera.getHeight());
-
-		Utils.wrap(returnButtonStart, 0.25f * camera.getWidth(), 0.25f * camera.getHeight(), 1f);
-		returnButtonStart.setPosition(0.5f * Utils.getScaledWidth(returnButtonStart) - 2, 0.5f * Utils.getScaledHeight(returnButtonStart) - 2);	
 
 		startGameMenu.addMenuItem(newGameButton);
 		startGameMenu.addMenuItem(loadGameButton);
-		startGameMenu.addMenuItem(returnButtonStart);
 
 		startGameMenu.setOnMenuItemClickListener(this);
 	}
@@ -334,12 +322,6 @@ public class MainMenuScene extends BaseScene implements Displayable, IOnMenuItem
 		optionsMenu = new MenuScene(camera);
 
 		optionsMenu.setBackgroundEnabled(false);
-
-
-		returnButtonOptions = new AnimatedButtonSpriteMenuItem(OPTIONS_RETURN,
-				resources.returnBtnRegion.getWidth(),
-				resources.returnBtnRegion.getHeight(),
-				resources.returnBtnRegion, vbom);
 
 		sliderSFX= new AnimatedButtonSpriteMenuItem(OPTIONS_SFX,
 				resources.sliderBtnRegion.getWidth(),
@@ -354,28 +336,23 @@ public class MainMenuScene extends BaseScene implements Displayable, IOnMenuItem
 
 
 		textMusic = new Text(0, 0, resources.mainMenuFont, "MUSIC", vbom);
-		Utils.wrap(textMusic, 1f * camera.getWidth(), 0.2f * camera.getHeight(), 0.8f);
-		textMusic.setPosition( 0.25f * camera.getWidth(), 0.75f * camera.getHeight());
+		Utils.wrap(textMusic, 0.25f * camera.getWidth(), 0.2f * camera.getHeight(), 0.8f);
+		textMusic.setPosition( 0.3f * camera.getWidth(), 0.75f * camera.getHeight());
 		textMusic.setColor(Color.BLACK);
 
 		textSFX = new Text(0, 0, resources.mainMenuFont, "SFX", vbom);
-		Utils.wrap(textSFX, 1f * camera.getWidth(), 0.2f * camera.getHeight(), 0.8f);
-		textSFX.setPosition(0.25f * camera.getWidth(), 0.50f * camera.getHeight());
+		Utils.wrap(textSFX, 0.25f * camera.getWidth(), 0.2f * camera.getHeight(), 0.8f);
+		textSFX.setPosition(0.3f * camera.getWidth(), 0.50f * camera.getHeight());
 		textSFX.setColor(Color.BLACK);
 
-		Utils.wrap(sliderMusic, 0.3f * camera.getWidth(), 0.3f * camera.getHeight(), 1f);
-		sliderMusic.setPosition(0.75f * camera.getWidth(), textMusic.getY());
+		Utils.wrap(sliderMusic, 0.25f * camera.getWidth(), 0.3f * camera.getHeight(), 1f);
+		sliderMusic.setPosition(0.6f * camera.getWidth(), textMusic.getY());
 		sliderMusic.setCurrentTileIndex(musicOn ? 0 : 1);
 
-		Utils.wrap(sliderSFX, 0.3f * camera.getWidth(), 0.3f * camera.getHeight(), 1f);
-		sliderSFX.setPosition(0.75f * camera.getWidth(), textSFX.getY());
+		Utils.wrap(sliderSFX, 0.25f * camera.getWidth(), 0.3f * camera.getHeight(), 1f);
+		sliderSFX.setPosition(0.6f * camera.getWidth(), textSFX.getY());
 		sliderSFX.setCurrentTileIndex(sfxOn ? 0 : 1);
 
-		Utils.wrap(returnButtonOptions, 0.25f * camera.getWidth(), 0.25f * camera.getHeight(), 1f);
-		returnButtonOptions.setPosition(0.5f * Utils.getScaledWidth(returnButtonOptions) - 2, 0.5f * Utils.getScaledHeight(returnButtonOptions) - 2);
-
-
-		optionsMenu.addMenuItem(returnButtonOptions);
 		optionsMenu.addMenuItem(sliderMusic);
 		optionsMenu.addMenuItem(sliderSFX);
 
@@ -551,10 +528,11 @@ public class MainMenuScene extends BaseScene implements Displayable, IOnMenuItem
 
 		float heightFactor = 1f / (GameInfo.maxPlayers + 1);	
 		float buttonsHeight = heightFactor * 0.8f * camera.getHeight();
-
+		float buttonsWidth = 0.15f * camera.getWidth();
+		
 		textIsCPU = new Text(0, 0, resources.mainMenuFont, "cpu?", vbom);
 		Utils.wrap(textIsCPU, 0.2f * camera.getWidth(), buttonsHeight, 0.5f);
-		textIsCPU.setPosition(0.85f * camera.getWidth(), (1f - heightFactor) * 0.75f * camera.getHeight() + 0.15f * camera.getHeight());
+		textIsCPU.setPosition(0.75f * camera.getWidth(), (1f - heightFactor) * 0.75f * camera.getHeight() + 0.15f * camera.getHeight());
 		textIsCPU.setColor(Color.WHITE);
 
 		// Places all players buttons
@@ -562,10 +540,10 @@ public class MainMenuScene extends BaseScene implements Displayable, IOnMenuItem
 		{	
 			float buttonsY = (1f - ((i + 1) * heightFactor)) * 0.75f * camera.getHeight() + 0.15f * camera.getHeight();
 
-			Utils.wrap(addPlayerButton[i], 0.2f * camera.getWidth(), buttonsHeight, 0.9f);
-			addPlayerButton[i].setPosition(0.15f * camera.getWidth(), buttonsY);
+			Utils.wrap(addPlayerButton[i], buttonsWidth, buttonsHeight, 0.9f);
+			addPlayerButton[i].setPosition(0.25f * camera.getWidth(), buttonsY);
 
-			Utils.wrap(removePlayerButton[i], 0.2f * camera.getWidth(), buttonsHeight, 0.9f);
+			Utils.wrap(removePlayerButton[i], buttonsWidth, buttonsHeight, 0.9f);
 			removePlayerButton[i].setPosition(addPlayerButton[i]);
 
 			Utils.wrap(playerNameButton[i], 0.5f * camera.getWidth(), buttonsHeight, 0.9f);
@@ -577,7 +555,7 @@ public class MainMenuScene extends BaseScene implements Displayable, IOnMenuItem
 			playerNameButton[i].attachChild(playerName[i]);
 
 			Utils.wrap(cpuCheckBox[i], 1f * camera.getWidth(), buttonsHeight, 1f);
-			cpuCheckBox[i].setPosition(0.85f * camera.getWidth(), buttonsY);
+			cpuCheckBox[i].setPosition(0.75f * camera.getWidth(), buttonsY);
 
 			choosePlayersMenu.attachChild(playerNameButton[i]);
 			choosePlayersMenu.attachChild(addPlayerButton[i]);
@@ -925,7 +903,7 @@ public class MainMenuScene extends BaseScene implements Displayable, IOnMenuItem
 			break;
 
 		case START_RETURN:
-			changeChildSceneTo(mainMenu);
+			//changeChildSceneTo(mainMenu);
 			break;
 
 		case OPTIONS_SFX:

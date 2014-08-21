@@ -3,6 +3,7 @@ package feup.lpoo.riska.gameInterface;
 import org.andengine.engine.camera.hud.HUD;
 import org.andengine.entity.IEntity;
 import org.andengine.entity.modifier.DelayModifier;
+import org.andengine.entity.sprite.Sprite;
 
 import feup.lpoo.riska.interfaces.Displayable;
 import feup.lpoo.riska.resources.ResourceCache;
@@ -22,6 +23,7 @@ public class MenuHUD extends HUD implements Displayable {
 	// ==================================================
 
 	private RiskaSprite doorLeft, doorRight;
+	private Sprite border;
 	
 	public MenuHUD()
 	{
@@ -35,8 +37,19 @@ public class MenuHUD extends HUD implements Displayable {
 
 	@Override
 	public void createDisplay()
-	{
+	{		
 		createDoors();
+		createBorder();
+	}
+
+	private void createBorder()
+	{
+		border = new Sprite(0, 0, resources.menuBorderRegion, resources.vbom);
+		
+		border.setPosition(0.5f * camera.getWidth(), 0.5f * camera.getHeight());
+		border.setSize(camera.getWidth(), camera.getHeight());
+		
+		attachChild(border);
 	}
 
 	private void createDoors()

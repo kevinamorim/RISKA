@@ -167,19 +167,20 @@ public class ResourceCache {
 	}
 
 	private void loadMainMenuGraphics()
-	{		
+	{
+		
 		BitmapTextureAtlasTextureRegionFactory.setAssetBasePath("gfx/themes/" + currentTheme + "menu/");
 
 		int bgTextureWidth = 2048, bgTextureHeight = 1024;
 
 		menuBackgroundTextureAtlas = new BitmapTextureAtlas(activity.getTextureManager(), 
-				bgTextureWidth, bgTextureHeight, TextureOptions.DEFAULT);
+				bgTextureWidth, bgTextureHeight, TextureOptions.BILINEAR);
 		
 		menuBackgroundRegion = BitmapTextureAtlasTextureRegionFactory.createFromAsset(menuBackgroundTextureAtlas, 
 				activity, "background.png", 0, 0);
 	
 		menuBorderTextureAtlas = new BitmapTextureAtlas(activity.getTextureManager(), 
-				bgTextureWidth, bgTextureHeight, TextureOptions.DEFAULT);
+				bgTextureWidth, bgTextureHeight, TextureOptions.BILINEAR);
 		
 		menuBorderRegion = BitmapTextureAtlasTextureRegionFactory.createFromAsset(menuBorderTextureAtlas, 
 				activity, "border.png", 0, 0);
