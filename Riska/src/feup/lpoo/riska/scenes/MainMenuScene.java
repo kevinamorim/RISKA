@@ -322,14 +322,14 @@ public class MainMenuScene extends BaseScene implements Displayable, IOnMenuItem
 		optionsMenu.setBackgroundEnabled(false);
 
 		sliderSFX= new AnimatedButtonSpriteMenuItem(OPTIONS_SFX,
-				resources.sliderBtnRegion.getWidth(),
-				resources.sliderBtnRegion.getHeight(),
-				resources.sliderBtnRegion, vbom);
+				resources.switchRegion.getWidth(),
+				resources.switchRegion.getHeight(),
+				resources.switchRegion, vbom);
 
 		sliderMusic = new AnimatedButtonSpriteMenuItem(OPTIONS_MUSIC,
-				resources.sliderBtnRegion.getWidth(),
-				resources.sliderBtnRegion.getHeight(),
-				resources.sliderBtnRegion, vbom);
+				resources.switchRegion.getWidth(),
+				resources.switchRegion.getHeight(),
+				resources.switchRegion, vbom);
 
 
 

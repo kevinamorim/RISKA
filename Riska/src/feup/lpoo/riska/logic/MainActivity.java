@@ -63,7 +63,9 @@ public class MainActivity extends BaseGameActivity {
 			throws IOException {
 		
 		ResourceCache.prepareManager(mEngine, this, mCamera, getVertexBufferObjectManager());	
-		ResourceCache.getSharedInstance().loadSplashSceneResources();
+		ResourceCache.getSharedInstance().loadSplashScene();
+		ResourceCache.getSharedInstance().createMainMenuResources();
+		ResourceCache.getSharedInstance().createGameResources();
 		
 		pOnCreateResourcesCallback.onCreateResourcesFinished();
 		

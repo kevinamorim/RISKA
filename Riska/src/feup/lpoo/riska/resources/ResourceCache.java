@@ -58,13 +58,8 @@ public class ResourceCache {
 	private BitmapTextureAtlas menuBackgroundTextureAtlas;
 	public ITextureRegion menuBackgroundRegion;
 
-	private BitmapTextureAtlas menuBorderTextureAtlas;
-	public ITextureRegion menuBorderRegion;
-
 	private BuildableBitmapTextureAtlas mainMenuTextureAtlas;
-	public TiledTextureRegion textBtnRegion;
 	public ITextureRegion buttonRegion;
- 	public TiledTextureRegion sliderBtnRegion;
 	
 	public TiledTextureRegion factionSpriteRegion;
 	public ITextureRegion smallFrameRegion;
@@ -72,6 +67,12 @@ public class ResourceCache {
 	public TiledTextureRegion playerAddButtonRegion;
 	public TiledTextureRegion playerRemoveButtonRegion;
 	public TiledTextureRegion playerCheckBoxButtonRegion;
+	
+	private BuildableBitmapTextureAtlas propsTextureAtlas;
+	public ITextureRegion doorLeftRegion;
+	public ITextureRegion doorRightRegion;
+	public ITiledTextureRegion switchRegion;
+	
 	// ==================================================
 	// GAME RESOURCES
 	// ==================================================
@@ -90,16 +91,7 @@ public class ResourceCache {
 	public ITextureRegion mapRegion;
 	private BuildableBitmapTextureAtlas gameTextureAtlas;
 	private BitmapTextureAtlas mapTextureAtlas;
-	private BitmapTextureAtlas seaTextureAtlas;
 	public ArrayList<Map> maps;	
-	
-	// NEW
-	private BuildableBitmapTextureAtlas propsTextureAtlas;
-	public ITextureRegion doorLeftRegion;
-	public ITextureRegion doorBottomRegion;
-	public ITextureRegion doorTopRegion;
-	public ITextureRegion doorRightRegion;
-	public ITiledTextureRegion switchRegion;
 	
 	// ==================================================
 	// GAMEOVER RESOURCES
@@ -123,20 +115,14 @@ public class ResourceCache {
 	// ==================================================
 	// SPLASH SCENE
 	// ==================================================
-	public void loadSplashSceneResources()
+	public void loadSplashScene()
 	{
-		loadSplashGraphics();
+		createSplashSceneResources();
+		loadSplashSceneResources();
 	}
 
-	public void unloadSplashSceneResources()
+	private void createSplashSceneResources()
 	{
-		splashTextureAtlas.unload();
-		splashRegion = null;
-	}
-
-	private void loadSplashGraphics()
-	{
-
 		int textureWidth = 512, textureHeight = 512;
 
 		BitmapTextureAtlasTextureRegionFactory.setAssetBasePath("gfx/themes/" + currentTheme + "splash/");
@@ -146,29 +132,30 @@ public class ResourceCache {
 		
 		splashRegion = BitmapTextureAtlasTextureRegionFactory.createFromAsset(splashTextureAtlas, 
 				activity, "splash.png", 0, 0);
+	}
 
+	public void unloadSplashSceneResources()
+	{
+		splashTextureAtlas.unload();
+	}
+
+	public void loadSplashSceneResources()
+	{
 		splashTextureAtlas.load();
 	}
 
 	// ==================================================
 	// MAIN MENU SCENE
 	// ==================================================
-	public void loadMainMenuResources()
+	
+	public void createMainMenuResources()
 	{
-		loadMainMenuGraphics();
-		loadMainMenuFonts();
+		createMainMenuGraphics();
+		createMainMenuFonts();
 	}
-
-	public void unloadMainMenuResources()
+	
+	private void createMainMenuGraphics()
 	{
-		mainMenuTextureAtlas.unload();
-		menuBackgroundTextureAtlas.unload();
-
-	}
-
-	private void loadMainMenuGraphics()
-	{
-		
 		BitmapTextureAtlasTextureRegionFactory.setAssetBasePath("gfx/themes/" + currentTheme + "menu/");
 
 		int bgTextureWidth = 2048, bgTextureHeight = 1024;
@@ -178,26 +165,14 @@ public class ResourceCache {
 		
 		menuBackgroundRegion = BitmapTextureAtlasTextureRegionFactory.createFromAsset(menuBackgroundTextureAtlas, 
 				activity, "background.png", 0, 0);
-	
-		menuBorderTextureAtlas = new BitmapTextureAtlas(activity.getTextureManager(), 
-				bgTextureWidth, bgTextureHeight, TextureOptions.BILINEAR);
-		
-		menuBorderRegion = BitmapTextureAtlasTextureRegionFactory.createFromAsset(menuBorderTextureAtlas, 
-				activity, "border.png", 0, 0);
 
 		int mainTextureWidth = 2048, mainTextureHeight = 2048;
 
 		mainMenuTextureAtlas = new BuildableBitmapTextureAtlas(activity.getTextureManager(), 
 				mainTextureWidth, mainTextureHeight, TextureOptions.BILINEAR);
-
-		textBtnRegion = BitmapTextureAtlasTextureRegionFactory.createTiledFromAsset(mainMenuTextureAtlas, activity, 
-				"button.png", 1, 2);
 		
 		buttonRegion = BitmapTextureAtlasTextureRegionFactory.createFromAsset(mainMenuTextureAtlas, activity, 
-				"button_2.png");
-
-		sliderBtnRegion = BitmapTextureAtlasTextureRegionFactory.createTiledFromAsset(mainMenuTextureAtlas, activity, 
-				"slider.png", 1, 2);
+				"button.png");
 		
 		factionSpriteRegion = BitmapTextureAtlasTextureRegionFactory.createTiledFromAsset(mainMenuTextureAtlas, activity, 
 				"faction.png", 1, 2);
@@ -226,96 +201,65 @@ public class ResourceCache {
 		doorRightRegion = BitmapTextureAtlasTextureRegionFactory.createFromAsset(propsTextureAtlas, activity, 
 				"door_right.png");
 		
-		doorBottomRegion = BitmapTextureAtlasTextureRegionFactory.createFromAsset(propsTextureAtlas, activity, 
-				"door_bottom.png");
-		
-		doorTopRegion = BitmapTextureAtlasTextureRegionFactory.createFromAsset(propsTextureAtlas, activity, 
-				"door_top.png");
-		
 		switchRegion = BitmapTextureAtlasTextureRegionFactory.createTiledFromAsset(propsTextureAtlas, activity, 
 				"switch.png", 1, 2);
 		
 		try
 		{
-			menuBorderTextureAtlas.load();
-			
-			menuBackgroundTextureAtlas.load();
-			
 			mainMenuTextureAtlas.build(new BlackPawnTextureAtlasBuilder<IBitmapTextureAtlasSource, BitmapTextureAtlas>(0, 1, 0));
-			
-			mainMenuTextureAtlas.load();
-			
 			propsTextureAtlas.build(new BlackPawnTextureAtlasBuilder<IBitmapTextureAtlasSource, BitmapTextureAtlas>(0, 1, 0));
-			
-			propsTextureAtlas.load();
 		}
 		catch(final TextureAtlasBuilderException e)
 		{
 			Debug.e(e);
 		}	
-
 	}
 
-	private void loadMainMenuFonts() {
-
+	private void createMainMenuFonts()
+	{
 		FontFactory.setAssetBasePath("fonts/");
 
 		mainMenuFont = FontFactory.createFromAsset(engine.getFontManager(),
 				engine.getTextureManager(), 512, 512, TextureOptions.BILINEAR,
 				activity.getAssets(), "Calibri.ttf", 125f, true,
 				Color.WHITE);
-
+	}
+	
+	public void loadMainMenuResources()
+	{
+		// Graphics
+		menuBackgroundTextureAtlas.load();		
+		mainMenuTextureAtlas.load();
+		propsTextureAtlas.load();
+		
+		// Fonts
 		mainMenuFont.load();
-
+	}
+	
+	public void unloadMainMenuResources()
+	{
+		mainMenuTextureAtlas.unload();
+		menuBackgroundTextureAtlas.unload();
+		propsTextureAtlas.unload();
 	}
 
 	// ==================================================
 	// GAME SCENE
 	// ==================================================
-	public void loadGameSceneResources() {
-
-		loadGameGraphics();
-		loadGameFonts();
-		
-		loadMaps();
-		
-
-	}
-	
-	public void loadMaps()
+	public void createGameResources()
 	{
-		if(maps == null)
-		{
-			maps = new ArrayList<Map>();
-		}
+		createGameGraphics();
+		createGameFonts();
 		
-		for(int i = INITIAL_MAP; i <= numberOfMaps; i++)
-		{
-			maps.add(new Map("maps/" + i + "/regions.csv", "maps/" + i + "/neighbours.csv"));
-		}
+		createMaps();
 	}
 
-	public void unloadGameSceneResources()
-	{
-		gameTextureAtlas.unload();
-		seaTextureAtlas.unload();
-		mapTextureAtlas.unload();
-	}
-
-	private void loadGameGraphics() {
+	private void createGameGraphics() {
 
 		BitmapTextureAtlasTextureRegionFactory.setAssetBasePath("gfx/themes/" + currentTheme + "game/");
 
-		int seaTextureWidth = 4096, seaTextureHeight = 2048, seaCols = 2, seaLines = 2;
 		int mapTextureWidth = 4096, mapTextureHeight = 2048;
 		int gameTextureWidth = 4096, gameTextureHeight = 2048;
-
-		seaTextureAtlas = new BitmapTextureAtlas(activity.getTextureManager(), seaTextureWidth, seaTextureHeight,
-				TextureOptions.DEFAULT);
-		seaRegion = BitmapTextureAtlasTextureRegionFactory.createTiledFromAsset(seaTextureAtlas, activity.getAssets(),
-				"sea.png", 0, 0, seaCols, seaLines);
-
-
 
 		mapTextureAtlas = new BitmapTextureAtlas(activity.getTextureManager(), mapTextureWidth, mapTextureHeight, 
 				TextureOptions.DEFAULT);
@@ -359,19 +303,19 @@ public class ResourceCache {
 
 		arrowRightRegion = BitmapTextureAtlasTextureRegionFactory.createTiledFromAsset(gameTextureAtlas, activity,
 				"arrow_right.png", 2, 1);
-
-		try {		
+		
+		try
+		{		
 			gameTextureAtlas.build(new BlackPawnTextureAtlasBuilder<IBitmapTextureAtlasSource, BitmapTextureAtlas>(0, 1, 0));
-			gameTextureAtlas.load();
-			seaTextureAtlas.load();
-			mapTextureAtlas.load();
-		} catch(final TextureAtlasBuilderException e) {
+			
+		}
+		catch(final TextureAtlasBuilderException e)
+		{
 			Debug.e(e);
 		}
-
 	}
 
-	private void loadGameFonts() {
+	private void createGameFonts() {
 
 		FontFactory.setAssetBasePath("fonts/");
 
@@ -385,10 +329,36 @@ public class ResourceCache {
 				engine.getTextureManager(), 512, 512, 
 				Typeface.create(Typeface.DEFAULT, Typeface.BOLD), 28f,
 				Color.WHITE);
-
+	}
+	
+	private void createMaps()
+	{
+		if(maps == null)
+		{
+			maps = new ArrayList<Map>();
+		}
+		
+		for(int i = INITIAL_MAP; i <= numberOfMaps; i++)
+		{
+			maps.add(new Map("maps/" + i + "/regions.csv", "maps/" + i + "/neighbours.csv"));
+		}
+	}
+	
+	public void loadGameSceneResources()
+	{		
+		// Texture Atlas
+		gameTextureAtlas.load();
+		mapTextureAtlas.load();
+		
+		// Fonts
 		mGameFont.load();
 		mInfoTabFont.load();
+	}
 
+	public void unloadGameSceneResources()
+	{
+		gameTextureAtlas.unload();
+		mapTextureAtlas.unload();
 	}
 
 	// ==================================================
