@@ -23,8 +23,12 @@ public class MenuHUD extends HUD implements Displayable {
 	// ==================================================
 
 	private RiskaSprite doorLeft, doorRight;
-	private RiskaSprite doorBottom, doorTop;
+//	private RiskaSprite doorBottom, doorTop;
 	private Sprite border;
+	
+	private float leftDoorOpenX, rightDoorOpenX;
+	private float leftDoorCloseX, rightDoorCloseX;
+	
 	
 	public MenuHUD()
 	{
@@ -35,12 +39,11 @@ public class MenuHUD extends HUD implements Displayable {
 		createDisplay();
 	}
 	
-
 	@Override
 	public void createDisplay()
 	{		
 		createDoors();
-		createBorder();
+		//createBorder();
 	}
 
 	private void createBorder()
@@ -57,46 +60,50 @@ public class MenuHUD extends HUD implements Displayable {
 	{
 		doorLeft = new RiskaSprite(0, 0, resources.doorLeftRegion, resources.vbom);
 		doorRight = new RiskaSprite(0, 0, resources.doorRightRegion, resources.vbom);
-		doorBottom = new RiskaSprite(0, 0, resources.doorBottomRegion, resources.vbom);
-		doorTop = new RiskaSprite(0, 0, resources.doorTopRegion, resources.vbom);
+//		doorBottom = new RiskaSprite(0, 0, resources.doorBottomRegion, resources.vbom);
+//		doorTop = new RiskaSprite(0, 0, resources.doorTopRegion, resources.vbom);
 		
 		doorLeft.setPosition(0.25f * camera.getWidth(), 0.5f * camera.getHeight());
-		doorLeft.setSize(0.5f * camera.getWidth(), 0.74f * camera.getHeight());
+		doorLeft.setSize(0.5f * camera.getWidth(), 1f * camera.getHeight());
 
 		doorRight.setPosition(0.75f * camera.getWidth(), 0.5f * camera.getHeight());
-		doorRight.setSize(0.5f * camera.getWidth(), 0.74f * camera.getHeight());	
+		doorRight.setSize(0.5f * camera.getWidth(), 1f * camera.getHeight());	
 		
-		doorTop.setSize(0.5f * camera.getWidth(), 0.12f * camera.getHeight());
-		doorTop.setPosition(0.5f * camera.getWidth(), camera.getHeight() - 0.5f * doorTop.getHeight());
+		leftDoorOpenX = -0.25f * camera.getWidth() + 0.1f * doorLeft.getWidth();
+		rightDoorOpenX = 1.25f * camera.getWidth() - 0.1f * doorRight.getWidth();
+		leftDoorCloseX = 0.25f * camera.getWidth()/* + 0.1f * doorLeft.getWidth()*/;
+		rightDoorCloseX = 0.75f * camera.getWidth()/* - 0.1f * doorRight.getWidth()*/;
 		
-		doorBottom.setSize(0.5f * camera.getWidth(), 0.12f * camera.getHeight());
-		doorBottom.setPosition(0.5f * camera.getWidth(), 0.5f * doorBottom.getHeight());
+//		doorTop.setSize(0.5f * camera.getWidth(), 0.12f * camera.getHeight());
+//		doorTop.setPosition(0.5f * camera.getWidth(), camera.getHeight() - 0.5f * doorTop.getHeight());
+//		
+//		doorBottom.setSize(0.5f * camera.getWidth(), 0.12f * camera.getHeight());
+//		doorBottom.setPosition(0.5f * camera.getWidth(), 0.5f * doorBottom.getHeight());
 		
 		
 		attachChild(doorLeft);
 		attachChild(doorRight);
-		attachChild(doorBottom);
-		attachChild(doorTop);
+//		attachChild(doorBottom);
+//		attachChild(doorTop);
 	}
 	
 	public void openSlideDoors()
 	{
-		doorBottom.slideY(doorsAnimationTime, -0.5f * doorBottom.getHeight());
-		doorTop.slideY(doorsAnimationTime,  camera.getHeight() + 0.5f * doorTop.getHeight());
+//		doorBottom.slideY(doorsAnimationTime, -0.5f * doorBottom.getHeight());
+//		doorTop.slideY(doorsAnimationTime,  camera.getHeight() + 0.5f * doorTop.getHeight());
 		
-		doorLeft.slideX(doorsAnimationTime, -0.25f * camera.getWidth()/* + 0.1f * Utils.getScaledWidth(doorLeft)*/);
-		doorRight.slideX(doorsAnimationTime, 1.25f * camera.getWidth()/* - 0.1f * Utils.getScaledWidth(doorRight)*/);
+		doorLeft.slideX(doorsAnimationTime, leftDoorOpenX);
+		doorRight.slideX(doorsAnimationTime, rightDoorOpenX);
 	}
 
 	public void closeSlideDoors()
 	{
-		doorBottom.slideY(doorsAnimationTime, 0.5f * doorBottom.getHeight());
-		doorTop.slideY(doorsAnimationTime,  camera.getHeight() - 0.5f * doorTop.getHeight());
+//		doorBottom.slideY(doorsAnimationTime, 0.5f * doorBottom.getHeight());
+//		doorTop.slideY(doorsAnimationTime,  camera.getHeight() - 0.5f * doorTop.getHeight());
 		
-		doorLeft.slideX(doorsAnimationTime, 0.25f * camera.getWidth());
-		doorRight.slideX(doorsAnimationTime, 0.75f * camera.getWidth());
+		doorLeft.slideX(doorsAnimationTime, leftDoorCloseX);
+		doorRight.slideX(doorsAnimationTime, rightDoorCloseX);
 	}
-
 
 	public void animateSlideDoors()
 	{	
@@ -114,22 +121,4 @@ public class MenuHUD extends HUD implements Displayable {
 		closeSlideDoors();
 	}
 
-	public void showHUD()
-	{
-		border.setVisible(true);
-		doorBottom.setVisible(true);
-		doorTop.setVisible(true);
-		doorLeft.setVisible(true);
-		doorRight.setVisible(true);
-	}
-
-	public void hideHUD()
-	{
-		border.setVisible(false);
-		doorBottom.setVisible(false);
-		doorTop.setVisible(false);
-		doorLeft.setVisible(false);
-		doorRight.setVisible(false);
-	}
-	
 }

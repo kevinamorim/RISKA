@@ -19,6 +19,7 @@ public class RiskaSprite extends Sprite {
 		super(pX, pY, pTextureRegion, vbom);
 	}
 
+	
 	public void slideX(float duration, float from, float to)
 	{
 		MoveXModifier slideX = new MoveXModifier(duration, from, to);

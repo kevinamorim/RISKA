@@ -42,7 +42,7 @@ public class ResourceCache {
 
 	private static ResourceCache instance = new ResourceCache();
 
-	private static String currentTheme = "new/";
+	private static String currentTheme = "dark/";
 	private static int numberOfMaps = 1;
 	private final int INITIAL_MAP = 1;
 
@@ -63,9 +63,11 @@ public class ResourceCache {
 
 	private BuildableBitmapTextureAtlas mainMenuTextureAtlas;
 	public TiledTextureRegion textBtnRegion;
-	public TiledTextureRegion sliderBtnRegion;
+	public ITextureRegion buttonRegion;
+ 	public TiledTextureRegion sliderBtnRegion;
 	
 	public TiledTextureRegion factionSpriteRegion;
+	public ITextureRegion smallFrameRegion;
 	
 	public TiledTextureRegion playerAddButtonRegion;
 	public TiledTextureRegion playerRemoveButtonRegion;
@@ -141,11 +143,11 @@ public class ResourceCache {
 
 		splashTextureAtlas = new BitmapTextureAtlas(activity.getTextureManager(), 
 				textureWidth, textureHeight, TextureOptions.BILINEAR);
+		
 		splashRegion = BitmapTextureAtlasTextureRegionFactory.createFromAsset(splashTextureAtlas, 
 				activity, "splash.png", 0, 0);
 
 		splashTextureAtlas.load();
-
 	}
 
 	// ==================================================
@@ -186,16 +188,22 @@ public class ResourceCache {
 		int mainTextureWidth = 2048, mainTextureHeight = 2048;
 
 		mainMenuTextureAtlas = new BuildableBitmapTextureAtlas(activity.getTextureManager(), 
-				mainTextureWidth, mainTextureHeight, TextureOptions.DEFAULT);
+				mainTextureWidth, mainTextureHeight, TextureOptions.BILINEAR);
 
 		textBtnRegion = BitmapTextureAtlasTextureRegionFactory.createTiledFromAsset(mainMenuTextureAtlas, activity, 
 				"button.png", 1, 2);
+		
+		buttonRegion = BitmapTextureAtlasTextureRegionFactory.createFromAsset(mainMenuTextureAtlas, activity, 
+				"button_2.png");
 
 		sliderBtnRegion = BitmapTextureAtlasTextureRegionFactory.createTiledFromAsset(mainMenuTextureAtlas, activity, 
 				"slider.png", 1, 2);
 		
 		factionSpriteRegion = BitmapTextureAtlasTextureRegionFactory.createTiledFromAsset(mainMenuTextureAtlas, activity, 
-				"faction.png", 1, 3);
+				"faction.png", 1, 2);
+		
+		smallFrameRegion = BitmapTextureAtlasTextureRegionFactory.createFromAsset(mainMenuTextureAtlas, activity, 
+				"small_frame.png");
 		
 		playerAddButtonRegion = BitmapTextureAtlasTextureRegionFactory.createTiledFromAsset(mainMenuTextureAtlas, activity, 
 				"plus_button.png", 1, 2);
@@ -210,7 +218,7 @@ public class ResourceCache {
 		int propsTextureWidth = 2048, propsTextureHeight = 2048;
 		
 		propsTextureAtlas = new BuildableBitmapTextureAtlas(activity.getTextureManager(), 
-				propsTextureWidth, propsTextureHeight, TextureOptions.DEFAULT);
+				propsTextureWidth, propsTextureHeight, TextureOptions.BILINEAR);
 		
 		doorLeftRegion = BitmapTextureAtlasTextureRegionFactory.createFromAsset(propsTextureAtlas, activity, 
 				"door_left.png");
@@ -253,8 +261,8 @@ public class ResourceCache {
 		FontFactory.setAssetBasePath("fonts/");
 
 		mainMenuFont = FontFactory.createFromAsset(engine.getFontManager(),
-				engine.getTextureManager(), 512, 512, TextureOptions.DEFAULT,
-				activity.getAssets(), "reprise.ttf", 125f, true,
+				engine.getTextureManager(), 512, 512, TextureOptions.BILINEAR,
+				activity.getAssets(), "Calibri.ttf", 125f, true,
 				Color.WHITE);
 
 		mainMenuFont.load();

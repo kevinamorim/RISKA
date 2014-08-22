@@ -155,10 +155,10 @@ public class PreBattleScene extends BaseScene implements Displayable {
 
 	private void updateText()
 	{
-		int successChance = (int)(Utils.calculateChanceOfSuccess(currentSoldiers, defendingSoldiers) * 100);
+		//int successChance = (int)(Utils.calculateChanceOfSuccess(currentSoldiers, defendingSoldiers) * 100);
 		
 		soldierNum.setText(currentSoldiers + " (" + soldierMax + " max)");
-		successNum.setText("Chance of success: " + successChance + " %");
+		successNum.setText("Chance of success: " + 0 + " %");
 	}
 
 	public int getAttackingSoldiers()

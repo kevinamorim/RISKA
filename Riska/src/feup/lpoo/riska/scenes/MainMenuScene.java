@@ -2,9 +2,11 @@ package feup.lpoo.riska.scenes;
 
 import org.andengine.entity.IEntity;
 import org.andengine.entity.modifier.DelayModifier;
+import org.andengine.entity.scene.background.Background;
 import org.andengine.entity.scene.background.SpriteBackground;
 import org.andengine.entity.scene.menu.MenuScene;
 import org.andengine.entity.scene.menu.item.IMenuItem;
+import org.andengine.entity.scene.menu.item.TextMenuItem;
 import org.andengine.entity.scene.menu.MenuScene.IOnMenuItemClickListener;
 import org.andengine.entity.sprite.ButtonSprite;
 import org.andengine.entity.sprite.Sprite;
@@ -13,10 +15,12 @@ import org.andengine.input.touch.TouchEvent;
 import org.andengine.util.adt.color.Color;
 
 import android.util.Log;
+import android.view.MenuItem;
 import android.view.MotionEvent;
 import feup.lpoo.riska.gameInterface.AnimatedButtonSpriteMenuItem;
 import feup.lpoo.riska.gameInterface.AnimatedTextButtonSpriteMenuItem;
 import feup.lpoo.riska.gameInterface.MenuHUD;
+import feup.lpoo.riska.gameInterface.RiskaMenuItem;
 import feup.lpoo.riska.interfaces.Displayable;
 import feup.lpoo.riska.io.SharedPreferencesManager;
 import feup.lpoo.riska.logic.GameInfo;
@@ -67,12 +71,13 @@ public class MainMenuScene extends BaseScene implements Displayable, IOnMenuItem
 	private SpriteBackground background;
 
 	// MAIN MENU
-	private AnimatedTextButtonSpriteMenuItem startButton;
-	private AnimatedTextButtonSpriteMenuItem optionsButton;
+	private RiskaMenuItem startButton;
+	//private RiskaMenuItem startButton;
+	private RiskaMenuItem optionsButton;
 
 	// START MENU
-	private AnimatedTextButtonSpriteMenuItem newGameButton;
-	private AnimatedTextButtonSpriteMenuItem loadGameButton;
+	private RiskaMenuItem newGameButton;
+	private RiskaMenuItem loadGameButton;
 
 	// OPTIONS MENU
 	private AnimatedButtonSpriteMenuItem sliderSFX;
@@ -81,7 +86,7 @@ public class MainMenuScene extends BaseScene implements Displayable, IOnMenuItem
 	private Text textMusic;
 	
 	// CHOOSE PLAYERS MENU
-	private AnimatedTextButtonSpriteMenuItem choosePlayerNextButton;
+	private RiskaMenuItem choosePlayerNextButton;
 	private Text titleTextChoosePlayers;
 	private Text textIsCPU;
 
@@ -98,12 +103,13 @@ public class MainMenuScene extends BaseScene implements Displayable, IOnMenuItem
 
 	// CHOOSE FACTION MENU
 	private Text titleTextChooseFaction;
-	private AnimatedTextButtonSpriteMenuItem nextFactionButton;
-	private AnimatedTextButtonSpriteMenuItem previousFactionButton;
-	private AnimatedTextButtonSpriteMenuItem selectFactionButton;
-	private ButtonSprite factionSprite;
-	private ButtonSprite factionSpriteCenter;
-	private ButtonSprite factionSpriteBorder;
+	private RiskaMenuItem nextFactionButton;
+	private RiskaMenuItem previousFactionButton;
+	private RiskaMenuItem selectFactionButton;
+	
+	private ButtonSprite factionPriColor;
+	private ButtonSprite factionSecColor;
+	private Sprite factionFrame;
 
 	private int currentPlayer = 0;
 	private int selectedFaction = 0;
@@ -136,10 +142,11 @@ public class MainMenuScene extends BaseScene implements Displayable, IOnMenuItem
 		else
 		{				
 			detachChildren();
-
 			resetGameInfo();
 
 			changeChildSceneTo(mainMenu);
+			// TODO : change this
+			setBackground(background);
 		}
 	}
 
@@ -254,23 +261,20 @@ public class MainMenuScene extends BaseScene implements Displayable, IOnMenuItem
 
 		mainMenu.setBackgroundEnabled(false);
 
-		startButton = new AnimatedTextButtonSpriteMenuItem(MAIN_START, 
-				resources.textBtnRegion.getWidth(), 
-				resources.textBtnRegion.getHeight(),
-				resources.textBtnRegion, 
-				vbom, "START", resources.mainMenuFont);
+		startButton = new RiskaMenuItem(MAIN_START,
+				resources.buttonRegion, 
+				vbom, "Start", resources.mainMenuFont);
+		
+		Utils.wrap(startButton, 0.5f * camera.getWidth(), 0.25f * camera.getHeight(), 1f);
+		startButton.setPosition(camera.getCenterX(), 0.53f * camera.getHeight());
+		
 
-		optionsButton = new AnimatedTextButtonSpriteMenuItem(MAIN_OPTIONS, 
-				resources.textBtnRegion.getWidth(),
-				resources.textBtnRegion.getHeight(), 
-				resources.textBtnRegion, 
-				vbom, "OPTIONS", resources.mainMenuFont);
+		optionsButton = new RiskaMenuItem(MAIN_OPTIONS,
+				resources.buttonRegion, 
+				vbom, "Options", resources.mainMenuFont);
 
-		Utils.wrap(startButton, 0.65f * camera.getWidth(), 0.3f * camera.getHeight(), 1f);
-		startButton.setPosition(camera.getCenterX(), 0.66f * camera.getHeight());
-
-		Utils.wrap(optionsButton, 0.65f * camera.getWidth(), 0.3f * camera.getHeight(), 1f);
-		optionsButton.setPosition(camera.getCenterX(), 0.33f * camera.getHeight());
+		Utils.wrap(optionsButton, 0.5f * camera.getWidth(), 0.25f * camera.getHeight(), 1f);
+		optionsButton.setPosition(camera.getCenterX(), 0.23f * camera.getHeight());
 
 		mainMenu.addMenuItem(startButton);
 		mainMenu.addMenuItem(optionsButton);
@@ -287,24 +291,20 @@ public class MainMenuScene extends BaseScene implements Displayable, IOnMenuItem
 		startGameMenu.setBackgroundEnabled(false);
 
 
-		newGameButton = new AnimatedTextButtonSpriteMenuItem(START_NEW,
-				resources.textBtnRegion.getWidth(),
-				resources.textBtnRegion.getHeight(),
-				resources.textBtnRegion,
-				vbom, "NEW", resources.mainMenuFont);
+		newGameButton = new RiskaMenuItem(START_NEW,
+				resources.buttonRegion,
+				vbom, "New", resources.mainMenuFont);
 
-		loadGameButton = new AnimatedTextButtonSpriteMenuItem(START_LOAD,
-				resources.textBtnRegion.getWidth(),
-				resources.textBtnRegion.getHeight(),
-				resources.textBtnRegion,
-				vbom, "LOAD", resources.mainMenuFont);
+		loadGameButton = new RiskaMenuItem(START_LOAD,
+				resources.buttonRegion,
+				vbom, "Load", resources.mainMenuFont);
 
 
-		Utils.wrap(newGameButton, 0.65f * camera.getWidth(), 0.3f * camera.getHeight(), 1f);
-		newGameButton.setPosition(camera.getCenterX(), 0.66f * camera.getHeight());
+		Utils.wrap(newGameButton, 0.5f * camera.getWidth(), 0.25f * camera.getHeight(), 1f);
+		newGameButton.setPosition(camera.getCenterX(), 0.53f * camera.getHeight());
 
-		Utils.wrap(loadGameButton, 0.65f * camera.getWidth(), 0.3f * camera.getHeight(), 1f);
-		loadGameButton.setPosition(camera.getCenterX(), 0.33f * camera.getHeight());
+		Utils.wrap(loadGameButton, 0.5f * camera.getWidth(), 0.25f * camera.getHeight(), 1f);
+		loadGameButton.setPosition(camera.getCenterX(), 0.23f * camera.getHeight());
 
 		startGameMenu.addMenuItem(newGameButton);
 		startGameMenu.addMenuItem(loadGameButton);
@@ -336,12 +336,12 @@ public class MainMenuScene extends BaseScene implements Displayable, IOnMenuItem
 		textMusic = new Text(0, 0, resources.mainMenuFont, "MUSIC", vbom);
 		Utils.wrap(textMusic, 0.25f * camera.getWidth(), 0.2f * camera.getHeight(), 0.8f);
 		textMusic.setPosition( 0.3f * camera.getWidth(), 0.75f * camera.getHeight());
-		textMusic.setColor(Color.BLACK);
+		textMusic.setColor(Color.WHITE);
 
 		textSFX = new Text(0, 0, resources.mainMenuFont, "SFX", vbom);
 		Utils.wrap(textSFX, 0.25f * camera.getWidth(), 0.2f * camera.getHeight(), 0.8f);
 		textSFX.setPosition(0.3f * camera.getWidth(), 0.50f * camera.getHeight());
-		textSFX.setColor(Color.BLACK);
+		textSFX.setColor(Color.WHITE);
 
 		Utils.wrap(sliderMusic, 0.25f * camera.getWidth(), 0.3f * camera.getHeight(), 1f);
 		sliderMusic.setPosition(0.6f * camera.getWidth(), textMusic.getY());
@@ -387,11 +387,9 @@ public class MainMenuScene extends BaseScene implements Displayable, IOnMenuItem
 		titleTextChoosePlayers.setPosition( 0.5f * camera.getWidth(), 0.94f * camera.getHeight());
 		titleTextChoosePlayers.setColor(Color.WHITE);
 
-		choosePlayerNextButton = new AnimatedTextButtonSpriteMenuItem(PLAYERS_SELECT,
-				resources.textBtnRegion.getWidth(),
-				resources.textBtnRegion.getHeight(),
-				resources.textBtnRegion,
-				vbom, "NEXT", resources.mainMenuFont);
+		choosePlayerNextButton = new RiskaMenuItem(PLAYERS_SELECT,
+				resources.buttonRegion,
+				vbom, "Next", resources.mainMenuFont);
 
 		choosePlayerNextButton.setSize(0.5f * camera.getWidth(), 0.12f * camera.getHeight());
 		choosePlayerNextButton.setPosition(0.5f * camera.getWidth(), 0.06f * camera.getHeight());
@@ -469,7 +467,7 @@ public class MainMenuScene extends BaseScene implements Displayable, IOnMenuItem
 			registerTouchArea(removePlayerButton[i]);
 
 			playerName[i] = new Text(0, 0, resources.mainMenuFont, "", MAX_NAME_CHARS, vbom);
-			playerNameButton[i] = new ButtonSprite(0, 0, resources.textBtnRegion, vbom)
+			playerNameButton[i] = new ButtonSprite(0, 0, resources.buttonRegion, vbom)
 			{
 				@Override
 				public boolean onAreaTouched(TouchEvent ev, float pX, float pY) 
@@ -538,21 +536,21 @@ public class MainMenuScene extends BaseScene implements Displayable, IOnMenuItem
 		{	
 			float buttonsY = (1f - ((i + 1) * heightFactor)) * 0.75f * camera.getHeight() + 0.15f * camera.getHeight();
 
-			Utils.wrap(addPlayerButton[i], buttonsWidth, buttonsHeight, 0.9f);
+			Utils.wrap(addPlayerButton[i], buttonsWidth, buttonsHeight, 0.7f);
 			addPlayerButton[i].setPosition(0.25f * camera.getWidth(), buttonsY);
 
-			Utils.wrap(removePlayerButton[i], buttonsWidth, buttonsHeight, 0.9f);
+			Utils.wrap(removePlayerButton[i], buttonsWidth, buttonsHeight, 0.7f);
 			removePlayerButton[i].setPosition(addPlayerButton[i]);
 
 			Utils.wrap(playerNameButton[i], 0.5f * camera.getWidth(), buttonsHeight, 0.9f);
 			playerNameButton[i].setPosition(0.5f * camera.getWidth(), buttonsY);
 
-			Utils.wrap(playerName[i], 1f * playerNameButton[i].getWidth(), 0.8f * playerNameButton[i].getHeight(), 0.9f);
+			Utils.wrap(playerName[i], 1f * playerNameButton[i].getWidth(), 0.8f * playerNameButton[i].getHeight(), 0.85f);
 			playerName[i].setPosition(Utils.getCenterX(playerNameButton[i]), Utils.getCenterY(playerNameButton[i]));
-			playerName[i].setColor(Color.BLACK);
+			playerName[i].setColor(Color.WHITE);
 			playerNameButton[i].attachChild(playerName[i]);
 
-			Utils.wrap(cpuCheckBox[i], 1f * camera.getWidth(), buttonsHeight, 1f);
+			Utils.wrap(cpuCheckBox[i], 1f * camera.getWidth(), buttonsHeight, 0.8f);
 			cpuCheckBox[i].setPosition(0.75f * camera.getWidth(), buttonsY);
 
 			choosePlayersMenu.attachChild(playerNameButton[i]);
@@ -600,7 +598,7 @@ public class MainMenuScene extends BaseScene implements Displayable, IOnMenuItem
 
 		case NAME:
 			playerName[tag].setVisible(true);
-			buttonSprite.setCurrentTileIndex(0);
+			//buttonSprite.setCurrentTileIndex(0);
 			break;
 
 		case CPU_BOX:
@@ -627,7 +625,7 @@ public class MainMenuScene extends BaseScene implements Displayable, IOnMenuItem
 
 		case NAME:
 			playerName[tag].setVisible(false);
-			buttonSprite.setCurrentTileIndex(1);
+			//buttonSprite.setCurrentTileIndex(1);
 			break;
 
 		case CPU_BOX:
@@ -706,7 +704,7 @@ public class MainMenuScene extends BaseScene implements Displayable, IOnMenuItem
 	private void updatePlayerName(int tag, String pName)
 	{
 		playerName[tag].setText(pName);
-		Utils.wrap(playerName[tag], 1f * playerNameButton[tag].getWidth(), 0.8f * playerNameButton[tag].getHeight(), 0.9f);
+		Utils.wrap(playerName[tag], 1f * playerNameButton[tag].getWidth(), 0.8f * playerNameButton[tag].getHeight(), 0.85f);
 	}
 
 	// ==================================================
@@ -721,69 +719,60 @@ public class MainMenuScene extends BaseScene implements Displayable, IOnMenuItem
 		playerFaction = new int[GameInfo.numberOfFactions];
 		setInitialFactionsVariables();
 
-		titleTextChooseFaction = new Text(0, 0, resources.mainMenuFont, "PLAYER " + currentPlayer + " COLOR", 100, vbom);
+		titleTextChooseFaction = new Text(0, 0, resources.mainMenuFont, "Choose Faction: (Player " + currentPlayer + ")", 100, vbom);
 
 		Utils.wrap(titleTextChooseFaction, 0.5f * camera.getWidth(), 0.11f * camera.getHeight(), 0.8f);
 
 		titleTextChooseFaction.setPosition( 0.5f * camera.getWidth(), 0.94f * camera.getHeight());
 		titleTextChooseFaction.setColor(Color.WHITE);
 
-		nextFactionButton = new AnimatedTextButtonSpriteMenuItem(FACTION_NEXT,
-				resources.textBtnRegion.getWidth(),
-				resources.textBtnRegion.getHeight(),
-				resources.textBtnRegion,
+		nextFactionButton = new RiskaMenuItem(FACTION_NEXT,
+				resources.buttonRegion,
 				vbom, ">", resources.mainMenuFont);
 
-		previousFactionButton = new AnimatedTextButtonSpriteMenuItem(FACTION_PREVIOUS,
-				resources.textBtnRegion.getWidth(),
-				resources.textBtnRegion.getHeight(),
-				resources.textBtnRegion,
+		previousFactionButton = new RiskaMenuItem(FACTION_PREVIOUS,
+				resources.buttonRegion,
 				vbom, "<", resources.mainMenuFont);
 
-		selectFactionButton = new AnimatedTextButtonSpriteMenuItem(FACTION_SELECT,
-				resources.textBtnRegion.getWidth(),
-				resources.textBtnRegion.getHeight(),
-				resources.textBtnRegion,
+		selectFactionButton = new RiskaMenuItem(FACTION_SELECT,
+				resources.buttonRegion,
 				vbom, "NEXT", resources.mainMenuFont);
 
-		factionSprite = new ButtonSprite(0, 0, resources.factionSpriteRegion, vbom);
-		factionSpriteCenter = new ButtonSprite(0, 0, resources.factionSpriteRegion, vbom);
-		factionSpriteBorder = new ButtonSprite(0, 0, resources.factionSpriteRegion, vbom);
-
-
-		nextFactionButton.setTextScale(0.5f);
 		nextFactionButton.setSize(0.2f * camera.getWidth(), 0.2f * camera.getHeight());
-		nextFactionButton.setPosition(0.75f * camera.getWidth(), 0.2f * camera.getHeight());
+		nextFactionButton.setPosition(0.75f * camera.getWidth(), 0.5f * camera.getHeight());
 
-		previousFactionButton.setTextScale(0.5f);
 		previousFactionButton.setSize(0.2f * camera.getWidth(), 0.2f * camera.getHeight());
-		previousFactionButton.setPosition(0.25f * camera.getWidth(), 0.2f * camera.getHeight());
+		previousFactionButton.setPosition(0.25f * camera.getWidth(), 0.5f * camera.getHeight());
 
 		selectFactionButton.setSize(0.5f * camera.getWidth(), 0.12f * camera.getHeight());
 		selectFactionButton.setPosition(0.5f * camera.getWidth(), 0.06f * camera.getHeight());
 
-		factionSprite.setCurrentTileIndex(2);
-		factionSprite.setSize(0.45f * camera.getHeight(), 0.45f * camera.getHeight());
-		factionSprite.setPosition(0.5f * camera.getWidth(),  0.6f * camera.getHeight());
+		
+		factionPriColor = new ButtonSprite(0, 0, resources.factionSpriteRegion, vbom);
+		factionSecColor = new ButtonSprite(0, 0, resources.factionSpriteRegion, vbom);
+		
+		factionPriColor.setCurrentTileIndex(0);
+		factionPriColor.setSize(0.37f * camera.getHeight(), 0.37f * camera.getHeight());
+		factionPriColor.setPosition(0.5f * camera.getWidth(), 0.5f * camera.getHeight());
 
-		factionSpriteCenter.setCurrentTileIndex(1);
-		factionSpriteCenter.setSize(factionSprite.getWidth(), factionSprite.getHeight());
-		factionSpriteCenter.setPosition(factionSprite.getX(), factionSprite.getY());
-
+		factionSecColor.setCurrentTileIndex(1);
+		factionSecColor.setSize(factionPriColor.getWidth(), factionPriColor.getHeight());
+		factionSecColor.setPosition(factionPriColor);
+		
+		factionFrame = new Sprite(0, 0, resources.smallFrameRegion, vbom);
+		factionFrame.setSize(0.4f * camera.getHeight(), 0.4f * camera.getHeight());
+		factionFrame.setPosition(factionPriColor);
+		
 		updateFactionVisual();
-
-		factionSpriteBorder.setCurrentTileIndex(0);
-		factionSpriteBorder.setSize(factionSprite.getWidth(), factionSprite.getHeight());
-		factionSpriteBorder.setPosition(factionSprite.getX(), factionSprite.getY());
 
 		chooseFactionMenu.addMenuItem(nextFactionButton);
 		chooseFactionMenu.addMenuItem(previousFactionButton);
 		chooseFactionMenu.addMenuItem(selectFactionButton);
 
-		chooseFactionMenu.attachChild(factionSprite);
-		chooseFactionMenu.attachChild(factionSpriteCenter);
-		chooseFactionMenu.attachChild(factionSpriteBorder);
-
+		chooseFactionMenu.attachChild(factionSecColor);
+		chooseFactionMenu.attachChild(factionPriColor);
+		chooseFactionMenu.attachChild(factionFrame);
+		
 		chooseFactionMenu.attachChild(titleTextChooseFaction);
 
 		chooseFactionMenu.setOnMenuItemClickListener(this);
@@ -844,8 +833,8 @@ public class MainMenuScene extends BaseScene implements Displayable, IOnMenuItem
 
 	private void updateFactionVisual()
 	{
-		factionSprite.setColor(GameInfo.getPriColor(selectedFaction));
-		factionSpriteCenter.setColor(GameInfo.getSecColor(selectedFaction));
+		factionPriColor.setColor(GameInfo.getPriColor(selectedFaction));
+		factionSecColor.setColor(GameInfo.getSecColor(selectedFaction));
 	}
 
 	// ==================================================
@@ -896,6 +885,7 @@ public class MainMenuScene extends BaseScene implements Displayable, IOnMenuItem
 		{
 
 		case MAIN_START:
+			setBackground(new Background(Color.BLACK));
 			changeChildSceneTo(startGameMenu);
 			break;
 
@@ -946,14 +936,14 @@ public class MainMenuScene extends BaseScene implements Displayable, IOnMenuItem
 			{
 				playerFaction[currentPlayer] = selectedFaction;
 				currentPlayer++;
-				titleTextChooseFaction.setText("PLAYER " + currentPlayer + " COLOR");
+				titleTextChooseFaction.setText("Choose Faction: (Player " + currentPlayer + ")");
 				Utils.wrap(titleTextChooseFaction, 0.5f * camera.getWidth(), 0.11f * camera.getHeight(), 0.8f);
 				selectFaction(1);
 			}
 
 			if(currentPlayer == GameInfo.humanPlayers)
 			{
-				menuHUD.hideHUD();
+				camera.setHUD(null);
 				saveFactionsInfo();
 				sceneManager.createGameScene();
 			}

@@ -8,6 +8,7 @@ import org.andengine.entity.text.Text;
 import org.andengine.opengl.font.Font;
 import org.andengine.opengl.vbo.VertexBufferObjectManager;
 
+import android.util.Log;
 import feup.lpoo.riska.logic.MainActivity;
 
 public class Utils
@@ -87,23 +88,17 @@ public class Utils
 
 	public static void wrap(Entity child, float pWidth, float pHeight, float boundingFactor)
 	{
-		if(child.getWidth() / pWidth > child.getHeight() / pHeight)
-		{
-			// Dealing in X
-			child.setScale(boundingFactor * pWidth / child.getWidth());
-		}
-		else
-		{
-			// Dealing in Y
-			child.setScale(boundingFactor * pHeight / child.getHeight());
-		}
+		float scale = getWrapScale(child, pWidth, pHeight, boundingFactor);
+
+		child.setScale(scale);
+		//child.setSize(child.getWidth() * scale, child.getHeight() * scale);
 	}
-	
+
 	public static void getWrapScale(Entity child, Entity parent, float boundingFactor)
 	{
 		getWrapScale(child, parent.getWidth(), parent.getHeight(), boundingFactor);
 	}
-	
+
 	public static float getWrapScale(Entity child, float pWidth, float pHeight, float boundingFactor)
 	{
 		if(child.getWidth() / pWidth > child.getHeight() / pHeight)
@@ -125,15 +120,20 @@ public class Utils
 
 	public static void expand(Entity child, float pWidth, float pHeight, float boundingFactor)
 	{
+		float scale = getExpandScale(child, pWidth, pHeight, boundingFactor);
+
+		child.setSize(child.getWidth() * scale, child.getHeight() * scale);
+	}
+	
+	public static float getExpandScale(Entity child, float pWidth, float pHeight, float boundingFactor)
+	{
 		if(child.getWidth() / pWidth < child.getHeight() / pHeight)
 		{
-			// Dealing in X
-			child.setScale(boundingFactor * pWidth / child.getWidth());
+			return boundingFactor * pWidth / child.getWidth();
 		}
 		else
 		{
-			// Dealing in Y
-			child.setScale(boundingFactor * pHeight / child.getHeight());
+			return boundingFactor * pHeight / child.getHeight();
 		}
 	}
 
@@ -193,33 +193,6 @@ public class Utils
 	// ======================================================
 	// ======================================================
 
-	public static float calculateChanceOfSuccess(int val_1, int val_2)
-	{
-		int min = 1;
-
-		float prob1 = 1f / (val_1 + (1 - min));
-		float prob2 = 1f / (val_2 + (1 - min));
-
-		float probSum = 0f;
-
-		for(int i = min; i <= val_1; i++)
-		{
-			float probSumI = 0f;
-
-			for(int j = min; j <= val_2 && j < i; j++)
-			{
-				probSumI += prob2;
-			}
-
-			probSum += prob1 * probSumI;
-		}
-
-		return probSum;
-	}
-
-	// ======================================================
-	// ======================================================
-
 	/**
 	 * Works with scale
 	 */
@@ -265,7 +238,7 @@ public class Utils
 			array[i] = value;
 		}
 	}
-	
+
 	public static void fill(int[] array, int value)
 	{
 		for(int i = 0; i < array.length; i++)
@@ -281,7 +254,7 @@ public class Utils
 			array[i] = value;
 		}
 	} 
-	
+
 	public static <X> boolean inArray(X value, X[] array)
 	{
 		for(int i = 0; i < array.length; i++)
@@ -291,10 +264,10 @@ public class Utils
 				return true;
 			}
 		}
-		
+
 		return false;
 	}
-	
+
 	public static boolean inArray(int value, int[] array)
 	{
 		for(int i = 0; i < array.length; i++)
@@ -304,10 +277,10 @@ public class Utils
 				return true;
 			}
 		}
-		
+
 		return false;
 	}
-	
+
 	public static <X> void saveFromTo(X[] from, X[] to)
 	{		
 		for(int i = 0; i < from.length && i < to.length; i++)
