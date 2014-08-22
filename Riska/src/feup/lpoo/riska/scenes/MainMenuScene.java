@@ -6,7 +6,6 @@ import org.andengine.entity.scene.background.Background;
 import org.andengine.entity.scene.background.SpriteBackground;
 import org.andengine.entity.scene.menu.MenuScene;
 import org.andengine.entity.scene.menu.item.IMenuItem;
-import org.andengine.entity.scene.menu.item.TextMenuItem;
 import org.andengine.entity.scene.menu.MenuScene.IOnMenuItemClickListener;
 import org.andengine.entity.sprite.ButtonSprite;
 import org.andengine.entity.sprite.Sprite;
@@ -15,10 +14,8 @@ import org.andengine.input.touch.TouchEvent;
 import org.andengine.util.adt.color.Color;
 
 import android.util.Log;
-import android.view.MenuItem;
 import android.view.MotionEvent;
 import feup.lpoo.riska.gameInterface.AnimatedButtonSpriteMenuItem;
-import feup.lpoo.riska.gameInterface.AnimatedTextButtonSpriteMenuItem;
 import feup.lpoo.riska.gameInterface.MenuHUD;
 import feup.lpoo.riska.gameInterface.RiskaMenuItem;
 import feup.lpoo.riska.interfaces.Displayable;
@@ -721,9 +718,9 @@ public class MainMenuScene extends BaseScene implements Displayable, IOnMenuItem
 
 		titleTextChooseFaction = new Text(0, 0, resources.mainMenuFont, "Choose Faction: (Player " + currentPlayer + ")", 100, vbom);
 
-		Utils.wrap(titleTextChooseFaction, 0.5f * camera.getWidth(), 0.11f * camera.getHeight(), 0.8f);
+		Utils.wrap(titleTextChooseFaction, 0.5f * camera.getWidth(), 0.2f * camera.getHeight(), 0.9f);
 
-		titleTextChooseFaction.setPosition( 0.5f * camera.getWidth(), 0.94f * camera.getHeight());
+		titleTextChooseFaction.setPosition( 0.5f * camera.getWidth(), 0.8f * camera.getHeight());
 		titleTextChooseFaction.setColor(Color.WHITE);
 
 		nextFactionButton = new RiskaMenuItem(FACTION_NEXT,
@@ -885,7 +882,6 @@ public class MainMenuScene extends BaseScene implements Displayable, IOnMenuItem
 		{
 
 		case MAIN_START:
-			setBackground(new Background(Color.BLACK));
 			changeChildSceneTo(startGameMenu);
 			break;
 
@@ -896,6 +892,7 @@ public class MainMenuScene extends BaseScene implements Displayable, IOnMenuItem
 		case START_NEW:
 			resetGameInfo(); // TODO : verify necessity of reseting
 			changeChildSceneTo(choosePlayersMenu);
+			setBackground(new Background(Color.BLACK));
 			break;
 
 		case START_LOAD:
@@ -943,9 +940,8 @@ public class MainMenuScene extends BaseScene implements Displayable, IOnMenuItem
 
 			if(currentPlayer == GameInfo.humanPlayers)
 			{
-				camera.setHUD(null);
 				saveFactionsInfo();
-				sceneManager.createGameScene();
+				changeSceneToGame();
 			}
 			break;
 
@@ -971,6 +967,22 @@ public class MainMenuScene extends BaseScene implements Displayable, IOnMenuItem
 			protected void onModifierFinished(IEntity pItem)
 			{
 				setChildScene(child);
+			}
+		};
+		registerEntityModifier(waitForAnimation);
+	}
+	
+	private void changeSceneToGame()
+	{
+		menuHUD.animateSlideDoors();
+
+		waitForAnimation = new DelayModifier(MenuHUD.doorsAnimationWaitingTime)
+		{
+			@Override
+			protected void onModifierFinished(IEntity pItem)
+			{
+				sceneManager.createGameScene();
+				camera.setHUD(null);
 			}
 		};
 		registerEntityModifier(waitForAnimation);

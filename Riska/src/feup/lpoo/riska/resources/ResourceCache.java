@@ -262,7 +262,7 @@ public class ResourceCache {
 		int gameTextureWidth = 4096, gameTextureHeight = 2048;
 
 		mapTextureAtlas = new BitmapTextureAtlas(activity.getTextureManager(), mapTextureWidth, mapTextureHeight, 
-				TextureOptions.DEFAULT);
+				TextureOptions.BILINEAR);
 		mapRegion = BitmapTextureAtlasTextureRegionFactory.createFromAsset(mapTextureAtlas, activity,
 				"map.png", 0, 0);
 

@@ -74,6 +74,7 @@ public class GameScene extends BaseScene implements IOnSceneTouchListener, IScro
 	@Override
 	public void onBackKeyPressed()
 	{
+		camera.zoomOut();
 		sceneManager.loadMainMenuScene(engine);
 	}
 
@@ -156,7 +157,7 @@ public class GameScene extends BaseScene implements IOnSceneTouchListener, IScro
 
 			regionButton.setTag(region.ID);
 			regionButton.setPosition(x, y);
-			regionButton.setScale(0.8f);
+			regionButton.setSize(0.1f * camera.getHeight(), 0.1f * camera.getHeight());
 
 			regionButton.setColor(region.getPrimaryColor());
 
