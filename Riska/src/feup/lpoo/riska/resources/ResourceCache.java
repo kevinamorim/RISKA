@@ -73,6 +73,8 @@ public class ResourceCache {
 	public ITextureRegion doorRightRegion;
 	public ITiledTextureRegion switchRegion;
 	
+	public ITextureRegion barHRegion, barVRegion;
+	
 	// ==================================================
 	// GAME RESOURCES
 	// ==================================================
@@ -200,6 +202,12 @@ public class ResourceCache {
 		
 		doorRightRegion = BitmapTextureAtlasTextureRegionFactory.createFromAsset(propsTextureAtlas, activity, 
 				"door_right.png");
+		
+		barHRegion = BitmapTextureAtlasTextureRegionFactory.createFromAsset(propsTextureAtlas, activity, 
+				"bar.png");
+		
+		barVRegion = BitmapTextureAtlasTextureRegionFactory.createFromAsset(propsTextureAtlas, activity, 
+				"bar_vertical.png");
 		
 		switchRegion = BitmapTextureAtlasTextureRegionFactory.createTiledFromAsset(propsTextureAtlas, activity, 
 				"switch.png", 1, 2);

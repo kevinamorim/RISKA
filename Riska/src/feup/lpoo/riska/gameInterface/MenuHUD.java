@@ -16,16 +16,19 @@ public class MenuHUD extends HUD implements Displayable {
 	
 	private ResourceCache resources;
 	private CameraManager camera;
+	
 	// ==================================================
 	// FIELDS
 	// ==================================================
-
 	private RiskaSprite doorLeft, doorRight;
+	private RiskaSprite barLeft, barRight;
 	//private Sprite border;
 	
 	private float leftDoorOpenX, rightDoorOpenX;
-	private float leftDoorCloseX, rightDoorCloseX;
+	private float leftBarOpenX, rightBarOpenX;
 	
+	private float leftDoorCloseX, rightDoorCloseX;
+	private float leftBarCloseX, rightBarCloseX;
 	
 	public MenuHUD()
 	{
@@ -44,34 +47,63 @@ public class MenuHUD extends HUD implements Displayable {
 
 	private void createDoors()
 	{
+		float doorsHeight = camera.getHeight();
+		float doorsWidth = 0.54f * camera.getWidth();
+		
 		doorLeft = new RiskaSprite(0, 0, resources.doorLeftRegion, resources.vbom);
 		doorRight = new RiskaSprite(0, 0, resources.doorRightRegion, resources.vbom);
+		barLeft = new RiskaSprite(0, 0, resources.barVRegion, resources.vbom);
+		barRight = new RiskaSprite(0, 0, resources.barVRegion, resources.vbom);
 		
-		doorLeft.setPosition(0.25f * camera.getWidth(), 0.5f * camera.getHeight());
-		doorLeft.setSize(0.5f * camera.getWidth(), 1f * camera.getHeight());
+		doorLeft.setSize(doorsWidth, doorsHeight);
+		doorLeft.setPosition(0.27f * camera.getWidth(), camera.getCenterY());
+		
+		barLeft.setSize(0.03f * camera.getWidth(), camera.getHeight());
+		barLeft.setPosition(doorLeft.right() - barLeft.halfX(), camera.getCenterY());
 
-		doorRight.setPosition(0.75f * camera.getWidth(), 0.5f * camera.getHeight());
-		doorRight.setSize(0.5f * camera.getWidth(), 1f * camera.getHeight());	
+		doorRight.setSize(doorsWidth, doorsHeight);	
+		doorRight.setPosition(0.73f * camera.getWidth(), camera.getCenterY());
 		
-		leftDoorOpenX = -0.25f * camera.getWidth() + 0.1f * doorLeft.getWidth();
-		rightDoorOpenX = 1.25f * camera.getWidth() - 0.1f * doorRight.getWidth();
-		leftDoorCloseX = 0.25f * camera.getWidth()/* + 0.1f * doorLeft.getWidth()*/;
-		rightDoorCloseX = 0.75f * camera.getWidth()/* - 0.1f * doorRight.getWidth()*/;
+		barRight.setSize(0.03f * camera.getWidth(), camera.getHeight());
+		barRight.setPosition(doorRight.left() + barRight.halfX(), camera.getCenterY());
+		
+		leftDoorOpenX = -doorLeft.halfX() + barLeft.getWidth();
+		rightDoorOpenX = camera.getWidth() + doorRight.halfX() - barRight.getWidth();
+		leftBarOpenX = barLeft.halfX();
+		rightBarOpenX = camera.getWidth() - barRight.halfX();
+		
+		
+		leftDoorCloseX = doorLeft.halfX();
+		rightDoorCloseX = camera.getWidth() - doorRight.halfX();
+		leftBarCloseX = camera.getCenterX();
+		rightBarCloseX = camera.getCenterX();
+		
+		
+		//doorLeft.setAlpha(0.6f);
+		//doorRight.setAlpha(0.6f);
 		
 		attachChild(doorLeft);
 		attachChild(doorRight);
+		attachChild(barLeft);
+		attachChild(barRight);
 	}
 	
 	public void openSlideDoors()
 	{	
 		doorLeft.slideX(doorsAnimationTime, leftDoorOpenX);
 		doorRight.slideX(doorsAnimationTime, rightDoorOpenX);
+		
+		barLeft.slideX(doorsAnimationTime, leftBarOpenX);
+		barRight.slideX(doorsAnimationTime, rightBarOpenX);
 	}
 
 	public void closeSlideDoors()
 	{
 		doorLeft.slideX(doorsAnimationTime, leftDoorCloseX);
 		doorRight.slideX(doorsAnimationTime, rightDoorCloseX);
+		
+		barLeft.slideX(doorsAnimationTime, leftBarCloseX);
+		barRight.slideX(doorsAnimationTime, rightBarCloseX);
 	}
 
 	public void animateSlideDoors()
