@@ -62,4 +62,33 @@ public class RiskaSprite extends Sprite {
 		this.registerEntityModifier(slide);
 	}
 
+	public float left()
+	{
+		return this.getX() - 0.5f * this.getWidth();
+	}
+	
+	public float right()
+	{
+		return this.getX() + 0.5f * this.getWidth();
+	}
+	
+	public float top()
+	{
+		return this.getY() + 0.5f * this.getHeight();
+	}
+	
+	public float bottom()
+	{
+		return this.getY() - 0.5f * this.getHeight();
+	}
+
+	public float halfX()
+	{
+		return 0.5f * this.getWidth();
+	}
+	
+	public float halfY()
+	{
+		return 0.5f * this.getHeight();
+	}
 }
