@@ -95,6 +95,11 @@ public class GameLogic
 	// ======================================================
 	// ======================================================
 	public void update() {
+
+		if(currentPlayer.isCPU) {
+			updateCPU();
+		}
+
 		switch(state) {
 		case SETUP:
 			setup();
@@ -125,6 +130,10 @@ public class GameLogic
 			untargetRegion();
 			setNextState();
 			gameScene.setInitialHUD();
+			
+			if(currentPlayer.isCPU) { /* if the new player is cpu, then auto-update */
+				update();
+			}
 		}
 
 	}
@@ -157,7 +166,7 @@ public class GameLogic
 		default:
 			break;
 		}
-		
+
 		Log.d("debug", "STATE: " + state);
 	}
 
@@ -186,11 +195,6 @@ public class GameLogic
 
 	public void attack()
 	{
-		
-		if(currentPlayer.isCPU && (selectedRegion == null || targetedRegion == null)) {
-			Region region1 = currentPlayer.pickRegion();
-			gameScene.showCpuMove(region1, currentPlayer.pickNeighbourEnemyRegion(region1));
-		}
 
 		boolean attackerWon;
 
@@ -261,12 +265,52 @@ public class GameLogic
 
 	}
 
-	public void cpu()
-	{
-		pauseGame();
-		automaticMove();
+	public void updateCPU() {
+		if(selectedRegion != null && targetedRegion != null) {
+			switch(state) {
+			case ATTACK: 
+				attack();
+				break;
+			case MOVE:
+				move();
+				break;
+			default:
+				break;
+			}
+			setNextState();
+		} else {
+			if(state.equals(GAME_STATE.DEPLOYMENT)) {
+				deploy();
+				nextTurn();
+			} else {
+				Region pRegion = cpuSelectRegion();
+				gameScene.showCpuMove(pRegion, cpuTargetRegion(pRegion));
+			}
+
+		}
+
 	}
 
+	private Region cpuSelectRegion() {
+		if(state.equals(GAME_STATE.ATTACK)) {
+			return currentPlayer.pickRegionForAttack();
+		}
+		if(state.equals(GAME_STATE.MOVE)) {
+			return currentPlayer.pickRegionForMove();
+		}
+		return null;
+	}
+	
+	private Region cpuTargetRegion(Region pRegion) {
+		switch(state) {
+		case ATTACK:
+			return currentPlayer.pickNeighbourEnemyRegion(pRegion);
+		case MOVE:
+			return currentPlayer.pickNeighbourAlliedRegion(pRegion);
+		default:
+			return null;
+		}
+	}
 	// ======================================================
 	// GAME STATE
 	// ======================================================
@@ -354,22 +398,6 @@ public class GameLogic
 
 		return false;
 	}
-
-	private void automaticMove()
-	{	
-		Region pRegion1 = currentPlayer.pickRegion();
-
-		if(pRegion1 != null)
-		{
-			Region pRegion2 = selectTargetRegion(pRegion1);
-
-			if(pRegion2 != null)
-			{
-				gameScene.showCpuMove(pRegion1, pRegion2);	
-			}
-		}		
-	}
-
 
 	// ======================================================
 	// REGIONS RELATED

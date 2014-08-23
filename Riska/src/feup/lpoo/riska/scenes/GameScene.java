@@ -283,7 +283,7 @@ public class GameScene extends BaseScene implements IOnSceneTouchListener, IScro
 			@Override
 			protected void onModifierFinished(IEntity pItem)
 			{
-				//logic.attack();
+				logic.updateCPU();
 				unlockUserInput();
 				unlockHUD();
 			}
@@ -465,7 +465,6 @@ public class GameScene extends BaseScene implements IOnSceneTouchListener, IScro
 					if(comp.getOwner() != logic.getCurrentPlayer())
 					{
 						regionButtons.get(i).setVisible(false);
-						//regionButtons.get(i).first.setEnabled(false);
 					}
 				}
 			}
@@ -629,7 +628,6 @@ public class GameScene extends BaseScene implements IOnSceneTouchListener, IScro
 
 	/* Common operations when showing a child scene. */
 	private void showChildScene() {
-		logic.pauseGame();
 		camera.zoomOut();
 		hideAllButtons();
 		hud.hide(SPRITE.INFO_TAB);
@@ -639,7 +637,6 @@ public class GameScene extends BaseScene implements IOnSceneTouchListener, IScro
 
 	/* Common operations when hiding a child scene. */
 	private void hideChildScene() {
-		logic.resumeGame();
 		hideAllButtons();
 		hud.show(SPRITE.INFO_TAB);	
 		hud.setDetailButtonToQuestion();	

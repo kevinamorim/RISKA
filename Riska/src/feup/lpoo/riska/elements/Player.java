@@ -3,6 +3,8 @@ package feup.lpoo.riska.elements;
 import java.util.ArrayList;
 import org.andengine.util.adt.color.Color;
 
+import android.util.Log;
+
 import feup.lpoo.riska.utilities.Utils;
 
 public class Player extends Object {
@@ -10,7 +12,6 @@ public class Player extends Object {
 	// ======================================================
 	// CONSTANTS
 	// ======================================================
-	final private String[] names = { "Hitler", "Salazar", "Estaline" };
 
 	// ======================================================
 	// FIELDS
@@ -25,7 +26,9 @@ public class Player extends Object {
 
 	private String playerName;
 
-
+	// ======================================================
+	// CONSTRUCTORS
+	// =====================================================
 	public Player(boolean isCPU, Color[] colors, String name)
 	{
 		this(isCPU, colors[0], colors[1], name);
@@ -49,6 +52,9 @@ public class Player extends Object {
 		this.secColor = secondaryColor;
 	}
 
+	// ======================================================
+	// LOGIC
+	// =====================================================
 	public void addRegion(Region region)
 	{
 		regions.add(region);
@@ -100,10 +106,6 @@ public class Player extends Object {
 		return this.secColor;
 	}
 	
-	/**
-	 * Called only with non-human players
-	 * TODO : heavy deployment
-	 */
 	public void deployAllSoldiers() {
 
 		int i = 0;
@@ -120,40 +122,69 @@ public class Player extends Object {
 		return playerName;
 	}
 	
-	public Region pickRegion() {
+	public Region pickRegionForAttack() {
 		
 		ArrayList<Region> allowedRegions = new ArrayList<Region>();
 		
 		for(Region item : regions) {
-			if(item.canAttack()) {
+			if(item.canAttack() && item.hasEnemyNeighbor()) {
 				allowedRegions.add(item);
 			}
 		}
-		return allowedRegions.get(Utils.randomInt(0, regions.size() - 1));
+		
+		if(allowedRegions.size() > 0) {
+			return allowedRegions.get(Utils.randomInt(0, regions.size() - 1));
+		}
+		
+		pickRegionForAttack();
+		
+		return null;
+
+	}
+	
+	public Region pickRegionForMove() {
+		
+		ArrayList<Region> allowedRegions = new ArrayList<Region>();
+		
+		for(Region item : regions) {
+			if(item.canAttack() && item.hasAlliedNeighbour()) {
+				allowedRegions.add(item);
+			}
+		}
+		
+		if(allowedRegions.size() > 0) {
+			return allowedRegions.get(Utils.randomInt(0, regions.size() - 1));
+		}
+		
+		pickRegionForMove();
+		
+		return null;
 	}
 	
 	public Region pickNeighbourAlliedRegion(Region pRegion) {
 		ArrayList<Region> neighbours = pRegion.getNeighbours();
+		ArrayList<Region> allowed = new ArrayList<Region>();
 		
 		for(Region item : neighbours) {
-			if(!regions.contains(item)) {
-				neighbours.remove(item);
+			if(!item.hasOwner(this)) {
+				allowed.add(item);
 			}
 		}
 		
-		return neighbours.get(Utils.randomInt(0, neighbours.size() - 1));
+		return allowed.get(Utils.randomInt(0, allowed.size() - 1));
 	}
 	
 	public Region pickNeighbourEnemyRegion(Region pRegion) {
 		ArrayList<Region> neighbours = pRegion.getNeighbours();
-		
+		ArrayList<Region> allowed = new ArrayList<Region>();
+
 		for(Region item : neighbours) {
-			if(regions.contains(item)) {
-				neighbours.remove(item);
+			if(item.hasOwner(this)) {
+				allowed.add(item);
 			}
 		}
 		
-		return neighbours.get(Utils.randomInt(0, neighbours.size() - 1));
+		return allowed.get(Utils.randomInt(0, allowed.size() - 1));
 	}
 	
 	public boolean hasPossibleMoves() {

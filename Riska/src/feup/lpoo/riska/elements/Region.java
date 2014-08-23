@@ -4,6 +4,7 @@ import java.util.ArrayList;
 import org.andengine.util.adt.color.Color;
 
 import android.graphics.Point;
+import android.util.Log;
 
 public class Region extends Element {
 
@@ -196,11 +197,6 @@ public class Region extends Element {
 	{
 		soldiers.clear();
 	}
-
-//	public boolean hasEnemyNeighbor()
-//	{
-//		
-//	}
 	
 	public void focus()
 	{	
@@ -244,12 +240,24 @@ public class Region extends Element {
 	public boolean canAttack() {
 		return soldiers.size() >= MIN_SOLDIERS_FOR_AN_ATTACK;
 	}
-	
+	// TODO: Needs refactoring...
 	public boolean hasEnemyNeighbor()
 	{
 		for(Region neighbour : neighbours)
 		{
 			if(!neighbour.getOwner().equals(owner))
+			{
+				return true;
+			}
+		}
+
+		return false;
+	}
+	
+	public boolean hasAlliedNeighbour() {
+		for(Region neighbour : neighbours)
+		{
+			if(neighbour.getOwner().equals(owner))
 			{
 				return true;
 			}
