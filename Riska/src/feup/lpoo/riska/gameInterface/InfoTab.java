@@ -153,9 +153,5 @@ public class InfoTab {
 	private void defaultText() {
 		setText(Utils.getString(R.string.game_info_default));
 	}
-
-
-
-
-
+	
 }

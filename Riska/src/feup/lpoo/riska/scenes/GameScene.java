@@ -263,6 +263,7 @@ public class GameScene extends BaseScene implements IOnSceneTouchListener, IScro
 			protected void onModifierFinished(IEntity pItem)
 			{
 				logic.selectRegion(pRegion1);
+				draw();
 			}
 
 		};
@@ -273,6 +274,7 @@ public class GameScene extends BaseScene implements IOnSceneTouchListener, IScro
 			protected void onModifierFinished(IEntity pItem)
 			{
 				logic.targetRegion(pRegion2);
+				draw();
 			}
 
 		};
@@ -285,6 +287,7 @@ public class GameScene extends BaseScene implements IOnSceneTouchListener, IScro
 				logic.updateCPU();
 				unlockUserInput();
 				unlockHUD();
+				draw();
 			}
 
 		};
