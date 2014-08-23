@@ -214,7 +214,6 @@ public class GameScene extends BaseScene implements IOnSceneTouchListener, IScro
 		drawRegionButtons();
 
 		hud.draw(logic);
-		hud.setInfoTabText(logic);
 		
 		drawButtons();
 		

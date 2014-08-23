@@ -42,8 +42,7 @@ public class GameHUD extends HUD implements Displayable {
 	private ButtonSprite nextTurnButton;
 	private ButtonSprite arrowLeft;
 	private ButtonSprite arrowRight;
-	private Sprite infoTab;
-	private Text infoTabText;
+	private InfoTab infoTab;
 
 	private GameScene gameScene;
 
@@ -101,6 +100,8 @@ public class GameHUD extends HUD implements Displayable {
 			hide(BUTTON.DETAILS);
 			hide(BUTTON.ATTACK);
 		}
+		
+		infoTab.setText(logic);
 	}
 
 	// ======================================================
@@ -125,7 +126,7 @@ public class GameHUD extends HUD implements Displayable {
 		registerTouchArea(moveButton);
 
 		attachChild(attackButton);
-		attachChild(infoTab);
+		attachChild(infoTab.getSprite());
 		attachChild(detailsButton);
 		attachChild(autoDeployButton);
 		attachChild(nextTurnButton);
@@ -173,20 +174,16 @@ public class GameHUD extends HUD implements Displayable {
 
 	private void createInfoTab()
 	{
-		infoTab = new Sprite(0, 0, resources.infoTabRegion, resources.vbom);
-
-		infoTab.setSize(1f * camera.getWidth(), 0.1f * camera.getHeight());
-		infoTab.setPosition(0.5f * camera.getWidth(), camera.getHeight() - 0.5f * infoTab.getHeight());
-		infoTab.setAlpha(0.8f);
 		
-		infoTabText = new Text(0, 0, resources.mInfoTabFont, "", 1000, resources.vbom);
-
-		Utils.wrap(infoTabText, infoTab, 0.9f);
-		infoTabText.setPosition(0.5f * infoTab.getWidth(), 0.5f * infoTab.getHeight());
-		infoTabText.setColor(Color.BLACK);
-
-		infoTab.attachChild(infoTabText);
-		infoTab.setVisible(false);
+		float pWidth = 1f * camera.getWidth();
+		float pHeight = 0.1f * camera.getHeight();
+		float pX = 0.5f * camera.getWidth();
+		float pY =  camera.getHeight() - 0.5f * resources.infoTabRegion.getHeight();
+		float pAlpha = 0.8f;
+		
+		infoTab = new InfoTab(resources.infoTabRegion, resources.mInfoTabFont, 
+				pWidth, pHeight, pX, pY, pAlpha, resources.vbom);
+		
 	}
 
 	private void createDetailsButton()
@@ -622,7 +619,7 @@ public class GameHUD extends HUD implements Displayable {
 		switch(x)
 		{
 		case INFO_TAB:
-			return infoTab;
+			return infoTab.getSprite();
 		default:
 			return null;
 		}
@@ -641,81 +638,4 @@ public class GameHUD extends HUD implements Displayable {
 		detailsButton.setCurrentTileIndex(1);
 	}
 
-	// ======================================================
-	// INFO TAB
-	// ======================================================
-	public void setInfoTabText(String info)
-	{
-		infoTabText.setText(info);
-		Utils.wrap(infoTabText, infoTab, 0.9f);
-	}
-
-	public void setInfoTabText(GameLogic logic)
-	{
-		if(logic.getCurrentPlayer().isCPU) {
-			setInfoTabForCPU(logic);
-		} else {
-			switch(logic.getState()) {
-			case SETUP:
-				setInfoTabForDeployment(logic);
-				break;
-			case ATTACK:
-				setInfoTabForAttack(logic);
-				break;
-			case MOVE:
-				setInfoTabForMove(logic);
-				break;
-			case DEPLOYMENT:
-				setInfoTabForDeployment(logic);
-				break;
-			case ENDTURN:
-				setInfoTabForEndTurn(logic);
-				break;
-			default:
-				break;
-			}
-		}
-	}
-	
-	private void setInfoTabForAttack(GameLogic logic) {
-		if(logic.selectedRegion != null && logic.targetedRegion != null)
-		{
-			setInfoTabText(Utils.getString(R.string.game_info_attack));
-		}
-		else if(logic.selectedRegion != null)
-		{
-			setInfoTabText(Utils.getString(R.string.game_info_tap_enemy_region));
-		}
-		else
-		{
-			setInfoTabText(Utils.getString(R.string.game_info_tap_allied_region));
-		}
-	}
-	
-	private void setInfoTabForMove(GameLogic logic) {
-		if(logic.selectedRegion != null && logic.targetedRegion != null)
-		{
-			setInfoTabText(Utils.getString(R.string.game_info_confirm_moving));
-		}
-		else if(logic.selectedRegion != null)
-		{
-			setInfoTabText(Utils.getString(R.string.game_info_choose_dest_move_troops));
-		}
-		else
-		{
-			setInfoTabText(Utils.getString(R.string.game_info_choose_src_move_troops));
-		}
-	}
-	
-	private void setInfoTabForDeployment(GameLogic logic) {
-		setInfoTabText(logic.getCurrentPlayer().soldiersToDeploy + Utils.getString(R.string.game_info_left_to_deploy));
-	}
-	
-	private void setInfoTabForEndTurn(GameLogic logic) {
-		setInfoTabText(Utils.getString(R.string.game_info_end_turn));
-	}
-	
-	private void setInfoTabForCPU(GameLogic logic) {
-		setInfoTabText(Utils.getString(R.string.game_info_wait_for_CPU));
-	}
 }

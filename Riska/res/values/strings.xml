@@ -28,5 +28,11 @@
 	<string name="game_info_choose_dest_move_troops">Tap an allied region to target your moving troops.</string>
 	<string name="game_info_confirm_moving">Press the move button to proceed.</string>
 	<string name="game_info_end_turn">Press the button to end your turn.</string>
+	<string name="game_info_default">Ups! Something is wrong lol</string>
+	
+	<!--  CPU PLAYING -->
+	<string name="game_info_cpu_attack">The CPU is making his attack.</string>
+	<string name="game_info_cpu_move">The CPU is now moving troops...</string>
+	<string name="game_info_cpu_deploy">The CPU is deploying reinforcements.</string>
 	
 </resources>
