@@ -44,7 +44,6 @@ public class GameScene extends BaseScene implements IOnSceneTouchListener, IScro
 	// ======================================================
 	private GameLogic logic;
 	private GameHUD hud;
-	private DetailScene detailScene;
 	private BattleScene battleScene;
 	private PreBattleScene preBattleScene;
 	private PreMoveScene preMoveScene;
@@ -177,13 +176,9 @@ public class GameScene extends BaseScene implements IOnSceneTouchListener, IScro
 
 	private void createChildScenes()
 	{
-		detailScene = new DetailScene();
 		battleScene = new BattleScene();
 		preBattleScene = new PreBattleScene();
 		preMoveScene = new PreMoveScene();
-
-		detailScene.setVisible(false);
-		attachChild(detailScene);
 
 		battleScene.setVisible(false);
 		attachChild(battleScene);
@@ -215,8 +210,6 @@ public class GameScene extends BaseScene implements IOnSceneTouchListener, IScro
 				showOnlyPlayerNeighbourRegions(logic.selectedRegion);
 			}
 		}
-
-		detailScene.update(logic.selectedRegion, logic.targetedRegion);
 
 		drawRegionButtons();
 
@@ -517,26 +510,6 @@ public class GameScene extends BaseScene implements IOnSceneTouchListener, IScro
 	// ======================================================
 	// CHILD SCENES
 	// ======================================================
-	private void showDetailScene()
-	{
-		if(detailScene != null)
-		{
-			showChildScene();
-			hud.show(BUTTON.DETAILS);
-			detailScene.setVisible(true);
-		}
-	}
-
-	private void hideDetailScene()
-	{
-		if(detailScene != null)
-		{
-			hideChildScene();		
-			detailScene.setVisible(false);
-			logic.resumeGame();
-		}
-	}
-
 	public void showBattleScene(Region pRegion1, Region pRegion2, BattleGenerator battleGenerator)
 	{
 		if(battleScene != null)
@@ -601,10 +574,6 @@ public class GameScene extends BaseScene implements IOnSceneTouchListener, IScro
 
 	private boolean anyChildSceneIsVisible()
 	{
-		if(detailScene.isVisible())
-		{
-			return true;
-		}
 
 		if(battleScene.isVisible())
 		{
@@ -620,10 +589,6 @@ public class GameScene extends BaseScene implements IOnSceneTouchListener, IScro
 	}
 
 	private void hideAllChildScenes() {
-		if(detailScene.isVisible())
-		{
-			hideDetailScene();
-		}
 
 		if(battleScene.isVisible())
 		{
@@ -696,17 +661,9 @@ public class GameScene extends BaseScene implements IOnSceneTouchListener, IScro
 
 	public void onDetailButtonTouched()
 	{	
-		if(detailScene.isVisible()) 
-		{
-			hideDetailScene();
-		}
-		else if(battleScene.isVisible())
+		if(battleScene.isVisible())
 		{
 			hideBattleScene();
-		}
-		else if(!detailScene.isVisible())
-		{
-			showDetailScene();
 		}
 		else
 		{

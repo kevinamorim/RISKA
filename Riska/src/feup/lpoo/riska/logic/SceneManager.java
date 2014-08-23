@@ -29,7 +29,6 @@ public class SceneManager {
 		GAME,
 		NEWGAME,
 		LOADGAME,
-		DETAIL,
 		PRE_BATTLE,
 		BATTLE,
 		PRE_MOVE,

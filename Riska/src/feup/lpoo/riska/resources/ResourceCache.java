@@ -278,7 +278,7 @@ public class ResourceCache {
 				"attack.png", 2, 1);
 
 		detailsBtnRegion = BitmapTextureAtlasTextureRegionFactory.createTiledFromAsset(gameTextureAtlas, activity, 
-				"details.png", 2, 1);
+				"close.png", 2, 1);
 
 		autoDeployBtnRegion = BitmapTextureAtlasTextureRegionFactory.createTiledFromAsset(gameTextureAtlas, activity,
 				"auto_deploy.png", 2, 1);
