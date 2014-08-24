@@ -60,6 +60,7 @@ public class ResourceCache {
 
 	private BuildableBitmapTextureAtlas mainMenuTextureAtlas;
 	public ITextureRegion buttonRegion;
+	public ITextureRegion emptyButtonRegion;
 	
 	public TiledTextureRegion factionSpriteRegion;
 	public ITextureRegion smallFrameRegion;
@@ -174,6 +175,9 @@ public class ResourceCache {
 		
 		buttonRegion = BitmapTextureAtlasTextureRegionFactory.createFromAsset(mainMenuTextureAtlas, activity, 
 				"button.png");
+		
+		emptyButtonRegion = BitmapTextureAtlasTextureRegionFactory.createFromAsset(mainMenuTextureAtlas, activity, 
+				"empty_button.png");
 		
 		factionSpriteRegion = BitmapTextureAtlasTextureRegionFactory.createTiledFromAsset(mainMenuTextureAtlas, activity, 
 				"faction.png", 1, 2);

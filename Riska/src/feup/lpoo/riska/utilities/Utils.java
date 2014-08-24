@@ -301,4 +301,36 @@ public class Utils
 	{
 		e.setX(e.getX() + distance);
 	}
+
+	// ======================================================
+	// ======================================================
+	public static float left(Entity e)
+	{
+		return e.getX() - 0.5f * e.getWidth();
+	}
+	
+	public static float right(Entity e)
+	{
+		return e.getX() + 0.5f * e.getWidth();
+	}
+	
+	public static float top(Entity e)
+	{
+		return e.getY() + 0.5f * e.getHeight();
+	}
+	
+	public static float bottom(Entity e)
+	{
+		return e.getY() - 0.5f * e.getHeight();
+	}
+
+	public static float halfX(Entity e)
+	{
+		return 0.5f * e.getWidth();
+	}
+	
+	public static float halfY(Entity e)
+	{
+		return 0.5f * e.getHeight();
+	}
 }
