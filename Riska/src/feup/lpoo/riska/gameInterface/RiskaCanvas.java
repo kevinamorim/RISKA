@@ -11,6 +11,8 @@ import feup.lpoo.riska.utilities.Utils;
  */
 public class RiskaCanvas extends Entity {
 
+	private RiskaAnimatedSprite canvasSprite;
+
 	public RiskaCanvas(float pX, float pY, float pWidth, float pHeight)
 	{
 		super(pX, pY, pWidth, pHeight);
@@ -19,6 +21,11 @@ public class RiskaCanvas extends Entity {
 	public RiskaCanvas(Camera camera)
 	{
 		super(camera.getCenterX(), camera.getCenterY(), camera.getWidth(), camera.getHeight());
+	}
+	
+	public void setCanvasSprite(RiskaAnimatedSprite object)
+	{
+		canvasSprite = object;
 	}
 	
 	/**
@@ -39,6 +46,41 @@ public class RiskaCanvas extends Entity {
 			Utils.wrap(object, pWidth * getWidth(), pHeight * getHeight(), 1f);
 			//object.setSize(pWidth * getWidth(), pHeight * getHeight());	
 			object.setPosition(pX * getWidth(), pY * getHeight());
+		}
+	}
+	
+	public void close()
+	{
+		if(canvasSprite != null)
+		{
+			canvasSprite.close();
+		}
+	}
+	
+	public void open()
+	{
+		if(canvasSprite != null)
+		{
+			canvasSprite.open();
+		}
+	}
+	
+	public void animate()
+	{
+		if(canvasSprite != null)
+		{
+			canvasSprite.animate();
+		}
+	}
+	
+	@Override
+	public void setVisible(boolean pVisible)
+	{
+		super.setVisible(pVisible);
+
+		for(int i = 0; i < getChildCount(); i++)
+		{
+			getChildByIndex(i).setVisible(pVisible);
 		}
 	}
 }

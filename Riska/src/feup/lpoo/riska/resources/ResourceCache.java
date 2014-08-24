@@ -64,8 +64,7 @@ public class ResourceCache {
 	public TiledTextureRegion factionSpriteRegion;
 	public ITextureRegion smallFrameRegion;
 	
-	public TiledTextureRegion playerAddButtonRegion;
-	public TiledTextureRegion playerRemoveButtonRegion;
+	public TiledTextureRegion addRemoveButtonRegion;
 	public TiledTextureRegion playerCheckBoxButtonRegion;
 	
 	private BuildableBitmapTextureAtlas propsTextureAtlas;
@@ -182,11 +181,8 @@ public class ResourceCache {
 		smallFrameRegion = BitmapTextureAtlasTextureRegionFactory.createFromAsset(mainMenuTextureAtlas, activity, 
 				"small_frame.png");
 		
-		playerAddButtonRegion = BitmapTextureAtlasTextureRegionFactory.createTiledFromAsset(mainMenuTextureAtlas, activity, 
-				"plus_button.png", 1, 2);
-		
-		playerRemoveButtonRegion = BitmapTextureAtlasTextureRegionFactory.createTiledFromAsset(mainMenuTextureAtlas, activity, 
-				"minus_button.png", 1, 2);
+		addRemoveButtonRegion = BitmapTextureAtlasTextureRegionFactory.createTiledFromAsset(mainMenuTextureAtlas, activity, 
+				"add_remove_button.png", 1, 2);
 		
 		playerCheckBoxButtonRegion = BitmapTextureAtlasTextureRegionFactory.createTiledFromAsset(mainMenuTextureAtlas, activity, 
 				"switch.png", 1, 2);
@@ -257,8 +253,7 @@ public class ResourceCache {
 	public void createGameResources()
 	{
 		createGameGraphics();
-		createGameFonts();
-		
+		createGameFonts();	
 		createMaps();
 	}
 

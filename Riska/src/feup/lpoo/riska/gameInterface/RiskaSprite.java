@@ -8,7 +8,7 @@ import org.andengine.opengl.texture.region.ITextureRegion;
 import org.andengine.opengl.vbo.VertexBufferObjectManager;
 
 public class RiskaSprite extends Sprite {
-
+	
 	public RiskaSprite(float pX, float pY, float pWidth, float pHeight, ITextureRegion pTextureRegion, VertexBufferObjectManager vbom)
 	{
 		super(pX, pY, pWidth, pHeight, pTextureRegion, vbom);
