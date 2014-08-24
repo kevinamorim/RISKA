@@ -22,8 +22,7 @@ public class SaveGame {
 		saveGameState(logic.getState());
 		savePlayerRegions(logic.getPlayers().get(0));
 		saveCpuRegions(logic.getPlayers().get(1));
-		saveSoldiers();
-		
+		saveSoldiers();	
 	}
 
 	private void saveCpuRegions(Player player) {

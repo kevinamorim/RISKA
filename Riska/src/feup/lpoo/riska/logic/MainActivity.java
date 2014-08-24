@@ -13,6 +13,7 @@ import org.andengine.ui.activity.BaseGameActivity;
 
 import android.view.KeyEvent;
 import feup.lpoo.riska.gameInterface.CameraManager;
+import feup.lpoo.riska.io.IOManager;
 import feup.lpoo.riska.resources.ResourceCache;
 
 public class MainActivity extends BaseGameActivity {	
@@ -66,6 +67,8 @@ public class MainActivity extends BaseGameActivity {
 		ResourceCache.getSharedInstance().loadSplashScene();
 		ResourceCache.getSharedInstance().createMainMenuResources();
 		ResourceCache.getSharedInstance().createGameResources();
+		
+		IOManager.loadGameOptions();
 		
 		pOnCreateResourcesCallback.onCreateResourcesFinished();
 		

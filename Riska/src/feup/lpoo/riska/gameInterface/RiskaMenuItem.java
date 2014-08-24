@@ -25,7 +25,7 @@ public class RiskaMenuItem extends RiskaSprite implements IMenuItem {
 
 	private static final float textBoundingFactor = 0.55f;
 	private static final float animationTime = 0.2f;
-	
+
 	// ==================================================
 	// ==================================================
 	public RiskaMenuItem(int ID, ITextureRegion pTexture, VertexBufferObjectManager vbom, String pString, Font pFont)
@@ -111,19 +111,6 @@ public class RiskaMenuItem extends RiskaSprite implements IMenuItem {
 		return this.pID;
 	}
 
-	@Override
-	public void onSelected()
-	{
-		// TODO Auto-generated method stub
-	}
-
-	@Override
-	public void onUnselected()
-	{
-		// TODO Auto-generated method stub
-
-	}
-
 	// ==================================================
 	// METHODS
 	// ==================================================
@@ -194,12 +181,12 @@ public class RiskaMenuItem extends RiskaSprite implements IMenuItem {
 			bottom.slideY(deltaTime, halfY());
 		}
 	}
-	
+
 	public void close()
 	{
 		close(animationTime);
 	}
-	
+
 	public void open(float deltaTime)
 	{
 		if(text != null)
@@ -226,7 +213,7 @@ public class RiskaMenuItem extends RiskaSprite implements IMenuItem {
 			bottom.slideY(deltaTime, bottom.halfY());
 		}
 	}
-	
+
 	public void open()
 	{
 		open(animationTime);
@@ -235,7 +222,7 @@ public class RiskaMenuItem extends RiskaSprite implements IMenuItem {
 	public void animate()
 	{
 		final float newAnimationTime = 0.5f * animationTime;
-		
+
 		DelayModifier waitForAnim = new DelayModifier(newAnimationTime)
 		{
 			@Override
@@ -246,11 +233,10 @@ public class RiskaMenuItem extends RiskaSprite implements IMenuItem {
 
 		};
 		registerEntityModifier(waitForAnim);
-		
+
 		close(newAnimationTime);
 	}
-	
-	
+
 	public void debug()
 	{
 		Log.d("Menu", "RiskaMenuItem [" + text.getText() + "]");
@@ -261,5 +247,11 @@ public class RiskaMenuItem extends RiskaSprite implements IMenuItem {
 		Log.d("Menu", " >    Top Pos: [" + top.getX() + ", " + top.getY() + "]");
 		Log.d("Menu", " > Bottom Pos: [" + bottom.getX() + ", " + bottom.getY() + "]");
 	}
+
+	@Override
+	public void onSelected() { }
+
+	@Override
+	public void onUnselected() { }
 
 }
