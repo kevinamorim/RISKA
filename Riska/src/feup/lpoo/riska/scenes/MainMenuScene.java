@@ -55,7 +55,6 @@ public class MainMenuScene extends BaseScene implements Displayable, IOnMenuItem
 
 	private final int START_NEW = 2;
 	private final int START_LOAD = 3;
-	private final int START_RETURN = 4;
 
 	private final int FACTION_NEXT = 8;
 	private final int FACTION_PREVIOUS = 9;
@@ -1007,10 +1006,6 @@ public class MainMenuScene extends BaseScene implements Displayable, IOnMenuItem
 			//sceneManager.loadGameScene(engine);
 			break;
 
-		case START_RETURN:
-			//changeChildSceneTo(mainMenu);
-			break;
-
 		case FACTION_NEXT:
 			selectFaction(1);			
 			break;
@@ -1127,11 +1122,10 @@ public class MainMenuScene extends BaseScene implements Displayable, IOnMenuItem
 
 		if(GameOptions.menuAnimationsEnabled())
 		{
-			if(!from.equals(CHILD.ANY))
+			if(from != CHILD.ANY)
 			{
 				closeButtons(from);
 			}
-			openButtons(to);
 
 			menuHUD.animateSlideDoors();
 
@@ -1141,6 +1135,7 @@ public class MainMenuScene extends BaseScene implements Displayable, IOnMenuItem
 				protected void onModifierFinished(IEntity pItem)
 				{
 					setChildScene(child);
+					openButtons(to);
 					openButtons(from);
 				}
 			};

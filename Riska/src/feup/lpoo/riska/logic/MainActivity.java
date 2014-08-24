@@ -96,7 +96,7 @@ public class MainActivity extends BaseGameActivity {
 			SceneManager.getSharedInstance().getCurrentScene().onBackKeyPressed();
 		}
 		
-		return super.onKeyDown(keyCode, event);
+		return false;
 	}
 
 	public static MainActivity getSharedInstance() { return instance; }
