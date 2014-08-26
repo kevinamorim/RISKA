@@ -280,7 +280,7 @@ public class MainMenuScene extends BaseScene implements Displayable, IOnMenuItem
 		createOptionsAnimationsMenu();
 		createOptionsGraphicsMenu();	
 		createOptionsAudioMenu();
-		createTabs();
+		createOptionsTabs();
 
 		optionsMenu.setTouchAreaBindingOnActionDownEnabled(true);
 		optionsMenu.setTouchAreaBindingOnActionMoveEnabled(true);
@@ -494,7 +494,7 @@ public class MainMenuScene extends BaseScene implements Displayable, IOnMenuItem
 		optionsMenu.attachChild(optionsMenuAudioCanvas);
 	}
 
-	private void createTabs()
+	private void createOptionsTabs()
 	{
 		int numberOfMenus = 2;
 		float factor = 1f / (numberOfMenus + 1);
@@ -567,7 +567,7 @@ public class MainMenuScene extends BaseScene implements Displayable, IOnMenuItem
 
 		animationsTab.setSize(factor * optionsMenuAnimationsCanvas.getWidth(), 0.1f * camera.getHeight());
 		animationsTab.setPosition(Utils.left(optionsMenuAnimationsCanvas) + 0.5f * factor * optionsMenuAnimationsCanvas.getWidth(),
-				Utils.top(optionsMenuAnimationsCanvas) + 1f * Utils.halfY(animationsTab));
+				Utils.bottom(optionsMenuAnimationsCanvas) - 1f * Utils.halfY(animationsTab));
 
 		graphicsTab.setSize(animationsTab.getWidth(), animationsTab.getHeight());
 		graphicsTab.setPosition(Utils.right(animationsTab) + Utils.halfX(graphicsTab), animationsTab.getY());
@@ -594,6 +594,28 @@ public class MainMenuScene extends BaseScene implements Displayable, IOnMenuItem
 	private void onTabTouched(RiskaSprite riskaSprite, OPTIONS_TAB x)
 	{
 
+		switch(x)
+		{
+
+		case ANIMATIONS:
+			onTabSelected(x);
+			break;
+
+		case GRAPHICS:
+			onTabSelected(x);
+			break;
+
+		case AUDIO:
+			onTabSelected(x);
+			break;
+
+		default:
+			break;
+		}
+	}
+
+	private void onTabSelected(OPTIONS_TAB x)
+	{
 		switch(x)
 		{
 
@@ -631,7 +653,7 @@ public class MainMenuScene extends BaseScene implements Displayable, IOnMenuItem
 			break;
 		}
 	}
-
+	
 	private void onButtonTouched(ButtonSprite buttonSprite, OPTIONS_BUTTON x)
 	{
 		switch(x)
@@ -1158,24 +1180,36 @@ public class MainMenuScene extends BaseScene implements Displayable, IOnMenuItem
 		{
 
 		case MAIN_START:
-			startButton.animate();
+			if(GameOptions.menuAnimationsEnabled())
+			{
+				startButton.animate();
+			}
 			changeChildSceneFromTo(CHILD.MAIN, CHILD.START_GAME);	
 			break;
 
 		case MAIN_OPTIONS:
-			optionsButton.animate();
+			if(GameOptions.menuAnimationsEnabled())
+			{
+				optionsButton.animate();
+			}
 			changeChildSceneFromTo(CHILD.MAIN, CHILD.OPTIONS);
 			break;
 
 		case START_NEW:
-			newGameButton.animate();
+			if(GameOptions.menuAnimationsEnabled())
+			{
+				newGameButton.animate();
+			}
 			resetGameInfo(); // TODO : verify necessity of reseting
 			changeChildSceneFromTo(CHILD.START_GAME, CHILD.CHOOSE_PLAYERS);
 			break;
 
 		case START_LOAD:
-			//loadGameButton.animate();
-			//sceneManager.loadGameScene(engine);
+//			if(GameOptions.menuAnimationsEnabled())
+//			{
+//				loadGameButton.animate();
+//			}
+//			sceneManager.loadGameScene(engine);
 			break;
 
 		case FACTION_NEXT:
@@ -1187,7 +1221,10 @@ public class MainMenuScene extends BaseScene implements Displayable, IOnMenuItem
 			break;
 
 		case FACTION_SELECT:
-			chooseFactionSelectButton.animate();
+			if(GameOptions.menuAnimationsEnabled())
+			{
+				chooseFactionSelectButton.animate();
+			}
 			if(currentPlayer < GameInfo.humanPlayers)
 			{
 				playerFaction[currentPlayer] = selectedFaction;
@@ -1206,6 +1243,10 @@ public class MainMenuScene extends BaseScene implements Displayable, IOnMenuItem
 			break;
 
 		case PLAYERS_SELECT:
+			if(GameOptions.menuAnimationsEnabled())
+			{
+				choosePlayerNextButton.animate();
+			}
 			savePlayersInfo();
 			changeChildSceneFromTo(CHILD.CHOOSE_PLAYERS, CHILD.CHOOSE_FACTION);
 			break;
@@ -1223,7 +1264,6 @@ public class MainMenuScene extends BaseScene implements Displayable, IOnMenuItem
 
 		if(GameOptions.menuAnimationsEnabled())
 		{
-
 			menuHUD.animateSlideDoors();
 
 			waitForAnimation = new DelayModifier(MenuHUD.doorsAnimationWaitingTime)
