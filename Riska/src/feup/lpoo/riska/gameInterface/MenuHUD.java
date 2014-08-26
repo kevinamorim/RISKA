@@ -22,8 +22,8 @@ public class MenuHUD extends HUD implements Displayable {
 	// ==================================================
 	// FIELDS
 	// ==================================================
-	private RiskaSprite leftDoor, rightDoor;
-	private RiskaSprite leftBar, rightBar;
+	private RiskaAnimatedSprite leftDoor, rightDoor;
+	private RiskaAnimatedSprite leftBar, rightBar;
 	//private Sprite border;
 	
 	private float leftDoorOpenX, rightDoorOpenX;
@@ -52,10 +52,10 @@ public class MenuHUD extends HUD implements Displayable {
 		float doorsHeight = camera.getHeight();
 		float doorsWidth = 0.54f * camera.getWidth();
 		
-		leftDoor = new RiskaSprite(resources.doorLeftRegion, resources.vbom);
-		rightDoor = new RiskaSprite(resources.doorRightRegion, resources.vbom);
-		leftBar = new RiskaSprite(resources.barVRegion, resources.vbom);
-		rightBar = new RiskaSprite(resources.barVRegion, resources.vbom);
+		leftDoor = new RiskaAnimatedSprite(resources.doorLeftRegion, resources.vbom);
+		rightDoor = new RiskaAnimatedSprite(resources.doorRightRegion, resources.vbom);
+		leftBar = new RiskaAnimatedSprite(resources.barVRegion, resources.vbom);
+		rightBar = new RiskaAnimatedSprite(resources.barVRegion, resources.vbom);
 		
 		leftDoor.setSize(doorsWidth, doorsHeight);
 		

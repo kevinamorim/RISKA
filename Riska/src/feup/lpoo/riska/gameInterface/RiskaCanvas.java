@@ -12,7 +12,7 @@ import feup.lpoo.riska.utilities.Utils;
  */
 public class RiskaCanvas extends Entity {
 
-	private RiskaAnimatedSprite canvasSprite;
+	private RiskaSprite canvasSprite;
 
 	public RiskaCanvas(float pX, float pY, float pWidth, float pHeight)
 	{
@@ -24,7 +24,7 @@ public class RiskaCanvas extends Entity {
 		super(camera.getCenterX(), camera.getCenterY(), camera.getWidth(), camera.getHeight());
 	}
 	
-	public void setCanvasSprite(RiskaAnimatedSprite object)
+	public void setCanvasSprite(RiskaSprite object)
 	{
 		canvasSprite = object;
 	}

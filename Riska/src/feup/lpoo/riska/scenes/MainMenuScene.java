@@ -14,9 +14,9 @@ import org.andengine.util.adt.color.Color;
 
 import android.view.MotionEvent;
 import feup.lpoo.riska.gameInterface.MenuHUD;
-import feup.lpoo.riska.gameInterface.RiskaAnimatedSprite;
+import feup.lpoo.riska.gameInterface.RiskaSprite;
 import feup.lpoo.riska.gameInterface.RiskaCanvas;
-import feup.lpoo.riska.gameInterface.RiskaAnimatedMenuItem;
+import feup.lpoo.riska.gameInterface.RiskaMenuItem;
 import feup.lpoo.riska.interfaces.Displayable;
 import feup.lpoo.riska.io.IOManager;
 import feup.lpoo.riska.logic.GameInfo;
@@ -64,30 +64,30 @@ public class MainMenuScene extends BaseScene implements Displayable, IOnMenuItem
 	private SpriteBackground background;
 
 	// MAIN MENU
-	private RiskaAnimatedMenuItem startButton;
-	private RiskaAnimatedMenuItem optionsButton;
+	private RiskaMenuItem startButton;
+	private RiskaMenuItem optionsButton;
 
 	// START MENU
-	private RiskaAnimatedMenuItem newGameButton;
-	private RiskaAnimatedMenuItem loadGameButton;
+	private RiskaMenuItem newGameButton;
+	private RiskaMenuItem loadGameButton;
 
 	// OPTIONS MENU
-	private RiskaAnimatedSprite animationsTab;
-	private RiskaAnimatedSprite graphicsTab;
-	private RiskaAnimatedSprite audioTab;
+	private RiskaSprite animationsTab;
+	private RiskaSprite graphicsTab;
+	private RiskaSprite audioTab;
 	private RiskaCanvas optionsMenuAnimationsCanvas;
 	private RiskaCanvas optionsMenuGraphicsCanvas;
 	private RiskaCanvas optionsMenuAudioCanvas;
 
 
 	// CHOOSE PLAYERS MENU
-	private RiskaAnimatedMenuItem choosePlayerNextButton;
+	private RiskaMenuItem choosePlayerNextButton;
 	private Text titleTextChoosePlayers;
 	private Text textIsCPU;
 
 	private ButtonSprite[] addRemovePlayerButton;
 	private RiskaCanvas[] playerInfoCanvas;
-	private RiskaAnimatedSprite[] playerNameButton;
+	private RiskaSprite[] playerNameButton;
 	private ButtonSprite[] cpuCheckBox;
 
 	private boolean[] playerIsCPU;
@@ -96,9 +96,9 @@ public class MainMenuScene extends BaseScene implements Displayable, IOnMenuItem
 
 	// CHOOSE FACTION MENU
 	private Text titleTextChooseFaction;
-	private RiskaAnimatedMenuItem chooseFactionNextButton;
-	private RiskaAnimatedMenuItem chooseFactionPreviousButton;
-	private RiskaAnimatedMenuItem chooseFactionSelectButton;
+	private RiskaMenuItem chooseFactionNextButton;
+	private RiskaMenuItem chooseFactionPreviousButton;
+	private RiskaMenuItem chooseFactionSelectButton;
 
 	private ButtonSprite factionPriColor;
 	private ButtonSprite factionSecColor;
@@ -210,7 +210,7 @@ public class MainMenuScene extends BaseScene implements Displayable, IOnMenuItem
 
 		mainMenu.setBackgroundEnabled(false);
 
-		startButton = new RiskaAnimatedMenuItem(MAIN_START,
+		startButton = new RiskaMenuItem(MAIN_START,
 				resources.emptyButtonRegion, 
 				vbom, "Start", resources.mainMenuFont,
 				null, null, resources.barHRegion, resources.barHRegion);
@@ -219,7 +219,7 @@ public class MainMenuScene extends BaseScene implements Displayable, IOnMenuItem
 		startButton.setPosition(camera.getCenterX(), 0.53f * camera.getHeight());
 		//startButton.debug();
 
-		optionsButton = new RiskaAnimatedMenuItem(MAIN_OPTIONS,
+		optionsButton = new RiskaMenuItem(MAIN_OPTIONS,
 				resources.emptyButtonRegion, 
 				vbom, "Options", resources.mainMenuFont,
 				null, null, resources.barHRegion, resources.barHRegion);
@@ -244,12 +244,12 @@ public class MainMenuScene extends BaseScene implements Displayable, IOnMenuItem
 		startGameMenu.setBackgroundEnabled(false);
 
 
-		newGameButton = new RiskaAnimatedMenuItem(START_NEW,
+		newGameButton = new RiskaMenuItem(START_NEW,
 				resources.emptyButtonRegion,
 				vbom, "New", resources.mainMenuFont,
 				null, null, resources.barHRegion, resources.barHRegion);
 
-		loadGameButton = new RiskaAnimatedMenuItem(START_LOAD,
+		loadGameButton = new RiskaMenuItem(START_LOAD,
 				resources.emptyButtonRegion,
 				vbom, "Load", resources.mainMenuFont,
 				null, null, resources.barHRegion, resources.barHRegion);
@@ -499,7 +499,7 @@ public class MainMenuScene extends BaseScene implements Displayable, IOnMenuItem
 		int numberOfMenus = 2;
 		float factor = 1f / (numberOfMenus + 1);
 
-		animationsTab = new RiskaAnimatedSprite(resources.tabRegion, vbom, "Animations", resources.mainMenuFont)
+		animationsTab = new RiskaSprite(resources.tabRegion, vbom, "Animations", resources.mainMenuFont)
 		{
 			@Override
 			public boolean onAreaTouched(TouchEvent ev, float pX, float pY) 
@@ -521,7 +521,7 @@ public class MainMenuScene extends BaseScene implements Displayable, IOnMenuItem
 			}
 		};
 
-		graphicsTab = new RiskaAnimatedSprite(resources.tabRegion, vbom, "Graphics", resources.mainMenuFont)
+		graphicsTab = new RiskaSprite(resources.tabRegion, vbom, "Graphics", resources.mainMenuFont)
 		{
 			@Override
 			public boolean onAreaTouched(TouchEvent ev, float pX, float pY) 
@@ -543,7 +543,7 @@ public class MainMenuScene extends BaseScene implements Displayable, IOnMenuItem
 			}
 		};
 
-		audioTab = new RiskaAnimatedSprite(resources.tabRegion, vbom, "Audio", resources.mainMenuFont)
+		audioTab = new RiskaSprite(resources.tabRegion, vbom, "Audio", resources.mainMenuFont)
 		{
 			@Override
 			public boolean onAreaTouched(TouchEvent ev, float pX, float pY) 
@@ -591,7 +591,7 @@ public class MainMenuScene extends BaseScene implements Displayable, IOnMenuItem
 		optionsMenuAnimationsCanvas.setVisible(true);
 	}
 
-	private void onTabTouched(RiskaAnimatedSprite riskaSprite, OPTIONS_TAB x)
+	private void onTabTouched(RiskaSprite riskaSprite, OPTIONS_TAB x)
 	{
 
 		switch(x)
@@ -703,7 +703,7 @@ public class MainMenuScene extends BaseScene implements Displayable, IOnMenuItem
 		titleTextChoosePlayers.setPosition( 0.5f * camera.getWidth(), 0.94f * camera.getHeight());
 		titleTextChoosePlayers.setColor(Color.WHITE);
 
-		choosePlayerNextButton = new RiskaAnimatedMenuItem(PLAYERS_SELECT,
+		choosePlayerNextButton = new RiskaMenuItem(PLAYERS_SELECT,
 				resources.emptyButtonRegion,
 				vbom, "Next", resources.mainMenuFont,
 				resources.barVRegion, resources.barVRegion, null, null);
@@ -731,7 +731,7 @@ public class MainMenuScene extends BaseScene implements Displayable, IOnMenuItem
 
 	private void createPlayerButtons()
 	{
-		playerNameButton = new RiskaAnimatedSprite[GameInfo.maxPlayers];
+		playerNameButton = new RiskaSprite[GameInfo.maxPlayers];
 		cpuCheckBox = new ButtonSprite[GameInfo.maxPlayers];
 		playerInfoCanvas = new RiskaCanvas[GameInfo.maxPlayers];
 
@@ -766,7 +766,7 @@ public class MainMenuScene extends BaseScene implements Displayable, IOnMenuItem
 			};
 			addRemovePlayerButton[i].setTag(i);
 
-			playerNameButton[i] = new RiskaAnimatedSprite(resources.emptyButtonRegion, vbom, "", resources.mainMenuFont,
+			playerNameButton[i] = new RiskaSprite(resources.emptyButtonRegion, vbom, "", resources.mainMenuFont,
 					null, null, resources.barHRegion, resources.barHRegion)
 			{
 				@Override
@@ -864,7 +864,7 @@ public class MainMenuScene extends BaseScene implements Displayable, IOnMenuItem
 		}
 	}
 
-	private void onRiskaAnimatedSpriteReleased(RiskaAnimatedSprite pSprite, int tag, PLAYERS_BUTTON x)
+	private void onRiskaAnimatedSpriteReleased(RiskaSprite pSprite, int tag, PLAYERS_BUTTON x)
 	{
 		switch(x)
 		{
@@ -882,7 +882,7 @@ public class MainMenuScene extends BaseScene implements Displayable, IOnMenuItem
 		}	
 	}
 
-	private void onRiskaAnimatedSpritePressed(RiskaAnimatedSprite pSprite, int tag, PLAYERS_BUTTON x)
+	private void onRiskaAnimatedSpritePressed(RiskaSprite pSprite, int tag, PLAYERS_BUTTON x)
 	{
 		switch(x)
 		{
@@ -896,7 +896,7 @@ public class MainMenuScene extends BaseScene implements Displayable, IOnMenuItem
 		}	
 	}
 
-	private void onRiskaAnimatedSpriteTouched(RiskaAnimatedSprite pSprite, int tag, PLAYERS_BUTTON x)
+	private void onRiskaAnimatedSpriteTouched(RiskaSprite pSprite, int tag, PLAYERS_BUTTON x)
 	{
 		switch(x)
 		{
@@ -992,17 +992,17 @@ public class MainMenuScene extends BaseScene implements Displayable, IOnMenuItem
 		titleTextChooseFaction.setPosition( 0.5f * camera.getWidth(), 0.8f * camera.getHeight());
 		titleTextChooseFaction.setColor(Color.WHITE);
 
-		chooseFactionNextButton = new RiskaAnimatedMenuItem(FACTION_NEXT,
+		chooseFactionNextButton = new RiskaMenuItem(FACTION_NEXT,
 				resources.emptyButtonRegion,
 				vbom, ">", resources.mainMenuFont,
 				resources.barVRegion, resources.barVRegion, null, null);
 
-		chooseFactionPreviousButton = new RiskaAnimatedMenuItem(FACTION_PREVIOUS,
+		chooseFactionPreviousButton = new RiskaMenuItem(FACTION_PREVIOUS,
 				resources.emptyButtonRegion,
 				vbom, "<", resources.mainMenuFont,
 				resources.barVRegion, resources.barVRegion, null, null);
 
-		chooseFactionSelectButton = new RiskaAnimatedMenuItem(FACTION_SELECT,
+		chooseFactionSelectButton = new RiskaMenuItem(FACTION_SELECT,
 				resources.emptyButtonRegion,
 				vbom, "NEXT", resources.mainMenuFont,
 				resources.barVRegion, resources.barVRegion, null, null);
