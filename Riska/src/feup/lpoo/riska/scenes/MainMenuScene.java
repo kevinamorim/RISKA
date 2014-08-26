@@ -17,7 +17,6 @@ import feup.lpoo.riska.gameInterface.MenuHUD;
 import feup.lpoo.riska.gameInterface.RiskaAnimatedSprite;
 import feup.lpoo.riska.gameInterface.RiskaCanvas;
 import feup.lpoo.riska.gameInterface.RiskaAnimatedMenuItem;
-import feup.lpoo.riska.gameInterface.RiskaSprite;
 import feup.lpoo.riska.interfaces.Displayable;
 import feup.lpoo.riska.io.IOManager;
 import feup.lpoo.riska.logic.GameInfo;
@@ -45,7 +44,7 @@ public class MainMenuScene extends BaseScene implements Displayable, IOnMenuItem
 
 	private MenuHUD menuHUD;
 
-	private enum CHILD { ANY, MAIN, OPTIONS, START_GAME, CHOOSE_MAP, CHOOSE_PLAYERS, CHOOSE_FACTION, CHOOSE_DIFFICULTY};
+	private enum CHILD { MAIN, OPTIONS, START_GAME, CHOOSE_MAP, CHOOSE_PLAYERS, CHOOSE_FACTION, CHOOSE_DIFFICULTY, ANY};
 	private enum PLAYERS_BUTTON { ADD_REMOVE, NAME, CPU_BOX, };
 	private enum OPTIONS_TAB { ANIMATIONS, AUDIO, GRAPHICS};
 	private enum OPTIONS_BUTTON { SFX, MUSIC, MENU_ANIMATIONS, GRAPHICS};
@@ -500,9 +499,7 @@ public class MainMenuScene extends BaseScene implements Displayable, IOnMenuItem
 		int numberOfMenus = 2;
 		float factor = 1f / (numberOfMenus + 1);
 
-		animationsTab = new RiskaAnimatedSprite(
-				resources.tabRegion, vbom, "Animations", resources.mainMenuFont,
-				null, null, null, null)
+		animationsTab = new RiskaAnimatedSprite(resources.tabRegion, vbom, "Animations", resources.mainMenuFont)
 		{
 			@Override
 			public boolean onAreaTouched(TouchEvent ev, float pX, float pY) 
@@ -524,9 +521,7 @@ public class MainMenuScene extends BaseScene implements Displayable, IOnMenuItem
 			}
 		};
 
-		graphicsTab = new RiskaAnimatedSprite(
-				resources.tabRegion, vbom, "Graphics", resources.mainMenuFont,
-				null, null, null, null)
+		graphicsTab = new RiskaAnimatedSprite(resources.tabRegion, vbom, "Graphics", resources.mainMenuFont)
 		{
 			@Override
 			public boolean onAreaTouched(TouchEvent ev, float pX, float pY) 
@@ -548,9 +543,7 @@ public class MainMenuScene extends BaseScene implements Displayable, IOnMenuItem
 			}
 		};
 
-		audioTab = new RiskaAnimatedSprite(
-				resources.tabRegion, vbom, "Audio", resources.mainMenuFont,
-				null, null, null, null)
+		audioTab = new RiskaAnimatedSprite(resources.tabRegion, vbom, "Audio", resources.mainMenuFont)
 		{
 			@Override
 			public boolean onAreaTouched(TouchEvent ev, float pX, float pY) 
@@ -598,7 +591,7 @@ public class MainMenuScene extends BaseScene implements Displayable, IOnMenuItem
 		optionsMenuAnimationsCanvas.setVisible(true);
 	}
 
-	private void onTabTouched(RiskaSprite riskaSprite, OPTIONS_TAB x)
+	private void onTabTouched(RiskaAnimatedSprite riskaSprite, OPTIONS_TAB x)
 	{
 
 		switch(x)
@@ -1165,20 +1158,23 @@ public class MainMenuScene extends BaseScene implements Displayable, IOnMenuItem
 		{
 
 		case MAIN_START:
+			startButton.animate();
 			changeChildSceneFromTo(CHILD.MAIN, CHILD.START_GAME);	
 			break;
 
 		case MAIN_OPTIONS:
+			optionsButton.animate();
 			changeChildSceneFromTo(CHILD.MAIN, CHILD.OPTIONS);
 			break;
 
 		case START_NEW:
+			newGameButton.animate();
 			resetGameInfo(); // TODO : verify necessity of reseting
 			changeChildSceneFromTo(CHILD.START_GAME, CHILD.CHOOSE_PLAYERS);
 			break;
 
 		case START_LOAD:
-			//loadGameButton.close();
+			//loadGameButton.animate();
 			//sceneManager.loadGameScene(engine);
 			break;
 
@@ -1191,9 +1187,9 @@ public class MainMenuScene extends BaseScene implements Displayable, IOnMenuItem
 			break;
 
 		case FACTION_SELECT:
+			chooseFactionSelectButton.animate();
 			if(currentPlayer < GameInfo.humanPlayers)
 			{
-				chooseFactionSelectButton.animate();
 				playerFaction[currentPlayer] = selectedFaction;
 				currentPlayer++;
 				titleTextChooseFaction.setText("Choose Faction: (Player " + currentPlayer + ")");
@@ -1204,7 +1200,6 @@ public class MainMenuScene extends BaseScene implements Displayable, IOnMenuItem
 
 			if(currentPlayer == GameInfo.humanPlayers)
 			{
-				chooseFactionSelectButton.close();
 				saveFactionsInfo();
 				changeSceneToGame();
 			}
@@ -1222,84 +1217,12 @@ public class MainMenuScene extends BaseScene implements Displayable, IOnMenuItem
 		return false;
 	}
 
-	private void openButtons(CHILD x)
-	{
-		switch(x)
-		{
-
-		case MAIN:
-			startButton.open();
-			optionsButton.open();
-			break;
-
-		case START_GAME:
-			newGameButton.open();
-			loadGameButton.open();
-			break;
-
-		case OPTIONS:
-			// TODO
-			break;
-
-		case CHOOSE_FACTION:
-			chooseFactionSelectButton.open();
-			chooseFactionNextButton.open();
-			chooseFactionPreviousButton.open();
-			break;
-
-		case CHOOSE_PLAYERS:
-			choosePlayerNextButton.open();
-			break;
-
-		default:
-			break;
-		}
-	}
-
-	private void closeButtons(CHILD x)
-	{
-		switch(x)
-		{
-
-		case MAIN:
-			startButton.close();
-			optionsButton.close();
-			break;
-
-		case START_GAME:
-			newGameButton.close();
-			loadGameButton.close();
-			break;
-
-		case OPTIONS:
-			// TODO
-			break;
-
-		case CHOOSE_FACTION:
-			chooseFactionSelectButton.close();
-			chooseFactionNextButton.close();
-			chooseFactionPreviousButton.close();
-			break;
-
-		case CHOOSE_PLAYERS:
-			choosePlayerNextButton.close();
-			break;
-
-		default:
-			break;
-		}
-	}
-
 	private void changeChildSceneFromTo(final CHILD from, final CHILD to)
 	{
 		final MenuScene child = getChildScene(to);
 
 		if(GameOptions.menuAnimationsEnabled())
 		{
-			if(from != CHILD.ANY)
-			{
-				closeButtons(from);
-			}
 
 			menuHUD.animateSlideDoors();
 
@@ -1309,8 +1232,6 @@ public class MainMenuScene extends BaseScene implements Displayable, IOnMenuItem
 				protected void onModifierFinished(IEntity pItem)
 				{
 					setChildScene(child);
-					openButtons(to);
-					openButtons(from);
 				}
 			};
 			registerEntityModifier(waitForAnimation);

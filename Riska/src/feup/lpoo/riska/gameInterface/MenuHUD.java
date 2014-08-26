@@ -3,8 +3,10 @@ package feup.lpoo.riska.gameInterface;
 import org.andengine.engine.camera.hud.HUD;
 import org.andengine.entity.IEntity;
 import org.andengine.entity.modifier.DelayModifier;
+
 import feup.lpoo.riska.interfaces.Displayable;
 import feup.lpoo.riska.resources.ResourceCache;
+import feup.lpoo.riska.utilities.Utils;
 
 public class MenuHUD extends HUD implements Displayable {
 
@@ -20,8 +22,8 @@ public class MenuHUD extends HUD implements Displayable {
 	// ==================================================
 	// FIELDS
 	// ==================================================
-	private RiskaSprite leftDoor, rightDoor;
-	private RiskaSprite leftBar, barRight;
+	private RiskaAnimatedSprite leftDoor, rightDoor;
+	private RiskaAnimatedSprite leftBar, rightBar;
 	//private Sprite border;
 	
 	private float leftDoorOpenX, rightDoorOpenX;
@@ -50,10 +52,10 @@ public class MenuHUD extends HUD implements Displayable {
 		float doorsHeight = camera.getHeight();
 		float doorsWidth = 0.54f * camera.getWidth();
 		
-		leftDoor = new RiskaSprite(0, 0, resources.doorLeftRegion, resources.vbom);
-		rightDoor = new RiskaSprite(0, 0, resources.doorRightRegion, resources.vbom);
-		leftBar = new RiskaSprite(0, 0, resources.barVRegion, resources.vbom);
-		barRight = new RiskaSprite(0, 0, resources.barVRegion, resources.vbom);
+		leftDoor = new RiskaAnimatedSprite(resources.doorLeftRegion, resources.vbom);
+		rightDoor = new RiskaAnimatedSprite(resources.doorRightRegion, resources.vbom);
+		leftBar = new RiskaAnimatedSprite(resources.barVRegion, resources.vbom);
+		rightBar = new RiskaAnimatedSprite(resources.barVRegion, resources.vbom);
 		
 		leftDoor.setSize(doorsWidth, doorsHeight);
 		
@@ -61,15 +63,15 @@ public class MenuHUD extends HUD implements Displayable {
 
 		rightDoor.setSize(doorsWidth, doorsHeight);	
 		
-		barRight.setSize(0.03f * camera.getWidth(), camera.getHeight());
+		rightBar.setSize(0.03f * camera.getWidth(), camera.getHeight());
 		
-		leftDoorOpenX = -leftDoor.halfX() + leftBar.getWidth();
-		rightDoorOpenX = camera.getWidth() + rightDoor.halfX() - barRight.getWidth();
-		leftBarOpenX = leftBar.halfX();
-		rightBarOpenX = camera.getWidth() - barRight.halfX();
+		leftDoorOpenX = -Utils.halfX(leftDoor) + leftBar.getWidth();
+		rightDoorOpenX = camera.getWidth() + Utils.halfX(rightDoor) - rightBar.getWidth();
+		leftBarOpenX = Utils.halfX(leftBar);
+		rightBarOpenX = camera.getWidth() - Utils.halfX(rightBar);
 		
-		leftDoorCloseX = leftDoor.halfX();
-		rightDoorCloseX = camera.getWidth() - rightDoor.halfX();
+		leftDoorCloseX = Utils.halfX(leftDoor);
+		rightDoorCloseX = camera.getWidth() - Utils.halfX(rightDoor);
 		leftBarCloseX = camera.getCenterX();
 		rightBarCloseX = camera.getCenterX();
 		
@@ -77,7 +79,7 @@ public class MenuHUD extends HUD implements Displayable {
 		leftBar.setPosition(leftBarOpenX, camera.getCenterY());
 		
 		rightDoor.setPosition(rightDoorOpenX, camera.getCenterY());
-		barRight.setPosition(rightBarOpenX, camera.getCenterY());
+		rightBar.setPosition(rightBarOpenX, camera.getCenterY());
 		
 		//doorLeft.setAlpha(0.6f);
 		//doorRight.setAlpha(0.6f);
@@ -85,7 +87,7 @@ public class MenuHUD extends HUD implements Displayable {
 		attachChild(leftDoor);
 		attachChild(rightDoor);
 		attachChild(leftBar);
-		attachChild(barRight);
+		attachChild(rightBar);
 	}
 	
 	public void openSlideDoors()
@@ -94,7 +96,7 @@ public class MenuHUD extends HUD implements Displayable {
 		rightDoor.slideX(doorsAnimationTime, rightDoorOpenX);
 		
 		leftBar.slideX(doorsAnimationTime, leftBarOpenX);
-		barRight.slideX(doorsAnimationTime, rightBarOpenX);
+		rightBar.slideX(doorsAnimationTime, rightBarOpenX);
 	}
 
 	public void closeSlideDoors()
@@ -103,7 +105,7 @@ public class MenuHUD extends HUD implements Displayable {
 		rightDoor.slideX(doorsAnimationTime, rightDoorCloseX);
 		
 		leftBar.slideX(doorsAnimationTime, leftBarCloseX);
-		barRight.slideX(doorsAnimationTime, rightBarCloseX);
+		rightBar.slideX(doorsAnimationTime, rightBarCloseX);
 	}
 
 	public void animateSlideDoors()

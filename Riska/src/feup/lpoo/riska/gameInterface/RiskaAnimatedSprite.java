@@ -2,6 +2,10 @@ package feup.lpoo.riska.gameInterface;
 
 import org.andengine.entity.IEntity;
 import org.andengine.entity.modifier.DelayModifier;
+import org.andengine.entity.modifier.MoveModifier;
+import org.andengine.entity.modifier.MoveXModifier;
+import org.andengine.entity.modifier.MoveYModifier;
+import org.andengine.entity.sprite.Sprite;
 import org.andengine.entity.text.Text;
 import org.andengine.opengl.font.Font;
 import org.andengine.opengl.texture.region.ITextureRegion;
@@ -12,32 +16,33 @@ import org.andengine.util.adt.color.Color;
 import android.util.Log;
 import feup.lpoo.riska.utilities.Utils;
 
-public class RiskaAnimatedSprite extends RiskaSprite {
+public class RiskaAnimatedSprite extends Sprite {
+	
+	private DelayModifier waitForAnimation;
 	
 	private Text text;
 
-	private RiskaSprite top, bottom, left, right;
+	private RiskaAnimatedSprite top, bottom, left, right;
 
 	private static final float textBoundingFactor = 0.55f;
 	private static final float animationTime = 0.2f;
 
 	// ==================================================
 	// ==================================================
+	public RiskaAnimatedSprite(ITextureRegion pTexture, VertexBufferObjectManager vbom)
+	{
+		this(pTexture, vbom, null, null, null, null, null, null);
+	}
+	
 	public RiskaAnimatedSprite(ITextureRegion pTexture, VertexBufferObjectManager vbom,
 			ITextureRegion pLeft, ITextureRegion pRight, ITextureRegion pTop, ITextureRegion pBottom)
 	{
-		super(0f, 0f, pTexture, vbom);
-		
-		createBorders(pLeft, pRight, pTop, pBottom, vbom);	
-		wrapBorders();
+		this(pTexture, vbom, null, null, pLeft, pRight, pTop, pBottom);	
 	}
 	
 	public RiskaAnimatedSprite(ITextureRegion pTexture, VertexBufferObjectManager vbom, String pString, Font pFont)
 	{
-		super(0f, 0f, pTexture, vbom);
-
-		createText(pString, pFont, vbom);
-		wrapText();	
+		this(pTexture, vbom, pString, pFont, null, null, null, null);
 	}
 
 	public RiskaAnimatedSprite(ITextureRegion pTexture, VertexBufferObjectManager vbom, String pString, Font pFont,
@@ -51,13 +56,6 @@ public class RiskaAnimatedSprite extends RiskaSprite {
 
 		createBorders(pLeft, pRight, pTop, pBottom, vbom);	
 		wrapBorders();
-	}
-
-	public RiskaAnimatedSprite(TiledTextureRegion pTexture, VertexBufferObjectManager vbom)
-	{
-		super(0f, 0f, pTexture, vbom);
-
-		text = null;
 	}
 
 	private void createText(String pString, Font pFont, VertexBufferObjectManager vbom)
@@ -76,22 +74,22 @@ public class RiskaAnimatedSprite extends RiskaSprite {
 
 		if(pLeft != null)
 		{
-			left = new RiskaSprite(0, 0, pLeft, vbom);
+			left = new RiskaAnimatedSprite(pLeft, vbom);
 			attachChild(left);
 		}
 		if(pRight != null)
 		{
-			right = new RiskaSprite(0, 0, pRight, vbom);
+			right = new RiskaAnimatedSprite(pRight, vbom);
 			attachChild(right);
 		}
 		if(pTop != null)
 		{
-			top = new RiskaSprite(0, 0, pTop, vbom);
+			top = new RiskaAnimatedSprite(pTop, vbom);
 			attachChild(top);
 		}
 		if(pBottom != null)
 		{
-			bottom = new RiskaSprite(0, 0, pBottom, vbom);
+			bottom = new RiskaAnimatedSprite(pBottom, vbom);
 			attachChild(bottom);
 		}
 	}
@@ -118,7 +116,7 @@ public class RiskaAnimatedSprite extends RiskaSprite {
 		{
 			Utils.wrap(text, this, textBoundingFactor);
 
-			text.setPosition(halfX(), halfY());
+			text.setPosition(Utils.halfX(this), Utils.halfY(this));
 		}
 	}
 
@@ -130,22 +128,22 @@ public class RiskaAnimatedSprite extends RiskaSprite {
 		if(left != null)
 		{
 			left.setSize(0.1f * getWidth(), getHeight());
-			left.setPosition(left.halfX(), halfY());
+			left.setPosition(Utils.halfX(left), Utils.halfY(this));
 		}
 		if(right != null)
 		{
 			right.setSize(0.1f * getWidth(), getHeight());
-			right.setPosition(getWidth() - right.halfX(), halfY());
+			right.setPosition(this.getWidth() - Utils.halfX(right), Utils.halfY(this));
 		}
 		if(top != null)
 		{
 			top.setSize(getWidth(), 0.25f * getHeight());
-			top.setPosition(halfX(), getHeight() - top.halfY());
+			top.setPosition(Utils.halfX(this), this.getHeight() - Utils.halfY(top));
 		}
 		if(bottom != null)
 		{
 			bottom.setSize(getWidth(), 0.25f * getHeight());
-			bottom.setPosition(halfX(), bottom.halfY());
+			bottom.setPosition(Utils.halfX(this), Utils.halfY(bottom));
 		}
 	}
 
@@ -160,19 +158,19 @@ public class RiskaAnimatedSprite extends RiskaSprite {
 		 */
 		if(left != null)
 		{
-			left.slideX(deltaTime, halfX());
+			left.slideX(deltaTime, Utils.halfX(this));
 		}
 		if(right != null)
 		{
-			right.slideX(deltaTime, halfX());
+			right.slideX(deltaTime, Utils.halfX(this));
 		}
 		if(top != null)
 		{
-			top.slideY(deltaTime, halfY());
+			top.slideY(deltaTime, Utils.halfY(this));
 		}
 		if(bottom != null)
 		{
-			bottom.slideY(deltaTime, halfY());
+			bottom.slideY(deltaTime, Utils.halfY(this));
 		}
 	}
 
@@ -192,19 +190,19 @@ public class RiskaAnimatedSprite extends RiskaSprite {
 		 */
 		if(left != null)
 		{
-			left.slideX(deltaTime, left.halfX());
+			left.slideX(deltaTime, Utils.halfX(left));
 		}
 		if(right != null)
 		{
-			right.slideX(deltaTime, getWidth() - right.halfX());
+			right.slideX(deltaTime, getWidth() - Utils.halfX(right));
 		}
 		if(top != null)
 		{
-			top.slideY(deltaTime, getHeight() - top.halfY());
+			top.slideY(deltaTime, getHeight() - Utils.halfY(top));
 		}
 		if(bottom != null)
 		{
-			bottom.slideY(deltaTime, bottom.halfY());
+			bottom.slideY(deltaTime, Utils.halfY(bottom));
 		}
 	}
 
@@ -271,6 +269,48 @@ public class RiskaAnimatedSprite extends RiskaSprite {
 			
 			wrapText();
 		}
+	}
+	
+	public void slideX(float duration, float from, float to)
+	{
+		MoveXModifier slideX = new MoveXModifier(duration, from, to);
+
+		this.registerEntityModifier(slideX);
+	}
+
+	public void slideX(float duration, float to)
+	{
+		MoveXModifier slideX = new MoveXModifier(duration, getX(), to);
+
+		this.registerEntityModifier(slideX);
+	}
+
+	public void slideY(float duration, float from, float to)
+	{
+		MoveYModifier slideY = new MoveYModifier(duration, from, to);
+
+		this.registerEntityModifier(slideY);
+	}
+
+	public void slideY(float duration, float to)
+	{
+		MoveYModifier slideY = new MoveYModifier(duration, getY(), to);
+
+		this.registerEntityModifier(slideY);
+	}
+
+	public void slide(float duration, float fromX, float fromY, float toX, float toY)
+	{
+		MoveModifier slide = new MoveModifier(duration, fromX, fromY, toX, toY);
+
+		this.registerEntityModifier(slide);
+	}
+
+	public void slide(float duration, float toX, float toY)
+	{
+		MoveModifier slide = new MoveModifier(duration, getX(), getY(), toX, toY);
+
+		this.registerEntityModifier(slide);
 	}
 
 }
