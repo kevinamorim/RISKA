@@ -9,7 +9,6 @@ import org.andengine.entity.sprite.Sprite;
 import org.andengine.entity.text.Text;
 import org.andengine.opengl.font.Font;
 import org.andengine.opengl.texture.region.ITextureRegion;
-import org.andengine.opengl.texture.region.TiledTextureRegion;
 import org.andengine.opengl.vbo.VertexBufferObjectManager;
 import org.andengine.util.adt.color.Color;
 
@@ -22,7 +21,7 @@ public class RiskaAnimatedSprite extends Sprite {
 	
 	private Text text;
 
-	private RiskaAnimatedSprite top, bottom, left, right;
+	private RiskaSprite top, bottom, left, right;
 
 	private static final float textBoundingFactor = 0.55f;
 	private static final float animationTime = 0.2f;
@@ -74,22 +73,22 @@ public class RiskaAnimatedSprite extends Sprite {
 
 		if(pLeft != null)
 		{
-			left = new RiskaAnimatedSprite(pLeft, vbom);
+			left = new RiskaSprite(pLeft, vbom);
 			attachChild(left);
 		}
 		if(pRight != null)
 		{
-			right = new RiskaAnimatedSprite(pRight, vbom);
+			right = new RiskaSprite(pRight, vbom);
 			attachChild(right);
 		}
 		if(pTop != null)
 		{
-			top = new RiskaAnimatedSprite(pTop, vbom);
+			top = new RiskaSprite(pTop, vbom);
 			attachChild(top);
 		}
 		if(pBottom != null)
 		{
-			bottom = new RiskaAnimatedSprite(pBottom, vbom);
+			bottom = new RiskaSprite(pBottom, vbom);
 			attachChild(bottom);
 		}
 	}
@@ -269,48 +268,6 @@ public class RiskaAnimatedSprite extends Sprite {
 			
 			wrapText();
 		}
-	}
-	
-	public void slideX(float duration, float from, float to)
-	{
-		MoveXModifier slideX = new MoveXModifier(duration, from, to);
-
-		this.registerEntityModifier(slideX);
-	}
-
-	public void slideX(float duration, float to)
-	{
-		MoveXModifier slideX = new MoveXModifier(duration, getX(), to);
-
-		this.registerEntityModifier(slideX);
-	}
-
-	public void slideY(float duration, float from, float to)
-	{
-		MoveYModifier slideY = new MoveYModifier(duration, from, to);
-
-		this.registerEntityModifier(slideY);
-	}
-
-	public void slideY(float duration, float to)
-	{
-		MoveYModifier slideY = new MoveYModifier(duration, getY(), to);
-
-		this.registerEntityModifier(slideY);
-	}
-
-	public void slide(float duration, float fromX, float fromY, float toX, float toY)
-	{
-		MoveModifier slide = new MoveModifier(duration, fromX, fromY, toX, toY);
-
-		this.registerEntityModifier(slide);
-	}
-
-	public void slide(float duration, float toX, float toY)
-	{
-		MoveModifier slide = new MoveModifier(duration, getX(), getY(), toX, toY);
-
-		this.registerEntityModifier(slide);
 	}
 
 }
