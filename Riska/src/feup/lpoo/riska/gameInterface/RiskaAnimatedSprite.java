@@ -12,7 +12,6 @@ public class RiskaAnimatedSprite extends Sprite {
 	public RiskaAnimatedSprite(ITextureRegion pTexture, VertexBufferObjectManager vbom)
 	{
 		super(0f, 0f, pTexture, vbom);
-		// TODO Auto-generated constructor stub
 	}
 	
 	

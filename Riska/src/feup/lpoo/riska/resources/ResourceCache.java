@@ -26,6 +26,7 @@ import android.graphics.Color;
 import android.graphics.Typeface;
 import feup.lpoo.riska.elements.Map;
 import feup.lpoo.riska.gameInterface.CameraManager;
+import feup.lpoo.riska.logic.GameOptions;
 import feup.lpoo.riska.logic.MainActivity;
 import feup.lpoo.riska.music.Conductor;
 import feup.lpoo.riska.utilities.Utils;
@@ -43,8 +44,6 @@ public class ResourceCache {
 	private static ResourceCache instance = new ResourceCache();
 
 	private static String currentTheme = "dark/";
-	private static int numberOfMaps = 1;
-	private final int INITIAL_MAP = 1;
 
 	// ==================================================
 	// SPLASH RESOURCES
@@ -354,9 +353,11 @@ public class ResourceCache {
 			maps = new ArrayList<Map>();
 		}
 		
-		for(int i = INITIAL_MAP; i <= numberOfMaps; i++)
+		for(int i = 1; i < GameOptions.numberOfMaps; i++)
 		{
-			maps.add(new Map("maps/" + i + "/regions.csv", "maps/" + i + "/neighbours.csv"));
+			String currentMapPath = "maps/" + i + "/";
+			
+			maps.add(new Map(currentMapPath + "regions.csv", currentMapPath + "neighbours.csv"));
 		}
 	}
 	
