@@ -3,17 +3,15 @@ package feup.lpoo.riska.utilities;
 import java.util.Random;
 
 import org.andengine.entity.Entity;
-import org.andengine.entity.sprite.Sprite;
 import org.andengine.entity.text.Text;
 import org.andengine.opengl.font.Font;
 import org.andengine.opengl.vbo.VertexBufferObjectManager;
+import org.andengine.util.adt.color.Color;
 
-import android.util.Log;
 import feup.lpoo.riska.logic.MainActivity;
 
 public class Utils
 {
-
 	private static MainActivity activity = MainActivity.getSharedInstance();
 
 	private static Random r = new Random();
@@ -80,6 +78,19 @@ public class Utils
 
 		return wrappedText;
 	}
+	
+	public static void wrap(Text text, Entity parent, float boundingFactor)
+	{
+		wrap(text, parent.getWidth(), parent.getHeight(), boundingFactor);
+	}
+	
+	public static void wrap(Text text, float pWidth, float pHeight, float boundingFactor)
+	{
+		float scale = getWrapScale(text, pWidth, pHeight, boundingFactor);
+
+		text.setScale(scale);
+		//child.setSize(child.getWidth() * scale, child.getHeight() * scale);
+	}
 
 	public static void wrap(Entity child, Entity parent, float boundingFactor)
 	{
@@ -90,8 +101,8 @@ public class Utils
 	{
 		float scale = getWrapScale(child, pWidth, pHeight, boundingFactor);
 
-		child.setScale(scale);
-		//child.setSize(child.getWidth() * scale, child.getHeight() * scale);
+		//child.setScale(scale);
+		child.setSize(child.getWidth() * scale, child.getHeight() * scale);
 	}
 
 	public static void getWrapScale(Entity child, Entity parent, float boundingFactor)
@@ -109,30 +120,6 @@ public class Utils
 		else
 		{
 			// Dealing in Y
-			return boundingFactor * pHeight / child.getHeight();
-		}
-	}
-
-	public static void expand(Entity child, Entity parent, float boundingFactor)
-	{
-		expand(child, parent.getWidth(), parent.getHeight(), boundingFactor);
-	}
-
-	public static void expand(Entity child, float pWidth, float pHeight, float boundingFactor)
-	{
-		float scale = getExpandScale(child, pWidth, pHeight, boundingFactor);
-
-		child.setSize(child.getWidth() * scale, child.getHeight() * scale);
-	}
-	
-	public static float getExpandScale(Entity child, float pWidth, float pHeight, float boundingFactor)
-	{
-		if(child.getWidth() / pWidth < child.getHeight() / pHeight)
-		{
-			return boundingFactor * pWidth / child.getWidth();
-		}
-		else
-		{
 			return boundingFactor * pHeight / child.getHeight();
 		}
 	}
@@ -332,5 +319,14 @@ public class Utils
 	public static float halfY(Entity e)
 	{
 		return 0.5f * e.getHeight();
+	}
+	
+	public static class OtherColors {
+		
+		public final static Color BLACK = new Color(0.1f, 0.1f, 0.1f);
+		public final static Color DARK_GREY = new Color(0.3f, 0.3f, 0.3f);
+		public final static Color GREY = new Color(0.5f, 0.5f, 0.5f);
+		public final static Color LIGHT_GREY = new Color(0.7f, 0.7f, 0.7f);
+		public final static Color WHITE = new Color(0.9f, 0.9f, 0.9f);
 	}
 }

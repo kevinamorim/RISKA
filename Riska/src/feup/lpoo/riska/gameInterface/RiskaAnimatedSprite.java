@@ -116,10 +116,7 @@ public class RiskaAnimatedSprite extends RiskaSprite {
 	{
 		if(text != null)
 		{
-			if(Utils.outOfBounds(text, this, textBoundingFactor))
-			{
-				Utils.wrap(text, this, textBoundingFactor);
-			}
+			Utils.wrap(text, this, textBoundingFactor);
 
 			text.setPosition(halfX(), halfY());
 		}
@@ -243,6 +240,37 @@ public class RiskaAnimatedSprite extends RiskaSprite {
 		Log.d("Menu", " >  Right Pos: [" + right.getX() + ", " + right.getY() + "]");
 		Log.d("Menu", " >    Top Pos: [" + top.getX() + ", " + top.getY() + "]");
 		Log.d("Menu", " > Bottom Pos: [" + bottom.getX() + ", " + bottom.getY() + "]");
+	}
+	
+	public Text getText()
+	{
+		return text;
+	}
+
+	public void showText()
+	{
+		if(text != null)
+		{
+			text.setVisible(true);
+		}
+	}
+	
+	public void hideText()
+	{
+		if(text != null)
+		{
+			text.setVisible(false);
+		}
+	}
+
+	public void setText(String pString)
+	{
+		if(text != null)
+		{
+			text.setText(pString);
+			
+			wrapText();
+		}
 	}
 
 }

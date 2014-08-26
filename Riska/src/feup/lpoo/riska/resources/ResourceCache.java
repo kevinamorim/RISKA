@@ -75,6 +75,9 @@ public class ResourceCache {
 	
 	public ITextureRegion barHRegion, barVRegion;
 	
+	public ITextureRegion tabRegion;
+	public ITextureRegion frameRegion;
+	
 	// ==================================================
 	// GAME RESOURCES
 	// ==================================================
@@ -211,6 +214,12 @@ public class ResourceCache {
 		
 		switchRegion = BitmapTextureAtlasTextureRegionFactory.createTiledFromAsset(propsTextureAtlas, activity, 
 				"switch.png", 1, 2);
+		
+		tabRegion = BitmapTextureAtlasTextureRegionFactory.createFromAsset(propsTextureAtlas, activity, 
+				"tab.png");
+		
+		frameRegion = BitmapTextureAtlasTextureRegionFactory.createFromAsset(propsTextureAtlas, activity, 
+				"frame.png");
 		
 		try
 		{

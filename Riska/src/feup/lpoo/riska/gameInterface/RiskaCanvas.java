@@ -2,6 +2,7 @@ package feup.lpoo.riska.gameInterface;
 
 import org.andengine.engine.camera.Camera;
 import org.andengine.entity.Entity;
+import org.andengine.entity.text.Text;
 
 import feup.lpoo.riska.utilities.Utils;
 
@@ -43,9 +44,30 @@ public class RiskaCanvas extends Entity {
 		{
 			attachChild(object);
 			
-			Utils.wrap(object, pWidth * getWidth(), pHeight * getHeight(), 1f);
-			//object.setSize(pWidth * getWidth(), pHeight * getHeight());	
+			object.setSize(pWidth * getWidth(), pHeight * getHeight());	
 			object.setPosition(pX * getWidth(), pY * getHeight());
+		}
+	}
+	
+	public void addGraphicWrap(Entity object, float pX, float pY, float pWidth, float pHeight)
+	{
+		if(!object.hasParent())
+		{
+			attachChild(object);
+			
+			Utils.wrap(object, pWidth * getWidth(), pHeight * getHeight(), 1f);
+			object.setPosition(pX * getWidth(), pY * getHeight());
+		}
+	}
+	
+	public void addText(Text text, float pX, float pY, float pWidth, float pHeight)
+	{
+		if(!text.hasParent())
+		{
+			attachChild(text);
+			
+			Utils.wrap(text, pWidth * getWidth(), pHeight * getHeight(), 1f);
+			text.setPosition(pX * getWidth(), pY * getHeight());
 		}
 	}
 	
