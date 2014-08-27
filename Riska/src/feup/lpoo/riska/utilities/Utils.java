@@ -2,12 +2,13 @@ package feup.lpoo.riska.utilities;
 
 import java.util.Random;
 
-import org.andengine.entity.Entity;
+import org.andengine.entity.IEntity;
 import org.andengine.entity.text.Text;
 import org.andengine.opengl.font.Font;
 import org.andengine.opengl.vbo.VertexBufferObjectManager;
 import org.andengine.util.adt.color.Color;
 
+import android.util.Log;
 import feup.lpoo.riska.logic.MainActivity;
 
 public class Utils
@@ -79,7 +80,7 @@ public class Utils
 		return wrappedText;
 	}
 	
-	public static void wrap(Text text, Entity parent, float boundingFactor)
+	public static void wrap(Text text, IEntity parent, float boundingFactor)
 	{
 		wrap(text, parent.getWidth(), parent.getHeight(), boundingFactor);
 	}
@@ -92,12 +93,12 @@ public class Utils
 		//child.setSize(child.getWidth() * scale, child.getHeight() * scale);
 	}
 
-	public static void wrap(Entity child, Entity parent, float boundingFactor)
+	public static void wrap(IEntity child, IEntity parent, float boundingFactor)
 	{
 		wrap(child, parent.getWidth(), parent.getHeight(), boundingFactor);
 	}
 
-	public static void wrap(Entity child, float pWidth, float pHeight, float boundingFactor)
+	public static void wrap(IEntity child, float pWidth, float pHeight, float boundingFactor)
 	{
 		float scale = getWrapScale(child, pWidth, pHeight, boundingFactor);
 
@@ -105,12 +106,12 @@ public class Utils
 		child.setSize(child.getWidth() * scale, child.getHeight() * scale);
 	}
 
-	public static void getWrapScale(Entity child, Entity parent, float boundingFactor)
+	public static void getWrapScale(IEntity child, IEntity parent, float boundingFactor)
 	{
 		getWrapScale(child, parent.getWidth(), parent.getHeight(), boundingFactor);
 	}
 
-	public static float getWrapScale(Entity child, float pWidth, float pHeight, float boundingFactor)
+	public static float getWrapScale(IEntity child, float pWidth, float pHeight, float boundingFactor)
 	{
 		if(child.getWidth() / pWidth > child.getHeight() / pHeight)
 		{
@@ -124,12 +125,12 @@ public class Utils
 		}
 	}
 
-	public static boolean outOfBounds(Entity child, Entity parent, float factor)
+	public static boolean outOfBounds(IEntity child, IEntity parent, float factor)
 	{
 		return (child.getWidth() > (factor * parent.getWidth()) || child.getHeight() > (factor * parent.getHeight()));
 	}
 
-	public static boolean notFilling(Entity child, Entity parent, float factor)
+	public static boolean notFilling(IEntity child, IEntity parent, float factor)
 	{
 		return (child.getWidth() < (factor * parent.getWidth()) || child.getHeight() < (factor * parent.getHeight()));
 	}
@@ -137,27 +138,27 @@ public class Utils
 	// ======================================================
 	// ======================================================
 
-	public static float getRightBoundsX(Entity e)
+	public static float getRightBoundsX(IEntity e)
 	{
 		return getRightBoundsX(e.getX(), e);
 	}
 
-	public static float getRightBoundsX(float pX, Entity e)
+	public static float getRightBoundsX(float pX, IEntity e)
 	{
 		return (pX + 0.5f * getScaledWidth(e));
 	}
 
-	public static float getLeftBoundsX(Entity e)
+	public static float getLeftBoundsX(IEntity e)
 	{
 		return getLeftBoundsX(e.getX(), e);
 	}
 
-	public static float getLeftBoundsX(float pX, Entity e)
+	public static float getLeftBoundsX(float pX, IEntity e)
 	{
 		return (pX - 0.5f * getScaledWidth(e));
 	}
 
-	public static float getUpperBoundsY(Entity e)
+	public static float getUpperBoundsY(IEntity e)
 	{
 		return getUpperBoundsY(e.getY(), e.getHeight());
 	}
@@ -167,7 +168,7 @@ public class Utils
 		return (pY + 0.5f * pHeight);
 	}
 
-	public static float getLowerBoundsY(Entity e)
+	public static float getLowerBoundsY(IEntity e)
 	{
 		return getLowerBoundsY(e.getY(), e.getHeight());
 	}
@@ -183,7 +184,7 @@ public class Utils
 	/**
 	 * Works with scale
 	 */
-	public static float getScaledWidth(Entity e)
+	public static float getScaledWidth(IEntity e)
 	{
 		return (Math.abs(e.getScaleX() * e.getWidth()));
 	}
@@ -191,27 +192,27 @@ public class Utils
 	/**
 	 * Works with scale
 	 */
-	public static float getScaledHeight(Entity e)
+	public static float getScaledHeight(IEntity e)
 	{
 		return (Math.abs(e.getScaleY() * e.getHeight()));
 	}
 
-	public static float getCenterX(Entity e)
+	public static float getCenterX(IEntity e)
 	{
 		return (0.5f * e.getWidth());
 	}
 
-	public static float getCenterY(Entity e)
+	public static float getCenterY(IEntity e)
 	{
 		return (0.5f * e.getHeight());
 	}
 
-	public static float getScaledCenterX(Entity e)
+	public static float getScaledCenterX(IEntity e)
 	{
 		return (0.5f * getScaledWidth(e));
 	}
 
-	public static float getScaledCenterY(Entity e)
+	public static float getScaledCenterY(IEntity e)
 	{
 		return (0.5f * getScaledHeight(e));
 	}
@@ -284,39 +285,39 @@ public class Utils
 		}
 	}
 
-	public static void slideX(Entity e, float distance)
+	public static void slideX(IEntity e, float distance)
 	{
 		e.setX(e.getX() + distance);
 	}
 
 	// ======================================================
 	// ======================================================
-	public static float left(Entity e)
+	public static float left(IEntity e)
 	{
 		return e.getX() - 0.5f * e.getWidth();
 	}
 	
-	public static float right(Entity e)
+	public static float right(IEntity e)
 	{
 		return e.getX() + 0.5f * e.getWidth();
 	}
 	
-	public static float top(Entity e)
+	public static float top(IEntity e)
 	{
 		return e.getY() + 0.5f * e.getHeight();
 	}
 	
-	public static float bottom(Entity e)
+	public static float bottom(IEntity e)
 	{
 		return e.getY() - 0.5f * e.getHeight();
 	}
 
-	public static float halfX(Entity e)
+	public static float halfX(IEntity e)
 	{
 		return 0.5f * e.getWidth();
 	}
 	
-	public static float halfY(Entity e)
+	public static float halfY(IEntity e)
 	{
 		return 0.5f * e.getHeight();
 	}
@@ -328,5 +329,39 @@ public class Utils
 		public final static Color GREY = new Color(0.5f, 0.5f, 0.5f);
 		public final static Color LIGHT_GREY = new Color(0.7f, 0.7f, 0.7f);
 		public final static Color WHITE = new Color(0.9f, 0.9f, 0.9f);
+	}
+
+	public static void hideChildren(IEntity e)
+	{
+		for(int i = 0; i < e.getChildCount(); i++)
+		{
+			e.getChildByIndex(i).setVisible(false);
+		}
+	}
+
+	public static void showChildren(IEntity e)
+	{
+		for(int i = 0; i < e.getChildCount(); i++)
+		{
+			e.getChildByIndex(i).setVisible(true);
+		}
+	}
+
+	public static void setChildrenVisible(IEntity e, boolean pVisible)
+	{
+		for(int i = 0; i < e.getChildCount(); i++)
+		{
+			IEntity child = e.getChildByIndex(i);
+			
+			if(child.getChildCount() > 0)
+			{
+				setChildrenVisible(child, pVisible);
+			}
+			
+			child.setVisible(pVisible);
+		}
+		
+		Log.d("Debug", "-- Debug for: " + e.toString());
+		Log.d("Debug", " - Set [" + pVisible + "] on " + e.getChildCount() + " children ---");
 	}
 }

@@ -63,6 +63,7 @@ public class ResourceCache {
 	
 	public TiledTextureRegion factionSpriteRegion;
 	public ITextureRegion smallFrameRegion;
+	public ITextureRegion coveredSmallFrameRegion;
 	
 	public TiledTextureRegion addRemoveButtonRegion;
 	public TiledTextureRegion playerCheckBoxButtonRegion;
@@ -71,6 +72,7 @@ public class ResourceCache {
 	public ITextureRegion doorLeftRegion;
 	public ITextureRegion doorRightRegion;
 	public ITiledTextureRegion switchRegion;
+	public ITiledTextureRegion mapsRegion;
 	
 	public ITextureRegion barHRegion, barVRegion;
 	
@@ -192,6 +194,12 @@ public class ResourceCache {
 		
 		playerCheckBoxButtonRegion = BitmapTextureAtlasTextureRegionFactory.createTiledFromAsset(mainMenuTextureAtlas, activity, 
 				"switch.png", 1, 2);
+		
+		frameRegion = BitmapTextureAtlasTextureRegionFactory.createFromAsset(mainMenuTextureAtlas, activity, 
+				"frame.png");
+		
+		coveredSmallFrameRegion = BitmapTextureAtlasTextureRegionFactory.createFromAsset(mainMenuTextureAtlas, activity, 
+				"small_frame_covered.png");
 
 		
 		int propsTextureWidth = 2048, propsTextureHeight = 2048;
@@ -217,8 +225,8 @@ public class ResourceCache {
 		tabRegion = BitmapTextureAtlasTextureRegionFactory.createFromAsset(propsTextureAtlas, activity, 
 				"tab.png");
 		
-		frameRegion = BitmapTextureAtlasTextureRegionFactory.createFromAsset(propsTextureAtlas, activity, 
-				"frame.png");
+		mapsRegion = BitmapTextureAtlasTextureRegionFactory.createTiledFromAsset(propsTextureAtlas, activity, 
+				"maps_tiled_atlas.png", 2, 2);
 		
 		try
 		{
@@ -236,7 +244,7 @@ public class ResourceCache {
 		FontFactory.setAssetBasePath("fonts/");
 
 		mainMenuFont = FontFactory.createFromAsset(engine.getFontManager(),
-				engine.getTextureManager(), 512, 512, TextureOptions.BILINEAR,
+				engine.getTextureManager(), 1024, 1024, TextureOptions.BILINEAR,
 				activity.getAssets(), "Calibri.ttf", 125f, true,
 				Color.WHITE);
 	}

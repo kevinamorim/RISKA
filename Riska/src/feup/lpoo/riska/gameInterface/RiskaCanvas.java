@@ -4,6 +4,7 @@ import org.andengine.engine.camera.Camera;
 import org.andengine.entity.Entity;
 import org.andengine.entity.text.Text;
 
+import android.util.Log;
 import feup.lpoo.riska.utilities.Utils;
 
 /**
@@ -100,10 +101,7 @@ public class RiskaCanvas extends Entity {
 	{
 		super.setVisible(pVisible);
 
-		for(int i = 0; i < getChildCount(); i++)
-		{
-			getChildByIndex(i).setVisible(pVisible);
-		}
+		Utils.setChildrenVisible(this, pVisible);
 	}
 	
 	public float left()
