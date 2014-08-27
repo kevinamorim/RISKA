@@ -361,7 +361,7 @@ public class ResourceCache {
 			maps = new ArrayList<Map>();
 		}
 		
-		for(int i = 1; i < GameOptions.numberOfMaps; i++)
+		for(int i = 0; i < GameOptions.numberOfMaps; i++)
 		{
 			String currentMapPath = "maps/" + i + "/";
 			

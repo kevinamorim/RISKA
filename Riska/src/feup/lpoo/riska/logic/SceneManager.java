@@ -84,7 +84,7 @@ public class SceneManager {
 	{
 		setScene(loadingScene);
 		ResourceCache.getSharedInstance().unloadMainMenuResources();
-		mainMenuScene.dispose();
+		mainMenuScene.disposeScene();
 		mainMenuScene = null;
 		engine.registerUpdateHandler(new TimerHandler(MIN_LOAD_SECONDS, new ITimerCallback()
 		{

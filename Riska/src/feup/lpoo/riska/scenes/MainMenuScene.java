@@ -31,14 +31,14 @@ public class MainMenuScene extends BaseScene implements Displayable, IOnMenuItem
 	// ==================================================
 	// CONSTANTS
 	// ==================================================
-	private enum CHILD { MAIN, OPTIONS, START_GAME, NEW_GAME, CHOOSE_MAP, CHOOSE_PLAYERS, CHOOSE_FACTION, CHOOSE_DIFFICULTY, ANY};
+	private enum CHILD { MAIN, OPTIONS, START, NEW, GO, ANY};
 
 	private enum PLAYERS_BUTTON { NAME, ACTIVE, CPU_BOX, COLORS };
 
 	private enum OPTIONS_TAB { ANIMATIONS, AUDIO, GRAPHICS};
 	private enum OPTIONS_BUTTON { SFX, MUSIC, MENU_ANIMATIONS, GRAPHICS};
 
-	private enum NEWGAME_TAB { MAP, PLAYERS, LEVEL };
+	private enum NEWGAME_TAB { MAP, PLAYERS, LEVEL, GO };
 
 	// ==================================================
 	// FIELDS
@@ -47,12 +47,7 @@ public class MainMenuScene extends BaseScene implements Displayable, IOnMenuItem
 	private MenuScene menuOptions;
 	private MenuScene menuStart;
 	private MenuScene menuNewGame;
-	//private MenuScene menuLoad;
-
-	//private MenuScene chooseMapMenu;			// TODO
-	private MenuScene choosePlayersMenu;
-	private MenuScene chooseFactionMenu;
-	//private MenuScene chooseDifficultyMenu;	// TODO
+	//private MenuScene menuLoadGame;
 
 	private MenuHUD menuHUD;
 
@@ -61,12 +56,8 @@ public class MainMenuScene extends BaseScene implements Displayable, IOnMenuItem
 
 	private final int START_NEW = 2;
 	private final int START_LOAD = 3;
-
-	private final int FACTION_NEXT = 8;
-	private final int FACTION_PREVIOUS = 9;
-	private final int FACTION_SELECT = 10;
-
-	private final int PLAYERS_SELECT = 11;
+	
+	private final int NEW_GO = 4;
 
 	private SpriteBackground background;
 
@@ -101,23 +92,16 @@ public class MainMenuScene extends BaseScene implements Displayable, IOnMenuItem
 
 	private RiskaSprite menuNewGameLevelTab;
 	private RiskaCanvas menuNewGameLevelCanvas;
-
-	// CHOOSE PLAYERS MENU
+	
+	private RiskaMenuItem menuNewGameGoTab;
+	private RiskaCanvas menuNewGameGoCanvas;
+	
 	private boolean[] playerIsCPU;
 	private boolean[] playerActive;
 	private boolean[] playerActivable;
 	private boolean[] playerEditable;
 
-	// CHOOSE FACTION MENU
-	private Text titleTextChooseFaction;
-	private RiskaMenuItem chooseFactionSelectButton;
-
-	private ButtonSprite factionPriColor;
-	private ButtonSprite factionSecColor;
-
-	private int currentPlayer = 0;
-	private int selectedFaction = 0;
-	private int[] playerFaction;
+	private int[] playerColor;
 
 	// ==================================================
 	// ==================================================
@@ -503,8 +487,8 @@ public class MainMenuScene extends BaseScene implements Displayable, IOnMenuItem
 
 	private void createOptionsTabs()
 	{
-		int numberOfMenus = 2;
-		float factor = 1f / (numberOfMenus + 1);
+		int numberOfMenus = 3;
+		float factor = 1f / numberOfMenus;
 
 		menuOptionsAnimationsTab = new RiskaSprite(resources.tabRegion, vbom, "Animations", resources.mainMenuFont)
 		{
@@ -702,9 +686,11 @@ public class MainMenuScene extends BaseScene implements Displayable, IOnMenuItem
 		createMapCanvas();
 		createPlayersCanvas();
 		createLevelCanvas();
+		createGoCanvas();
 
 		createNewGameTabs();
 
+		menuNewGame.setOnMenuItemClickListener(this);
 		menuNewGame.setTouchAreaBindingOnActionDownEnabled(true);
 		menuNewGame.setTouchAreaBindingOnActionMoveEnabled(true);
 	}
@@ -720,7 +706,7 @@ public class MainMenuScene extends BaseScene implements Displayable, IOnMenuItem
 		int maxRows = numberOfMaps / maxCols + (numberOfMaps % maxCols > 0 ? 1 : 0 );
 
 		RiskaCanvas[] mapCanvas = new RiskaCanvas[numberOfMaps];
-		final Sprite[] cover = new Sprite[numberOfMaps];
+		ButtonSprite[] cover = new ButtonSprite[numberOfMaps];
 
 		float heightFactor = 1f / (maxRows + 1);
 		float widthFactor = 1f / (maxCols + 1);
@@ -730,9 +716,7 @@ public class MainMenuScene extends BaseScene implements Displayable, IOnMenuItem
 		menuNewGameMapCanvas = new RiskaCanvas(camera.getCenterX(), camera.getCenterY(), 0.8f * camera.getWidth(), 0.65f * camera.getHeight());
 
 		for(int i = 0; i < numberOfMaps; i++)
-		{
-			final int index = i;
-			
+		{			
 			int hIndex = i % maxCols;
 			int vIndex = i / maxCols;
 
@@ -741,29 +725,7 @@ public class MainMenuScene extends BaseScene implements Displayable, IOnMenuItem
 
 			mapCanvas[i] = new RiskaCanvas(0f, 0f,
 					0.9f * widthFactor * menuNewGameMapCanvas.getWidth(),
-					0.9f * heightFactor * menuNewGameMapCanvas.getHeight())
-			{
-				@Override
-				public boolean onAreaTouched(TouchEvent ev, float pX, float pY)
-				{
-					Log.d("Riska", "Touched Canvas");
-					switch(ev.getMotionEvent().getActionMasked()) 
-					{
-
-					case MotionEvent.ACTION_DOWN:
-						break;
-
-					case MotionEvent.ACTION_OUTSIDE:
-						break;
-
-					case MotionEvent.ACTION_UP:
-						onMapSelected(getTag(), cover[index]);
-						break;
-					}
-
-					return true;
-				}
-			};
+					0.9f * heightFactor * menuNewGameMapCanvas.getHeight());
 			mapCanvas[i].setTag(i);
 
 			TiledSprite map = new TiledSprite(0, 0, resources.mapsRegion, vbom);
@@ -776,7 +738,28 @@ public class MainMenuScene extends BaseScene implements Displayable, IOnMenuItem
 			Sprite mapFrame = new Sprite(0, 0, resources.smallFrameRegion, vbom);
 			mapCanvas[i].addGraphic(mapFrame, 0.5f, 0.5f, 1f, 1f);
 
-			cover[i] = new Sprite(0, 0, resources.coveredSmallFrameRegion, vbom);
+			cover[i] = new ButtonSprite(0, 0, resources.coveredSmallFrameRegion, vbom)
+			{
+				@Override
+				public boolean onAreaTouched(TouchEvent ev, float pX, float pY)
+				{
+					switch(ev.getMotionEvent().getActionMasked()) 
+					{
+
+					case MotionEvent.ACTION_DOWN:
+						break;
+
+					case MotionEvent.ACTION_OUTSIDE:
+						break;
+
+					case MotionEvent.ACTION_UP:
+						onMapSelected(this, getTag());
+						break;
+					}
+
+					return true;
+				}
+			};
 			if(i > 0)
 			{
 				cover[i].setAlpha(0.8f);
@@ -785,11 +768,11 @@ public class MainMenuScene extends BaseScene implements Displayable, IOnMenuItem
 			{
 				cover[i].setAlpha(0f);
 			}
-			mapCanvas[i].addGraphic(cover[i], 0.5f, 0.5f, 1f, 1f);
 
 			menuNewGameMapCanvas.addGraphic(mapCanvas[i], x, y, 0.9f * widthFactor, 0.9f * heightFactor);
+			menuNewGameMapCanvas.addGraphic(cover[i], x, y, widthFactor, heightFactor);
 			
-			menuNewGame.registerTouchArea(mapCanvas[i]);
+			menuNewGame.registerTouchArea(cover[i]);
 		}
 
 		menuNewGameMapCanvas.addGraphic(frame, 0.5f, 0.5f, 1f, 1f);
@@ -813,18 +796,36 @@ public class MainMenuScene extends BaseScene implements Displayable, IOnMenuItem
 		ButtonSprite[] playerActiveButton = new ButtonSprite[maxPlayers];
 		ButtonSprite[] playerCpuButton = new ButtonSprite[maxPlayers];
 		RiskaCanvas[] playerColor = new RiskaCanvas[maxPlayers];
+		
+		RiskaSprite name, isActive, isCpu, color;
 
 		setPlayersVariables();
 
 		float heightFactor = 1f / (maxPlayers + 2);
-
-		int index = maxPlayers + 1;
+		
+		float titleY = (maxPlayers + 1) * heightFactor;
+		
+		RiskaCanvas titleCanvas = new RiskaCanvas(0f, 0f,
+				1f * menuNewGamePlayersCanvas.getWidth(),
+				1f * heightFactor * menuNewGamePlayersCanvas.getHeight());
+		
+		name = new RiskaSprite(resources.emptyButtonRegion, vbom, "Name", resources.mainMenuFont);
+		isActive = new RiskaSprite(resources.emptyButtonRegion, vbom, "Active", resources.mainMenuFont);
+		isCpu = new RiskaSprite(resources.emptyButtonRegion, vbom, "Cpu", resources.mainMenuFont);
+		color = new RiskaSprite(resources.emptyButtonRegion, vbom, "Colors", resources.mainMenuFont);
+		
+		titleCanvas.addGraphic(name, 0.2f, 0.5f, 0.4f, 1f);
+		titleCanvas.addGraphic(isActive, 0.55f, 0.5f, 0.2f, 1f);
+		titleCanvas.addGraphic(isCpu, 0.75f, 0.5f, 0.2f, 1f);
+		titleCanvas.addGraphic(color, 0.95f, 0.5f, 0.2f, 1f);
+		
+		int index = maxPlayers;
 
 		for(int i = 0; i < maxPlayers; i++)
 		{
 			playerCanvas[i] = new RiskaCanvas(0f, 0f,
-					0.9f * menuNewGamePlayersCanvas.getWidth(),
-					1f * heightFactor * menuNewGamePlayersCanvas.getHeight());
+					titleCanvas.getWidth(),
+					titleCanvas.getHeight());
 
 			playerName[i] = new RiskaSprite(resources.emptyButtonRegion, vbom, "", resources.mainMenuFont,
 					null, null, resources.barHRegion, resources.barHRegion)
@@ -918,18 +919,18 @@ public class MainMenuScene extends BaseScene implements Displayable, IOnMenuItem
 			playerColor[i] = new RiskaCanvas(0f, 0f, 1f, 1f);
 			playerCanvas[i].addGraphicWrap(playerColor[i], 0.95f, 0.5f, 0.1f, 1f);
 			
-			menuNewGamePlayersCanvas.addGraphic(playerCanvas[i], 0.5f, index * heightFactor, 1f, heightFactor);
+			menuNewGamePlayersCanvas.addGraphic(playerCanvas[i], 0.5f, index * heightFactor, 0.9f, heightFactor);
 			index--;
 			
 			menuNewGame.registerTouchArea(playerName[i]);
 			menuNewGame.registerTouchArea(playerActiveButton[i]);
 			menuNewGame.registerTouchArea(playerCpuButton[i]);
 		}
-
+		menuNewGamePlayersCanvas.addGraphic(titleCanvas, 0.5f, titleY, 0.9f, heightFactor);
 		menuNewGamePlayersCanvas.addGraphic(frame, 0.5f, 0.5f, 1f, 1f);
-
+		
 		menuNewGamePlayersCanvas.setVisible(false);
-
+		
 		menuNewGame.attachChild(menuNewGamePlayersCanvas);
 	}
 
@@ -938,10 +939,15 @@ public class MainMenuScene extends BaseScene implements Displayable, IOnMenuItem
 		menuNewGameLevelCanvas = new RiskaCanvas(camera.getCenterX(), camera.getCenterY(), 0.8f * camera.getWidth(), 0.65f * camera.getHeight());
 	}
 
+	private void createGoCanvas()
+	{
+		menuNewGameGoCanvas = new RiskaCanvas(camera.getCenterX(), camera.getCenterY(), 0.8f * camera.getWidth(), 0.65f * camera.getHeight());
+	}
+	
 	private void createNewGameTabs()
 	{
 		int numberOfMenus = 4;
-		float factor = 1f / (numberOfMenus + 1);
+		float factor = 1f / numberOfMenus;
 
 		menuNewGameMapTab = new RiskaSprite(resources.tabRegion, vbom, "Map", resources.mainMenuFont)
 		{
@@ -1009,6 +1015,8 @@ public class MainMenuScene extends BaseScene implements Displayable, IOnMenuItem
 			}
 		};
 
+		menuNewGameGoTab = new RiskaMenuItem(NEW_GO, resources.tabRegion, vbom, "GO!", resources.mainMenuFont);
+		
 		menuNewGameMapTab.setSize(factor * menuNewGameMapCanvas.getWidth(), 0.1f * camera.getHeight());
 		menuNewGameMapTab.setPosition(Utils.left(menuNewGameMapCanvas) + 0.5f * factor * menuNewGameMapCanvas.getWidth(),
 				Utils.bottom(menuNewGameMapCanvas) - 1f * Utils.halfY(menuNewGameMapTab));
@@ -1019,9 +1027,14 @@ public class MainMenuScene extends BaseScene implements Displayable, IOnMenuItem
 		menuNewGameLevelTab.setSize(menuNewGameMapTab.getWidth(), menuNewGameMapTab.getHeight());
 		menuNewGameLevelTab.setPosition(Utils.right(menuNewGamePlayersTab) + Utils.halfX(menuNewGameLevelTab), menuNewGameMapTab.getY());
 
+		menuNewGameGoTab.setSize(menuNewGameMapTab.getWidth(), menuNewGameMapTab.getHeight());
+		menuNewGameGoTab.setPosition(Utils.right(menuNewGameLevelTab) + Utils.halfX(menuNewGameGoTab), menuNewGameMapTab.getY());
+		
 		menuNewGame.attachChild(menuNewGameMapTab);
 		menuNewGame.attachChild(menuNewGamePlayersTab);
 		menuNewGame.attachChild(menuNewGameLevelTab);
+		
+		menuNewGame.addMenuItem(menuNewGameGoTab);
 
 		menuNewGame.registerTouchArea(menuNewGameMapTab);
 		menuNewGame.registerTouchArea(menuNewGamePlayersTab);
@@ -1031,6 +1044,7 @@ public class MainMenuScene extends BaseScene implements Displayable, IOnMenuItem
 		menuNewGameMapTab.setColor(Utils.OtherColors.WHITE);
 		menuNewGamePlayersTab.setColor(Utils.OtherColors.DARK_GREY);
 		menuNewGameLevelTab.setColor(Utils.OtherColors.DARK_GREY);
+		menuNewGameGoTab.setColor(Utils.OtherColors.DARK_GREY);
 	}
 
 	private void onNewGameTabSelected(NEWGAME_TAB x)
@@ -1042,6 +1056,7 @@ public class MainMenuScene extends BaseScene implements Displayable, IOnMenuItem
 			menuNewGameMapTab.setColor(Utils.OtherColors.WHITE);
 			menuNewGamePlayersTab.setColor(Utils.OtherColors.DARK_GREY);
 			menuNewGameLevelTab.setColor(Utils.OtherColors.DARK_GREY);
+			menuNewGameGoTab.setColor(Utils.OtherColors.DARK_GREY);
 
 			menuNewGameMapCanvas.setVisible(true);
 			menuNewGamePlayersCanvas.setVisible(false);
@@ -1052,6 +1067,7 @@ public class MainMenuScene extends BaseScene implements Displayable, IOnMenuItem
 			menuNewGameMapTab.setColor(Utils.OtherColors.DARK_GREY);
 			menuNewGamePlayersTab.setColor(Utils.OtherColors.WHITE);
 			menuNewGameLevelTab.setColor(Utils.OtherColors.DARK_GREY);
+			menuNewGameGoTab.setColor(Utils.OtherColors.DARK_GREY);
 
 			menuNewGameMapCanvas.setVisible(false);
 			menuNewGamePlayersCanvas.setVisible(true);
@@ -1062,18 +1078,31 @@ public class MainMenuScene extends BaseScene implements Displayable, IOnMenuItem
 			menuNewGameMapTab.setColor(Utils.OtherColors.DARK_GREY);
 			menuNewGamePlayersTab.setColor(Utils.OtherColors.DARK_GREY);
 			menuNewGameLevelTab.setColor(Utils.OtherColors.WHITE);
+			menuNewGameGoTab.setColor(Utils.OtherColors.DARK_GREY);
 
 			menuNewGameMapCanvas.setVisible(false);
 			menuNewGamePlayersCanvas.setVisible(false);
 			menuNewGameLevelCanvas.setVisible(true);
 			break;
 
+		case GO:
+			menuNewGameMapTab.setColor(Utils.OtherColors.DARK_GREY);
+			menuNewGamePlayersTab.setColor(Utils.OtherColors.DARK_GREY);
+			menuNewGameLevelTab.setColor(Utils.OtherColors.DARK_GREY);
+			menuNewGameGoTab.setColor(Utils.OtherColors.WHITE);
+
+			menuNewGameMapCanvas.setVisible(false);
+			menuNewGamePlayersCanvas.setVisible(false);
+			menuNewGameLevelCanvas.setVisible(false);
+			menuNewGameGoCanvas.setVisible(true);
+			break;
+			
 		default:
 			break;
 		}
 	}
 
-	private void onMapSelected(int index, Sprite x)
+	private void onMapSelected(Sprite x, int index)
 	{
 		for(int i = 0; i < GameOptions.numberOfMaps; i++)
 		{
@@ -1126,7 +1155,7 @@ public class MainMenuScene extends BaseScene implements Displayable, IOnMenuItem
 		{
 
 		case NAME:
-			// TODO : edit text
+			// TODO : edit name
 			onNameReleased(pSprite, tag, x);
 			break;
 
@@ -1187,67 +1216,6 @@ public class MainMenuScene extends BaseScene implements Displayable, IOnMenuItem
 			playerEditable[i] = (i < GameOptions.minHumanPlayers) ? false : true;
 		}
 	}
-	// ==================================================
-	// CHOOSE FACTION
-	// ==================================================	
-
-	// ==================================================
-	// FACTION
-	// ==================================================
-	private void resetFactionsVariables()
-	{
-	}
-
-	private void selectFaction(int direction)
-	{
-		int index = selectedFaction;
-
-		if(direction > 0)
-		{
-			do
-			{
-				index += 1;
-				index = index % playerFaction.length;
-
-				if(index == selectedFaction)
-				{
-					//Log.e("Riska", "Circled through all factions. None available for chosing!");
-					break;
-				}
-
-			}while(Utils.inArray(index, playerFaction));
-		}
-
-		if(direction < 0)
-		{
-			do
-			{
-
-				index -= 1;
-
-				if(index - 1 < 0)
-				{
-					index = playerFaction.length - 1;
-				}
-
-				if(index == selectedFaction)
-				{
-					//Log.e("Riska", "Circled through all factions. None available for chosing!");
-					break;
-				}
-
-			}while(Utils.inArray(index, playerFaction));
-		}
-
-		selectedFaction = index;
-		updateFactionVisual();
-	}
-
-	private void updateFactionVisual()
-	{
-		factionPriColor.setColor(GameOptions.getPriColor(selectedFaction));
-		factionSecColor.setColor(GameOptions.getSecColor(selectedFaction));
-	}
 
 	// ==================================================
 	// UPDATE DATA
@@ -1274,20 +1242,14 @@ public class MainMenuScene extends BaseScene implements Displayable, IOnMenuItem
 		case MAIN:
 			return menuMain;
 
-		case START_GAME:
+		case START:
 			return menuStart;
 
 		case OPTIONS:
 			return menuOptions;
 
-		case NEW_GAME:
+		case NEW:
 			return menuNewGame;
-
-		case CHOOSE_PLAYERS:
-			return choosePlayersMenu;
-
-		case CHOOSE_FACTION:
-			return chooseFactionMenu;
 
 		default:
 			return null;
@@ -1306,7 +1268,7 @@ public class MainMenuScene extends BaseScene implements Displayable, IOnMenuItem
 			{
 				menuMainStartButton.animate();
 			}
-			changeChildSceneFromTo(CHILD.MAIN, CHILD.START_GAME);	
+			changeChildSceneFromTo(CHILD.MAIN, CHILD.START);	
 			break;
 
 		case MAIN_OPTIONS:
@@ -1322,58 +1284,25 @@ public class MainMenuScene extends BaseScene implements Displayable, IOnMenuItem
 			{
 				menuStartNewButton.animate();
 			}
-			resetGameInfo(); // TODO : verify necessity of reseting
-			changeChildSceneFromTo(CHILD.START_GAME, CHILD.NEW_GAME);
+			resetGameInfo();
+			changeChildSceneFromTo(CHILD.START, CHILD.NEW);
 			break;
 
 		case START_LOAD:
-			//			if(GameOptions.menuAnimationsEnabled())
-			//			{
-			//				loadGameButton.animate();
-			//			}
-			//			sceneManager.loadGameScene(engine);
+			// TODO
 			break;
-
-		case FACTION_NEXT:
-			selectFaction(1);			
-			break;
-
-		case FACTION_PREVIOUS:
-			selectFaction(-1);
-			break;
-
-		case FACTION_SELECT:
-			if(GameOptions.menuAnimationsEnabled())
-			{
-				chooseFactionSelectButton.animate();
-			}
-			if(currentPlayer < GameInfo.humanPlayers)
-			{
-				playerFaction[currentPlayer] = selectedFaction;
-				currentPlayer++;
-				titleTextChooseFaction.setText("Choose Faction: (Player " + currentPlayer + ")");
-
-				Utils.wrap(titleTextChooseFaction, 0.5f * camera.getWidth(), 0.11f * camera.getHeight(), 0.8f);
-				selectFaction(1);
-			}
-
-			if(currentPlayer == GameInfo.humanPlayers)
-			{
-				saveFactionsInfo();
-				changeSceneToGame();
-			}
-			break;
-
-		case PLAYERS_SELECT:
-			savePlayersInfo();
-			changeChildSceneFromTo(CHILD.CHOOSE_PLAYERS, CHILD.CHOOSE_FACTION);
+			
+		case NEW_GO:
+			onNewGameTabSelected(NEWGAME_TAB.GO);
+			saveGameInfo();
+			changeSceneToGame();
 			break;
 
 		default:
 			break;
 		}
 
-		return false;
+		return true;
 	}
 
 	private void changeChildSceneFromTo(final CHILD from, final CHILD to)
@@ -1424,7 +1353,7 @@ public class MainMenuScene extends BaseScene implements Displayable, IOnMenuItem
 		}
 	}
 
-	private void savePlayersInfo()
+	private void saveGameInfo()
 	{
 		int numOfPlayers = 0;
 		int cpu = 0;
@@ -1450,30 +1379,24 @@ public class MainMenuScene extends BaseScene implements Displayable, IOnMenuItem
 		GameInfo.humanPlayers = human;
 		GameInfo.cpuPlayers = cpu;
 		Utils.saveFromTo(playerIsCPU, GameInfo.playerIsCPU);
-
-		//		Log.d("Riska", "[MainMenuScene] Saving players info...");
-		//		Log.d("Riska", "[MainMenuScene] Number of players: " + GameInfo.numberOfPlayers);
-		//		Log.d("Riska", "[MainMenuScene] HUMAN players:     " + GameInfo.humanPlayers);
-		//		Log.d("Riska", "[MainMenuScene] CPU players:     " + GameInfo.cpuPlayers);
-	}
-
-	private void saveFactionsInfo()
-	{
-		for(int i = 0; i < GameInfo.humanPlayers; i++)
+		
+		GameInfo.clearFactions();
+		
+		for(int i = 0; i < GameInfo.numberOfPlayers; i++)
 		{
-			GameInfo.assignPlayerFaction(i, playerFaction[i]);
-		}
-
-		for(int i = GameInfo.humanPlayers; i < GameInfo.numberOfPlayers; i++)
-		{
+			// TODO : assign to colors
 			GameInfo.assignPlayerFaction(i);
 		}
-	}
 
+		Log.d("Riska", "[MainMenuScene] Saving players info...");
+		Log.d("Riska", "[MainMenuScene] Number of players: " + GameInfo.numberOfPlayers);
+		Log.d("Riska", "[MainMenuScene] HUMAN players:     " + GameInfo.humanPlayers);
+		Log.d("Riska", "[MainMenuScene] CPU players:     " + GameInfo.cpuPlayers);
+	}
+	
 	private void resetGameInfo()
 	{
-		setPlayersVariables();	
-		resetFactionsVariables();
+		setPlayersVariables();
 	}
 
 }

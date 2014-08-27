@@ -360,8 +360,5 @@ public class Utils
 			
 			child.setVisible(pVisible);
 		}
-		
-		Log.d("Debug", "-- Debug for: " + e.toString());
-		Log.d("Debug", " - Set [" + pVisible + "] on " + e.getChildCount() + " children ---");
 	}
 }

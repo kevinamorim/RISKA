@@ -2,16 +2,16 @@ package feup.lpoo.riska.gameInterface;
 
 import org.andengine.engine.camera.Camera;
 import org.andengine.entity.Entity;
+import org.andengine.entity.IEntity;
 import org.andengine.entity.text.Text;
 
-import android.util.Log;
 import feup.lpoo.riska.utilities.Utils;
 
 /**
  * Class created with the single purpose of holding other entities
  *
  */
-public class RiskaCanvas extends Entity {
+public class RiskaCanvas extends Entity implements IEntity {
 
 	private RiskaSprite canvasSprite;
 
@@ -28,6 +28,11 @@ public class RiskaCanvas extends Entity {
 	public void setCanvasSprite(RiskaSprite object)
 	{
 		canvasSprite = object;
+
+		canvasSprite.setSize(getWidth(), getHeight());
+		canvasSprite.setPosition(0.5f * getWidth(), 0.5f * getHeight());
+		
+		attachChild(canvasSprite);
 	}
 	
 	/**
@@ -132,5 +137,25 @@ public class RiskaCanvas extends Entity {
 	public float halfY()
 	{
 		return 0.5f * this.getHeight();
+	}
+	
+	@Override
+	public void setSize(float pWidth, float pHeight)
+	{
+		for(int i = 0; i < getChildCount(); i++)
+		{
+			IEntity e = getChildByIndex(i);
+			
+			e.setSize(e.getWidth() * pWidth / this.getWidth(), e.getHeight() * pHeight / this.getHeight());
+			e.setPosition(e.getX() * pWidth / this.getWidth(), e.getY() * pHeight / this.getHeight());
+		}
+		
+		super.setSize(pWidth, pHeight);
+	}
+
+	@Override
+	public void setPosition(float pX, float pY)
+	{	
+		super.setPosition(pX, pY);
 	}
 }
