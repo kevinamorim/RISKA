@@ -72,6 +72,7 @@ public class ResourceCache {
 	public ITextureRegion doorLeftRegion;
 	public ITextureRegion doorRightRegion;
 	public ITiledTextureRegion switchRegion;
+	public ITiledTextureRegion checkBoxRegion;
 	public ITiledTextureRegion mapsRegion;
 	
 	public ITextureRegion barHRegion, barVRegion;
@@ -221,6 +222,9 @@ public class ResourceCache {
 		
 		switchRegion = BitmapTextureAtlasTextureRegionFactory.createTiledFromAsset(propsTextureAtlas, activity, 
 				"switch.png", 1, 2);
+		
+		checkBoxRegion = BitmapTextureAtlasTextureRegionFactory.createTiledFromAsset(propsTextureAtlas, activity, 
+				"check_box.png", 1, 2);
 		
 		tabRegion = BitmapTextureAtlasTextureRegionFactory.createFromAsset(propsTextureAtlas, activity, 
 				"tab.png");

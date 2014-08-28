@@ -2,6 +2,8 @@ package feup.lpoo.riska.logic;
 
 import org.andengine.util.adt.color.Color;
 
+import feup.lpoo.riska.utilities.Utils;
+
 public class GameOptions {
 	
 	// ======================================================
@@ -9,20 +11,20 @@ public class GameOptions {
 	// ======================================================
 	private static final Color COLORS[][] = {
 		{
-			new Color(0f, 0.45f, 0.9f),		// Blue
-			new Color(1f, 1f, 1f)},			// White
+			Utils.OtherColors.CYAN,
+			Utils.OtherColors.WHITE},
 		{
-			new Color(0.78f, 0f, 0f),		// Red
-			new Color(0.9f, 0.75f, 0.30f)},	// Burned Yellow
+			Utils.OtherColors.DARK_RED,
+			Utils.OtherColors.DARK_YELLOW},
 		{
-			new Color(0f,0.7f,0.16f),		// Green
-			new Color(1f,1f,0.35f)},		// Light Yellow
+			Utils.OtherColors.GREEN,
+			Utils.OtherColors.YELLOW},
 		{
-			new Color(0.2f,0.2f,0.2f),			// Black
-			new Color(1f,0.40f,0f)},		// Orange
+			Utils.OtherColors.DARK_GREY,
+			Utils.OtherColors.ORANGE},
 		{
-			new Color(1f,1f,1f),			// White
-			new Color(0.2f,0.2f,0.2f)},			// Black
+			Utils.OtherColors.WHITE,
+			Utils.OtherColors.DARK_GREY},
 	};
 	
 	// ======================================================
@@ -33,6 +35,7 @@ public class GameOptions {
 	public static final int minPlayers = 2;
 	public static final int minHumanPlayers = 1;
 	public static final int numberOfFactions = COLORS.length;
+	public static final int numberOfColors = COLORS.length;
 	
 	public static int numberOfMaps = 1;
 	public static int initialMap = 1;

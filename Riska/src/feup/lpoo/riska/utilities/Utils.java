@@ -323,12 +323,23 @@ public class Utils
 	}
 	
 	public static class OtherColors {
-		
+	
+		// REGULAR
 		public final static Color BLACK = new Color(0.1f, 0.1f, 0.1f);
-		public final static Color DARK_GREY = new Color(0.3f, 0.3f, 0.3f);
-		public final static Color GREY = new Color(0.5f, 0.5f, 0.5f);
-		public final static Color LIGHT_GREY = new Color(0.7f, 0.7f, 0.7f);
 		public final static Color WHITE = new Color(0.9f, 0.9f, 0.9f);
+		public final static Color GREY = new Color(0.5f, 0.5f, 0.5f);
+		public final static Color ORANGE = new Color(1f, 0.4f, 0f);
+		public final static Color GREEN = new Color(0f, 0.7f, 0.16f);
+		public final static Color YELLOW = new Color(1f, 1f, 0.35f);
+		public final static Color CYAN = new Color(0f, 0.45f, 0.9f);
+		
+		// DARK
+		public final static Color DARK_GREY = new Color(0.3f, 0.3f, 0.3f);
+		public final static Color DARK_YELLOW = new Color(0.9f, 0.75f, 0.3f);
+		public final static Color DARK_RED = new Color(0.78f, 0f, 0f);
+		
+		// LIGHT
+		public final static Color LIGHT_GREY = new Color(0.7f, 0.7f, 0.7f);
 	}
 
 	public static void hideChildren(IEntity e)

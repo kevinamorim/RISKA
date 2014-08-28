@@ -97,6 +97,7 @@ public class MainMenuScene extends BaseScene implements Displayable, IOnMenuItem
 	private RiskaCanvas menuNewGameGoCanvas;
 	
 	private boolean[] playerIsCPU;
+	
 	private boolean[] playerActive;
 	private boolean[] playerActivable;
 	private boolean[] playerEditable;
@@ -683,6 +684,8 @@ public class MainMenuScene extends BaseScene implements Displayable, IOnMenuItem
 		playerActivable = new boolean[GameOptions.maxPlayers];
 		playerEditable = new boolean[GameOptions.maxPlayers];
 
+		playerColor = new int[GameOptions.maxPlayers];
+
 		createMapCanvas();
 		createPlayersCanvas();
 		createLevelCanvas();
@@ -917,11 +920,50 @@ public class MainMenuScene extends BaseScene implements Displayable, IOnMenuItem
 			playerCanvas[i].addGraphicWrap(playerCpuButton[i], 0.75f, 0.5f, 0.1f, 1f);
 			
 			playerColor[i] = new RiskaCanvas(0f, 0f, 1f, 1f);
+			final ButtonSprite priColor = new ButtonSprite(0, 0, resources.checkBoxRegion, vbom);
+			priColor.setCurrentTileIndex(0);
+			final ButtonSprite secColor = new ButtonSprite(0, 0, resources.checkBoxRegion, vbom);
+			secColor.setCurrentTileIndex(1);
+			
+			final ButtonSprite colorTouchArea = new ButtonSprite(0, 0, resources.emptyButtonRegion, vbom)
+			{
+				@Override
+				public boolean onAreaTouched(TouchEvent ev, float pX, float pY) 
+				{
+					switch(ev.getAction()) 
+					{
+
+					case MotionEvent.ACTION_DOWN:
+						break;
+
+					case MotionEvent.ACTION_OUTSIDE:
+						break;
+
+					case MotionEvent.ACTION_UP:
+						onColorTouched(priColor, secColor, getTag());
+						break;
+
+					default:
+						break;
+					}
+
+					return true;
+				}
+			};
+			colorTouchArea.setTag(i);
+			
+			updateFactionColors(priColor, secColor, colorTouchArea.getTag());
+			
+			playerColor[i].addGraphicWrap(colorTouchArea, 0.5f, 0.5f, 1.2f, 1.2f);
+			playerColor[i].addGraphicWrap(secColor, 0.5f, 0.5f, 1f, 1f);
+			playerColor[i].addGraphicWrap(priColor, 0.5f, 0.5f, 1f, 1f);
+			
 			playerCanvas[i].addGraphicWrap(playerColor[i], 0.95f, 0.5f, 0.1f, 1f);
 			
 			menuNewGamePlayersCanvas.addGraphic(playerCanvas[i], 0.5f, index * heightFactor, 0.9f, heightFactor);
 			index--;
 			
+			menuNewGame.registerTouchArea(colorTouchArea);
 			menuNewGame.registerTouchArea(playerName[i]);
 			menuNewGame.registerTouchArea(playerActiveButton[i]);
 			menuNewGame.registerTouchArea(playerCpuButton[i]);
@@ -1113,6 +1155,7 @@ public class MainMenuScene extends BaseScene implements Displayable, IOnMenuItem
 			else
 			{
 				x.setAlpha(0f);
+				GameInfo.currentMapIndex = i;
 			}
 		}
 	}
@@ -1162,6 +1205,26 @@ public class MainMenuScene extends BaseScene implements Displayable, IOnMenuItem
 		default:
 			break;
 		}	
+	}
+
+	private void onColorTouched(ButtonSprite priColor, ButtonSprite secColor, int tag)
+	{
+		selectNextColor(tag);
+		
+		updateFactionColors(priColor, secColor, tag);
+	}
+	
+	private void selectNextColor(int playerIndex)
+	{
+		// TODO
+		playerColor[playerIndex] += 1;
+		playerColor[playerIndex] = playerColor[playerIndex] % GameOptions.numberOfColors;
+	}
+	
+	private void updateFactionColors(ButtonSprite priColor, ButtonSprite secColor, int tag)
+	{
+		priColor.setColor(GameOptions.getPriColor(playerColor[tag]));
+		secColor.setColor(GameOptions.getSecColor(playerColor[tag]));
 	}
 
 	private void onPlayersButtonTouched(ButtonSprite pSprite, int tag, PLAYERS_BUTTON x)
