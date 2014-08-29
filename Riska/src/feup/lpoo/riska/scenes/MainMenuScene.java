@@ -56,7 +56,7 @@ public class MainMenuScene extends BaseScene implements Displayable, IOnMenuItem
 
 	private final int START_NEW = 2;
 	private final int START_LOAD = 3;
-	
+
 	private final int NEW_GO = 4;
 
 	private SpriteBackground background;
@@ -92,17 +92,19 @@ public class MainMenuScene extends BaseScene implements Displayable, IOnMenuItem
 
 	private RiskaSprite menuNewGameLevelTab;
 	private RiskaCanvas menuNewGameLevelCanvas;
-	
+
 	private RiskaMenuItem menuNewGameGoTab;
 	private RiskaCanvas menuNewGameGoCanvas;
-	
+
 	private boolean[] playerIsCPU;
-	
+
 	private boolean[] playerActive;
 	private boolean[] playerActivable;
 	private boolean[] playerEditable;
 
 	private int[] playerColor;
+	
+	private int level = GameOptions.defaultLvl;
 
 	// ==================================================
 	// ==================================================
@@ -431,7 +433,7 @@ public class MainMenuScene extends BaseScene implements Displayable, IOnMenuItem
 			}
 
 		};
-		
+
 		switchSFX = new ButtonSprite(0, 0, resources.switchRegion, vbom) {
 
 			@Override
@@ -455,7 +457,7 @@ public class MainMenuScene extends BaseScene implements Displayable, IOnMenuItem
 			}
 
 		};
-		
+
 		textMusic = new Text(0, 0, resources.mainMenuFont, "Music", vbom);
 		textMusic.setColor(Color.WHITE);
 
@@ -678,7 +680,7 @@ public class MainMenuScene extends BaseScene implements Displayable, IOnMenuItem
 	{
 		menuNewGame = new MenuScene(camera);
 		menuNewGame.setBackgroundEnabled(false);
-		
+
 		playerIsCPU = new boolean[GameOptions.maxPlayers];
 		playerActive = new boolean[GameOptions.maxPlayers];
 		playerActivable = new boolean[GameOptions.maxPlayers];
@@ -758,6 +760,9 @@ public class MainMenuScene extends BaseScene implements Displayable, IOnMenuItem
 					case MotionEvent.ACTION_UP:
 						onMapSelected(this, getTag());
 						break;
+
+					default:
+						break;
 					}
 
 					return true;
@@ -774,7 +779,7 @@ public class MainMenuScene extends BaseScene implements Displayable, IOnMenuItem
 
 			menuNewGameMapCanvas.addGraphic(mapCanvas[i], x, y, 0.9f * widthFactor, 0.9f * heightFactor);
 			menuNewGameMapCanvas.addGraphic(cover[i], x, y, widthFactor, heightFactor);
-			
+
 			menuNewGame.registerTouchArea(cover[i]);
 		}
 
@@ -799,29 +804,29 @@ public class MainMenuScene extends BaseScene implements Displayable, IOnMenuItem
 		ButtonSprite[] playerActiveButton = new ButtonSprite[maxPlayers];
 		ButtonSprite[] playerCpuButton = new ButtonSprite[maxPlayers];
 		RiskaCanvas[] playerColor = new RiskaCanvas[maxPlayers];
-		
+
 		RiskaSprite name, isActive, isCpu, color;
 
 		setPlayersVariables();
 
 		float heightFactor = 1f / (maxPlayers + 2);
-		
+
 		float titleY = (maxPlayers + 1) * heightFactor;
-		
+
 		RiskaCanvas titleCanvas = new RiskaCanvas(0f, 0f,
 				1f * menuNewGamePlayersCanvas.getWidth(),
 				1f * heightFactor * menuNewGamePlayersCanvas.getHeight());
-		
+
 		name = new RiskaSprite(resources.emptyButtonRegion, vbom, "Name", resources.mainMenuFont);
 		isActive = new RiskaSprite(resources.emptyButtonRegion, vbom, "Active", resources.mainMenuFont);
 		isCpu = new RiskaSprite(resources.emptyButtonRegion, vbom, "Cpu", resources.mainMenuFont);
 		color = new RiskaSprite(resources.emptyButtonRegion, vbom, "Colors", resources.mainMenuFont);
-		
+
 		titleCanvas.addGraphic(name, 0.2f, 0.5f, 0.4f, 1f);
 		titleCanvas.addGraphic(isActive, 0.55f, 0.5f, 0.2f, 1f);
 		titleCanvas.addGraphic(isCpu, 0.75f, 0.5f, 0.2f, 1f);
 		titleCanvas.addGraphic(color, 0.95f, 0.5f, 0.2f, 1f);
-		
+
 		int index = maxPlayers;
 
 		for(int i = 0; i < maxPlayers; i++)
@@ -836,7 +841,7 @@ public class MainMenuScene extends BaseScene implements Displayable, IOnMenuItem
 				@Override
 				public boolean onAreaTouched(TouchEvent ev, float pX, float pY) 
 				{
-					switch(ev.getAction()) 
+					switch(ev.getMotionEvent().getActionMasked()) 
 					{
 
 					case MotionEvent.ACTION_DOWN:
@@ -860,11 +865,11 @@ public class MainMenuScene extends BaseScene implements Displayable, IOnMenuItem
 			};
 			playerName[i].setTag(i);
 			playerName[i].setText("Player" + (i + 1));
-			
+
 			playerCanvas[i].addGraphic(playerName[i], 0.2f, 0.5f, 0.4f, 1f);
 
-			playerActiveButton[i] = new ButtonSprite(0, 0, resources.switchRegion, vbom) {
-
+			playerActiveButton[i] = new ButtonSprite(0, 0, resources.checkBoxRegion, vbom)
+			{
 				@Override
 				public boolean onAreaTouched(TouchEvent ev, float pX, float pY)
 				{
@@ -884,15 +889,15 @@ public class MainMenuScene extends BaseScene implements Displayable, IOnMenuItem
 
 					return true;
 				}
-
 			};
 			playerActiveButton[i].setTag(i);
 			playerActiveButton[i].setCurrentTileIndex(playerActive[i] ? 0 : 1);
-			
-			playerCanvas[i].addGraphicWrap(playerActiveButton[i], 0.55f, 0.5f, 0.1f, 1f);
-			
-			playerCpuButton[i] = new ButtonSprite(0, 0, resources.switchRegion, vbom) {
+			playerActiveButton[i].setEnabled(playerActivable[i]);
 
+			playerCanvas[i].addGraphicWrap(playerActiveButton[i], 0.55f, 0.5f, 0.1f, 1f);
+
+			playerCpuButton[i] = new ButtonSprite(0, 0, resources.checkBoxRegion, vbom)
+			{
 				@Override
 				public boolean onAreaTouched(TouchEvent ev, float pX, float pY)
 				{
@@ -916,21 +921,22 @@ public class MainMenuScene extends BaseScene implements Displayable, IOnMenuItem
 			};
 			playerCpuButton[i].setTag(i);
 			playerCpuButton[i].setCurrentTileIndex(playerIsCPU[i] ? 0 : 1);
-			
+			playerCpuButton[i].setEnabled(playerEditable[i]);
+
 			playerCanvas[i].addGraphicWrap(playerCpuButton[i], 0.75f, 0.5f, 0.1f, 1f);
-			
+
 			playerColor[i] = new RiskaCanvas(0f, 0f, 1f, 1f);
 			final ButtonSprite priColor = new ButtonSprite(0, 0, resources.checkBoxRegion, vbom);
 			priColor.setCurrentTileIndex(0);
 			final ButtonSprite secColor = new ButtonSprite(0, 0, resources.checkBoxRegion, vbom);
 			secColor.setCurrentTileIndex(1);
-			
+
 			final ButtonSprite colorTouchArea = new ButtonSprite(0, 0, resources.emptyButtonRegion, vbom)
 			{
 				@Override
 				public boolean onAreaTouched(TouchEvent ev, float pX, float pY) 
 				{
-					switch(ev.getAction()) 
+					switch(ev.getMotionEvent().getActionMasked()) 
 					{
 
 					case MotionEvent.ACTION_DOWN:
@@ -951,18 +957,18 @@ public class MainMenuScene extends BaseScene implements Displayable, IOnMenuItem
 				}
 			};
 			colorTouchArea.setTag(i);
-			
+
 			updateFactionColors(priColor, secColor, colorTouchArea.getTag());
-			
-			playerColor[i].addGraphicWrap(colorTouchArea, 0.5f, 0.5f, 1.2f, 1.2f);
-			playerColor[i].addGraphicWrap(secColor, 0.5f, 0.5f, 1f, 1f);
-			playerColor[i].addGraphicWrap(priColor, 0.5f, 0.5f, 1f, 1f);
-			
+
+			playerColor[i].addGraphicWrap(secColor, 0.5f, 0.5f, 0.95f, 0.95f);
+			playerColor[i].addGraphicWrap(priColor, 0.5f, 0.5f, 0.95f, 0.95f);
+			playerColor[i].addGraphicWrap(colorTouchArea, 0.5f, 0.5f, 1f, 1f);
+
 			playerCanvas[i].addGraphicWrap(playerColor[i], 0.95f, 0.5f, 0.1f, 1f);
-			
+
 			menuNewGamePlayersCanvas.addGraphic(playerCanvas[i], 0.5f, index * heightFactor, 0.9f, heightFactor);
 			index--;
-			
+
 			menuNewGame.registerTouchArea(colorTouchArea);
 			menuNewGame.registerTouchArea(playerName[i]);
 			menuNewGame.registerTouchArea(playerActiveButton[i]);
@@ -970,22 +976,85 @@ public class MainMenuScene extends BaseScene implements Displayable, IOnMenuItem
 		}
 		menuNewGamePlayersCanvas.addGraphic(titleCanvas, 0.5f, titleY, 0.9f, heightFactor);
 		menuNewGamePlayersCanvas.addGraphic(frame, 0.5f, 0.5f, 1f, 1f);
-		
+
 		menuNewGamePlayersCanvas.setVisible(false);
-		
+
 		menuNewGame.attachChild(menuNewGamePlayersCanvas);
 	}
 
 	private void createLevelCanvas()
 	{
+		Sprite frame;
+		frame = new Sprite(0, 0, resources.frameRegion, vbom);
+		
+		int levels = GameOptions.numberOfLevels;
+		
+		float factor = 1f / (levels + 1);
+		int index = levels;
+
 		menuNewGameLevelCanvas = new RiskaCanvas(camera.getCenterX(), camera.getCenterY(), 0.8f * camera.getWidth(), 0.65f * camera.getHeight());
+
+		final ButtonSprite[] levelCheckBox = new ButtonSprite[GameOptions.numberOfLevels];
+		Text[] levelText = new Text[GameOptions.numberOfLevels];
+
+		for(int i = 0; i < GameOptions.numberOfLevels; i++)
+		{
+			levelCheckBox[i] = new ButtonSprite(0f, 0f, resources.checkBoxRegion, vbom)
+			{	
+				@Override
+				public boolean onAreaTouched(TouchEvent ev, float pX, float pY)
+				{				
+					switch(ev.getMotionEvent().getActionMasked()) 
+					{
+
+					case MotionEvent.ACTION_DOWN:
+						break;
+
+					case MotionEvent.ACTION_OUTSIDE:
+						break;
+
+					case MotionEvent.ACTION_UP:
+						onLevelSelected(levelCheckBox, getTag());
+						break;
+
+					default:
+						break;
+					}
+
+					return true;
+				}
+
+			};
+			levelCheckBox[i].setTag(i);
+			levelCheckBox[i].setCurrentTileIndex(0);
+			levelCheckBox[i].setEnabled(i == level ? true : false);
+			
+			levelText[i] = new Text(0f, 0f, resources.mainMenuFont, GameOptions.getLevelDescr(i), 100, vbom);
+			levelText[i].setColor(Color.WHITE);
+			
+			menuNewGameLevelCanvas.addText(levelText[i], 0.6f, index * factor, 0.5f, 0.8f * factor);
+			
+			menuNewGameLevelCanvas.addGraphicWrap(levelCheckBox[i], 0.2f, index * factor, 0.2f, 0.8f * factor);
+			
+			index--;
+			
+			menuNewGame.registerTouchArea(levelCheckBox[i]);
+		}
+
+		// TODO
+
+		menuNewGameLevelCanvas.addGraphic(frame, 0.5f, 0.5f, 1f, 1f);
+
+		menuNewGameLevelCanvas.setVisible(false);
+
+		menuNewGame.attachChild(menuNewGameLevelCanvas);
 	}
 
 	private void createGoCanvas()
 	{
 		menuNewGameGoCanvas = new RiskaCanvas(camera.getCenterX(), camera.getCenterY(), 0.8f * camera.getWidth(), 0.65f * camera.getHeight());
 	}
-	
+
 	private void createNewGameTabs()
 	{
 		int numberOfMenus = 4;
@@ -1058,7 +1127,7 @@ public class MainMenuScene extends BaseScene implements Displayable, IOnMenuItem
 		};
 
 		menuNewGameGoTab = new RiskaMenuItem(NEW_GO, resources.tabRegion, vbom, "GO!", resources.mainMenuFont);
-		
+
 		menuNewGameMapTab.setSize(factor * menuNewGameMapCanvas.getWidth(), 0.1f * camera.getHeight());
 		menuNewGameMapTab.setPosition(Utils.left(menuNewGameMapCanvas) + 0.5f * factor * menuNewGameMapCanvas.getWidth(),
 				Utils.bottom(menuNewGameMapCanvas) - 1f * Utils.halfY(menuNewGameMapTab));
@@ -1071,11 +1140,11 @@ public class MainMenuScene extends BaseScene implements Displayable, IOnMenuItem
 
 		menuNewGameGoTab.setSize(menuNewGameMapTab.getWidth(), menuNewGameMapTab.getHeight());
 		menuNewGameGoTab.setPosition(Utils.right(menuNewGameLevelTab) + Utils.halfX(menuNewGameGoTab), menuNewGameMapTab.getY());
-		
+
 		menuNewGame.attachChild(menuNewGameMapTab);
 		menuNewGame.attachChild(menuNewGamePlayersTab);
 		menuNewGame.attachChild(menuNewGameLevelTab);
-		
+
 		menuNewGame.addMenuItem(menuNewGameGoTab);
 
 		menuNewGame.registerTouchArea(menuNewGameMapTab);
@@ -1103,6 +1172,7 @@ public class MainMenuScene extends BaseScene implements Displayable, IOnMenuItem
 			menuNewGameMapCanvas.setVisible(true);
 			menuNewGamePlayersCanvas.setVisible(false);
 			menuNewGameLevelCanvas.setVisible(false);
+			menuNewGameGoCanvas.setVisible(false);
 			break;
 
 		case PLAYERS:
@@ -1114,6 +1184,7 @@ public class MainMenuScene extends BaseScene implements Displayable, IOnMenuItem
 			menuNewGameMapCanvas.setVisible(false);
 			menuNewGamePlayersCanvas.setVisible(true);
 			menuNewGameLevelCanvas.setVisible(false);
+			menuNewGameGoCanvas.setVisible(false);
 			break;
 
 		case LEVEL:
@@ -1125,6 +1196,7 @@ public class MainMenuScene extends BaseScene implements Displayable, IOnMenuItem
 			menuNewGameMapCanvas.setVisible(false);
 			menuNewGamePlayersCanvas.setVisible(false);
 			menuNewGameLevelCanvas.setVisible(true);
+			menuNewGameGoCanvas.setVisible(false);
 			break;
 
 		case GO:
@@ -1138,7 +1210,7 @@ public class MainMenuScene extends BaseScene implements Displayable, IOnMenuItem
 			menuNewGameLevelCanvas.setVisible(false);
 			menuNewGameGoCanvas.setVisible(true);
 			break;
-			
+
 		default:
 			break;
 		}
@@ -1146,6 +1218,7 @@ public class MainMenuScene extends BaseScene implements Displayable, IOnMenuItem
 
 	private void onMapSelected(Sprite x, int index)
 	{
+		Log.d("Riska", " > Map Selected");
 		for(int i = 0; i < GameOptions.numberOfMaps; i++)
 		{
 			if(i != index)
@@ -1194,6 +1267,8 @@ public class MainMenuScene extends BaseScene implements Displayable, IOnMenuItem
 
 	private void onNameTouched(RiskaSprite pSprite, int tag, PLAYERS_BUTTON x)
 	{
+		Log.d("Riska", " > Name Selected");
+		
 		switch(x)
 		{
 
@@ -1209,18 +1284,20 @@ public class MainMenuScene extends BaseScene implements Displayable, IOnMenuItem
 
 	private void onColorTouched(ButtonSprite priColor, ButtonSprite secColor, int tag)
 	{
-		selectNextColor(tag);
+		Log.d("Riska", " > Color Selected");
 		
+		selectNextColor(tag);
+
 		updateFactionColors(priColor, secColor, tag);
 	}
-	
+
 	private void selectNextColor(int playerIndex)
 	{
 		// TODO
 		playerColor[playerIndex] += 1;
 		playerColor[playerIndex] = playerColor[playerIndex] % GameOptions.numberOfColors;
 	}
-	
+
 	private void updateFactionColors(ButtonSprite priColor, ButtonSprite secColor, int tag)
 	{
 		priColor.setColor(GameOptions.getPriColor(playerColor[tag]));
@@ -1229,6 +1306,8 @@ public class MainMenuScene extends BaseScene implements Displayable, IOnMenuItem
 
 	private void onPlayersButtonTouched(ButtonSprite pSprite, int tag, PLAYERS_BUTTON x)
 	{
+		Log.d("Riska", " > Player Button Selected");
+		
 		switch(x)
 		{
 
@@ -1280,6 +1359,24 @@ public class MainMenuScene extends BaseScene implements Displayable, IOnMenuItem
 		}
 	}
 
+	private void onLevelSelected(ButtonSprite[] levelCheckBox, int tag)
+	{
+		Log.d("Riska", " > Level Selected");
+		
+		for(int i = 0; i < GameOptions.numberOfLevels; i++)
+		{
+			if(i == tag)
+			{
+				level = i;
+				levelCheckBox[i].setEnabled(true);
+			}
+			else
+			{
+				levelCheckBox[i].setEnabled(false);
+			}
+		}
+	}
+	
 	// ==================================================
 	// UPDATE DATA
 	// ==================================================
@@ -1354,7 +1451,7 @@ public class MainMenuScene extends BaseScene implements Displayable, IOnMenuItem
 		case START_LOAD:
 			// TODO
 			break;
-			
+
 		case NEW_GO:
 			onNewGameTabSelected(NEWGAME_TAB.GO);
 			saveGameInfo();
@@ -1442,9 +1539,9 @@ public class MainMenuScene extends BaseScene implements Displayable, IOnMenuItem
 		GameInfo.humanPlayers = human;
 		GameInfo.cpuPlayers = cpu;
 		Utils.saveFromTo(playerIsCPU, GameInfo.playerIsCPU);
-		
+
 		GameInfo.clearFactions();
-		
+
 		for(int i = 0; i < GameInfo.numberOfPlayers; i++)
 		{
 			// TODO : assign to colors
@@ -1456,7 +1553,7 @@ public class MainMenuScene extends BaseScene implements Displayable, IOnMenuItem
 		Log.d("Riska", "[MainMenuScene] HUMAN players:     " + GameInfo.humanPlayers);
 		Log.d("Riska", "[MainMenuScene] CPU players:     " + GameInfo.cpuPlayers);
 	}
-	
+
 	private void resetGameInfo()
 	{
 		setPlayersVariables();

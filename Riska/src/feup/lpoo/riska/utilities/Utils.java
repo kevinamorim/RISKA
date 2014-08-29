@@ -8,7 +8,6 @@ import org.andengine.opengl.font.Font;
 import org.andengine.opengl.vbo.VertexBufferObjectManager;
 import org.andengine.util.adt.color.Color;
 
-import android.util.Log;
 import feup.lpoo.riska.logic.MainActivity;
 
 public class Utils

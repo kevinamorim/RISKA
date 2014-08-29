@@ -17,7 +17,6 @@ import org.andengine.opengl.texture.atlas.buildable.builder.BlackPawnTextureAtla
 import org.andengine.opengl.texture.atlas.buildable.builder.ITextureAtlasBuilder.TextureAtlasBuilderException;
 import org.andengine.opengl.texture.region.ITextureRegion;
 import org.andengine.opengl.texture.region.ITiledTextureRegion;
-import org.andengine.opengl.texture.region.TiledTextureRegion;
 import org.andengine.opengl.vbo.VertexBufferObjectManager;
 import org.andengine.util.debug.Debug;
 
@@ -61,24 +60,21 @@ public class ResourceCache {
 	public ITextureRegion buttonRegion;
 	public ITextureRegion emptyButtonRegion;
 	
-	public TiledTextureRegion factionSpriteRegion;
-	public ITextureRegion smallFrameRegion;
-	public ITextureRegion coveredSmallFrameRegion;
-	
-	public TiledTextureRegion addRemoveButtonRegion;
-	public TiledTextureRegion playerCheckBoxButtonRegion;
-	
 	private BuildableBitmapTextureAtlas propsTextureAtlas;
 	public ITextureRegion doorLeftRegion;
 	public ITextureRegion doorRightRegion;
 	public ITiledTextureRegion switchRegion;
 	public ITiledTextureRegion checkBoxRegion;
+	public ITiledTextureRegion factionColorRegion;
 	public ITiledTextureRegion mapsRegion;
 	
-	public ITextureRegion barHRegion, barVRegion;
+	public ITextureRegion barHRegion;
+	public ITextureRegion barVRegion;
 	
 	public ITextureRegion tabRegion;
 	public ITextureRegion frameRegion;
+	public ITextureRegion smallFrameRegion;
+	public ITextureRegion coveredSmallFrameRegion;
 	
 	// ==================================================
 	// GAME RESOURCES
@@ -184,17 +180,8 @@ public class ResourceCache {
 		emptyButtonRegion = BitmapTextureAtlasTextureRegionFactory.createFromAsset(mainMenuTextureAtlas, activity, 
 				"empty_button.png");
 		
-		factionSpriteRegion = BitmapTextureAtlasTextureRegionFactory.createTiledFromAsset(mainMenuTextureAtlas, activity, 
-				"faction.png", 1, 2);
-		
 		smallFrameRegion = BitmapTextureAtlasTextureRegionFactory.createFromAsset(mainMenuTextureAtlas, activity, 
 				"small_frame.png");
-		
-		addRemoveButtonRegion = BitmapTextureAtlasTextureRegionFactory.createTiledFromAsset(mainMenuTextureAtlas, activity, 
-				"add_remove_button.png", 1, 2);
-		
-		playerCheckBoxButtonRegion = BitmapTextureAtlasTextureRegionFactory.createTiledFromAsset(mainMenuTextureAtlas, activity, 
-				"switch.png", 1, 2);
 		
 		frameRegion = BitmapTextureAtlasTextureRegionFactory.createFromAsset(mainMenuTextureAtlas, activity, 
 				"frame.png");
@@ -221,10 +208,13 @@ public class ResourceCache {
 				"bar_vertical.png");
 		
 		switchRegion = BitmapTextureAtlasTextureRegionFactory.createTiledFromAsset(propsTextureAtlas, activity, 
-				"switch.png", 1, 2);
+				"switch.png", 1, 3);
 		
 		checkBoxRegion = BitmapTextureAtlasTextureRegionFactory.createTiledFromAsset(propsTextureAtlas, activity, 
-				"check_box.png", 1, 2);
+				"check_box.png", 1, 3);
+		
+		factionColorRegion = BitmapTextureAtlasTextureRegionFactory.createTiledFromAsset(propsTextureAtlas, activity,
+				"faction_color_button.png", 1, 3);
 		
 		tabRegion = BitmapTextureAtlasTextureRegionFactory.createFromAsset(propsTextureAtlas, activity, 
 				"tab.png");

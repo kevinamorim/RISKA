@@ -37,6 +37,9 @@ public class GameOptions {
 	public static final int numberOfFactions = COLORS.length;
 	public static final int numberOfColors = COLORS.length;
 	
+	public static int numberOfLevels = 4;
+	public static int defaultLvl = 0;
+	
 	public static int numberOfMaps = 1;
 	public static int initialMap = 1;
 	
@@ -95,4 +98,26 @@ public class GameOptions {
 			menuAnimations = false;
 		}
 	}
+
+	public static String getLevelDescr(int lvl)
+	{
+		switch(lvl)
+		{
+		case 0:
+			return "Casual";
+
+		case 1:
+			return "Seasoned";
+
+		case 2:
+			return "Veteran";
+
+		case 3:
+			return "Master of Warfare";
+
+		default:
+			return "Honestly? No difficulty at all...";
+		}
+	}
+	
 }
