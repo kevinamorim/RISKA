@@ -20,8 +20,8 @@ public class GameOptions {
 			Utils.OtherColors.GREEN,
 			Utils.OtherColors.YELLOW},
 		{
-			Utils.OtherColors.DARK_GREY,
-			Utils.OtherColors.ORANGE},
+			Utils.OtherColors.ORANGE,
+			Utils.OtherColors.DARK_GREY},
 		{
 			Utils.OtherColors.WHITE,
 			Utils.OtherColors.DARK_GREY},
@@ -104,16 +104,16 @@ public class GameOptions {
 		switch(lvl)
 		{
 		case 0:
-			return "Casual";
+			return "Normal";
 
 		case 1:
-			return "Seasoned";
+			return "Hard";
 
 		case 2:
-			return "Veteran";
+			return "Very Hard";
 
 		case 3:
-			return "Master of Warfare";
+			return "Master";
 
 		default:
 			return "Honestly? No difficulty at all...";

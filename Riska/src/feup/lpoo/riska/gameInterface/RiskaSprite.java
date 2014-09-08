@@ -99,6 +99,19 @@ public class RiskaSprite extends Sprite {
 		wrapText();
 		wrapBorders();
 	}
+	
+	@Override
+	public void setColor(Color pColor)
+	{
+		super.setColor(pColor);
+
+		for(int i = 0; i < getChildCount(); i++)
+		{
+			IEntity e = this.getChildByIndex(i);
+			
+			e.setColor(pColor);
+		}
+	}
 
 	// ==================================================
 	// METHODS

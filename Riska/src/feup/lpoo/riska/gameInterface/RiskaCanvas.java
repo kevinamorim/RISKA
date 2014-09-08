@@ -4,6 +4,7 @@ import org.andengine.engine.camera.Camera;
 import org.andengine.entity.Entity;
 import org.andengine.entity.IEntity;
 import org.andengine.entity.text.Text;
+import org.andengine.util.adt.color.Color;
 
 import feup.lpoo.riska.utilities.Utils;
 
@@ -157,5 +158,18 @@ public class RiskaCanvas extends Entity implements IEntity {
 	public void setPosition(float pX, float pY)
 	{	
 		super.setPosition(pX, pY);
+	}
+	
+	@Override
+	public void setColor(Color pColor)
+	{
+		for(int i = 0; i < getChildCount(); i++)
+		{
+			IEntity e = getChildByIndex(i);
+			
+			e.setColor(pColor);
+		}
+		
+		super.setColor(pColor);
 	}
 }
