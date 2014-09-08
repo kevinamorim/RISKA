@@ -3,6 +3,7 @@ package feup.lpoo.riska.gameInterface;
 import org.andengine.engine.camera.Camera;
 import org.andengine.entity.Entity;
 import org.andengine.entity.IEntity;
+import org.andengine.entity.modifier.AlphaModifier;
 import org.andengine.entity.text.Text;
 import org.andengine.util.adt.color.Color;
 
@@ -26,6 +27,9 @@ public class RiskaCanvas extends Entity implements IEntity {
 		super(camera.getCenterX(), camera.getCenterY(), camera.getWidth(), camera.getHeight());
 	}
 	
+	// ==================================================
+	// METHODS
+	// ==================================================
 	public void setCanvasSprite(RiskaSprite object)
 	{
 		canvasSprite = object;
@@ -35,16 +39,7 @@ public class RiskaCanvas extends Entity implements IEntity {
 		
 		attachChild(canvasSprite);
 	}
-	
-	/**
-	 * Adds a graphic to the canvas.
-	 * 
-	 * @param object : graphic
-	 * @param pX : normalized x coordinate relative to the canvas
-	 * @param pY : normalized y coordinate relative to the canvas
-	 * @param pWidth : normalized width relative to the canvas
-	 * @param pHeight : normalized height coordinate relative to the canvas
-	 */
+
 	public void addGraphic(Entity object, float pX, float pY, float pWidth, float pHeight)
 	{
 		if(!object.hasParent())
@@ -78,28 +73,16 @@ public class RiskaCanvas extends Entity implements IEntity {
 		}
 	}
 	
-	public void close()
+	public void close(float deltaTime)
 	{
-		if(canvasSprite != null)
-		{
-			canvasSprite.close();
-		}
+		AlphaModifier alphaOut = new AlphaModifier(deltaTime, 1f, 0f);
+		registerEntityModifier(alphaOut);
 	}
 	
-	public void open()
+	public void open(float deltaTime)
 	{
-		if(canvasSprite != null)
-		{
-			canvasSprite.open();
-		}
-	}
-	
-	public void animate()
-	{
-		if(canvasSprite != null)
-		{
-			canvasSprite.animate();
-		}
+		AlphaModifier alphaIn = new AlphaModifier(deltaTime, 0f, 1f);
+		registerEntityModifier(alphaIn);
 	}
 	
 	@Override
@@ -139,7 +122,10 @@ public class RiskaCanvas extends Entity implements IEntity {
 	{
 		return 0.5f * this.getHeight();
 	}
-	
+
+	// ==================================================
+	// OVERRIDE
+	// ==================================================
 	@Override
 	public void setSize(float pWidth, float pHeight)
 	{
@@ -171,5 +157,31 @@ public class RiskaCanvas extends Entity implements IEntity {
 		}
 		
 		super.setColor(pColor);
+	}
+	
+	@Override
+	public void setScale(float pScale)
+	{
+		for(int i = 0; i < getChildCount(); i++)
+		{
+			IEntity e = getChildByIndex(i);
+			
+			e.setScale(pScale);
+		}
+		
+		super.setScale(pScale);
+	}
+
+	@Override
+	public void setAlpha(float pAlpha)
+	{
+		for(int i = 0; i < getChildCount(); i++)
+		{
+			IEntity e = getChildByIndex(i);
+			
+			e.setAlpha(pAlpha);
+		}
+		
+		super.setAlpha(pAlpha);
 	}
 }

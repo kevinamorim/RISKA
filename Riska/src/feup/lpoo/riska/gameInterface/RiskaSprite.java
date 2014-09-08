@@ -1,7 +1,9 @@
 package feup.lpoo.riska.gameInterface;
 
 import org.andengine.entity.IEntity;
+import org.andengine.entity.modifier.AlphaModifier;
 import org.andengine.entity.modifier.DelayModifier;
+import org.andengine.entity.modifier.ScaleModifier;
 import org.andengine.entity.sprite.Sprite;
 import org.andengine.entity.text.Text;
 import org.andengine.opengl.font.Font;
@@ -89,34 +91,8 @@ public class RiskaSprite extends Sprite {
 	}
 
 	// ==================================================
-	// OVERRIDE
-	// ==================================================
-	@Override
-	public void setSize(float pWidth, float pHeight)
-	{
-		super.setSize(pWidth, pHeight);
-
-		wrapText();
-		wrapBorders();
-	}
-	
-	@Override
-	public void setColor(Color pColor)
-	{
-		super.setColor(pColor);
-
-		for(int i = 0; i < getChildCount(); i++)
-		{
-			IEntity e = this.getChildByIndex(i);
-			
-			e.setColor(pColor);
-		}
-	}
-
-	// ==================================================
 	// METHODS
 	// ==================================================
-
 	private void wrapText()
 	{
 		if(text != null)
@@ -155,30 +131,9 @@ public class RiskaSprite extends Sprite {
 	}
 
 	public void close(float deltaTime)
-	{
-		if(text != null)
-		{
-			text.setVisible(false);
-		}
-		/*
-		 * Positions are relative to the origin of the parent sprite
-		 */
-		if(left != null)
-		{
-			left.slideX(deltaTime, Utils.halfX(this));
-		}
-		if(right != null)
-		{
-			right.slideX(deltaTime, Utils.halfX(this));
-		}
-		if(top != null)
-		{
-			top.slideY(deltaTime, Utils.halfY(this));
-		}
-		if(bottom != null)
-		{
-			bottom.slideY(deltaTime, Utils.halfY(this));
-		}
+	{	
+		AlphaModifier alphaOut = new AlphaModifier(deltaTime, 1f, 0f);
+		registerEntityModifier(alphaOut);
 	}
 
 	public void close()
@@ -187,38 +142,9 @@ public class RiskaSprite extends Sprite {
 	}
 
 	public void open(float deltaTime)
-	{
-		if(text != null)
-		{
-			DelayModifier waitForAnim = new DelayModifier(deltaTime)
-			{
-				@Override
-				protected void onModifierFinished(IEntity pItem)
-				{
-					text.setVisible(true);
-				}	
-			};
-			registerEntityModifier(waitForAnim);
-		}
-		/*
-		 * Positions are relative to the origin of the parent sprite
-		 */
-		if(left != null)
-		{
-			left.slideX(deltaTime, Utils.halfX(left));
-		}
-		if(right != null)
-		{
-			right.slideX(deltaTime, getWidth() - Utils.halfX(right));
-		}
-		if(top != null)
-		{
-			top.slideY(deltaTime, getHeight() - Utils.halfY(top));
-		}
-		if(bottom != null)
-		{
-			bottom.slideY(deltaTime, Utils.halfY(bottom));
-		}
+	{	
+		AlphaModifier alphaIn = new AlphaModifier(deltaTime, 0f, 1f);
+		registerEntityModifier(alphaIn);
 	}
 
 	public void open()
@@ -286,4 +212,54 @@ public class RiskaSprite extends Sprite {
 		}
 	}
 
+	// ==================================================
+	// OVERRIDE
+	// ==================================================
+	@Override
+	public void setSize(float pWidth, float pHeight)
+	{
+		super.setSize(pWidth, pHeight);
+
+		wrapText();
+		wrapBorders();
+	}
+	
+	@Override
+	public void setColor(Color pColor)
+	{
+		for(int i = 0; i < getChildCount(); i++)
+		{
+			IEntity e = this.getChildByIndex(i);
+			
+			e.setColor(pColor);
+		}
+		
+		super.setColor(pColor);
+	}
+	
+	@Override
+	public void setScale(float pScale)
+	{
+		for(int i = 0; i < getChildCount(); i++)
+		{
+			IEntity e = this.getChildByIndex(i);
+			
+			e.setScale(pScale);
+		}
+		
+		super.setScale(pScale);
+	}
+	
+	@Override
+	public void setAlpha(float pAlpha)
+	{
+		for(int i = 0; i < getChildCount(); i++)
+		{
+			IEntity e = getChildByIndex(i);
+			
+			e.setAlpha(pAlpha);
+		}
+		
+		super.setAlpha(pAlpha);
+	}
 }

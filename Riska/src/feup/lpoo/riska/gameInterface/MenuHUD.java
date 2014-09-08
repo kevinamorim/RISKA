@@ -14,7 +14,7 @@ public class MenuHUD extends HUD implements Displayable {
 	// CONSTANTS
 	// ==================================================
 	public static final float doorsAnimationTime = 0.6f;
-	public static final float doorsAnimationWaitingTime = 1f;
+	public static final float doorsAnimationWaitingTime = 0.6f;
 	
 	private ResourceCache resources;
 	private CameraManager camera;

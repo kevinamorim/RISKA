@@ -47,7 +47,7 @@ public class GameInfo
 		Utils.fill(playerFaction, -1);
 	}
 	
-	public void setLevel(int lvl)
+	public static void setLevel(int lvl)
 	{
 		level = lvl;
 	}

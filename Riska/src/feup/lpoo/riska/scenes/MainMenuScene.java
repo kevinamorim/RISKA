@@ -2,7 +2,6 @@ package feup.lpoo.riska.scenes;
 
 import org.andengine.entity.IEntity;
 import org.andengine.entity.modifier.DelayModifier;
-import org.andengine.entity.modifier.ScaleModifier;
 import org.andengine.entity.scene.background.SpriteBackground;
 import org.andengine.entity.scene.menu.MenuScene;
 import org.andengine.entity.scene.menu.item.IMenuItem;
@@ -32,12 +31,16 @@ public class MainMenuScene extends BaseScene implements Displayable, IOnMenuItem
 	// ==================================================
 	// CONSTANTS
 	// ==================================================
-	private enum CHILD { MAIN, OPTIONS, START, NEW, GO, ANY};
+	private enum CHILD { MAIN, OPTIONS, START, NEW, GO, ANY, ALL};
 
-	private enum OPTIONS_TAB { ANIMATIONS, AUDIO, GRAPHICS};
-	private enum OPTIONS_BUTTON { SFX, MUSIC, MENU_ANIMATIONS, GRAPHICS};
+	private enum OPTIONS_TAB { MENU, AUDIO, GAME};
+	private enum OPTIONS_BUTTON { SFX, MUSIC, MENU_ANIMATIONS, GAME_ANIMATIONS};
 
 	private enum NEWGAME_TAB { MAP, PLAYERS, LEVEL, GO };
+	
+	private static float animationTime = 0.5f;
+	
+	private CHILD currentChild = CHILD.MAIN;
 
 	// ==================================================
 	// FIELDS
@@ -47,7 +50,7 @@ public class MainMenuScene extends BaseScene implements Displayable, IOnMenuItem
 	private MenuScene menuStart;
 	private MenuScene menuNewGame;
 	//private MenuScene menuLoadGame;
-
+	
 	private MenuHUD menuHUD;
 
 	private final int MAIN_START = 0;
@@ -134,11 +137,8 @@ public class MainMenuScene extends BaseScene implements Displayable, IOnMenuItem
 			}
 			else
 			{
-
-				detachChildren();
-				resetGameInfo();
-
-				changeChildSceneFromTo(CHILD.ANY, CHILD.MAIN);
+				//detachChildren();
+				changeChildSceneFromTo(currentChild, CHILD.MAIN);
 			}
 		}
 	}
@@ -180,9 +180,6 @@ public class MainMenuScene extends BaseScene implements Displayable, IOnMenuItem
 		createOptionsMenu();
 		createNewGameMenu();
 
-		//createChooseMapMenu();
-		//createChooseDifficultyMenu();
-
 		setChildScene(CHILD.MAIN);
 	}
 
@@ -216,18 +213,16 @@ public class MainMenuScene extends BaseScene implements Displayable, IOnMenuItem
 		menuMain.setBackgroundEnabled(false);
 
 		menuMainStartButton = new RiskaMenuItem(MAIN_START,
-				resources.emptyButtonRegion, 
-				vbom, "Start", resources.mainMenuFont,
-				null, null, resources.barHRegion, resources.barHRegion);
+				resources.buttonRegion, 
+				vbom, "Start", resources.mainMenuFont);
 
 		Utils.wrap(menuMainStartButton, 0.5f * camera.getWidth(), 0.25f * camera.getHeight(), 1f);
 		menuMainStartButton.setPosition(camera.getCenterX(), 0.53f * camera.getHeight());
 		//startButton.debug();
 
 		menuMainOptionsButton = new RiskaMenuItem(MAIN_OPTIONS,
-				resources.emptyButtonRegion, 
-				vbom, "Options", resources.mainMenuFont,
-				null, null, resources.barHRegion, resources.barHRegion);
+				resources.buttonRegion, 
+				vbom, "Options", resources.mainMenuFont);
 
 		Utils.wrap(menuMainOptionsButton, 0.5f * camera.getWidth(), 0.25f * camera.getHeight(), 1f);
 		menuMainOptionsButton.setPosition(camera.getCenterX(), 0.23f * camera.getHeight());
@@ -250,14 +245,12 @@ public class MainMenuScene extends BaseScene implements Displayable, IOnMenuItem
 
 
 		menuStartNewButton = new RiskaMenuItem(START_NEW,
-				resources.emptyButtonRegion,
-				vbom, "New", resources.mainMenuFont,
-				null, null, resources.barHRegion, resources.barHRegion);
+				resources.buttonRegion,
+				vbom, "New", resources.mainMenuFont);
 
 		menuStartLoadButton = new RiskaMenuItem(START_LOAD,
-				resources.emptyButtonRegion,
-				vbom, "Load", resources.mainMenuFont,
-				null, null, resources.barHRegion, resources.barHRegion);
+				resources.buttonRegion,
+				vbom, "Load", resources.mainMenuFont);
 
 
 		Utils.wrap(menuStartNewButton, 0.5f * camera.getWidth(), 0.25f * camera.getHeight(), 1f);
@@ -272,6 +265,9 @@ public class MainMenuScene extends BaseScene implements Displayable, IOnMenuItem
 		menuStart.setOnMenuItemClickListener(this);
 		menuStart.setTouchAreaBindingOnActionDownEnabled(true);
 		menuStart.setTouchAreaBindingOnActionMoveEnabled(true);
+		
+		menuStartNewButton.setAlpha(0f);
+		menuStartLoadButton.setAlpha(0f);
 	}
 
 	// ==================================================
@@ -286,6 +282,14 @@ public class MainMenuScene extends BaseScene implements Displayable, IOnMenuItem
 		createGraphicsCanvas();	
 		createAudioCanvas();
 		createOptionsTabs();
+		
+		menuOptionsAnimationsCanvas.setAlpha(0f);
+		menuOptionsGraphicsCanvas.setAlpha(0f);
+		menuOptionsAudioCanvas.setAlpha(0f);
+		
+		menuOptionsAnimationsTab.setAlpha(0f);
+		menuOptionsGraphicsTab.setAlpha(0f);
+		menuOptionsAudioTab.setAlpha(0f);
 
 		menuOptions.setTouchAreaBindingOnActionDownEnabled(true);
 		menuOptions.setTouchAreaBindingOnActionMoveEnabled(true);
@@ -377,7 +381,7 @@ public class MainMenuScene extends BaseScene implements Displayable, IOnMenuItem
 					break;
 
 				case MotionEvent.ACTION_UP:
-					onOptionsButtonTouched(this, OPTIONS_BUTTON.GRAPHICS);
+					onOptionsButtonTouched(this, OPTIONS_BUTTON.GAME_ANIMATIONS);
 					break;
 				}
 
@@ -504,7 +508,7 @@ public class MainMenuScene extends BaseScene implements Displayable, IOnMenuItem
 		int numberOfMenus = 3;
 		float factor = 1f / numberOfMenus;
 
-		menuOptionsAnimationsTab = new RiskaSprite(resources.tabRegion, vbom, "Animations", resources.mainMenuFont)
+		menuOptionsAnimationsTab = new RiskaSprite(resources.tabRegion, vbom, "Menu", resources.mainMenuFont)
 		{
 			@Override
 			public boolean onAreaTouched(TouchEvent ev, float pX, float pY) 
@@ -518,7 +522,7 @@ public class MainMenuScene extends BaseScene implements Displayable, IOnMenuItem
 					break;
 
 				case MotionEvent.ACTION_UP:
-					onOptionsTabSelected(OPTIONS_TAB.ANIMATIONS);
+					onOptionsTabSelected(OPTIONS_TAB.MENU);
 					break;
 				}
 
@@ -526,7 +530,7 @@ public class MainMenuScene extends BaseScene implements Displayable, IOnMenuItem
 			}
 		};
 
-		menuOptionsGraphicsTab = new RiskaSprite(resources.tabRegion, vbom, "Graphics", resources.mainMenuFont)
+		menuOptionsGraphicsTab = new RiskaSprite(resources.tabRegion, vbom, "Game", resources.mainMenuFont)
 		{
 			@Override
 			public boolean onAreaTouched(TouchEvent ev, float pX, float pY) 
@@ -540,7 +544,7 @@ public class MainMenuScene extends BaseScene implements Displayable, IOnMenuItem
 					break;
 
 				case MotionEvent.ACTION_UP:
-					onOptionsTabSelected(OPTIONS_TAB.GRAPHICS);
+					onOptionsTabSelected(OPTIONS_TAB.GAME);
 					break;
 				}
 
@@ -599,7 +603,7 @@ public class MainMenuScene extends BaseScene implements Displayable, IOnMenuItem
 		switch(x)
 		{
 
-		case ANIMATIONS:
+		case MENU:
 			menuOptionsAnimationsTab.setColor(Utils.OtherColors.WHITE);
 			menuOptionsGraphicsTab.setColor(Utils.OtherColors.DARK_GREY);
 			menuOptionsAudioTab.setColor(Utils.OtherColors.DARK_GREY);
@@ -609,7 +613,7 @@ public class MainMenuScene extends BaseScene implements Displayable, IOnMenuItem
 			menuOptionsAudioCanvas.setVisible(false);
 			break;
 
-		case GRAPHICS:
+		case GAME:
 			menuOptionsAnimationsTab.setColor(Utils.OtherColors.DARK_GREY);
 			menuOptionsGraphicsTab.setColor(Utils.OtherColors.WHITE);
 			menuOptionsAudioTab.setColor(Utils.OtherColors.DARK_GREY);
@@ -707,6 +711,16 @@ public class MainMenuScene extends BaseScene implements Displayable, IOnMenuItem
 		createNewGameTabs();
 
 		onNewGameTabSelected(NEWGAME_TAB.MAP);
+		
+		menuNewGameMapCanvas.setAlpha(0f);
+		menuNewGamePlayersCanvas.setAlpha(0f);
+		menuNewGameLevelCanvas.setAlpha(0f);
+		menuNewGameGoCanvas.setAlpha(0f);
+		
+		menuNewGameMapTab.setAlpha(0f);
+		menuNewGamePlayersTab.setAlpha(0f);
+		menuNewGameLevelTab.setAlpha(0f);
+		menuNewGameGoTab.setAlpha(0f);
 
 		menuNewGame.setOnMenuItemClickListener(this);
 		menuNewGame.setTouchAreaBindingOnActionDownEnabled(true);
@@ -818,7 +832,7 @@ public class MainMenuScene extends BaseScene implements Displayable, IOnMenuItem
 
 		RiskaSprite name, isActive, isCpu, color;
 
-		setPlayersVariables();
+		resetGameInfo();
 
 		float heightFactor = 1f / (maxPlayers + 2);
 
@@ -845,7 +859,7 @@ public class MainMenuScene extends BaseScene implements Displayable, IOnMenuItem
 			playerCanvas[i] = new RiskaCanvas(0f, 0f, titleCanvas.getWidth(), titleCanvas.getHeight());
 
 			playerName[i] = new RiskaSprite(resources.emptyButtonRegion, vbom, "", resources.mainMenuFont,
-					null, null, resources.barHRegion, resources.barHRegion)
+					null, null, null, resources.barHRegion)
 			{
 				@Override
 				public boolean onAreaTouched(TouchEvent ev, float pX, float pY) 
@@ -1244,7 +1258,7 @@ public class MainMenuScene extends BaseScene implements Displayable, IOnMenuItem
 
 	private void selectMap(int index)
 	{
-		Log.d("Riska", " > Map Selected");
+		//Log.d("Riska", " > Map Selected");
 
 		for(int i = 0; i < GameOptions.numberOfMaps; i++)
 		{
@@ -1282,7 +1296,7 @@ public class MainMenuScene extends BaseScene implements Displayable, IOnMenuItem
 
 	private void onNameTouched(int index)
 	{
-		Log.d("Riska", " > Name Selected");
+		//Log.d("Riska", " > Name Selected");
 
 		if(playerActive[index])
 		{
@@ -1359,20 +1373,9 @@ public class MainMenuScene extends BaseScene implements Displayable, IOnMenuItem
 		}
 	}
 
-	private void setPlayersVariables()
-	{
-		for(int i = 0; i < GameOptions.maxPlayers; i++)
-		{
-			playerIsCpu[i] = (i < GameOptions.minHumanPlayers) ? false : true;
-			playerActive[i] = (i < GameOptions.minPlayers) ? true : false;
-			playerActivable[i] = (i < GameOptions.minPlayers) ? false : true;
-			playerEditable[i] = (i < GameOptions.minHumanPlayers) ? false : true;
-		}
-	}
-
 	private void selectLevel(int index)
 	{
-		Log.d("Riska", " > Level Selected : " + index);
+		//Log.d("Riska", " > Level Selected : " + index);
 
 		for(int i = 0; i < GameOptions.numberOfLevels; i++)
 		{
@@ -1437,26 +1440,14 @@ public class MainMenuScene extends BaseScene implements Displayable, IOnMenuItem
 		{
 
 		case MAIN_START:
-			if(GameOptions.menuAnimationsEnabled())
-			{
-				menuMainStartButton.animate();
-			}
 			changeChildSceneFromTo(CHILD.MAIN, CHILD.START);	
 			break;
 
 		case MAIN_OPTIONS:
-			if(GameOptions.menuAnimationsEnabled())
-			{
-				menuMainOptionsButton.animate();
-			}
 			changeChildSceneFromTo(CHILD.MAIN, CHILD.OPTIONS);
 			break;
 
 		case START_NEW:
-			if(GameOptions.menuAnimationsEnabled())
-			{
-				menuStartNewButton.animate();
-			}
 			resetGameInfo();
 			changeChildSceneFromTo(CHILD.START, CHILD.NEW);
 			break;
@@ -1483,15 +1474,16 @@ public class MainMenuScene extends BaseScene implements Displayable, IOnMenuItem
 		final MenuScene child = getChildScene(to);
 
 		if(GameOptions.menuAnimationsEnabled())
-		{
-			menuHUD.animateSlideDoors();
-
-			DelayModifier waitForAnimation = new DelayModifier(MenuHUD.doorsAnimationWaitingTime)
+		{		
+			hideChild(from);
+			DelayModifier waitForAnimation = new DelayModifier(1.2f * animationTime)
 			{
 				@Override
 				protected void onModifierFinished(IEntity pItem)
 				{
 					setChildScene(child);
+					showChild(to);
+					currentChild = to;
 				}
 			};
 			registerEntityModifier(waitForAnimation);
@@ -1499,6 +1491,96 @@ public class MainMenuScene extends BaseScene implements Displayable, IOnMenuItem
 		else
 		{
 			setChildScene(child);
+		}
+	}
+
+	private void showChild(CHILD x)
+	{
+		switch(x)
+		{
+
+		case MAIN:
+			menuMainStartButton.open(animationTime);
+			menuMainOptionsButton.open(animationTime);
+			break;
+
+		case START:
+			menuStartNewButton.open(animationTime);
+			menuStartLoadButton.open(animationTime);
+			break;
+
+		case OPTIONS:
+			menuOptionsAnimationsTab.open(animationTime);
+			menuOptionsAudioTab.open(animationTime);
+			menuOptionsGraphicsTab.open(animationTime);
+			
+			if(menuOptionsAnimationsCanvas.isVisible())
+			{
+				menuOptionsAnimationsCanvas.open(animationTime);
+			}
+			else if(menuOptionsAudioCanvas.isVisible())
+			{
+				menuOptionsAudioCanvas.open(animationTime);
+			}
+			else if(menuOptionsGraphicsCanvas.isVisible())
+			{
+				menuOptionsGraphicsCanvas.open(animationTime);
+			}
+			break;
+
+		case NEW:
+			menuNewGameMapCanvas.open(animationTime);
+			
+			menuNewGameGoTab.open(animationTime);
+			menuNewGameLevelTab.open(animationTime);
+			menuNewGameMapTab.open(animationTime);
+			menuNewGamePlayersTab.open(animationTime);
+			break;
+
+		default:
+			break;
+		}
+	}
+
+	private void hideChild(CHILD x)
+	{
+		switch(x)
+		{
+
+		case MAIN:
+			menuMainStartButton.close(animationTime);
+			menuMainOptionsButton.close(animationTime);
+			break;
+
+		case START:
+			menuStartNewButton.close(animationTime);
+			menuStartLoadButton.close(animationTime);
+			break;
+
+		case OPTIONS:
+			menuOptionsAnimationsTab.close(animationTime);
+			menuOptionsAudioTab.close(animationTime);
+			menuOptionsGraphicsTab.close(animationTime);
+		
+			menuOptionsAnimationsCanvas.close(animationTime);
+			menuOptionsAudioCanvas.close(animationTime);
+			menuOptionsGraphicsCanvas.close(animationTime);
+			break;
+
+		case NEW:
+			menuNewGameGoTab.close(animationTime);
+			menuNewGameLevelTab.close(animationTime);
+			menuNewGameMapTab.close(animationTime);
+			menuNewGamePlayersTab.close(animationTime);
+			
+			menuNewGameMapCanvas.close(animationTime);
+			menuNewGameGoCanvas.close(animationTime);
+			menuNewGameLevelCanvas.close(animationTime);
+			menuNewGamePlayersCanvas.close(animationTime);
+			break;
+
+		default:
+			break;
 		}
 	}
 
@@ -1560,16 +1642,25 @@ public class MainMenuScene extends BaseScene implements Displayable, IOnMenuItem
 			// TODO : assign to colors
 			GameInfo.assignPlayerFaction(i);
 		}
+		
+		GameInfo.setLevel(level);
 
-		Log.d("Riska", "[MainMenuScene] Saving players info...");
+		Log.d("Riska", "[MainMenuScene] Saving Game info...");
 		Log.d("Riska", "[MainMenuScene] Number of players: " + GameInfo.numberOfPlayers);
 		Log.d("Riska", "[MainMenuScene] HUMAN players:     " + GameInfo.humanPlayers);
-		Log.d("Riska", "[MainMenuScene] CPU players:     " + GameInfo.cpuPlayers);
+		Log.d("Riska", "[MainMenuScene] CPU players:       " + GameInfo.cpuPlayers);
+		Log.d("Riska", "[MainMenuScene] Level:             " + GameOptions.getLevelDescr(GameInfo.level) + " (" + GameInfo.level + ")");
 	}
 
 	private void resetGameInfo()
 	{
-		setPlayersVariables();
+		for(int i = 0; i < GameOptions.maxPlayers; i++)
+		{
+			playerIsCpu[i] = (i < GameOptions.minHumanPlayers) ? false : true;
+			playerActive[i] = (i < GameOptions.minPlayers) ? true : false;
+			playerActivable[i] = (i < GameOptions.minPlayers) ? false : true;
+			playerEditable[i] = (i < GameOptions.minHumanPlayers) ? false : true;
+		}
 	}
 
 }
