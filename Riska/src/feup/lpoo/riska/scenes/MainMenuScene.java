@@ -236,7 +236,7 @@ public class MainMenuScene extends BaseScene implements Displayable, IOnMenuItem
 
 		menuMain.addMenuItem(menuMainStartButton);
 		menuMain.addMenuItem(menuMainOptionsButton);
-		
+
 		menuMain.setOnMenuItemClickListener(this);
 		menuMain.setTouchAreaBindingOnActionDownEnabled(true);
 		//menuMain.setTouchAreaBindingOnActionMoveEnabled(true);
@@ -1419,9 +1419,21 @@ public class MainMenuScene extends BaseScene implements Displayable, IOnMenuItem
 	{
 		if(playerActive[index])
 		{
-			// TODO
-			playerColor[index] += 1;
-			playerColor[index] = playerColor[index] % GameOptions.numberOfColors;
+			int count = 0;
+			int color = playerColor[index];
+
+			while(count < playerColor.length)
+			{
+				color++;
+				color %= (GameOptions.numberOfFactions + 1);
+				if(color == GameOptions.numberOfFactions || !Utils.inArray(color, playerColor))
+				{
+					playerColor[index] = color;
+					break;
+				}
+
+				count++;
+			}
 
 			updateFactionColors(index);
 		}	
@@ -1432,8 +1444,22 @@ public class MainMenuScene extends BaseScene implements Displayable, IOnMenuItem
 		ButtonSprite priColor = (ButtonSprite)playerColorButton[index].getChildByIndex(1);
 		ButtonSprite secColor = (ButtonSprite)playerColorButton[index].getChildByIndex(0);
 
-		priColor.setColor(GameOptions.getPriColor(playerColor[index]));
-		secColor.setColor(GameOptions.getSecColor(playerColor[index]));
+		if(playerColor[index] == GameOptions.numberOfFactions)
+		{
+			priColor.setColor(Color.WHITE);
+			secColor.setColor(Color.WHITE);
+
+			priColor.setCurrentTileIndex(2);
+			secColor.setCurrentTileIndex(2);
+		}
+		else
+		{
+			priColor.setColor(GameOptions.getPriColor(playerColor[index]));
+			secColor.setColor(GameOptions.getSecColor(playerColor[index]));
+
+			priColor.setCurrentTileIndex(0);
+			secColor.setCurrentTileIndex(1);
+		}
 	}
 
 	private void setPlayerActive(int index, boolean pActive)
@@ -1481,7 +1507,7 @@ public class MainMenuScene extends BaseScene implements Displayable, IOnMenuItem
 			}
 		}
 	}
-	
+
 	private void onLevelSelected(int index)
 	{
 		//Log.d("Riska", " > Level Selected : " + index);
@@ -1501,7 +1527,7 @@ public class MainMenuScene extends BaseScene implements Displayable, IOnMenuItem
 			}
 		}
 	}
-	
+
 	// ==================================================
 	// UPDATE DATA
 	// ==================================================
@@ -1631,11 +1657,11 @@ public class MainMenuScene extends BaseScene implements Displayable, IOnMenuItem
 			case AUDIO:
 				menuOptionsAudioCanvas.fadeIn(animationTime);
 				break;
-				
+
 			default:
 				break;
 			}
-			
+
 			break;
 
 		case NEW:
@@ -1643,7 +1669,7 @@ public class MainMenuScene extends BaseScene implements Displayable, IOnMenuItem
 			menuNewGamePlayersTab.fadeIn(animationTime);
 			menuNewGameLevelTab.fadeIn(animationTime);
 			menuNewGameGoTab.fadeIn(animationTime);
-			
+
 			switch(currentNewGameTab)
 			{
 			case MAP:
@@ -1665,7 +1691,7 @@ public class MainMenuScene extends BaseScene implements Displayable, IOnMenuItem
 			default:
 				break;
 			}
-			
+
 			break;
 
 		default:
@@ -1706,11 +1732,11 @@ public class MainMenuScene extends BaseScene implements Displayable, IOnMenuItem
 			case AUDIO:
 				menuOptionsAudioCanvas.fadeOut(animationTime);
 				break;
-				
+
 			default:
 				break;
 			}
-			
+
 			break;
 
 		case NEW:
@@ -1740,7 +1766,7 @@ public class MainMenuScene extends BaseScene implements Displayable, IOnMenuItem
 			default:
 				break;
 			}
-			
+
 			break;
 
 		default:
@@ -1750,6 +1776,8 @@ public class MainMenuScene extends BaseScene implements Displayable, IOnMenuItem
 
 	private void changeSceneToGame()
 	{
+		hideChild(currentChild);
+
 		if(GameOptions.menuAnimationsEnabled())
 		{
 			menuHUD.animateSlideDoors();
@@ -1759,73 +1787,77 @@ public class MainMenuScene extends BaseScene implements Displayable, IOnMenuItem
 				@Override
 				protected void onModifierFinished(IEntity pItem)
 				{
-					sceneManager.createGameScene();
 					camera.setHUD(null);
+					sceneManager.createGameScene();
+
 				}
 			};
 			registerEntityModifier(waitForAnimation);
 		}
 		else
 		{
-			sceneManager.createGameScene();
 			camera.setHUD(null);
+			sceneManager.createGameScene();		
 		}
 	}
 
 	private void saveGameInfo()
 	{
 		int numOfPlayers = 0;
-		int cpu = 0;
-		int human = 0;
 
 		for(int i = 0; i < GameOptions.maxPlayers; i++)
 		{
 			if(playerActive[i])
 			{
 				numOfPlayers++;
-				if(playerIsCpu[i])
+			}
+			else
+			{
+				playerColor[i] = GameOptions.numberOfFactions;
+			}
+		}
+
+		for(int i = 0; i < GameOptions.maxPlayers; i++)
+		{
+			if(playerActive[i] && playerColor[i] == GameOptions.numberOfFactions)
+			{
+				for(int j = 0; j < GameOptions.numberOfFactions; j++)
 				{
-					cpu++;
-				}
-				else
-				{
-					human++;
+					if(!Utils.inArray(j, playerColor))
+					{
+						playerColor[i] = j;
+						break;
+					}
 				}
 			}
 		}
 
-		GameInfo.numberOfPlayers = numOfPlayers;
-		GameInfo.humanPlayers = human;
-		GameInfo.cpuPlayers = cpu;
-		Utils.saveFromTo(playerIsCpu, GameInfo.playerIsCPU);
+		GameInfo.setNumberOfPlayers(numOfPlayers);
+		GameInfo.clearPlayers();
 
-		GameInfo.clearFactions();
-
-		for(int i = 0; i < GameInfo.numberOfPlayers; i++)
+		for(int i = 0; i < GameOptions.maxPlayers; i++)
 		{
-			// TODO : assign to colors
-			GameInfo.assignPlayerFaction(i);
+			if(playerActive[i])
+			{
+				GameInfo.addPlayer(playerName[i].getText(), playerIsCpu[i], playerColor[i]);
+			}	
 		}
-
+		
 		GameInfo.setLevel(level);
-
-		Log.d("Riska", "[MainMenuScene] Saving Game info...");
-		Log.d("Riska", "[MainMenuScene] Number of players: " + GameInfo.numberOfPlayers);
-		Log.d("Riska", "[MainMenuScene] HUMAN players:     " + GameInfo.humanPlayers);
-		Log.d("Riska", "[MainMenuScene] CPU players:       " + GameInfo.cpuPlayers);
-		Log.d("Riska", "[MainMenuScene] Level:             " + GameOptions.getLevelDescr(GameInfo.level) + " (" + GameInfo.level + ")");
 	}
 
 	private void resetGameInfo()
 	{
 		currentNewGameTab = NEWGAME_TAB.MAP;
-		
+
 		for(int i = 0; i < GameOptions.maxPlayers; i++)
-		{
+		{	
 			playerIsCpu[i] = (i < GameOptions.minHumanPlayers) ? false : true;
 			playerActive[i] = (i < GameOptions.minPlayers) ? true : false;
 			playerActivable[i] = (i < GameOptions.minPlayers) ? false : true;
 			playerEditable[i] = (i < GameOptions.minHumanPlayers) ? false : true;
+
+			playerColor[i] = (playerActive[i] ? i : GameOptions.numberOfFactions);
 		}
 	}
 

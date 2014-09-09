@@ -48,6 +48,7 @@ public class GameOptions {
 	private static boolean menuAnimations = true;
 	
 	private static final float defaultAnimationTime = 0.25f;
+
 	public static float animationTime = defaultAnimationTime;
 	
 	public static Color[] getColors(int index)

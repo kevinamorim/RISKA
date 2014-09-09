@@ -100,8 +100,8 @@ public class BattleScene extends BaseScene {
 		remaining1 = new Text(0,0,resources.mGameFont,"",100,resources.vbom);
 		remaining2 = new Text(0,0,resources.mGameFont,"",100,resources.vbom);
 
-		result1 = new Sprite(0,0,resources.regionBtnRegion, resources.vbom);
-		result2 = new Sprite(0,0,resources.regionBtnRegion, resources.vbom);
+		result1 = new Sprite(0,0,resources.regionButtonRegion, resources.vbom);
+		result2 = new Sprite(0,0,resources.regionButtonRegion, resources.vbom);
 
 		result1.setPosition(0.25f * Utils.getRightBoundsX(window), 0.3f * Utils.getUpperBoundsY(window));
 		result2.setPosition(0.75f * Utils.getRightBoundsX(window), 0.3f * Utils.getUpperBoundsY(window));
@@ -133,8 +133,8 @@ public class BattleScene extends BaseScene {
 		float x1, x2;
 		float y1, y2;
 
-		Player Player1 = pRegion1.getOwner();
-		Player Player2 = pRegion2.getOwner();
+		Player Player1 = pRegion1.owner();
+		Player Player2 = pRegion2.owner();
 		
 		points1.setText("" + battleGenerator.attackerPoints);
 		points2.setText("" + battleGenerator.defenderPoints);
@@ -142,7 +142,7 @@ public class BattleScene extends BaseScene {
 		x1 = 0.25f * width;
 		x2 = 0.75f * width;
 
-		if(Player1.isCPU && !Player2.isCPU)
+		if(Player1.isCpu && !Player2.isCpu)
 		{
 			x1 = 0.75f * width;
 			x2 = 0.25f * width;
@@ -161,17 +161,17 @@ public class BattleScene extends BaseScene {
 		y1 = 0.8f * height;
 		y2 = 0.8f * height;
 
-		typePlayer1.setText(Player1.getName());
+		typePlayer1.setText(Player1.name);
 		typePlayer1.setPosition(x1, y1);
-		typePlayer2.setText(Player2.getName());
+		typePlayer2.setText(Player2.name);
 		typePlayer2.setPosition(x2, y2);
 
 		y1 = 0.7f * height;
 		y2 = 0.7f * height;
 
-		regionName1.setText(pRegion1.getName());
+		regionName1.setText(pRegion1.name);
 		regionName1.setPosition(x1, y1);
-		regionName2.setText(pRegion2.getName());
+		regionName2.setText(pRegion2.name);
 		regionName2.setPosition(x2, y2);
 		
 		x1 = 0.4f * width;

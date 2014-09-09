@@ -1,124 +1,66 @@
 package feup.lpoo.riska.elements;
 
 import java.util.ArrayList;
+
 import org.andengine.util.adt.color.Color;
 
+import feup.lpoo.riska.logic.GameInfo;
 import android.graphics.Point;
 
 public class Region extends Element {
-
-	private static final int SOLDIER_ATT = 10;
-	private static final int SOLDIER_DEF = 10;
-	private static final int MIN_SOLDIERS_FOR_AN_ATTACK = 2;
 
 	// ======================================================
 	// FIELDS
 	// ======================================================
 	public final int ID;
+	public Color priColor, secColor;
+	
 	private boolean focused;
-
 	private Player owner;
-	private Color priColor, secColor;
+	private int garrisonArmy;
 	
-	private ArrayList<Unit> soldiers;
-	private ArrayList<Region> neighbours;
+	private ArrayList<Region> neighbourRegion;
 
+	
 	// ======================================================
 	// ======================================================
-	
-	/**
-	 * Constructor for a region.
-	 * 
-	 * @param id : ID of this region
-	 * @param name : Name of the region
-	 * @param stratCenter : strategic center for this region
-	 * @param continent : continent this region belongs to in the map
-	 */
-	public Region(final int id, String name, Point stratCenter, String continent) {
-		
-		super(stratCenter.x, stratCenter.y, name);
-		
-		this.ID = id;
-		this.owner = null;
-		this.focused = false;
-		this.soldiers = new ArrayList<Unit>();
-		this.neighbours = new ArrayList<Region>();
-	}
-
-	/**
-	 * @return The strategic center of the region
-	 */
-	public Point getStratCenter() {
-		return this.position;
-	}
-
-	/**
-	 * @param stratCenter : the new strategic center to set
-	 */
-	public void setStratCenter(Point stratCenter) {
-		this.position = stratCenter;
-	}
-
-	/**
-	 * @return Name of the region
-	 */
-	public String getName() {
-		return name;
-	}
-
-	/**
-	 * @return Number of soldiers stationed in this region
-	 */
-	public int getNumberOfSoldiers()
+	public Region(final int id, String name, Point pos, String continent)
 	{
-		return soldiers.size();
+		
+		super(pos.x, pos.y, name);
+		
+		ID = id;
+		owner = null;
+		focused = false;
+		garrisonArmy = 0;
+		neighbourRegion = new ArrayList<Region>();
+	}
+
+	public int numberOfSoldiers()
+	{
+		return garrisonArmy;
 	}
 	
-	/**
-	 * Adds a number of soldiers to a region.
-	 * 
-	 * @param value : number of soldiers to add
-	 */
 	public void addSoldiers(int value)
 	{
-		for(int i = 0; i < value; i++)
-		{
-			soldiers.add(new Unit(SOLDIER_ATT, SOLDIER_DEF));
-		}
+		garrisonArmy += value;
 	}
 	
 	public void setSoldiers(int value)
 	{
-		soldiers.clear();
-		for(int i = 0; i < value; i++) 
-		{
-			soldiers.add(new Unit(SOLDIER_ATT, SOLDIER_DEF));
-		}
+		garrisonArmy = value;
 	}
 	
-	/**
-	 * Adds a region to the set of neighbours.
-	 * 
-	 * @param region : region to add
-	 */
 	public void addNeighbour(Region region)
 	{
-		neighbours.add(region);
+		neighbourRegion.add(region);
 	}
 
-	/**
-	 * @return The set of neighbour regions
-	 */
 	public ArrayList<Region> getNeighbours()
 	{
-		return neighbours;
+		return neighbourRegion;
 	}
 
-	/**
-	 * Changes the ownership for this region.
-	 * 
-	 * @param player : new owner
-	 */
 	public void setOwner(Player newOwner)
 	{
 		if(owner != null)
@@ -129,86 +71,57 @@ public class Region extends Element {
 		owner = newOwner;
 		owner.addRegion(this);
 		
-		secColor = owner.getPrimaryColor();
-		priColor = owner.getScondaryColor();
-	}
-	
-	/**
-	 * @return The set of soldiers stationed in this region
-	 */
-	public ArrayList<Unit> getSoldiers()
-	{
-		return soldiers;
+		secColor = owner.priColor;
+		priColor = owner.secColor;
 	}
 
-	/**
-	 * @return The player that is currently owner of this region
-	 */
-	public Player getOwner()
+	public Player owner()
 	{
-		return this.owner;
+		return owner;
 	}
 
-	/**
-	 * Checks if the region is neighbour of a given region.
-	 * 
-	 * @param pRegion : region to check
-	 * @return True if is neighbour of pRegion
-	 */
 	public boolean isNeighbourOf(Region pRegion)
 	{
-		return neighbours.contains(pRegion);
+		return neighbourRegion.contains(pRegion);
 	}
-	
-	/**
-	 * Sets the primary and secondary color for the region.
-	 * 
-	 * @param priColor : primary color
-	 * @param secColor : secondary color
-	 */
+
 	public void setColors(Color priColor, Color secColor)
 	{
 		this.priColor = priColor;
 		this.secColor = secColor;
 	}
 
-	/**
-	 * Switches the primary color with the secondary one.
-	 */
 	private void switchColors(boolean toFocus)
 	{
 		if(toFocus)
 		{
-			priColor = owner.getScondaryColor();
-			secColor = owner.getPrimaryColor();
+			priColor = owner.secColor;
+			secColor = owner.priColor;
 		}
 		else
 		{
-			priColor = owner.getPrimaryColor();
-			secColor = owner.getScondaryColor();
+			priColor = owner.priColor;
+			secColor = owner.secColor;
 		}
 	}
-	
-	/**
-	 * Clears (erases) the set of soldiers in a region.
-	 */
-	public void removeSoldiers()
+
+	public void clearArmy()
 	{
-		soldiers.clear();
+		garrisonArmy = 0;
 	}
 	
-	public void focus()
-	{	
-		focused = true;
-		
-		switchColors(true);
-	}
-	
-	public void unfocus()
+	public void setFocus(boolean value)
 	{
-		focused = false;
-		
-		switchColors(false);
+		if(value)
+		{
+			focused = true;
+			switchColors(true);
+		}
+		else
+		{
+			focused = false;
+			switchColors(false);
+		}
 	}
 
 	public boolean isFocused()
@@ -236,15 +149,16 @@ public class Region extends Element {
 		return (owner.equals(player));
 	}
 	
-	public boolean canAttack() {
-		return soldiers.size() >= MIN_SOLDIERS_FOR_AN_ATTACK;
+	public boolean canAttack()
+	{
+		return (garrisonArmy > GameInfo.minGarrison);
 	}
-	// TODO: Needs refactoring...
+
 	public boolean hasEnemyNeighbor()
 	{
-		for(Region neighbour : neighbours)
+		for(Region neighbour : neighbourRegion)
 		{
-			if(!neighbour.getOwner().equals(owner))
+			if(!neighbour.owner().equals(owner))
 			{
 				return true;
 			}
@@ -253,10 +167,11 @@ public class Region extends Element {
 		return false;
 	}
 	
-	public boolean hasAlliedNeighbour() {
-		for(Region neighbour : neighbours)
+	public boolean hasAlliedNeighbour()
+	{
+		for(Region neighbour : neighbourRegion)
 		{
-			if(neighbour.getOwner().equals(owner))
+			if(neighbour.owner().equals(owner))
 			{
 				return true;
 			}

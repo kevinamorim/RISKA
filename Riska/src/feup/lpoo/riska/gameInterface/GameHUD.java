@@ -3,10 +3,13 @@ package feup.lpoo.riska.gameInterface;
 import org.andengine.engine.camera.hud.HUD;
 import org.andengine.entity.sprite.ButtonSprite;
 import org.andengine.entity.sprite.Sprite;
+import org.andengine.entity.text.Text;
 import org.andengine.input.touch.TouchEvent;
+import org.andengine.opengl.vbo.VertexBufferObjectManager;
+import org.andengine.util.adt.color.Color;
+
 import feup.lpoo.riska.interfaces.Displayable;
 import feup.lpoo.riska.logic.GameLogic;
-import feup.lpoo.riska.logic.GameLogic.GAME_STATE;
 import feup.lpoo.riska.resources.ResourceCache;
 import feup.lpoo.riska.scenes.GameScene;
 import feup.lpoo.riska.utilities.Utils;
@@ -18,27 +21,40 @@ public class GameHUD extends HUD implements Displayable {
 	// CONSTANTS
 	// ======================================================
 
-	public enum BUTTON { ATTACK, MOVE, DETAILS, AUTO_DEPLOY, NEXT_TURN, ARROW_LEFT, ARROW_RIGHT };
+	public enum BUTTON { SUMMON, DEPLOY, ATTACK, PLAYER, SUMMON_POOL, MOVES_POOL, NONE };
+	
+	public enum SPRITE { BUTTON_TAB };
 
-	public enum SPRITE { INFO_TAB };
-
+	private BUTTON currentButton;
+	
 	// ======================================================
 	// SINGLETONS
 	// ======================================================
 	ResourceCache resources;
+	VertexBufferObjectManager vbom;
 
 	// ======================================================
 	// FIELDS
 	// ======================================================
 	private CameraManager camera;
-	private ButtonSprite attackButton;
-	private ButtonSprite moveButton;
-	private ButtonSprite detailsButton;
-	private ButtonSprite autoDeployButton;
-	private ButtonSprite nextTurnButton;
-	private ButtonSprite arrowLeft;
-	private ButtonSprite arrowRight;
-	private InfoTab infoTab;
+
+	private RiskaCanvas actionCanvas;
+	private RiskaCanvas summonPoolCanvas;
+	private RiskaCanvas movesPoolCanvas;
+	
+	private RiskaButtonSprite attackButton;
+	private RiskaButtonSprite summonButton;
+	private RiskaButtonSprite deployButton;
+	
+	private RiskaCanvas movesPoolBarCanvas;
+	private Text movesPoolText;
+	private RiskaSprite movesPoolBar;
+	
+	private RiskaCanvas summonPoolBarCanvas;
+	private Text summonPoolText;
+	private RiskaSprite summonPoolBar;
+	
+	private RiskaTextButtonSprite currentPlayerButton;
 
 	private GameScene gameScene;
 
@@ -50,400 +66,338 @@ public class GameHUD extends HUD implements Displayable {
 		gameScene = scene;
 
 		resources = ResourceCache.getSharedInstance();
-		
+		vbom = resources.vbom;
+
 		camera = resources.camera;
+
+		currentButton = BUTTON.NONE;
 
 		createDisplay();
 	}
 
 	public void draw(GameLogic logic)
 	{
-		if(!logic.getCurrentPlayer().isCPU)
-		{
-			if(logic.getState() == GAME_STATE.PLAY) {
-				
-				if(logic.selectedRegion != null)
-				{
-					show(BUTTON.DETAILS);
-					if(logic.targetedRegion != null)
-					{
-						show(BUTTON.ATTACK);
-					}
-					else
-					{
-						hide(BUTTON.ATTACK);
-					}
-				}
-				else
-				{
-					hide(BUTTON.DETAILS);
-				}
-			} else if(logic.getState() == GAME_STATE.MOVE) {
-				hide(BUTTON.AUTO_DEPLOY);
-				hide(BUTTON.DETAILS);
-				hide(BUTTON.ATTACK);
-				hide(BUTTON.MOVE);
-				if(logic.selectedRegion != null) {
-					if(logic.targetedRegion != null) {
-						show(BUTTON.MOVE);
-					} 
-				}
-				
-			}
-		}
-		else
-		{
-			hide(BUTTON.DETAILS);
-			hide(BUTTON.ATTACK);
-		}
-		
-		infoTab.setText(logic);
+		//		if(!logic.getCurrentPlayer().isCPU)
+		//		{
+		//			if(logic.getState() == GAME_STATE.PLAY) {
+		//
+		//				if(logic.selectedRegion != null)
+		//				{
+		//					show(BUTTON.DETAILS);
+		//					if(logic.targetedRegion != null)
+		//					{
+		//						show(BUTTON.ATTACK);
+		//					}
+		//					else
+		//					{
+		//						hide(BUTTON.ATTACK);
+		//					}
+		//				}
+		//				else
+		//				{
+		//					hide(BUTTON.DETAILS);
+		//				}
+		//			} else if(logic.getState() == GAME_STATE.MOVE) {
+		//				hide(BUTTON.AUTO_DEPLOY);
+		//				hide(BUTTON.DETAILS);
+		//				hide(BUTTON.ATTACK);
+		//				hide(BUTTON.MOVE);
+		//				if(logic.selectedRegion != null) {
+		//					if(logic.targetedRegion != null) {
+		//						show(BUTTON.MOVE);
+		//					} 
+		//				}
+		//
+		//			}
+		//		}
+		//		else
+		//		{
+		//			hide(BUTTON.DETAILS);
+		//			hide(BUTTON.ATTACK);
+		//		}
+		//
+		//		infoTab.setText(logic);
 	}
 
 	// ======================================================
 	// CREATE DISPLAY
 	// ======================================================
 	public void createDisplay()
-	{	
-		createAttackButton();
-		createInfoTab();
-		createDetailsButton();
-		createAutoDeployButton();
-		createNextTurnButton();
-		createArrows();
-		createMoveButton();
+	{
 
+		createActionCanvas();
+		createSummonPoolCanvas();
+		createMovesPoolCanvas();
+
+		actionCanvas.setAlpha(0.8f);
+		summonPoolCanvas.setAlpha(0.8f);
+		movesPoolCanvas.setAlpha(0.8f);
+
+		registerTouchArea(summonButton);
+		registerTouchArea(deployButton);
 		registerTouchArea(attackButton);
-		registerTouchArea(detailsButton);
-		registerTouchArea(autoDeployButton);
-		registerTouchArea(nextTurnButton);
-		registerTouchArea(arrowLeft);
-		registerTouchArea(arrowRight);
-		registerTouchArea(moveButton);
 
-		attachChild(attackButton);
-		attachChild(infoTab.getSprite());
-		attachChild(detailsButton);
-		attachChild(autoDeployButton);
-		attachChild(nextTurnButton);
-		attachChild(arrowLeft);
-		attachChild(arrowRight);
-		attachChild(moveButton);
+		registerTouchArea(summonPoolBarCanvas);
+		registerTouchArea(movesPoolBarCanvas);
+		
+		setTouchAreaBindingOnActionDownEnabled(true);
 	}
 
-	private void createAttackButton()
+	private void createActionCanvas()
 	{
-		attackButton = new ButtonSprite(0, 0, resources.attackBtnRegion, resources.vbom) 
+		actionCanvas = new RiskaCanvas(0f, 0f, 0.5f * camera.getHeight(), 0.1f * camera.getHeight());
+
+		actionCanvas.setCanvasSprite(new RiskaSprite(resources.barLowRegion, vbom));
+
+		attackButton = new RiskaButtonSprite(resources.attackButtonRegion, vbom)
 		{
 			@Override
 			public boolean onAreaTouched(TouchEvent ev, float pX, float pY)
 			{
-				switch(ev.getAction())
+				switch(ev.getMotionEvent().getActionMasked())
 				{
-				
+
 				case MotionEvent.ACTION_DOWN:
 					pressed(BUTTON.ATTACK);
 					break;
-					
+
 				case MotionEvent.ACTION_UP:
-					touched(BUTTON.ATTACK);
+					if(Utils.contains(this, pX, pY))
+					{
+						onButtonSelected(BUTTON.ATTACK);
+					}
+					else
+					{
+						released(BUTTON.ATTACK);
+					}
 					break;
-					
-				case MotionEvent.ACTION_OUTSIDE:
-					released(BUTTON.ATTACK);
-					break;
-					
+
 				default:
 					break;
-					
+
 				}
 				return true;
 			}
 		};
+		actionCanvas.addGraphicWrap(attackButton, 0.75f, 0.5f, 0.2f, 0.9f);
 
-		float scale = Utils.getWrapScale(attackButton, 1f * camera.getWidth(), 0.3f * camera.getHeight(), 1f);
-		attackButton.setScale(-scale, scale);
-		attackButton.setPosition(camera.getWidth() - Utils.getScaledCenterX(attackButton), 0.5f * camera.getHeight());
-
-		attackButton.setVisible(false);
-	}
-
-	private void createInfoTab()
-	{
-		
-		float pWidth = 1f * camera.getWidth();
-		float pHeight = 0.1f * camera.getHeight();
-		float pX = 0.5f * camera.getWidth();
-		float pY =  camera.getHeight() - 0.5f * resources.infoTabRegion.getHeight();
-		float pAlpha = 0.8f;
-		
-		infoTab = new InfoTab(resources.infoTabRegion, resources.mInfoTabFont, 
-				pWidth, pHeight, pX, pY, pAlpha, resources.vbom);
-		
-	}
-
-	private void createDetailsButton()
-	{
-		detailsButton = new ButtonSprite(0, 0, resources.detailsBtnRegion, resources.vbom)
+		deployButton = new RiskaButtonSprite(resources.deployButtonRegion, vbom)
 		{
 			@Override
 			public boolean onAreaTouched(TouchEvent ev, float pX, float pY)
-			{
-				switch(ev.getAction())
+			{		
+				switch(ev.getMotionEvent().getActionMasked())
 				{
-				
+
 				case MotionEvent.ACTION_DOWN:
-					pressed(BUTTON.DETAILS);
+					pressed(BUTTON.DEPLOY);
 					break;
-					
+
 				case MotionEvent.ACTION_UP:
-					touched(BUTTON.DETAILS);
+					if(Utils.contains(this, pX, pY))
+					{
+						onButtonSelected(BUTTON.DEPLOY);
+					}
+					else
+					{
+						released(BUTTON.DEPLOY);
+					}
 					break;
-					
-				case MotionEvent.ACTION_OUTSIDE:
-					released(BUTTON.DETAILS);
-					break;
-					
+
 				default:
 					break;
-					
+
 				}
 				return true;
 			}
 		};
+		actionCanvas.addGraphicWrap(deployButton, 0.5f, 0.5f, 0.2f, 0.9f);
 
-		Utils.wrap(detailsButton, 1f * camera.getWidth(),  0.3f * camera.getHeight(), 1f);
-		detailsButton.setPosition(Utils.getScaledCenterX(detailsButton) , 0.5f * camera.getHeight());
-
-		detailsButton.setVisible(false);
-	}
-
-	private void createAutoDeployButton()
-	{
-		autoDeployButton = new ButtonSprite(0, 0, resources.autoDeployBtnRegion, resources.vbom)
+		summonButton = new RiskaButtonSprite(resources.summonButtonRegion, vbom)
 		{
 			@Override
 			public boolean onAreaTouched(TouchEvent ev, float pX, float pY)
 			{
-				switch(ev.getAction())
+
+				switch(ev.getMotionEvent().getActionMasked())
 				{
-				
+
 				case MotionEvent.ACTION_DOWN:
-					pressed(BUTTON.AUTO_DEPLOY);
+					pressed(BUTTON.SUMMON);
 					break;
-					
+
 				case MotionEvent.ACTION_UP:
-					touched(BUTTON.AUTO_DEPLOY);
+					if(Utils.contains(this, pX, pY))
+					{
+						onButtonSelected(BUTTON.SUMMON);
+					}
+					else
+					{
+						released(BUTTON.SUMMON);
+					}
 					break;
-					
-				case MotionEvent.ACTION_OUTSIDE:
-					released(BUTTON.AUTO_DEPLOY);
-					break;
-					
+
 				default:
 					break;
+
+				}
+				return true;
+			}
+		};
+		actionCanvas.addGraphicWrap(summonButton, 0.25f, 0.5f, 0.2f, 0.9f);
+
+		actionCanvas.setPosition(0.5f * camera.getWidth(), Utils.halfY(actionCanvas));
+
+		attackButton.setColor(Utils.OtherColors.LIGHT_GREY);
+		deployButton.setColor(Utils.OtherColors.LIGHT_GREY);
+		summonButton.setColor(Utils.OtherColors.LIGHT_GREY);
+
+		attachChild(actionCanvas);
+	}
+
+	private void createSummonPoolCanvas()
+	{
+		summonPoolCanvas = new RiskaCanvas(0f, 0f, 0.15f * camera.getHeight(), 0.4f * camera.getHeight());
+
+		summonPoolCanvas.setCanvasSprite(new RiskaSprite(resources.barLeftRegion, vbom));
+		
+		summonPoolBarCanvas = new RiskaCanvas(0f, 0f, 0.55f * summonPoolCanvas.getWidth(), 0.64f * summonPoolCanvas.getWidth())
+		{
+			@Override
+			public boolean onAreaTouched(TouchEvent ev, float pX, float pY)
+			{
+
+				switch(ev.getMotionEvent().getActionMasked())
+				{
+
+				case MotionEvent.ACTION_DOWN:
+					pressed(BUTTON.SUMMON_POOL);
+					break;
+
+				case MotionEvent.ACTION_UP:
+					if(Utils.contains(this, pX, pY))
+					{
+						onButtonSelected(BUTTON.SUMMON_POOL);
+					}
+					else
+					{
+						released(BUTTON.SUMMON_POOL);
+					}
+					break;
+
+				default:
+					break;
+
 				}
 				return true;
 			}
 		};
 		
-		float scale = Utils.getWrapScale(autoDeployButton, 1f * camera.getWidth(), 0.3f * camera.getHeight(), 1f);
-
-		autoDeployButton.setScale(-scale, scale);
-		autoDeployButton.setPosition(camera.getWidth() - Utils.getScaledCenterX(autoDeployButton), 0.5f * camera.getHeight());
-
-		autoDeployButton.setVisible(false);
-	}
-
-	private void createArrows()
-	{
-		arrowLeft = new ButtonSprite(0, 0, resources.arrowRightRegion, resources.vbom) 
-		{
-			@Override
-			public boolean onAreaTouched(TouchEvent ev, float pX, float pY)
-			{
-				switch(ev.getAction())
-				{
-				
-				case MotionEvent.ACTION_DOWN:
-					pressed(BUTTON.ARROW_LEFT);
-					break;
-					
-				case MotionEvent.ACTION_UP:
-					touched(BUTTON.ARROW_LEFT);
-					break;
-					
-				case MotionEvent.ACTION_OUTSIDE:
-					released(BUTTON.ARROW_LEFT);
-					break;
-					
-				default:
-					break;
-				}
-				return true;
-			}	
-		};
-
-		arrowLeft.setScale(-Utils.getWrapScale(arrowLeft, 0.1f * camera.getWidth(), 0.25f * camera.getHeight(), 1f));
-		arrowLeft.setPosition(0.25f * camera.getWidth(), 0.5f * camera.getHeight());
+		summonPoolBar = new RiskaSprite(resources.fillSquareRegion, vbom);
+		summonPoolBar.setAnchorCenterY(0f);
+		summonPoolBarCanvas.addGraphic(summonPoolBar, 0.5f, 0f, 0.99f, 0.75f);
+		summonPoolBarCanvas.setCanvasSprite(new RiskaSprite(resources.barFillRegion, vbom));
 		
+		summonPoolText = new Text(0f, 0f, resources.mGameFont, "12", Utils.maxNumericChars, vbom);
+		
+		summonPoolBarCanvas.setColor(Utils.OtherColors.WHITE);
+		summonPoolBar.setColor(Utils.OtherColors.DARK_YELLOW);
 
-		arrowRight = new ButtonSprite(0, 0, resources.arrowRightRegion, resources.vbom) 
-		{
-			@Override
-			public boolean onAreaTouched(TouchEvent ev, float pX, float pY)
-			{
-				switch(ev.getAction())
-				{
-				
-				case MotionEvent.ACTION_DOWN:
-					pressed(BUTTON.ARROW_RIGHT);
-					break;
-					
-				case MotionEvent.ACTION_UP:
-					touched(BUTTON.ARROW_RIGHT);
-					break;
-					
-				case MotionEvent.ACTION_OUTSIDE:
-					released(BUTTON.ARROW_RIGHT);
-					break;
-					
-				default:
-					break;
-				}
-				return true;
-			}	
-		};
+		summonPoolCanvas.addGraphic(summonPoolBarCanvas, 0.4f, 0.55f, 0.55f, 0.64f);
+		summonPoolCanvas.addText(summonPoolText, 0.4f, 0.1f, 1f, 0.2f);
+		
+		summonPoolCanvas.setPosition(Utils.halfX(summonPoolCanvas), Utils.halfY(summonPoolCanvas));
 
-		arrowRight.setScale(Utils.getWrapScale(arrowRight, 0.1f * camera.getWidth(), 0.25f * camera.getHeight(), 1f));
-		arrowRight.setPosition(0.75f * camera.getWidth(), 0.5f * camera.getHeight());
-
-		arrowLeft.setVisible(false);
-		arrowRight.setVisible(false);
+		attachChild(summonPoolCanvas);
 	}
 	
-	private void createMoveButton() {
-		moveButton = new ButtonSprite(0, 0, resources.moveBtnRegion, resources.vbom) 
+	private void createMovesPoolCanvas()
+	{
+		movesPoolCanvas = new RiskaCanvas(0f, 0f, 0.15f * camera.getHeight(), 0.4f * camera.getHeight());
+
+		movesPoolCanvas.setCanvasSprite(new RiskaSprite(resources.barRightRegion, vbom));
+		
+		movesPoolBarCanvas = new RiskaCanvas(0f, 0f, 0.55f * movesPoolCanvas.getWidth(), 0.64f * movesPoolCanvas.getWidth())
 		{
 			@Override
 			public boolean onAreaTouched(TouchEvent ev, float pX, float pY)
 			{
-				switch(ev.getAction())
+
+				switch(ev.getMotionEvent().getActionMasked())
 				{
-				
+
 				case MotionEvent.ACTION_DOWN:
-					pressed(BUTTON.MOVE);
+					pressed(BUTTON.MOVES_POOL);
 					break;
-					
+
 				case MotionEvent.ACTION_UP:
-					touched(BUTTON.MOVE);
+					if(Utils.contains(this, pX, pY))
+					{
+						onButtonSelected(BUTTON.MOVES_POOL);
+					}
+					else
+					{
+						released(BUTTON.MOVES_POOL);
+					}
 					break;
-					
-				case MotionEvent.ACTION_OUTSIDE:
-					released(BUTTON.MOVE);
-					break;
-					
+
 				default:
 					break;
-					
+
 				}
 				return true;
 			}
 		};
 
-		float scale = Utils.getWrapScale(moveButton, 1f * camera.getWidth(), 0.3f * camera.getHeight(), 1f);
-		moveButton.setScale(-scale, scale);
-		moveButton.setPosition(camera.getWidth() - Utils.getScaledCenterX(moveButton), 0.5f * camera.getHeight());
+		movesPoolBar = new RiskaSprite(resources.fillSquareRegion, vbom);
+		movesPoolBar.setAnchorCenterY(0f);
+		movesPoolBarCanvas.addGraphic(movesPoolBar, 0.5f, 0f, 0.99f, 0.75f);
+		movesPoolBarCanvas.setCanvasSprite(new RiskaSprite(resources.barFillRegion, vbom));
+		
+		movesPoolText = new Text(0f, 0f, resources.mGameFont, "2", Utils.maxNumericChars, vbom);
+		
+		movesPoolBarCanvas.setColor(Utils.OtherColors.WHITE);
+		movesPoolBar.setColor(Utils.OtherColors.LIGHT_GREY);
 
-		moveButton.setVisible(false);
+		movesPoolCanvas.addGraphic(movesPoolBarCanvas, 0.6f, 0.55f, 0.55f, 0.64f);
+		movesPoolCanvas.addText(movesPoolText, 0.6f, 0.1f, 1f, 0.2f);
+		
+		movesPoolCanvas.setPosition(camera.getWidth() - Utils.halfX(movesPoolCanvas), Utils.halfY(movesPoolCanvas));
+
+		attachChild(movesPoolCanvas);
 	}
 
-	private void createNextTurnButton() {
-		nextTurnButton = new ButtonSprite(0, 0, resources.nextTurnBtnRegion, resources.vbom)
-		{
-			@Override
-			public boolean onAreaTouched(TouchEvent ev, float pX, float pY)
-			{
-				switch(ev.getAction())
-				{
-				
-				case MotionEvent.ACTION_DOWN:
-					pressed(BUTTON.NEXT_TURN);
-					break;
-					
-				case MotionEvent.ACTION_UP:
-					touched(BUTTON.NEXT_TURN);
-					break;
-					
-				case MotionEvent.ACTION_OUTSIDE:
-					released(BUTTON.NEXT_TURN);
-					break;
-					
-				default:
-					break;
-					
-				}
-				return true;
-			}
-		};
-		float scale = Utils.getWrapScale(nextTurnButton, 1f * camera.getWidth(), 0.3f * camera.getHeight(), 1f);
-		nextTurnButton.setScale(-scale, scale);
-		nextTurnButton.setPosition(camera.getWidth() - Utils.getScaledCenterX(nextTurnButton), 0.5f * camera.getHeight());
-		nextTurnButton.setVisible(false);
-	}
 	// ======================================================
 	// LOCK / UNLOCK
 	// ======================================================
 	public void Lock()
 	{
-
-		detailsButton.setEnabled(false);
-		attackButton.setEnabled(false);
-
+		// TODO
 	}
 
 	public void Unlock()
 	{
-
-		detailsButton.setEnabled(true);
-		attackButton.setEnabled(true);
-
+		// TODO
 	}
 
 	// ======================================================
 	// BUTTONS ACTIONS
 	// ======================================================
-	private void pressed(BUTTON x)
+	private void pressed(BUTTON mode)
 	{
-		switch(x)
+		switch(mode)
 		{
 
 		case ATTACK:
 			attackButton.setCurrentTileIndex(1);
 			break;
-			
-		case MOVE:
-			moveButton.setCurrentTileIndex(1);
+
+		case SUMMON:
+			summonButton.setCurrentTileIndex(1);
 			break;
 
-		case DETAILS:
-			// Do something
-			break;
-
-		case AUTO_DEPLOY:
-			autoDeployButton.setCurrentTileIndex(1);
-			break;
-			
-		case NEXT_TURN:
-			nextTurnButton.setCurrentTileIndex(1);
-			break;
-
-		case ARROW_LEFT:
-			arrowLeft.setCurrentTileIndex(1);
-			break;
-
-		case ARROW_RIGHT:
-			arrowRight.setCurrentTileIndex(1);
+		case DEPLOY:
+			deployButton.setCurrentTileIndex(1);
 			break;
 
 		default:
@@ -452,18 +406,49 @@ public class GameHUD extends HUD implements Displayable {
 		}
 	}
 
-	private void touched(BUTTON x)
+	private void onButtonSelected(BUTTON mode)
 	{
-		
-		released(x);
-		
-		switch(x)
-		{
+		released(mode);
 
+		switch(currentButton)
+		{
+		case ATTACK:
+			attackButton.setColor(Utils.OtherColors.LIGHT_GREY, attackButton.getAlpha());
+			break;
+
+		case DEPLOY:
+			deployButton.setColor(Utils.OtherColors.LIGHT_GREY, deployButton.getAlpha());
+			break;
+
+		case SUMMON:
+			summonButton.setColor(Utils.OtherColors.LIGHT_GREY, summonButton.getAlpha());
+			break;
+
+		default:
+			break;
+		}
+
+		currentButton = mode;
+
+		switch(mode)
+		{
+		case ATTACK:
+			attackButton.setColor(Utils.OtherColors.RED, attackButton.getAlpha());
+			break;
+
+		case DEPLOY:
+			deployButton.setColor(Utils.OtherColors.CYAN, deployButton.getAlpha());
+			break;
+
+		case SUMMON:
+			summonButton.setColor(Utils.OtherColors.GREEN, summonButton.getAlpha());
+			break;
+
+			/*
 		case ATTACK:
 			gameScene.onAttackButtonTouched();
 			break;
-			
+
 		case MOVE:
 			gameScene.onMoveButtonTouched();
 			break;
@@ -475,7 +460,7 @@ public class GameHUD extends HUD implements Displayable {
 		case AUTO_DEPLOY:
 			gameScene.onAutoDeployButtonTouched();
 			break;
-			
+
 		case NEXT_TURN:
 			gameScene.onNextTurnButtonTouched();
 			break;
@@ -487,20 +472,30 @@ public class GameHUD extends HUD implements Displayable {
 		case ARROW_RIGHT:
 			gameScene.onRightArrowTouched();
 			break;
-
+			 */
 		default:
 			break;
 		}
 	}
 
-	private void released(BUTTON x)
+	private void released(BUTTON mode)
 	{
-		switch(x) {
+		switch(mode)
+		{
 
 		case ATTACK:
 			attackButton.setCurrentTileIndex(0);
 			break;
-			
+
+		case SUMMON:
+			summonButton.setCurrentTileIndex(0);
+			break;
+
+		case DEPLOY:
+			deployButton.setCurrentTileIndex(0);
+			break;
+
+			/*
 		case MOVE:
 			moveButton.setCurrentTileIndex(0);
 			break;
@@ -520,7 +515,7 @@ public class GameHUD extends HUD implements Displayable {
 		case ARROW_RIGHT:
 			arrowRight.setCurrentTileIndex(0);
 			break;
-
+			 */
 		default:
 			// Do nothing
 			break;
@@ -528,36 +523,6 @@ public class GameHUD extends HUD implements Displayable {
 	}
 
 	public void hide(BUTTON toHide)
-	{
-		ButtonSprite x = get(toHide);
-
-		if(x == null)
-		{
-			return;
-		}
-
-		if(x.isVisible())
-		{
-			x.setVisible(false);
-		}
-	}
-
-	public void show(BUTTON toShow)
-	{
-		ButtonSprite x = get(toShow);
-
-		if(x == null)
-		{
-			return;
-		}
-
-		if(!x.isVisible())
-		{
-			x.setVisible(true);
-		}
-	}
-
-	public void hide(SPRITE toHide)
 	{
 		Sprite x = get(toHide);
 
@@ -572,7 +537,7 @@ public class GameHUD extends HUD implements Displayable {
 		}
 	}
 
-	public void show(SPRITE toShow)
+	public void show(BUTTON toShow)
 	{
 		Sprite x = get(toShow);
 
@@ -587,51 +552,31 @@ public class GameHUD extends HUD implements Displayable {
 		}
 	}
 
-	public ButtonSprite get(BUTTON x)
+	public Sprite get(BUTTON x)
 	{
 		switch(x)
 		{
 		case ATTACK:
 			return attackButton;
-		case DETAILS:
-			return detailsButton;
-		case MOVE:
-			return moveButton;
-		case AUTO_DEPLOY:
-			return autoDeployButton;
-		case NEXT_TURN:
-			return nextTurnButton;
-		case ARROW_LEFT:
-			return arrowLeft;
-		case ARROW_RIGHT:
-			return arrowRight;
+			
+		case SUMMON:
+			return summonButton;
+			
+		case DEPLOY:
+			return deployButton;
+			
+		case SUMMON_POOL:
+			return summonPoolBar;
+			
+		case MOVES_POOL:
+			return movesPoolBar;
+			
+		case PLAYER:
+			return currentPlayerButton;
+			
 		default:
 			return null;
 		}
-	}
-
-	private Sprite get(SPRITE x)
-	{
-		switch(x)
-		{
-		case INFO_TAB:
-			return infoTab.getSprite();
-		default:
-			return null;
-		}
-	}
-
-	// ======================================================
-	// DETAIL BUTTON
-	// ======================================================
-	public void setDetailButtonToQuestion()
-	{
-		detailsButton.setCurrentTileIndex(0);
-	}
-
-	public void setDetailButtonToExit()
-	{
-		detailsButton.setCurrentTileIndex(1);
 	}
 
 }

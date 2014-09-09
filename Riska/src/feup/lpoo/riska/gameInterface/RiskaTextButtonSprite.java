@@ -3,17 +3,16 @@ package feup.lpoo.riska.gameInterface;
 import org.andengine.entity.IEntity;
 import org.andengine.entity.modifier.AlphaModifier;
 import org.andengine.entity.modifier.DelayModifier;
-import org.andengine.entity.sprite.Sprite;
 import org.andengine.entity.text.Text;
 import org.andengine.opengl.font.Font;
-import org.andengine.opengl.texture.region.ITextureRegion;
+import org.andengine.opengl.texture.region.ITiledTextureRegion;
 import org.andengine.opengl.vbo.VertexBufferObjectManager;
 import org.andengine.util.adt.color.Color;
 
 import feup.lpoo.riska.utilities.Utils;
 
-public class RiskaSprite extends Sprite {
-
+public class RiskaTextButtonSprite extends RiskaButtonSprite {
+	
 	private Text text;
 
 	private static final float textBoundingFactor = 0.55f;
@@ -21,12 +20,12 @@ public class RiskaSprite extends Sprite {
 
 	// ==================================================
 	// ==================================================
-	public RiskaSprite(ITextureRegion pTexture, VertexBufferObjectManager vbom)
+	public RiskaTextButtonSprite(ITiledTextureRegion pTexture, VertexBufferObjectManager vbom)
 	{
 		this(pTexture, vbom, null, null, 0);
 	}
 	
-	public RiskaSprite(ITextureRegion pTexture, VertexBufferObjectManager vbom, String pString, Font pFont)
+	public RiskaTextButtonSprite(ITiledTextureRegion pTexture, VertexBufferObjectManager vbom, String pString, Font pFont)
 	{
 		super(0f, 0f, pTexture, vbom);
 
@@ -35,20 +34,20 @@ public class RiskaSprite extends Sprite {
 		wrapText();
 	}
 
-	public RiskaSprite(ITextureRegion pTexture, VertexBufferObjectManager vbom, String pString, Font pFont, int maxChars)
+	public RiskaTextButtonSprite(ITiledTextureRegion pTexture, VertexBufferObjectManager vbom, String pString, Font pFont, int maxCharacters)
 	{
 		super(0f, 0f, pTexture, vbom);
 
 
-		createText(pString, pFont, vbom, maxChars);
+		createText(pString, pFont, vbom, maxCharacters);
 		wrapText();
 	}
 
-	private void createText(String pString, Font pFont, VertexBufferObjectManager vbom, int maxChars)
+	private void createText(String pString, Font pFont, VertexBufferObjectManager vbom, int maxCharacters)
 	{
 		if(pString != null)
 		{
-			text = new Text(0f, 0f, pFont, pString, maxChars, vbom);
+			text = new Text(0f, 0f, pFont, pString, maxCharacters, vbom);
 			text.setColor(Color.WHITE);
 			attachChild(text);
 		}
@@ -121,9 +120,9 @@ public class RiskaSprite extends Sprite {
 		fadeOut(newAnimationTime);
 	}
 
-	public String getText()
+	public Text getText()
 	{
-		return text.getText().toString();
+		return text;
 	}
 
 	public void showText()

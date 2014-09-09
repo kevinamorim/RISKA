@@ -57,7 +57,7 @@ public class LoadGame {
 		for(int i = 0; i < size; i++) {
 			int id = prefs.getInt("cpuRegion_" + i, 0);
 
-			logic.map.getRegionById(id).setOwner(logic.getPlayers().get(1));
+			logic.map.getRegionById(id).setOwner(logic.getPlayers()[1]);
 		}
 		
 	}
@@ -68,8 +68,7 @@ public class LoadGame {
 		for(int i = 0; i < size; i++) {
 			int id = prefs.getInt("playerRegion_" + i, 0);
 
-			logic.map.getRegionById(id).setOwner(logic.getPlayers().get(0));
-
+			logic.map.getRegionById(id).setOwner(logic.getPlayers()[0]);
 		}
 	}
 
@@ -95,7 +94,7 @@ public class LoadGame {
 
 		logic.setState(state);
 		
-		logic.setCurrentPlayerByIndex(prefs.getInt("CurrentPlayer", 0));
+		logic.setCurrentPlayer(prefs.getInt("CurrentPlayer", 0));
 	}
 	
 	private void loadSoldiers() {

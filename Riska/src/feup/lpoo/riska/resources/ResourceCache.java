@@ -79,8 +79,7 @@ public class ResourceCache {
 	// ==================================================
 	// GAME RESOURCES
 	// ==================================================
-	public ITiledTextureRegion regionBtnRegion;
-	public ITiledTextureRegion attackBtnRegion;
+	public ITiledTextureRegion regionButtonRegion;
 	public ITiledTextureRegion detailsBtnRegion;
 	public ITiledTextureRegion autoDeployBtnRegion;
 	public ITiledTextureRegion moveBtnRegion;
@@ -93,8 +92,18 @@ public class ResourceCache {
 	public ITiledTextureRegion seaRegion;
 	public ITextureRegion mapRegion;
 	private BuildableBitmapTextureAtlas gameTextureAtlas;
+	private BuildableBitmapTextureAtlas gameNEWTextureAtlas;
 	private BitmapTextureAtlas mapTextureAtlas;
 	public ArrayList<Map> maps;	
+	
+	public ITiledTextureRegion attackButtonRegion;
+	public ITiledTextureRegion deployButtonRegion;
+	public ITiledTextureRegion summonButtonRegion;
+	public ITextureRegion barLowRegion;
+	public ITextureRegion barLeftRegion;
+	public ITextureRegion barRightRegion;
+	public ITextureRegion barFillRegion;
+	public ITextureRegion fillSquareRegion;
 	
 	// ==================================================
 	// GAMEOVER RESOURCES
@@ -288,10 +297,10 @@ public class ResourceCache {
 		gameTextureAtlas = new BuildableBitmapTextureAtlas(activity.getTextureManager(),
 				gameTextureWidth, gameTextureHeight, TextureOptions.BILINEAR);
 
-		regionBtnRegion = BitmapTextureAtlasTextureRegionFactory.createTiledFromAsset(gameTextureAtlas, activity, 
+		regionButtonRegion = BitmapTextureAtlasTextureRegionFactory.createTiledFromAsset(gameTextureAtlas, activity, 
 				"region.png", 1, 2);
 
-		attackBtnRegion = BitmapTextureAtlasTextureRegionFactory.createTiledFromAsset(gameTextureAtlas, activity, 
+		attackButtonRegion = BitmapTextureAtlasTextureRegionFactory.createTiledFromAsset(gameTextureAtlas, activity, 
 				"attack.png", 2, 1);
 
 		detailsBtnRegion = BitmapTextureAtlasTextureRegionFactory.createTiledFromAsset(gameTextureAtlas, activity, 
@@ -321,10 +330,38 @@ public class ResourceCache {
 		arrowRightRegion = BitmapTextureAtlasTextureRegionFactory.createTiledFromAsset(gameTextureAtlas, activity,
 				"arrow_right.png", 2, 1);
 		
+		
+		gameNEWTextureAtlas = new BuildableBitmapTextureAtlas(activity.getTextureManager(),
+				gameTextureWidth, gameTextureHeight, TextureOptions.DEFAULT);
+		
+		attackButtonRegion = BitmapTextureAtlasTextureRegionFactory.createTiledFromAsset(gameTextureAtlas, activity,
+				"button_attack.png", 1, 3);
+		
+		deployButtonRegion = BitmapTextureAtlasTextureRegionFactory.createTiledFromAsset(gameTextureAtlas, activity,
+				"button_deploy.png", 1, 3);
+		
+		summonButtonRegion = BitmapTextureAtlasTextureRegionFactory.createTiledFromAsset(gameTextureAtlas, activity,
+				"button_summon.png", 1, 3);
+		
+		barLowRegion = BitmapTextureAtlasTextureRegionFactory.createFromAsset(gameTextureAtlas, activity,
+				"bar_low.png");
+		
+		barLeftRegion = BitmapTextureAtlasTextureRegionFactory.createFromAsset(gameTextureAtlas, activity,
+				"bar_left.png");
+		
+		barRightRegion = BitmapTextureAtlasTextureRegionFactory.createFromAsset(gameTextureAtlas, activity,
+				"bar_right.png");
+		
+		barFillRegion = BitmapTextureAtlasTextureRegionFactory.createFromAsset(gameTextureAtlas, activity,
+				"bar_fill.png");
+		
+		fillSquareRegion = BitmapTextureAtlasTextureRegionFactory.createFromAsset(gameTextureAtlas, activity,
+				"fill_square.png");
+		
 		try
 		{		
 			gameTextureAtlas.build(new BlackPawnTextureAtlasBuilder<IBitmapTextureAtlasSource, BitmapTextureAtlas>(0, 1, 0));
-			
+			gameNEWTextureAtlas.build(new BlackPawnTextureAtlasBuilder<IBitmapTextureAtlasSource, BitmapTextureAtlas>(0, 1, 0));
 		}
 		catch(final TextureAtlasBuilderException e)
 		{
@@ -367,6 +404,7 @@ public class ResourceCache {
 	{		
 		// Texture Atlas
 		gameTextureAtlas.load();
+		gameNEWTextureAtlas.load();
 		mapTextureAtlas.load();
 		
 		// Fonts
@@ -377,6 +415,7 @@ public class ResourceCache {
 	public void unloadGameSceneResources()
 	{
 		gameTextureAtlas.unload();
+		gameNEWTextureAtlas.unload();
 		mapTextureAtlas.unload();
 	}
 

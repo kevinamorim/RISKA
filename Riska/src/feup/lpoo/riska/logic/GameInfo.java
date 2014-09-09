@@ -1,15 +1,18 @@
 package feup.lpoo.riska.logic;
 
-import org.andengine.util.adt.color.Color;
-
-import feup.lpoo.riska.utilities.Utils;
+import feup.lpoo.riska.elements.Player;
 
 public class GameInfo
 {
+	private static Player[] players;
+	private static int playersIndex = 0;
+	
+	public static final int maxMoves = 5;
+	public static final int maxSummoned = 5;
 
-	private static int[] playerFaction = new int[GameOptions.maxPlayers]; 
-	public static boolean[] playerIsCPU = new boolean[GameOptions.maxPlayers];
-
+	public static final int minGarrison = 1;
+	public static final int maxGarrison = 5;
+	
 	public static int level = 0;
 
 	public static int numberOfPlayers = 0;
@@ -20,35 +23,35 @@ public class GameInfo
 
 	// ======================================================
 	// ======================================================	
-	public static Color[] getPlayerColors(int playerIndex)
-	{
-		return GameOptions.getColors(playerFaction[playerIndex]);
-	}
-
-	public static void assignPlayerFaction(int playerIndex, int factionIndex)
-	{
-		playerFaction[playerIndex] = factionIndex;
-	}
-
 	public static void assignPlayerFaction(int index)
 	{
-		int factionIndex = 0;
-
-		while(Utils.inArray(factionIndex, playerFaction))
-		{
-			factionIndex++;
-		}
-
-		playerFaction[index] = factionIndex;
-	}
-
-	public static void clearFactions()
-	{
-		Utils.fill(playerFaction, -1);
+		
 	}
 	
 	public static void setLevel(int lvl)
 	{
 		level = lvl;
+	}
+	
+	public static void setNumberOfPlayers(int value)
+	{
+		numberOfPlayers = Math.min(value, GameOptions.maxPlayers);
+		players = new Player[numberOfPlayers];
+	}
+	
+	public static void clearPlayers()
+	{
+		playersIndex = 0;
+	}
+
+	public static void addPlayer(String pName, boolean isCpu, int pColor)
+	{
+		players[playersIndex] = new Player(isCpu, GameOptions.getColors(pColor), pName);
+		playersIndex++;
+	}
+
+	public static Player[] players()
+	{
+		return players;
 	}
 }

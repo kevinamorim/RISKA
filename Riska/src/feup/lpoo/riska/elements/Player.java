@@ -1,6 +1,7 @@
 package feup.lpoo.riska.elements;
 
 import java.util.ArrayList;
+
 import org.andengine.util.adt.color.Color;
 
 import feup.lpoo.riska.utilities.Utils;
@@ -8,150 +9,135 @@ import feup.lpoo.riska.utilities.Utils;
 public class Player extends Object {
 
 	// ======================================================
-	// CONSTANTS
-	// ======================================================
-
-	// ======================================================
 	// FIELDS
 	// ======================================================
-	public boolean isCPU;	
+	public boolean isCpu;
+	public Color priColor, secColor;
+	public String name;
+	
+	private ArrayList<Region> regionsPool;	
 
-	private ArrayList<Region> regions;	
-
-	public int soldiersToDeploy;
-
-	private Color priColor, secColor;
-
-	private String playerName;
+	public int soldiersPool;
 
 	// ======================================================
-	// CONSTRUCTORS
 	// =====================================================
 	public Player(boolean isCPU, Color[] colors, String name)
 	{
 		this(isCPU, colors[0], colors[1], name);
 	}
 
-	public Player(boolean isCPU, Color primaryColor, Color secondaryColor, String name)
+	public Player(boolean isCPU, Color primaryColor, Color secondaryColor, String pName)
 	{
-		this.isCPU = isCPU;
-		if(isCPU)
+		isCpu = isCPU;
+		
+		if(isCpu)
 		{
-			playerName = "CPU";
+			name = "CPU";
 		}
 		else
 		{
-			playerName = name;
+			name = pName;
 		}
 
-		this.regions = new ArrayList<Region>();
+		regionsPool = new ArrayList<Region>();
 
-		this.priColor = primaryColor;
-		this.secColor = secondaryColor;
+		priColor = primaryColor;
+		secColor = secondaryColor;
 	}
 
 	// ======================================================
-	// LOGIC
 	// =====================================================
 	public void addRegion(Region region)
 	{
-		regions.add(region);
+		regionsPool.add(region);
 	}
 
 	public void removeRegion(Region region)
 	{
-		regions.remove(region);
+		regionsPool.remove(region);
 	}
 
-	public ArrayList<Region> getRegions() {
-		return regions;
+	public ArrayList<Region> getRegions()
+	{
+		return regionsPool;
 	}
 
-	public boolean ownsRegion(Region region) {
-		return regions.contains(region);
+	public boolean ownsRegion(Region region)
+	{
+		return regionsPool.contains(region);
 	}
 
-	public void setSoldiersToDeploy(int soldiersToDeploy) {
-		this.soldiersToDeploy = soldiersToDeploy;
+	public void setSoldiersPool(int value)
+	{
+		soldiersPool = value;
 	}
 
 	public void deploy(int number, Region pRegion)
 	{
 		int deployed = number;
 
-		soldiersToDeploy -= number;
+		soldiersPool -= number;
 
-		if(soldiersToDeploy < 0)
+		if(soldiersPool < 0)
 		{
-			deployed = number + soldiersToDeploy;
+			deployed = number + soldiersPool;
 		}
 
 		pRegion.deploy(deployed);
 	}
 
-	public boolean hasSoldiersLeftToDeploy()
+	public boolean hasSoldiersInPool()
 	{
-		return (soldiersToDeploy > 0);
-	}
-
-	public Color getPrimaryColor()
-	{
-		return this.priColor;
-	}
-
-	public Color getScondaryColor()
-	{
-		return this.secColor;
+		return (soldiersPool > 0);
 	}
 	
 	public void deployAllSoldiers() {
 
 		int i = 0;
-		while(soldiersToDeploy > 0) {
-			regions.get(i).addSoldiers(1);
-			i = (i + 1) % regions.size();
-			soldiersToDeploy--;
+		while(soldiersPool > 0) {
+			regionsPool.get(i).addSoldiers(1);
+			i = (i + 1) % regionsPool.size();
+			soldiersPool--;
 		}
 
 	}
-
-	public String getName()
-	{
-		return playerName;
-	}
 	
-	public Region pickRegionForAttack() {
-		
+	public Region pickRegionForAttack()
+	{	
 		ArrayList<Region> allowedRegions = new ArrayList<Region>();
 		
-		for(Region item : regions) {
+		for(Region item : regionsPool)
+		{
 			if(item.canAttack() && item.hasEnemyNeighbor()) {
 				allowedRegions.add(item);
 			}
 		}
 		
-		if(allowedRegions.size() > 0) {
-			return allowedRegions.get(Utils.randomInt(0, regions.size() - 1));
+		if(allowedRegions.size() > 0)
+		{
+			return allowedRegions.get(Utils.randomInt(0, regionsPool.size() - 1));
 		}
 		
 		pickRegionForAttack();
 		
 		return null;
-
 	}
 	
-	public Region pickRegionForMove() {
-		
+	public Region pickRegionForMove()
+	{	
 		ArrayList<Region> allowedRegions = new ArrayList<Region>();
 		
-		for(Region item : regions) {
-			if(item.canAttack() && item.hasAlliedNeighbour()) {
+		for(Region item : regionsPool)
+		{
+			if(item.canAttack() && item.hasAlliedNeighbour())
+			{
 				allowedRegions.add(item);
 			}
 		}
 		
-		if(allowedRegions.size() > 0) {
-			return allowedRegions.get(Utils.randomInt(0, regions.size() - 1));
+		if(allowedRegions.size() > 0)
+		{
+			return allowedRegions.get(Utils.randomInt(0, regionsPool.size() - 1));
 		}
 		
 		pickRegionForMove();
@@ -159,7 +145,8 @@ public class Player extends Object {
 		return null;
 	}
 	
-	public Region pickNeighbourAlliedRegion(Region pRegion) {
+	public Region pickNeighbourAlliedRegion(Region pRegion)
+	{
 		ArrayList<Region> neighbours = pRegion.getNeighbours();
 		ArrayList<Region> allowed = new ArrayList<Region>();
 		
@@ -172,7 +159,8 @@ public class Player extends Object {
 		return allowed.get(Utils.randomInt(0, allowed.size() - 1));
 	}
 	
-	public Region pickNeighbourEnemyRegion(Region pRegion) {
+	public Region pickNeighbourEnemyRegion(Region pRegion)
+	{
 		ArrayList<Region> neighbours = pRegion.getNeighbours();
 		ArrayList<Region> allowed = new ArrayList<Region>();
 
@@ -185,9 +173,9 @@ public class Player extends Object {
 		return allowed.get(Utils.randomInt(0, allowed.size() - 1));
 	}
 	
-	public boolean hasPossibleMoves() {
-		
-		for(Region item : regions)
+	public boolean hasPossibleMoves()
+	{	
+		for(Region item : regionsPool)
 		{
 			if(item.hasEnemyNeighbor() && item.canAttack())
 			{
@@ -196,6 +184,11 @@ public class Player extends Object {
 		}
 
 		return false;
+	}	
+
+	@Override
+	public String toString()
+	{
+		return "Player '" + name + "' (cpu=" + isCpu + ")";
 	}
-	
 }

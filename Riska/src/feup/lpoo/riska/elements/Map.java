@@ -41,7 +41,7 @@ public class Map {
 	public void initRegions() {
 		for(Region region : regions)
 		{
-			region.setSoldiers(Math.max(MIN_SOLDIERS_PER_REGION, region.getNumberOfSoldiers()));
+			region.setSoldiers(Math.max(MIN_SOLDIERS_PER_REGION, region.numberOfSoldiers()));
 		}
 	}
 	
@@ -74,7 +74,7 @@ public class Map {
 
 	}
 
-	public void handOutRegions(ArrayList<Player> players) {
+	public void handOutRegions(Player[] players) {
 
 		ArrayList<Integer> indexes = new ArrayList<Integer>();
 
@@ -96,12 +96,12 @@ public class Map {
 		for(Integer index : indexes)
 		{
 			Region region = regions.get(index);
-			Player player = players.get(i);
+			Player player = players[i];
 
 			region.setOwner(player);
-			region.setColors(player.getPrimaryColor(), player.getScondaryColor());
+			region.setColors(player.priColor, player.secColor);
 
-			i = (i + 1) % players.size();
+			i = (i + 1) % players.length;
 		}
 	}
 
@@ -133,7 +133,7 @@ public class Map {
 			{
 				if(!region.getNeighbours().contains(reg))
 				{
-					Log.d("Regions","Region " + reg.getName() + " (" + reg.ID + ") has neighbour " + region.getName() + " (" + region.ID + ") but not vice-versa.");
+					Log.d("Regions","Region " + reg.name + " (" + reg.ID + ") has neighbour " + region.name + " (" + region.ID + ") but not vice-versa.");
 				}
 			}
 		}

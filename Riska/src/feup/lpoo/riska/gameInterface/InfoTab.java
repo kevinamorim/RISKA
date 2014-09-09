@@ -102,7 +102,7 @@ public class InfoTab {
 	
 	private void attackText(GameLogic logic) {
 		
-		if(logic.getCurrentPlayer().isCPU) {
+		if(logic.getCurrentPlayer().isCpu) {
 			setText(Utils.getString(R.string.game_info_cpu_attack));
 			return;
 		}
@@ -123,7 +123,7 @@ public class InfoTab {
 	
 	private void moveText(GameLogic logic) {
 		
-		if(logic.getCurrentPlayer().isCPU) {
+		if(logic.getCurrentPlayer().isCpu) {
 			setText(Utils.getString(R.string.game_info_cpu_move));
 			return;
 		}
@@ -143,7 +143,7 @@ public class InfoTab {
 	}
 	
 	private void deploymentText(GameLogic logic) {
-		setText(logic.getCurrentPlayer().soldiersToDeploy + Utils.getString(R.string.game_info_left_to_deploy));
+		setText(logic.getCurrentPlayer().soldiersPool + Utils.getString(R.string.game_info_left_to_deploy));
 	}
 	
 	private void endTurnText(GameLogic logic) {
