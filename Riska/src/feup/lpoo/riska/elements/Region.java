@@ -4,7 +4,6 @@ import java.util.ArrayList;
 import org.andengine.util.adt.color.Color;
 
 import android.graphics.Point;
-import android.util.Log;
 
 public class Region extends Element {
 

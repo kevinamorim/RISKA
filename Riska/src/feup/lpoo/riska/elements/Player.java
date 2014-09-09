@@ -3,8 +3,6 @@ package feup.lpoo.riska.elements;
 import java.util.ArrayList;
 import org.andengine.util.adt.color.Color;
 
-import android.util.Log;
-
 import feup.lpoo.riska.utilities.Utils;
 
 public class Player extends Object {

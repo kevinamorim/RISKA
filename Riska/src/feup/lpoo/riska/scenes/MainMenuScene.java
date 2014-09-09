@@ -223,26 +223,23 @@ public class MainMenuScene extends BaseScene implements Displayable, IOnMenuItem
 
 		menuMain.setBackgroundEnabled(false);
 
-		menuMainStartButton = new RiskaMenuItem(MAIN_START,
-				resources.buttonRegion, 
-				vbom, "Start", resources.mainMenuFont);
+		menuMainStartButton = new RiskaMenuItem(MAIN_START, resources.buttonRegion, vbom, "Start", resources.mainMenuFont);
 
 		Utils.wrap(menuMainStartButton, 0.5f * camera.getWidth(), 0.25f * camera.getHeight(), 1f);
 		menuMainStartButton.setPosition(camera.getCenterX(), 0.53f * camera.getHeight());
 		//startButton.debug();
 
-		menuMainOptionsButton = new RiskaMenuItem(MAIN_OPTIONS,
-				resources.buttonRegion, 
-				vbom, "Options", resources.mainMenuFont);
+		menuMainOptionsButton = new RiskaMenuItem(MAIN_OPTIONS, resources.buttonRegion, vbom, "Options", resources.mainMenuFont);
 
 		Utils.wrap(menuMainOptionsButton, 0.5f * camera.getWidth(), 0.25f * camera.getHeight(), 1f);
 		menuMainOptionsButton.setPosition(camera.getCenterX(), 0.23f * camera.getHeight());
 
 		menuMain.addMenuItem(menuMainStartButton);
 		menuMain.addMenuItem(menuMainOptionsButton);
+		
 		menuMain.setOnMenuItemClickListener(this);
 		menuMain.setTouchAreaBindingOnActionDownEnabled(true);
-		menuMain.setTouchAreaBindingOnActionMoveEnabled(true);
+		//menuMain.setTouchAreaBindingOnActionMoveEnabled(true);
 	}
 
 	// ==================================================
@@ -275,7 +272,7 @@ public class MainMenuScene extends BaseScene implements Displayable, IOnMenuItem
 
 		menuStart.setOnMenuItemClickListener(this);
 		menuStart.setTouchAreaBindingOnActionDownEnabled(true);
-		menuStart.setTouchAreaBindingOnActionMoveEnabled(true);
+		//menuStart.setTouchAreaBindingOnActionMoveEnabled(true);
 
 		menuStartNewButton.setAlpha(0f);
 		menuStartLoadButton.setAlpha(0f);
@@ -305,7 +302,7 @@ public class MainMenuScene extends BaseScene implements Displayable, IOnMenuItem
 		menuOptionsAudioTab.setAlpha(0f);
 
 		menuOptions.setTouchAreaBindingOnActionDownEnabled(true);
-		menuOptions.setTouchAreaBindingOnActionMoveEnabled(true);
+		//menuOptions.setTouchAreaBindingOnActionMoveEnabled(true);
 	}
 
 	private void createMenuCanvas()
@@ -1107,7 +1104,7 @@ public class MainMenuScene extends BaseScene implements Displayable, IOnMenuItem
 						break;
 
 					case MotionEvent.ACTION_UP:
-						selectLevel(getTag());
+						onLevelSelected(getTag());
 						break;
 
 					default:
@@ -1135,7 +1132,7 @@ public class MainMenuScene extends BaseScene implements Displayable, IOnMenuItem
 						break;
 
 					case MotionEvent.ACTION_UP:
-						selectLevel(getTag());
+						onLevelSelected(getTag());
 						break;
 
 					default:
@@ -1155,7 +1152,7 @@ public class MainMenuScene extends BaseScene implements Displayable, IOnMenuItem
 			index--;
 		}
 
-		selectLevel(0);
+		onLevelSelected(0);
 
 		// TODO
 
@@ -1484,8 +1481,8 @@ public class MainMenuScene extends BaseScene implements Displayable, IOnMenuItem
 			}
 		}
 	}
-
-	private void selectLevel(int index)
+	
+	private void onLevelSelected(int index)
 	{
 		//Log.d("Riska", " > Level Selected : " + index);
 
@@ -1504,7 +1501,7 @@ public class MainMenuScene extends BaseScene implements Displayable, IOnMenuItem
 			}
 		}
 	}
-
+	
 	// ==================================================
 	// UPDATE DATA
 	// ==================================================

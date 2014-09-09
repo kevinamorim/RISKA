@@ -3,11 +3,7 @@ package feup.lpoo.riska.gameInterface;
 import org.andengine.engine.camera.hud.HUD;
 import org.andengine.entity.sprite.ButtonSprite;
 import org.andengine.entity.sprite.Sprite;
-import org.andengine.entity.text.Text;
 import org.andengine.input.touch.TouchEvent;
-import org.andengine.util.adt.color.Color;
-
-import feup.lpoo.riska.R;
 import feup.lpoo.riska.interfaces.Displayable;
 import feup.lpoo.riska.logic.GameLogic;
 import feup.lpoo.riska.logic.GameLogic.GAME_STATE;
