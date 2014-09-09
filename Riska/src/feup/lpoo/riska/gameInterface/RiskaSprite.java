@@ -15,7 +15,7 @@ import android.util.Log;
 import feup.lpoo.riska.utilities.Utils;
 
 public class RiskaSprite extends Sprite {
-	
+
 	private Text text;
 
 	private static final float textBoundingFactor = 0.55f;
@@ -60,26 +60,40 @@ public class RiskaSprite extends Sprite {
 		}
 	}
 
-	public void hide(float deltaTime)
-	{	
-		AlphaModifier alphaOut = new AlphaModifier(deltaTime, 1f, 0f);
-		registerEntityModifier(alphaOut);
-	}
-
-	public void hide()
+	public void fadeOut(float deltaTime)
 	{
-		hide(animationTime);
+		if(deltaTime == 0f)
+		{
+			setAlpha(0f);
+		}
+		else
+		{
+			AlphaModifier alphaOut = new AlphaModifier(deltaTime, 1f, 0f);
+			registerEntityModifier(alphaOut);
+		}
 	}
 
-	public void show(float deltaTime)
-	{	
-		AlphaModifier alphaIn = new AlphaModifier(deltaTime, 0f, 1f);
-		registerEntityModifier(alphaIn);
-	}
-
-	public void show()
+	public void fadeOut()
 	{
-		show(animationTime);
+		fadeOut(animationTime);
+	}
+
+	public void fadeIn(float deltaTime)
+	{
+		if(deltaTime == 0f)
+		{
+			setAlpha(1f);
+		}
+		else
+		{
+			AlphaModifier alphaIn = new AlphaModifier(deltaTime, 0f, 1f);
+			registerEntityModifier(alphaIn);
+		}	
+	}
+
+	public void fadeIn()
+	{
+		fadeIn(animationTime);
 	}
 
 	public void animate()
@@ -91,15 +105,15 @@ public class RiskaSprite extends Sprite {
 			@Override
 			protected void onModifierFinished(IEntity pItem)
 			{
-				show(newAnimationTime);
+				fadeIn(newAnimationTime);
 			}
 
 		};
 		registerEntityModifier(waitForAnim);
 
-		hide(newAnimationTime);
+		fadeOut(newAnimationTime);
 	}
-	
+
 	public Text getText()
 	{
 		return text;
@@ -112,7 +126,7 @@ public class RiskaSprite extends Sprite {
 			text.setVisible(true);
 		}
 	}
-	
+
 	public void hideText()
 	{
 		if(text != null)
@@ -126,7 +140,7 @@ public class RiskaSprite extends Sprite {
 		if(text != null)
 		{
 			text.setText(pString);
-			
+
 			wrapText();
 		}
 	}
@@ -141,43 +155,43 @@ public class RiskaSprite extends Sprite {
 
 		wrapText();
 	}
-	
+
 	@Override
 	public void setColor(Color pColor)
 	{
 		for(int i = 0; i < getChildCount(); i++)
 		{
 			IEntity e = this.getChildByIndex(i);
-			
+
 			e.setColor(pColor);
 		}
-		
+
 		super.setColor(pColor);
 	}
-	
+
 	@Override
 	public void setScale(float pScale)
 	{
 		for(int i = 0; i < getChildCount(); i++)
 		{
 			IEntity e = this.getChildByIndex(i);
-			
+
 			e.setScale(pScale);
 		}
-		
+
 		super.setScale(pScale);
 	}
-	
+
 	@Override
 	public void setAlpha(float pAlpha)
 	{
 		for(int i = 0; i < getChildCount(); i++)
 		{
 			IEntity e = getChildByIndex(i);
-			
+
 			e.setAlpha(pAlpha);
 		}
-		
+
 		super.setAlpha(pAlpha);
 	}
 }

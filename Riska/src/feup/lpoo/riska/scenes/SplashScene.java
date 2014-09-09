@@ -68,11 +68,4 @@ public class SplashScene extends BaseScene implements Displayable {
 		
 		attachChild(splash);
 	}
-
-	@Override
-	public void onSceneShow() {
-		// TODO Auto-generated method stub
-		
-	}
-	
 }

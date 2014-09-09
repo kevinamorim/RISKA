@@ -42,10 +42,4 @@ public class LoadingScene extends BaseScene {
 		return SCENE_TYPE.LOADING;
 	}
 
-	@Override
-	public void onSceneShow() {
-		// TODO Auto-generated method stub
-		
-	}
-
 }

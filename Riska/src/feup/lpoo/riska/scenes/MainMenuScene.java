@@ -38,7 +38,7 @@ public class MainMenuScene extends BaseScene implements Displayable, IOnMenuItem
 
 	private enum NEWGAME_TAB { MAP, PLAYERS, LEVEL, GO, NONE };
 
-	private static float animationTime = 0.25f;
+	private static float animationTime = GameOptions.animationTime;
 
 	private CHILD currentChild = CHILD.MAIN;
 	private OPTIONS_TAB currentOptionsTab;
@@ -152,7 +152,7 @@ public class MainMenuScene extends BaseScene implements Displayable, IOnMenuItem
 			else
 			{
 				//detachChildren();
-				changeChildSceneFromTo(currentChild, CHILD.MAIN);
+				changeChildScene(currentChild, CHILD.MAIN);
 			}
 		}
 	}
@@ -169,9 +169,6 @@ public class MainMenuScene extends BaseScene implements Displayable, IOnMenuItem
 	{
 		return SCENE_TYPE.MAIN_MENU;
 	}
-
-	@Override
-	public void onSceneShow() { }
 
 	@Override
 	protected void onManagedUpdate(float pSecondsElapsed)
@@ -666,20 +663,20 @@ public class MainMenuScene extends BaseScene implements Displayable, IOnMenuItem
 			{
 			case MENU:
 				menuOptionsMenuTab.setColor(Utils.OtherColors.DARK_GREY);
-				menuOptionsMenuCanvas.hide(animationTime);
+				menuOptionsMenuCanvas.fadeOut(animationTime);
 				menuOptions.unregisterTouchArea(switchMenuAnimations);
 				menuOptions.unregisterTouchArea(textMenuAnimations);
 				break;
 
 			case GAME:
 				menuOptionsGameTab.setColor(Utils.OtherColors.DARK_GREY);
-				menuOptionsGameCanvas.hide(animationTime);
+				menuOptionsGameCanvas.fadeOut(animationTime);
 				menuOptions.unregisterTouchArea(switchGameAnimations);
 				break;
 
 			case AUDIO:
 				menuOptionsAudioTab.setColor(Utils.OtherColors.DARK_GREY);
-				menuOptionsAudioCanvas.hide(animationTime);
+				menuOptionsAudioCanvas.fadeOut(animationTime);
 				menuOptions.unregisterTouchArea(switchAudioMusic);
 				menuOptions.unregisterTouchArea(switchAudioSfx);
 				menuOptions.unregisterTouchArea(textAudioMusic);
@@ -697,20 +694,20 @@ public class MainMenuScene extends BaseScene implements Displayable, IOnMenuItem
 
 			case MENU:
 				menuOptionsMenuTab.setColor(Color.WHITE);
-				menuOptionsMenuCanvas.show(animationTime);
+				menuOptionsMenuCanvas.fadeIn(animationTime);
 				menuOptions.registerTouchArea(switchMenuAnimations);
 				menuOptions.registerTouchArea(textMenuAnimations);
 				break;
 
 			case GAME:
 				menuOptionsGameTab.setColor(Color.WHITE);
-				menuOptionsGameCanvas.show(animationTime);
+				menuOptionsGameCanvas.fadeIn(animationTime);
 				menuOptions.registerTouchArea(switchGameAnimations);
 				break;
 
 			case AUDIO:
 				menuOptionsAudioTab.setColor(Color.WHITE);
-				menuOptionsAudioCanvas.show(animationTime);
+				menuOptionsAudioCanvas.fadeIn(animationTime);
 				menuOptions.registerTouchArea(switchAudioMusic);
 				menuOptions.registerTouchArea(switchAudioSfx);
 				menuOptions.registerTouchArea(textAudioMusic);
@@ -772,6 +769,7 @@ public class MainMenuScene extends BaseScene implements Displayable, IOnMenuItem
 				switchMenuAnimations.setCurrentTileIndex(0);
 				textMenuAnimations.setColor(Color.WHITE);
 			}
+			animationTime = GameOptions.animationTime;
 			break;
 
 		default:
@@ -811,7 +809,7 @@ public class MainMenuScene extends BaseScene implements Displayable, IOnMenuItem
 		menuNewGameMapTab.setAlpha(0f);
 		menuNewGamePlayersTab.setAlpha(0f);
 		menuNewGameLevelTab.setAlpha(0f);
-		menuNewGameGoTab.setAlpha(0f);
+		menuNewGameGoTab.setAlpha(0f);			
 
 		menuNewGame.setOnMenuItemClickListener(this);
 		menuNewGame.setTouchAreaBindingOnActionDownEnabled(true);
@@ -1283,7 +1281,7 @@ public class MainMenuScene extends BaseScene implements Displayable, IOnMenuItem
 			{
 			case MAP:
 				menuNewGameMapTab.setColor(Utils.OtherColors.DARK_GREY);
-				menuNewGameMapCanvas.hide(animationTime);
+				menuNewGameMapCanvas.fadeOut(animationTime);
 				// Unregister all touch areas in that canvas
 				for(int i = 0; i < mapCanvas.length; i++)
 				{
@@ -1293,7 +1291,7 @@ public class MainMenuScene extends BaseScene implements Displayable, IOnMenuItem
 
 			case PLAYERS:
 				menuNewGamePlayersTab.setColor(Utils.OtherColors.DARK_GREY);
-				menuNewGamePlayersCanvas.hide(animationTime);
+				menuNewGamePlayersCanvas.fadeOut(animationTime);
 				// Unregister all touch areas in that canvas
 				for(int i = 0; i < playerName.length; i++)
 				{
@@ -1306,7 +1304,7 @@ public class MainMenuScene extends BaseScene implements Displayable, IOnMenuItem
 
 			case LEVEL:
 				menuNewGameLevelTab.setColor(Utils.OtherColors.DARK_GREY);
-				menuNewGameLevelCanvas.hide(animationTime);
+				menuNewGameLevelCanvas.fadeOut(animationTime);
 				// Unregister all touch areas in that canvas
 				for(int i = 0; i < levelCheckBox.length; i++)
 				{
@@ -1317,7 +1315,7 @@ public class MainMenuScene extends BaseScene implements Displayable, IOnMenuItem
 
 			case GO:
 				menuNewGameGoTab.setColor(Utils.OtherColors.DARK_GREY);
-				menuNewGameGoCanvas.hide(animationTime);
+				menuNewGameGoCanvas.fadeOut(animationTime);
 				break;
 
 			default:
@@ -1331,7 +1329,7 @@ public class MainMenuScene extends BaseScene implements Displayable, IOnMenuItem
 
 			case MAP:
 				menuNewGameMapTab.setColor(Color.WHITE);
-				menuNewGameMapCanvas.show(animationTime);
+				menuNewGameMapCanvas.fadeIn(animationTime);
 				// Register all touch areas in that canvas
 				for(int i = 0; i < mapCanvas.length; i++)
 				{
@@ -1341,7 +1339,7 @@ public class MainMenuScene extends BaseScene implements Displayable, IOnMenuItem
 
 			case PLAYERS:
 				menuNewGamePlayersTab.setColor(Color.WHITE);
-				menuNewGamePlayersCanvas.show(animationTime);
+				menuNewGamePlayersCanvas.fadeIn(animationTime);
 				// Register all touch areas in that canvas
 				for(int i = 0; i < playerName.length; i++)
 				{
@@ -1354,7 +1352,7 @@ public class MainMenuScene extends BaseScene implements Displayable, IOnMenuItem
 
 			case LEVEL:
 				menuNewGameLevelTab.setColor(Color.WHITE);
-				menuNewGameLevelCanvas.show(animationTime);
+				menuNewGameLevelCanvas.fadeIn(animationTime);
 				// Register all touch areas in that canvas
 				for(int i = 0; i < levelCheckBox.length; i++)
 				{
@@ -1365,7 +1363,7 @@ public class MainMenuScene extends BaseScene implements Displayable, IOnMenuItem
 
 			case GO:
 				menuNewGameGoTab.setColor(Color.WHITE);
-				menuNewGameGoCanvas.show(animationTime);
+				menuNewGameGoCanvas.fadeIn(animationTime);
 				break;
 
 			default:
@@ -1554,16 +1552,16 @@ public class MainMenuScene extends BaseScene implements Displayable, IOnMenuItem
 		{
 
 		case MAIN_START:
-			changeChildSceneFromTo(CHILD.MAIN, CHILD.START);	
+			changeChildScene(CHILD.MAIN, CHILD.START);	
 			break;
 
 		case MAIN_OPTIONS:
-			changeChildSceneFromTo(CHILD.MAIN, CHILD.OPTIONS);
+			changeChildScene(CHILD.MAIN, CHILD.OPTIONS);
 			break;
 
 		case START_NEW:
 			resetGameInfo();
-			changeChildSceneFromTo(CHILD.START, CHILD.NEW);
+			changeChildScene(CHILD.START, CHILD.NEW);
 			break;
 
 		case START_LOAD:
@@ -1583,72 +1581,94 @@ public class MainMenuScene extends BaseScene implements Displayable, IOnMenuItem
 		return true;
 	}
 
-	private void changeChildSceneFromTo(final CHILD from, final CHILD to)
+	private void changeChildScene(final CHILD from, final CHILD to)
 	{
 		final MenuScene child = getChildScene(to);
 
-		if(GameOptions.menuAnimationsEnabled())
-		{		
-			hideChild(from);
-			DelayModifier waitForAnimation = new DelayModifier(1.2f * animationTime)
-			{
-				@Override
-				protected void onModifierFinished(IEntity pItem)
-				{
-					setChildScene(child);
-					showChild(to);
-					currentChild = to;
-				}
-			};
-			registerEntityModifier(waitForAnimation);
-		}
-		else
+		hideChild(from);
+
+		DelayModifier waitForAnimation = new DelayModifier(1.2f * animationTime)
 		{
-			setChildScene(child);
-		}
+			@Override
+			protected void onModifierFinished(IEntity pItem)
+			{
+				setChildScene(child);
+				showChild(to);
+				currentChild = to;
+			}
+		};
+		registerEntityModifier(waitForAnimation);
+
 	}
 
-	private void showChild(CHILD x)
+	private void showChild(CHILD toShow)
 	{
-		switch(x)
+		switch(toShow)
 		{
 
 		case MAIN:
-			menuMainStartButton.show(animationTime);
-			menuMainOptionsButton.show(animationTime);
+			menuMainStartButton.fadeIn(animationTime);
+			menuMainOptionsButton.fadeIn(animationTime);
 			break;
 
 		case START:
-			menuStartNewButton.show(animationTime);
-			menuStartLoadButton.show(animationTime);
+			menuStartNewButton.fadeIn(animationTime);
+			menuStartLoadButton.fadeIn(animationTime);
 			break;
 
 		case OPTIONS:
-			menuOptionsMenuTab.show(animationTime);
-			menuOptionsAudioTab.show(animationTime);
-			menuOptionsGameTab.show(animationTime);
+			menuOptionsMenuTab.fadeIn(animationTime);
+			menuOptionsAudioTab.fadeIn(animationTime);
+			menuOptionsGameTab.fadeIn(animationTime);
 
-			if(menuOptionsMenuCanvas.isVisible())
+			switch(currentOptionsTab)
 			{
-				menuOptionsMenuCanvas.show(animationTime);
+			case MENU:
+				menuOptionsMenuCanvas.fadeIn(animationTime);
+				break;
+
+			case GAME:
+				menuOptionsGameCanvas.fadeIn(animationTime);
+				break;
+
+			case AUDIO:
+				menuOptionsAudioCanvas.fadeIn(animationTime);
+				break;
+				
+			default:
+				break;
 			}
-			else if(menuOptionsAudioCanvas.isVisible())
-			{
-				menuOptionsAudioCanvas.show(animationTime);
-			}
-			else if(menuOptionsGameCanvas.isVisible())
-			{
-				menuOptionsGameCanvas.show(animationTime);
-			}
+			
 			break;
 
 		case NEW:
-			menuNewGameMapCanvas.show(animationTime);
+			menuNewGameMapTab.fadeIn(animationTime);
+			menuNewGamePlayersTab.fadeIn(animationTime);
+			menuNewGameLevelTab.fadeIn(animationTime);
+			menuNewGameGoTab.fadeIn(animationTime);
+			
+			switch(currentNewGameTab)
+			{
+			case MAP:
+				menuNewGameMapCanvas.fadeIn(animationTime);
+				break;
 
-			menuNewGameGoTab.show(animationTime);
-			menuNewGameLevelTab.show(animationTime);
-			menuNewGameMapTab.show(animationTime);
-			menuNewGamePlayersTab.show(animationTime);
+			case PLAYERS:
+				menuNewGamePlayersCanvas.fadeIn(animationTime);
+				break;
+
+			case LEVEL:
+				menuNewGameLevelCanvas.fadeIn(animationTime);
+				break;
+
+			case GO:
+				menuNewGameGoCanvas.fadeIn(animationTime);
+				break;
+
+			default:
+				break;
+			}
+			
 			break;
 
 		default:
@@ -1662,35 +1682,68 @@ public class MainMenuScene extends BaseScene implements Displayable, IOnMenuItem
 		{
 
 		case MAIN:
-			menuMainStartButton.hide(animationTime);
-			menuMainOptionsButton.hide(animationTime);
+			menuMainStartButton.fadeOut(animationTime);
+			menuMainOptionsButton.fadeOut(animationTime);
 			break;
 
 		case START:
-			menuStartNewButton.hide(animationTime);
-			menuStartLoadButton.hide(animationTime);
+			menuStartNewButton.fadeOut(animationTime);
+			menuStartLoadButton.fadeOut(animationTime);
 			break;
 
 		case OPTIONS:
-			menuOptionsMenuTab.hide(animationTime);
-			menuOptionsAudioTab.hide(animationTime);
-			menuOptionsGameTab.hide(animationTime);
+			menuOptionsMenuTab.fadeOut(animationTime);
+			menuOptionsAudioTab.fadeOut(animationTime);
+			menuOptionsGameTab.fadeOut(animationTime);
 
-			menuOptionsMenuCanvas.hide(animationTime);
-			menuOptionsAudioCanvas.hide(animationTime);
-			menuOptionsGameCanvas.hide(animationTime);
+			switch(currentOptionsTab)
+			{
+			case MENU:
+				menuOptionsMenuCanvas.fadeOut(animationTime);
+				break;
+
+			case GAME:
+				menuOptionsGameCanvas.fadeOut(animationTime);
+				break;
+
+			case AUDIO:
+				menuOptionsAudioCanvas.fadeOut(animationTime);
+				break;
+				
+			default:
+				break;
+			}
+			
 			break;
 
 		case NEW:
-			menuNewGameGoTab.hide(animationTime);
-			menuNewGameLevelTab.hide(animationTime);
-			menuNewGameMapTab.hide(animationTime);
-			menuNewGamePlayersTab.hide(animationTime);
+			menuNewGameMapTab.fadeOut(animationTime);
+			menuNewGamePlayersTab.fadeOut(animationTime);
+			menuNewGameLevelTab.fadeOut(animationTime);
+			menuNewGameGoTab.fadeOut(animationTime);
 
-			menuNewGameMapCanvas.hide(animationTime);
-			menuNewGameGoCanvas.hide(animationTime);
-			menuNewGameLevelCanvas.hide(animationTime);
-			menuNewGamePlayersCanvas.hide(animationTime);
+			switch(currentNewGameTab)
+			{
+			case MAP:
+				menuNewGameMapCanvas.fadeOut(animationTime);
+				break;
+
+			case PLAYERS:
+				menuNewGamePlayersCanvas.fadeOut(animationTime);
+				break;
+
+			case LEVEL:
+				menuNewGameLevelCanvas.fadeOut(animationTime);
+				break;
+
+			case GO:
+				menuNewGameGoCanvas.fadeOut(animationTime);
+				break;
+
+			default:
+				break;
+			}
+			
 			break;
 
 		default:

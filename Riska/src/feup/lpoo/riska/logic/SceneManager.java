@@ -174,7 +174,6 @@ public class SceneManager {
 		engine.setScene(scene);
 		currentScene = scene;
 		currentSceneType = scene.getSceneType();
-		scene.onSceneShow();
 	}
 	
 	public void setScene(SCENE_TYPE sceneType) {

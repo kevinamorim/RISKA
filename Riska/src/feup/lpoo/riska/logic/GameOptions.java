@@ -47,6 +47,9 @@ public class GameOptions {
 	private static boolean sfx = true;
 	private static boolean menuAnimations = true;
 	
+	private static final float defaultAnimationTime = 0.25f;
+	public static float animationTime = defaultAnimationTime;
+	
 	public static Color[] getColors(int index)
 	{
 		return COLORS[index];
@@ -92,10 +95,12 @@ public class GameOptions {
 		if(value)
 		{
 			menuAnimations = true;
+			animationTime = defaultAnimationTime;
 		}
 		else
 		{
 			menuAnimations = false;
+			animationTime = 0f;
 		}
 	}
 

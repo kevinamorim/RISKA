@@ -73,16 +73,30 @@ public class RiskaCanvas extends Entity implements IEntity {
 		}
 	}
 	
-	public void hide(float deltaTime)
+	public void fadeOut(float deltaTime)
 	{
-		AlphaModifier alphaOut = new AlphaModifier(deltaTime, 1f, 0f);
-		registerEntityModifier(alphaOut);
+		if(deltaTime == 0f)
+		{
+			setAlpha(0f);
+		}
+		else
+		{
+			AlphaModifier alphaOut = new AlphaModifier(deltaTime, 1f, 0f);
+			registerEntityModifier(alphaOut);
+		}	
 	}
 	
-	public void show(float deltaTime)
+	public void fadeIn(float deltaTime)
 	{
-		AlphaModifier alphaIn = new AlphaModifier(deltaTime, 0f, 1f);
-		registerEntityModifier(alphaIn);
+		if(deltaTime == 0f)
+		{
+			setAlpha(1f);
+		}
+		else
+		{
+			AlphaModifier alphaIn = new AlphaModifier(deltaTime, 0f, 1f);
+			registerEntityModifier(alphaIn);
+		}	
 	}
 	
 	@Override
