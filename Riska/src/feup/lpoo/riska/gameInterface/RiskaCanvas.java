@@ -7,6 +7,7 @@ import org.andengine.entity.modifier.AlphaModifier;
 import org.andengine.entity.text.Text;
 import org.andengine.util.adt.color.Color;
 
+import android.util.Log;
 import feup.lpoo.riska.utilities.Utils;
 
 /**
@@ -88,6 +89,7 @@ public class RiskaCanvas extends Entity implements IEntity {
 	
 	public void fadeIn(float deltaTime)
 	{
+		Log.d("Riska", "Called fadeIn with time: " + deltaTime);
 		if(deltaTime == 0f)
 		{
 			setAlpha(1f);

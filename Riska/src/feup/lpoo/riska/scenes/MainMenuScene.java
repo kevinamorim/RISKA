@@ -40,7 +40,7 @@ public class MainMenuScene extends BaseScene implements Displayable, IOnMenuItem
 
 	private static float animationTime = GameOptions.animationTime;
 
-	private CHILD currentChild = CHILD.MAIN;
+	private CHILD currentChild;
 	private OPTIONS_TAB currentOptionsTab;
 	private NEWGAME_TAB currentNewGameTab;
 
@@ -810,7 +810,7 @@ public class MainMenuScene extends BaseScene implements Displayable, IOnMenuItem
 
 		menuNewGame.setOnMenuItemClickListener(this);
 		menuNewGame.setTouchAreaBindingOnActionDownEnabled(true);
-		menuNewGame.setTouchAreaBindingOnActionMoveEnabled(true);
+		//menuNewGame.setTouchAreaBindingOnActionMoveEnabled(true);
 	}
 
 	private void createMapCanvas()
@@ -1263,7 +1263,7 @@ public class MainMenuScene extends BaseScene implements Displayable, IOnMenuItem
 		menuNewGame.registerTouchArea(menuNewGameLevelTab);
 
 		// Map tab selected
-		menuNewGameMapTab.setColor(Utils.OtherColors.WHITE);
+		menuNewGameMapTab.setColor(Utils.OtherColors.DARK_GREY);
 		menuNewGamePlayersTab.setColor(Utils.OtherColors.DARK_GREY);
 		menuNewGameLevelTab.setColor(Utils.OtherColors.DARK_GREY);
 		menuNewGameGoTab.setColor(Utils.OtherColors.DARK_GREY);
@@ -1818,6 +1818,8 @@ public class MainMenuScene extends BaseScene implements Displayable, IOnMenuItem
 
 	private void resetGameInfo()
 	{
+		currentNewGameTab = NEWGAME_TAB.MAP;
+		
 		for(int i = 0; i < GameOptions.maxPlayers; i++)
 		{
 			playerIsCpu[i] = (i < GameOptions.minHumanPlayers) ? false : true;
