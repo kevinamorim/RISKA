@@ -12,21 +12,14 @@ public class RiskaMenuItem extends RiskaSprite implements IMenuItem {
 	// ==================================================
 	private int pID;
 	
-	public RiskaMenuItem(int ID, ITextureRegion pTexture, VertexBufferObjectManager vbom,
-			ITextureRegion pLeft, ITextureRegion pRight, ITextureRegion pTop, ITextureRegion pBottom)
+	public RiskaMenuItem(int ID, ITextureRegion pTexture, VertexBufferObjectManager vbom)
 	{
-		this(ID, pTexture, vbom, null, null, pLeft, pRight, pTop, pBottom);
-	}
-
-	public RiskaMenuItem(int ID, ITextureRegion pTexture, VertexBufferObjectManager vbom, String pString, Font pFont)
-	{
-		this(ID, pTexture, vbom, pString, pFont, null, null, null, null);
+		this(ID, pTexture, vbom, null, null);
 	}
 	
-	public RiskaMenuItem(int ID, ITextureRegion pTexture, VertexBufferObjectManager vbom, String pString, Font pFont,
-			ITextureRegion pLeft, ITextureRegion pRight, ITextureRegion pTop, ITextureRegion pBottom)
+	public RiskaMenuItem(int ID, ITextureRegion pTexture, VertexBufferObjectManager vbom, String pString, Font pFont)
 	{
-		super(pTexture, vbom, pString, pFont, pLeft, pRight, pTop, pBottom);
+		super(pTexture, vbom, pString, pFont);
 		
 		this.pID = ID;
 	}

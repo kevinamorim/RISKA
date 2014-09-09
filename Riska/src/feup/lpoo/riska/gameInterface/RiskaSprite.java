@@ -18,8 +18,6 @@ public class RiskaSprite extends Sprite {
 	
 	private Text text;
 
-	private RiskaAnimatedSprite top, bottom, left, right;
-
 	private static final float textBoundingFactor = 0.55f;
 	private static final float animationTime = 0.2f;
 
@@ -27,31 +25,16 @@ public class RiskaSprite extends Sprite {
 	// ==================================================
 	public RiskaSprite(ITextureRegion pTexture, VertexBufferObjectManager vbom)
 	{
-		this(pTexture, vbom, null, null, null, null, null, null);
-	}
-	
-	public RiskaSprite(ITextureRegion pTexture, VertexBufferObjectManager vbom,
-			ITextureRegion pLeft, ITextureRegion pRight, ITextureRegion pTop, ITextureRegion pBottom)
-	{
-		this(pTexture, vbom, null, null, pLeft, pRight, pTop, pBottom);	
-	}
-	
-	public RiskaSprite(ITextureRegion pTexture, VertexBufferObjectManager vbom, String pString, Font pFont)
-	{
-		this(pTexture, vbom, pString, pFont, null, null, null, null);
+		this(pTexture, vbom, null, null);
 	}
 
-	public RiskaSprite(ITextureRegion pTexture, VertexBufferObjectManager vbom, String pString, Font pFont,
-			ITextureRegion pLeft, ITextureRegion pRight, ITextureRegion pTop, ITextureRegion pBottom)
+	public RiskaSprite(ITextureRegion pTexture, VertexBufferObjectManager vbom, String pString, Font pFont)
 	{
 		super(0f, 0f, pTexture, vbom);
 
 
 		createText(pString, pFont, vbom);
 		wrapText();
-
-		createBorders(pLeft, pRight, pTop, pBottom, vbom);	
-		wrapBorders();
 	}
 
 	private void createText(String pString, Font pFont, VertexBufferObjectManager vbom)
@@ -61,32 +44,6 @@ public class RiskaSprite extends Sprite {
 			text = new Text(0f, 0f, pFont, pString, 100, vbom);
 			text.setColor(Color.WHITE);
 			attachChild(text);
-		}
-	}
-
-	private void createBorders(ITextureRegion pLeft, ITextureRegion pRight,
-			ITextureRegion pTop, ITextureRegion pBottom, VertexBufferObjectManager vbom)
-	{
-
-		if(pLeft != null)
-		{
-			left = new RiskaAnimatedSprite(pLeft, vbom);
-			attachChild(left);
-		}
-		if(pRight != null)
-		{
-			right = new RiskaAnimatedSprite(pRight, vbom);
-			attachChild(right);
-		}
-		if(pTop != null)
-		{
-			top = new RiskaAnimatedSprite(pTop, vbom);
-			attachChild(top);
-		}
-		if(pBottom != null)
-		{
-			bottom = new RiskaAnimatedSprite(pBottom, vbom);
-			attachChild(bottom);
 		}
 	}
 
@@ -103,53 +60,26 @@ public class RiskaSprite extends Sprite {
 		}
 	}
 
-	private void wrapBorders()
-	{
-		/*
-		 * Positions are relative to the origin of the parent sprite
-		 */
-		if(left != null)
-		{
-			left.setSize(0.1f * getWidth(), getHeight());
-			left.setPosition(Utils.halfX(left), Utils.halfY(this));
-		}
-		if(right != null)
-		{
-			right.setSize(0.1f * getWidth(), getHeight());
-			right.setPosition(this.getWidth() - Utils.halfX(right), Utils.halfY(this));
-		}
-		if(top != null)
-		{
-			top.setSize(getWidth(), 0.25f * getHeight());
-			top.setPosition(Utils.halfX(this), this.getHeight() - Utils.halfY(top));
-		}
-		if(bottom != null)
-		{
-			bottom.setSize(getWidth(), 0.25f * getHeight());
-			bottom.setPosition(Utils.halfX(this), Utils.halfY(bottom));
-		}
-	}
-
-	public void close(float deltaTime)
+	public void hide(float deltaTime)
 	{	
 		AlphaModifier alphaOut = new AlphaModifier(deltaTime, 1f, 0f);
 		registerEntityModifier(alphaOut);
 	}
 
-	public void close()
+	public void hide()
 	{
-		close(animationTime);
+		hide(animationTime);
 	}
 
-	public void open(float deltaTime)
+	public void show(float deltaTime)
 	{	
 		AlphaModifier alphaIn = new AlphaModifier(deltaTime, 0f, 1f);
 		registerEntityModifier(alphaIn);
 	}
 
-	public void open()
+	public void show()
 	{
-		open(animationTime);
+		show(animationTime);
 	}
 
 	public void animate()
@@ -161,24 +91,13 @@ public class RiskaSprite extends Sprite {
 			@Override
 			protected void onModifierFinished(IEntity pItem)
 			{
-				open(newAnimationTime);
+				show(newAnimationTime);
 			}
 
 		};
 		registerEntityModifier(waitForAnim);
 
-		close(newAnimationTime);
-	}
-
-	public void debug()
-	{
-		Log.d("Menu", "RiskaMenuItem [" + text.getText() + "]");
-		Log.d("Menu", " >        Pos: [" + getX() + ", " + getY() + "]");
-		Log.d("Menu", " >   Text Pos: [" + text.getX() + ", " + text.getY() + "]");
-		Log.d("Menu", " >   Left Pos: [" + left.getX() + ", " + left.getY() + "]");
-		Log.d("Menu", " >  Right Pos: [" + right.getX() + ", " + right.getY() + "]");
-		Log.d("Menu", " >    Top Pos: [" + top.getX() + ", " + top.getY() + "]");
-		Log.d("Menu", " > Bottom Pos: [" + bottom.getX() + ", " + bottom.getY() + "]");
+		hide(newAnimationTime);
 	}
 	
 	public Text getText()
@@ -221,7 +140,6 @@ public class RiskaSprite extends Sprite {
 		super.setSize(pWidth, pHeight);
 
 		wrapText();
-		wrapBorders();
 	}
 	
 	@Override
