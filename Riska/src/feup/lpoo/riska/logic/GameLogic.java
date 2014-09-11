@@ -81,35 +81,43 @@ public class GameLogic
 
 	// ======================================================
 	// ======================================================
-	public void update() {
-
-		if(currentPlayer.isCpu) {
+	public void update()
+	{
+		if(currentPlayer.isCpu)
+		{
 			updateCPU();
 		}
 
-		switch(state) {
+		switch(state)
+		{
+		
 		case SETUP:
 			setup();
 			break;
+			
 		case ATTACK:
 			attack();
 			break;
+			
 		case MOVE:
 			move();
 			break;
+			
 		case DEPLOYMENT:
 			deploy();
 			break;
+			
 		case ENDTURN:
 			nextTurn();
 			break;
+			
 		default:
 			break;
 		}
 	}
 
-	private void nextTurn() {
-
+	private void nextTurn()
+	{
 		if(!getNextPossiblePlayer()) {
 			state = GAME_STATE.GAMEOVER;
 		} else {
@@ -118,16 +126,17 @@ public class GameLogic
 			setNextState();
 			gameScene.setInitialHUD();
 			
-			if(currentPlayer.isCpu) { /* if the new player is cpu, then auto-update */
+			if(currentPlayer.isCpu) /* if the new player is cpu, then auto-update */
+			{
 				update();
 			}
 		}
-
 	}
 
-	private void setNextState() {
-
-		if(gameOver()) {
+	private void setNextState()
+	{
+		if(gameOver())
+		{
 			state = GAME_STATE.GAMEOVER;
 		}
 
@@ -135,21 +144,27 @@ public class GameLogic
 		case SETUP:
 			state = GAME_STATE.ATTACK;
 			break;
+			
 		case ATTACK: 
 			state = GAME_STATE.MOVE;
 			break;
+			
 		case MOVE:
 			state = GAME_STATE.DEPLOYMENT;
 			break;
+			
 		case DEPLOYMENT:
 			state = GAME_STATE.ENDTURN;
 			break;
+			
 		case PAUSED:
 			state = GAME_STATE.ATTACK;
 			break;
+			
 		case ENDTURN:
 			state = GAME_STATE.ATTACK;
 			break;
+			
 		default:
 			break;
 		}
@@ -222,8 +237,8 @@ public class GameLogic
 
 	}
 
-	private void deploy() {
-
+	private void deploy()
+	{
 		if(currentPlayer.hasSoldiersInPool() && currentPlayer.isCpu)
 		{
 			currentPlayer.deployAllSoldiers();
@@ -235,9 +250,10 @@ public class GameLogic
 		}
 	}
 
-	public void move() {
-
-		if(selectedRegion != null && targetedRegion != null) {
+	public void move()
+	{
+		if(selectedRegion != null && targetedRegion != null)
+		{
 			Region pRegion1 = selectedRegion;
 			Region pRegion2 = targetedRegion;
 
@@ -252,48 +268,63 @@ public class GameLogic
 
 	}
 
-	public void updateCPU() {
-		if(selectedRegion != null && targetedRegion != null) {
-			switch(state) {
+	public void updateCPU()
+	{
+		if(selectedRegion != null && targetedRegion != null)
+		{
+			switch(state)
+			{
 			case ATTACK: 
 				attack();
 				break;
+				
 			case MOVE:
 				move();
 				break;
+				
 			default:
 				break;
 			}
 			setNextState();
-		} else {
-			if(state.equals(GAME_STATE.DEPLOYMENT)) {
+		}
+		else
+		{
+			if(state.equals(GAME_STATE.DEPLOYMENT))
+			{
 				deploy();
 				nextTurn();
-			} else {
+			}
+			else
+			{
 				Region pRegion = cpuSelectRegion();
 				gameScene.showCpuMove(pRegion, cpuTargetRegion(pRegion));
 			}
-
 		}
-
 	}
 
-	private Region cpuSelectRegion() {
-		if(state.equals(GAME_STATE.ATTACK)) {
+	private Region cpuSelectRegion()
+	{
+		if(state.equals(GAME_STATE.ATTACK))
+		{
 			return currentPlayer.pickRegionForAttack();
 		}
-		if(state.equals(GAME_STATE.MOVE)) {
+		if(state.equals(GAME_STATE.MOVE))
+		{
 			return currentPlayer.pickRegionForMove();
 		}
 		return null;
 	}
 	
-	private Region cpuTargetRegion(Region pRegion) {
-		switch(state) {
+	private Region cpuTargetRegion(Region pRegion)
+	{
+		switch(state)
+		{
 		case ATTACK:
 			return currentPlayer.pickNeighbourEnemyRegion(pRegion);
+			
 		case MOVE:
 			return currentPlayer.pickNeighbourAlliedRegion(pRegion);
+			
 		default:
 			return null;
 		}
@@ -307,7 +338,8 @@ public class GameLogic
 		return state;
 	}
 
-	public void setState(GAME_STATE state) {
+	public void setState(GAME_STATE state)
+	{
 		this.state = state;
 	}
 

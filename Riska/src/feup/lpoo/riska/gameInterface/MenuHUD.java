@@ -84,10 +84,10 @@ public class MenuHUD extends HUD implements Displayable {
 		//doorLeft.setAlpha(0.6f);
 		//doorRight.setAlpha(0.6f);
 		
-		attachChild(leftDoor);
-		attachChild(rightDoor);
-		attachChild(leftBar);
-		attachChild(rightBar);
+		//attachChild(leftDoor);
+		//attachChild(rightDoor);
+		//attachChild(leftBar);
+		//attachChild(rightBar);
 	}
 	
 	public void openSlideDoors()

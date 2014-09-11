@@ -223,13 +223,13 @@ public class MainMenuScene extends BaseScene implements Displayable, IOnMenuItem
 
 		menuMain.setBackgroundEnabled(false);
 
-		menuMainStartButton = new RiskaMenuItem(MAIN_START, resources.buttonRegion, vbom, "Start", resources.mainMenuFont);
+		menuMainStartButton = new RiskaMenuItem(MAIN_START, resources.emptyButtonRegion, vbom, "Start", resources.mainMenuFont);
 
 		Utils.wrap(menuMainStartButton, 0.5f * camera.getWidth(), 0.25f * camera.getHeight(), 1f);
 		menuMainStartButton.setPosition(camera.getCenterX(), 0.53f * camera.getHeight());
 		//startButton.debug();
 
-		menuMainOptionsButton = new RiskaMenuItem(MAIN_OPTIONS, resources.buttonRegion, vbom, "Options", resources.mainMenuFont);
+		menuMainOptionsButton = new RiskaMenuItem(MAIN_OPTIONS, resources.emptyButtonRegion, vbom, "Options", resources.mainMenuFont);
 
 		Utils.wrap(menuMainOptionsButton, 0.5f * camera.getWidth(), 0.25f * camera.getHeight(), 1f);
 		menuMainOptionsButton.setPosition(camera.getCenterX(), 0.23f * camera.getHeight());
