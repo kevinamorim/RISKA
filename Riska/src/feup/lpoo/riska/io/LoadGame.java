@@ -82,7 +82,7 @@ public class LoadGame {
 			state = GAME_STATE.PAUSED;
 			break;
 		case 1:
-			state = GAME_STATE.DEPLOYMENT;
+			state = GAME_STATE.DEPLOY;
 			break;
 		case 2:
 			state = GAME_STATE.PLAY;

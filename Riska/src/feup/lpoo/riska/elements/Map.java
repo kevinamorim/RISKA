@@ -41,7 +41,7 @@ public class Map {
 	public void initRegions() {
 		for(Region region : regions)
 		{
-			region.setSoldiers(Math.max(MIN_SOLDIERS_PER_REGION, region.numberOfSoldiers()));
+			region.setSoldiers(Math.max(MIN_SOLDIERS_PER_REGION, region.getGarrison()));
 		}
 	}
 	

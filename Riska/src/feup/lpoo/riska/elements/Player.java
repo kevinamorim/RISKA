@@ -17,7 +17,8 @@ public class Player extends Object {
 	
 	private ArrayList<Region> regionsPool;	
 
-	public int soldiersPool;
+	public int soldiersPool = 0;
+	public int moves = 0;
 
 	// ======================================================
 	// =====================================================
@@ -72,18 +73,9 @@ public class Player extends Object {
 		soldiersPool = value;
 	}
 
-	public void deploy(int number, Region pRegion)
+	public void deploy(int value)
 	{
-		int deployed = number;
-
-		soldiersPool -= number;
-
-		if(soldiersPool < 0)
-		{
-			deployed = number + soldiersPool;
-		}
-
-		pRegion.deploy(deployed);
+		soldiersPool -= value;
 	}
 
 	public boolean hasSoldiersInPool()
@@ -91,10 +83,12 @@ public class Player extends Object {
 		return (soldiersPool > 0);
 	}
 	
-	public void deployAllSoldiers() {
+	public void deployAllSoldiers()
+	{
 
 		int i = 0;
-		while(soldiersPool > 0) {
+		while(soldiersPool > 0)
+		{
 			regionsPool.get(i).addSoldiers(1);
 			i = (i + 1) % regionsPool.size();
 			soldiersPool--;
@@ -104,43 +98,43 @@ public class Player extends Object {
 	
 	public Region pickRegionForAttack()
 	{	
-		ArrayList<Region> allowedRegions = new ArrayList<Region>();
-		
-		for(Region item : regionsPool)
-		{
-			if(item.canAttack() && item.hasEnemyNeighbor()) {
-				allowedRegions.add(item);
-			}
-		}
-		
-		if(allowedRegions.size() > 0)
-		{
-			return allowedRegions.get(Utils.randomInt(0, regionsPool.size() - 1));
-		}
-		
-		pickRegionForAttack();
+//		ArrayList<Region> allowedRegions = new ArrayList<Region>();
+//		
+//		for(Region region : regionsPool)
+//		{
+//			if(region.canAttack() && region.hasEnemyNeighbor()) {
+//				allowedRegions.add(region);
+//			}
+//		}
+//		
+//		if(allowedRegions.size() > 0)
+//		{
+//			return allowedRegions.get(Utils.randomInt(0, regionsPool.size() - 1));
+//		}
+//		
+//		pickRegionForAttack();
 		
 		return null;
 	}
 	
 	public Region pickRegionForMove()
 	{	
-		ArrayList<Region> allowedRegions = new ArrayList<Region>();
-		
-		for(Region item : regionsPool)
-		{
-			if(item.canAttack() && item.hasAlliedNeighbour())
-			{
-				allowedRegions.add(item);
-			}
-		}
-		
-		if(allowedRegions.size() > 0)
-		{
-			return allowedRegions.get(Utils.randomInt(0, regionsPool.size() - 1));
-		}
-		
-		pickRegionForMove();
+//		ArrayList<Region> allowedRegions = new ArrayList<Region>();
+//		
+//		for(Region item : regionsPool)
+//		{
+//			if(item.canAttack() && item.hasAlliedNeighbour())
+//			{
+//				allowedRegions.add(item);
+//			}
+//		}
+//		
+//		if(allowedRegions.size() > 0)
+//		{
+//			return allowedRegions.get(Utils.randomInt(0, regionsPool.size() - 1));
+//		}
+//		
+//		pickRegionForMove();
 		
 		return null;
 	}
@@ -151,7 +145,7 @@ public class Player extends Object {
 		ArrayList<Region> allowed = new ArrayList<Region>();
 		
 		for(Region item : neighbours) {
-			if(!item.hasOwner(this)) {
+			if(!item.ownerIs(this)) {
 				allowed.add(item);
 			}
 		}
@@ -165,7 +159,7 @@ public class Player extends Object {
 		ArrayList<Region> allowed = new ArrayList<Region>();
 
 		for(Region item : neighbours) {
-			if(item.hasOwner(this)) {
+			if(item.ownerIs(this)) {
 				allowed.add(item);
 			}
 		}
@@ -175,14 +169,14 @@ public class Player extends Object {
 	
 	public boolean hasPossibleMoves()
 	{	
-		for(Region item : regionsPool)
-		{
-			if(item.hasEnemyNeighbor() && item.canAttack())
-			{
-				return true;
-			}
-		}
-
+//		for(Region item : regionsPool)
+//		{
+//			if(item.hasEnemyNeighbor() && item.canAttack())
+//			{
+//				return true;
+//			}
+//		}
+//
 		return false;
 	}	
 

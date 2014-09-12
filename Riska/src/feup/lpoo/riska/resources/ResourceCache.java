@@ -80,30 +80,34 @@ public class ResourceCache {
 	// GAME RESOURCES
 	// ==================================================
 	public ITiledTextureRegion regionButtonRegion;
-	public ITiledTextureRegion detailsBtnRegion;
-	public ITiledTextureRegion autoDeployBtnRegion;
-	public ITiledTextureRegion moveBtnRegion;
-	public ITiledTextureRegion nextTurnBtnRegion;
+	
+	private BitmapTextureAtlas mapTextureAtlas;
+	public ITextureRegion mapRegion;
+	
+	private BuildableBitmapTextureAtlas gameTextureAtlas;	
 	public ITiledTextureRegion infoTabRegion;
 	public ITextureRegion windowRegion;
 	public ITextureRegion windowRegionGeneric;
 	public ITextureRegion windowRegionGenericInverted;
-	public ITiledTextureRegion arrowRightRegion;
-	public ITiledTextureRegion seaRegion;
-	public ITextureRegion mapRegion;
-	private BuildableBitmapTextureAtlas gameTextureAtlas;
+
 	private BuildableBitmapTextureAtlas gameNEWTextureAtlas;
-	private BitmapTextureAtlas mapTextureAtlas;
-	public ArrayList<Map> maps;	
-	
 	public ITiledTextureRegion attackButtonRegion;
 	public ITiledTextureRegion deployButtonRegion;
 	public ITiledTextureRegion summonButtonRegion;
-	public ITextureRegion barLowRegion;
-	public ITextureRegion barLeftRegion;
-	public ITextureRegion barRightRegion;
-	public ITextureRegion barFillRegion;
+
+	public ITiledTextureRegion bottomLeft;
+	public ITiledTextureRegion bottom;
+	public ITiledTextureRegion bottomRight;
+	public ITiledTextureRegion centerLeft;
+	public ITiledTextureRegion center;
+	public ITiledTextureRegion centerRight;
+	public ITiledTextureRegion topLeft;
+	public ITiledTextureRegion top;
+	public ITiledTextureRegion topRight;
+	
 	public ITextureRegion fillSquareRegion;
+	
+	public ArrayList<Map> maps;	
 	
 	// ==================================================
 	// GAMEOVER RESOURCES
@@ -113,7 +117,7 @@ public class ResourceCache {
 	// FONTS
 	// ======================================================
 	public Font mSplashFont;
-	public Font mainMenuFont;
+	public Font mMenuFont;
 	public Font mInfoTabFont;
 	public Font mGameFont;
 	public Font mGameOverFont;
@@ -173,7 +177,7 @@ public class ResourceCache {
 		int bgTextureWidth = 2048, bgTextureHeight = 1024;
 
 		menuBackgroundTextureAtlas = new BitmapTextureAtlas(activity.getTextureManager(), 
-				bgTextureWidth, bgTextureHeight, TextureOptions.BILINEAR);
+				bgTextureWidth, bgTextureHeight, TextureOptions.REPEATING_BILINEAR);
 		
 		menuBackgroundRegion = BitmapTextureAtlasTextureRegionFactory.createFromAsset(menuBackgroundTextureAtlas, 
 				activity, "background.png", 0, 0);
@@ -181,7 +185,7 @@ public class ResourceCache {
 		int mainTextureWidth = 2048, mainTextureHeight = 2048;
 
 		mainMenuTextureAtlas = new BuildableBitmapTextureAtlas(activity.getTextureManager(), 
-				mainTextureWidth, mainTextureHeight, TextureOptions.BILINEAR);
+				mainTextureWidth, mainTextureHeight, TextureOptions.REPEATING_BILINEAR);
 		
 		buttonRegion = BitmapTextureAtlasTextureRegionFactory.createFromAsset(mainMenuTextureAtlas, activity, 
 				"button.png");
@@ -202,7 +206,7 @@ public class ResourceCache {
 		int propsTextureWidth = 2048, propsTextureHeight = 2048;
 		
 		propsTextureAtlas = new BuildableBitmapTextureAtlas(activity.getTextureManager(), 
-				propsTextureWidth, propsTextureHeight, TextureOptions.BILINEAR);
+				propsTextureWidth, propsTextureHeight, TextureOptions.REPEATING_BILINEAR);
 		
 		doorLeftRegion = BitmapTextureAtlasTextureRegionFactory.createFromAsset(propsTextureAtlas, activity, 
 				"door_left.png");
@@ -246,7 +250,7 @@ public class ResourceCache {
 	{
 		FontFactory.setAssetBasePath("fonts/");
 
-		mainMenuFont = FontFactory.createFromAsset(engine.getFontManager(),
+		mMenuFont = FontFactory.createFromAsset(engine.getFontManager(),
 				engine.getTextureManager(), 1024, 1024, TextureOptions.BILINEAR,
 				activity.getAssets(), "Calibri.ttf", 125f, true,
 				Color.WHITE);
@@ -260,7 +264,7 @@ public class ResourceCache {
 		propsTextureAtlas.load();
 		
 		// Fonts
-		mainMenuFont.load();
+		mMenuFont.load();
 	}
 	
 	public void unloadMainMenuResources()
@@ -292,28 +296,12 @@ public class ResourceCache {
 		mapRegion = BitmapTextureAtlasTextureRegionFactory.createFromAsset(mapTextureAtlas, activity,
 				"map.png", 0, 0);
 
-
-
+		
 		gameTextureAtlas = new BuildableBitmapTextureAtlas(activity.getTextureManager(),
-				gameTextureWidth, gameTextureHeight, TextureOptions.BILINEAR);
+				gameTextureWidth, gameTextureHeight, TextureOptions.REPEATING_BILINEAR);
 
 		regionButtonRegion = BitmapTextureAtlasTextureRegionFactory.createTiledFromAsset(gameTextureAtlas, activity, 
-				"region.png", 1, 2);
-
-		attackButtonRegion = BitmapTextureAtlasTextureRegionFactory.createTiledFromAsset(gameTextureAtlas, activity, 
-				"attack.png", 2, 1);
-
-		detailsBtnRegion = BitmapTextureAtlasTextureRegionFactory.createTiledFromAsset(gameTextureAtlas, activity, 
-				"close.png", 2, 1);
-
-		autoDeployBtnRegion = BitmapTextureAtlasTextureRegionFactory.createTiledFromAsset(gameTextureAtlas, activity,
-				"auto_deploy.png", 2, 1);
-		
-		moveBtnRegion = BitmapTextureAtlasTextureRegionFactory.createTiledFromAsset(gameTextureAtlas, activity, 
-				"move.png", 2, 1);
-		
-		nextTurnBtnRegion = BitmapTextureAtlasTextureRegionFactory.createTiledFromAsset(gameTextureAtlas, activity, 
-				"next_turn.png", 2, 1);
+				"region.png", 1, 3);
 
 		infoTabRegion = BitmapTextureAtlasTextureRegionFactory.createTiledFromAsset(gameTextureAtlas, activity, 
 				"info_tab.png", 1, 2);
@@ -326,13 +314,10 @@ public class ResourceCache {
 
 		windowRegionGenericInverted = BitmapTextureAtlasTextureRegionFactory.createFromAsset(gameTextureAtlas, activity, 
 				"window_general_inverted.png");
-
-		arrowRightRegion = BitmapTextureAtlasTextureRegionFactory.createTiledFromAsset(gameTextureAtlas, activity,
-				"arrow_right.png", 2, 1);
-		
+	
 		
 		gameNEWTextureAtlas = new BuildableBitmapTextureAtlas(activity.getTextureManager(),
-				gameTextureWidth, gameTextureHeight, TextureOptions.DEFAULT);
+				gameTextureWidth, gameTextureHeight, TextureOptions.REPEATING_BILINEAR);
 		
 		attackButtonRegion = BitmapTextureAtlasTextureRegionFactory.createTiledFromAsset(gameTextureAtlas, activity,
 				"button_attack.png", 1, 3);
@@ -343,17 +328,32 @@ public class ResourceCache {
 		summonButtonRegion = BitmapTextureAtlasTextureRegionFactory.createTiledFromAsset(gameTextureAtlas, activity,
 				"button_summon.png", 1, 3);
 		
-		barLowRegion = BitmapTextureAtlasTextureRegionFactory.createFromAsset(gameTextureAtlas, activity,
-				"bar_low.png");
+		center = BitmapTextureAtlasTextureRegionFactory.createTiledFromAsset(gameTextureAtlas, activity, 
+				"center.png", 3, 3);
 		
-		barLeftRegion = BitmapTextureAtlasTextureRegionFactory.createFromAsset(gameTextureAtlas, activity,
-				"bar_left.png");
+		centerLeft = BitmapTextureAtlasTextureRegionFactory.createTiledFromAsset(gameTextureAtlas, activity, 
+				"center_left.png", 3, 3);
 		
-		barRightRegion = BitmapTextureAtlasTextureRegionFactory.createFromAsset(gameTextureAtlas, activity,
-				"bar_right.png");
+		centerRight = BitmapTextureAtlasTextureRegionFactory.createTiledFromAsset(gameTextureAtlas, activity, 
+				"center_right.png", 3, 3);
 		
-		barFillRegion = BitmapTextureAtlasTextureRegionFactory.createFromAsset(gameTextureAtlas, activity,
-				"bar_fill.png");
+		bottom = BitmapTextureAtlasTextureRegionFactory.createTiledFromAsset(gameTextureAtlas, activity, 
+				"bottom.png", 3, 3);
+		
+		bottomLeft = BitmapTextureAtlasTextureRegionFactory.createTiledFromAsset(gameTextureAtlas, activity, 
+				"bottom_left.png", 3, 3);
+		
+		bottomRight = BitmapTextureAtlasTextureRegionFactory.createTiledFromAsset(gameTextureAtlas, activity, 
+				"bottom_right.png", 3, 3);
+		
+		top = BitmapTextureAtlasTextureRegionFactory.createTiledFromAsset(gameTextureAtlas, activity, 
+				"top.png", 3, 3);
+		
+		topLeft = BitmapTextureAtlasTextureRegionFactory.createTiledFromAsset(gameTextureAtlas, activity, 
+				"top_left.png", 3, 3);
+		
+		topRight = BitmapTextureAtlasTextureRegionFactory.createTiledFromAsset(gameTextureAtlas, activity, 
+				"top_right.png", 3, 3);
 		
 		fillSquareRegion = BitmapTextureAtlasTextureRegionFactory.createFromAsset(gameTextureAtlas, activity,
 				"fill_square.png");
@@ -375,13 +375,13 @@ public class ResourceCache {
 
 		mGameFont = FontFactory.create(
 				engine.getFontManager(), 
-				engine.getTextureManager(), 512, 512, 
+				engine.getTextureManager(), 512, 512, TextureOptions.BILINEAR,
 				Typeface.create(Typeface.DEFAULT, Typeface.BOLD), 32f,
 				Color.WHITE);
 
 		mInfoTabFont = FontFactory.create(engine.getFontManager(), 
-				engine.getTextureManager(), 512, 512, 
-				Typeface.create(Typeface.DEFAULT, Typeface.BOLD), 28f,
+				engine.getTextureManager(), 512, 512, TextureOptions.BILINEAR,
+				Typeface.create(Typeface.DEFAULT, Typeface.BOLD), 32f,
 				Color.WHITE);
 	}
 	

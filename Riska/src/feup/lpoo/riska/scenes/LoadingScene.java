@@ -19,7 +19,7 @@ public class LoadingScene extends BaseScene {
 		loadingText = new Text(
 				camera.getCenterX(),
 				camera.getCenterY(), 
-				resources.mainMenuFont, "Loading...", vbom);
+				resources.mMenuFont, "Loading...", vbom);
 		
 		loadingText.setScale(0.5f);
 		

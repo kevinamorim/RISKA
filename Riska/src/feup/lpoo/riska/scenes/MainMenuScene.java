@@ -19,6 +19,7 @@ import feup.lpoo.riska.gameInterface.MenuHUD;
 import feup.lpoo.riska.gameInterface.RiskaSprite;
 import feup.lpoo.riska.gameInterface.RiskaCanvas;
 import feup.lpoo.riska.gameInterface.RiskaMenuItem;
+import feup.lpoo.riska.gameInterface.UIButton;
 import feup.lpoo.riska.interfaces.Displayable;
 import feup.lpoo.riska.io.IOManager;
 import feup.lpoo.riska.logic.GameInfo;
@@ -223,13 +224,13 @@ public class MainMenuScene extends BaseScene implements Displayable, IOnMenuItem
 
 		menuMain.setBackgroundEnabled(false);
 
-		menuMainStartButton = new RiskaMenuItem(MAIN_START, resources.emptyButtonRegion, vbom, "Start", resources.mainMenuFont);
+		menuMainStartButton = new RiskaMenuItem(MAIN_START, resources.emptyButtonRegion, vbom, "Start", resources.mMenuFont);
 
 		Utils.wrap(menuMainStartButton, 0.5f * camera.getWidth(), 0.25f * camera.getHeight(), 1f);
 		menuMainStartButton.setPosition(camera.getCenterX(), 0.53f * camera.getHeight());
 		//startButton.debug();
 
-		menuMainOptionsButton = new RiskaMenuItem(MAIN_OPTIONS, resources.emptyButtonRegion, vbom, "Options", resources.mainMenuFont);
+		menuMainOptionsButton = new RiskaMenuItem(MAIN_OPTIONS, resources.emptyButtonRegion, vbom, "Options", resources.mMenuFont);
 
 		Utils.wrap(menuMainOptionsButton, 0.5f * camera.getWidth(), 0.25f * camera.getHeight(), 1f);
 		menuMainOptionsButton.setPosition(camera.getCenterX(), 0.23f * camera.getHeight());
@@ -254,11 +255,11 @@ public class MainMenuScene extends BaseScene implements Displayable, IOnMenuItem
 
 		menuStartNewButton = new RiskaMenuItem(START_NEW,
 				resources.buttonRegion,
-				vbom, "New", resources.mainMenuFont);
+				vbom, "New", resources.mMenuFont);
 
 		menuStartLoadButton = new RiskaMenuItem(START_LOAD,
 				resources.buttonRegion,
-				vbom, "Load", resources.mainMenuFont);
+				vbom, "Load", resources.mMenuFont);
 
 
 		Utils.wrap(menuStartNewButton, 0.5f * camera.getWidth(), 0.25f * camera.getHeight(), 1f);
@@ -340,7 +341,7 @@ public class MainMenuScene extends BaseScene implements Displayable, IOnMenuItem
 		};
 		switchMenuAnimations.setCurrentTileIndex(GameOptions.menuAnimationsEnabled() ? 0 : 1);
 
-		textMenuAnimations = new Text(0, 0, resources.mainMenuFont, "Menu Animations", vbom)
+		textMenuAnimations = new Text(0, 0, resources.mMenuFont, "Menu Animations", vbom)
 		{
 			@Override
 			public boolean onAreaTouched(TouchEvent ev, float pX, float pY)
@@ -412,7 +413,7 @@ public class MainMenuScene extends BaseScene implements Displayable, IOnMenuItem
 		};
 		switchGameAnimations.setCurrentTileIndex(GameOptions.menuAnimationsEnabled() ? 0 : 1);
 
-		textGameAnimations = new Text(0, 0, resources.mainMenuFont, "Game Animations", vbom);
+		textGameAnimations = new Text(0, 0, resources.mMenuFont, "Game Animations", vbom);
 		textGameAnimations.setColor(Color.WHITE);
 
 		menuOptionsGameCanvas = new RiskaCanvas(
@@ -488,7 +489,7 @@ public class MainMenuScene extends BaseScene implements Displayable, IOnMenuItem
 
 		};
 
-		textAudioMusic = new Text(0, 0, resources.mainMenuFont, "Music", vbom)
+		textAudioMusic = new Text(0, 0, resources.mMenuFont, "Music", vbom)
 		{
 			@Override
 			public boolean onAreaTouched(TouchEvent ev, float pX, float pY)
@@ -513,7 +514,7 @@ public class MainMenuScene extends BaseScene implements Displayable, IOnMenuItem
 		};
 		textAudioMusic.setColor(GameOptions.musicEnabled() ? Color.WHITE : Utils.OtherColors.DARK_GREY);
 
-		textAudioSfx = new Text(0, 0, resources.mainMenuFont, "SFX", vbom)
+		textAudioSfx = new Text(0, 0, resources.mMenuFont, "SFX", vbom)
 		{
 			@Override
 			public boolean onAreaTouched(TouchEvent ev, float pX, float pY)
@@ -562,7 +563,7 @@ public class MainMenuScene extends BaseScene implements Displayable, IOnMenuItem
 		int numberOfMenus = 3;
 		float factor = 1f / numberOfMenus;
 
-		menuOptionsMenuTab = new RiskaSprite(resources.tabRegion, vbom, "Menu", resources.mainMenuFont)
+		menuOptionsMenuTab = new RiskaSprite(resources.tabRegion, vbom, "Menu", resources.mMenuFont)
 		{
 			@Override
 			public boolean onAreaTouched(TouchEvent ev, float pX, float pY) 
@@ -584,7 +585,7 @@ public class MainMenuScene extends BaseScene implements Displayable, IOnMenuItem
 			}
 		};
 
-		menuOptionsGameTab = new RiskaSprite(resources.tabRegion, vbom, "Game", resources.mainMenuFont)
+		menuOptionsGameTab = new RiskaSprite(resources.tabRegion, vbom, "Game", resources.mMenuFont)
 		{
 			@Override
 			public boolean onAreaTouched(TouchEvent ev, float pX, float pY) 
@@ -606,7 +607,7 @@ public class MainMenuScene extends BaseScene implements Displayable, IOnMenuItem
 			}
 		};
 
-		menuOptionsAudioTab = new RiskaSprite(resources.tabRegion, vbom, "Audio", resources.mainMenuFont)
+		menuOptionsAudioTab = new RiskaSprite(resources.tabRegion, vbom, "Audio", resources.mMenuFont)
 		{
 			@Override
 			public boolean onAreaTouched(TouchEvent ev, float pX, float pY) 
@@ -629,14 +630,14 @@ public class MainMenuScene extends BaseScene implements Displayable, IOnMenuItem
 		};
 
 		menuOptionsMenuTab.setSize(factor * menuOptionsMenuCanvas.getWidth(), 0.1f * camera.getHeight());
-		menuOptionsMenuTab.setPosition(Utils.left(menuOptionsMenuCanvas) + 0.5f * factor * menuOptionsMenuCanvas.getWidth(),
-				Utils.bottom(menuOptionsMenuCanvas) - 1f * Utils.halfY(menuOptionsMenuTab));
+		menuOptionsMenuTab.setPosition(Utils.leftGlobal(menuOptionsMenuCanvas) + 0.5f * factor * menuOptionsMenuCanvas.getWidth(),
+				Utils.bottomGlobal(menuOptionsMenuCanvas) - 1f * Utils.halfY(menuOptionsMenuTab));
 
 		menuOptionsGameTab.setSize(menuOptionsMenuTab.getWidth(), menuOptionsMenuTab.getHeight());
-		menuOptionsGameTab.setPosition(Utils.right(menuOptionsMenuTab) + Utils.halfX(menuOptionsGameTab), menuOptionsMenuTab.getY());
+		menuOptionsGameTab.setPosition(Utils.rightGlobal(menuOptionsMenuTab) + Utils.halfX(menuOptionsGameTab), menuOptionsMenuTab.getY());
 
 		menuOptionsAudioTab.setSize(menuOptionsMenuTab.getWidth(), menuOptionsMenuTab.getHeight());
-		menuOptionsAudioTab.setPosition(Utils.right(menuOptionsGameTab) + Utils.halfX(menuOptionsAudioTab), menuOptionsMenuTab.getY());
+		menuOptionsAudioTab.setPosition(Utils.rightGlobal(menuOptionsGameTab) + Utils.halfX(menuOptionsAudioTab), menuOptionsMenuTab.getY());
 
 		menuOptions.attachChild(menuOptionsMenuTab);
 		menuOptions.attachChild(menuOptionsGameTab);
@@ -875,7 +876,7 @@ public class MainMenuScene extends BaseScene implements Displayable, IOnMenuItem
 			map.setCurrentTileIndex(i);
 			mapCanvas[i].addGraphicWrap(map, 0.5f, 0.725f, 0.9f, 0.55f);
 
-			Text text = new Text(0f, 0f, resources.mainMenuFont, "Map " + i, 20, vbom);
+			Text text = new Text(0f, 0f, resources.mMenuFont, "Map " + i, 20, vbom);
 			mapCanvas[i].addText(text, 0.5f, 0.25f, 0.9f, 0.35f);
 
 			Sprite mapFrame = new Sprite(0, 0, resources.smallFrameRegion, vbom);
@@ -918,10 +919,10 @@ public class MainMenuScene extends BaseScene implements Displayable, IOnMenuItem
 				1f * menuNewGamePlayersCanvas.getWidth(),
 				1f * heightFactor * menuNewGamePlayersCanvas.getHeight());
 
-		name = new RiskaSprite(resources.emptyButtonRegion, vbom, "Name", resources.mainMenuFont);
-		isActive = new RiskaSprite(resources.emptyButtonRegion, vbom, "Active?", resources.mainMenuFont);
-		isCpu = new RiskaSprite(resources.emptyButtonRegion, vbom, "Cpu?", resources.mainMenuFont);
-		color = new RiskaSprite(resources.emptyButtonRegion, vbom, "Colors", resources.mainMenuFont);
+		name = new RiskaSprite(resources.emptyButtonRegion, vbom, "Name", resources.mMenuFont);
+		isActive = new RiskaSprite(resources.emptyButtonRegion, vbom, "Active?", resources.mMenuFont);
+		isCpu = new RiskaSprite(resources.emptyButtonRegion, vbom, "Cpu?", resources.mMenuFont);
+		color = new RiskaSprite(resources.emptyButtonRegion, vbom, "Colors", resources.mMenuFont);
 
 		titleCanvas.addGraphic(name, 0.2f, 0.5f, 0.4f, 1f);
 		titleCanvas.addGraphic(isActive, 0.9f, 0.5f, 0.2f, 1f);
@@ -934,7 +935,7 @@ public class MainMenuScene extends BaseScene implements Displayable, IOnMenuItem
 		{
 			playerCanvas[i] = new RiskaCanvas(0f, 0f, titleCanvas.getWidth(), titleCanvas.getHeight());
 
-			playerName[i] = new RiskaSprite(resources.emptyButtonRegion, vbom, "", resources.mainMenuFont)
+			playerName[i] = new RiskaSprite(resources.emptyButtonRegion, vbom, "", resources.mMenuFont)
 			{
 				@Override
 				public boolean onAreaTouched(TouchEvent ev, float pX, float pY) 
@@ -1117,7 +1118,7 @@ public class MainMenuScene extends BaseScene implements Displayable, IOnMenuItem
 			};
 			levelCheckBox[i].setTag(i);
 
-			levelText[i] = new Text(0f, 0f, resources.mainMenuFont, GameOptions.getLevelDescr(i), 100, vbom)
+			levelText[i] = new Text(0f, 0f, resources.mMenuFont, GameOptions.getLevelDescr(i), 100, vbom)
 			{	
 				@Override
 				public boolean onAreaTouched(TouchEvent ev, float pX, float pY)
@@ -1171,7 +1172,7 @@ public class MainMenuScene extends BaseScene implements Displayable, IOnMenuItem
 		int numberOfMenus = 4;
 		float factor = 1f / numberOfMenus;
 
-		menuNewGameMapTab = new RiskaSprite(resources.tabRegion, vbom, "Map", resources.mainMenuFont)
+		menuNewGameMapTab = new RiskaSprite(resources.tabRegion, vbom, "Map", resources.mMenuFont)
 		{
 			@Override
 			public boolean onAreaTouched(TouchEvent ev, float pX, float pY) 
@@ -1193,7 +1194,7 @@ public class MainMenuScene extends BaseScene implements Displayable, IOnMenuItem
 			}
 		};
 
-		menuNewGamePlayersTab = new RiskaSprite(resources.tabRegion, vbom, "Players", resources.mainMenuFont)
+		menuNewGamePlayersTab = new RiskaSprite(resources.tabRegion, vbom, "Players", resources.mMenuFont)
 		{
 			@Override
 			public boolean onAreaTouched(TouchEvent ev, float pX, float pY) 
@@ -1215,7 +1216,7 @@ public class MainMenuScene extends BaseScene implements Displayable, IOnMenuItem
 			}
 		};
 
-		menuNewGameLevelTab = new RiskaSprite(resources.tabRegion, vbom, "Level", resources.mainMenuFont)
+		menuNewGameLevelTab = new RiskaSprite(resources.tabRegion, vbom, "Level", resources.mMenuFont)
 		{
 			@Override
 			public boolean onAreaTouched(TouchEvent ev, float pX, float pY) 
@@ -1237,20 +1238,20 @@ public class MainMenuScene extends BaseScene implements Displayable, IOnMenuItem
 			}
 		};
 
-		menuNewGameGoTab = new RiskaMenuItem(NEW_GO, resources.tabRegion, vbom, "GO!", resources.mainMenuFont);
+		menuNewGameGoTab = new RiskaMenuItem(NEW_GO, resources.tabRegion, vbom, "GO!", resources.mMenuFont);
 
 		menuNewGameMapTab.setSize(factor * menuNewGameMapCanvas.getWidth(), 0.1f * camera.getHeight());
-		menuNewGameMapTab.setPosition(Utils.left(menuNewGameMapCanvas) + 0.5f * factor * menuNewGameMapCanvas.getWidth(),
-				Utils.bottom(menuNewGameMapCanvas) - 1f * Utils.halfY(menuNewGameMapTab));
+		menuNewGameMapTab.setPosition(Utils.leftGlobal(menuNewGameMapCanvas) + 0.5f * factor * menuNewGameMapCanvas.getWidth(),
+				Utils.bottomGlobal(menuNewGameMapCanvas) - 1f * Utils.halfY(menuNewGameMapTab));
 
 		menuNewGamePlayersTab.setSize(menuNewGameMapTab.getWidth(), menuNewGameMapTab.getHeight());
-		menuNewGamePlayersTab.setPosition(Utils.right(menuNewGameMapTab) + Utils.halfX(menuNewGamePlayersTab), menuNewGameMapTab.getY());
+		menuNewGamePlayersTab.setPosition(Utils.rightGlobal(menuNewGameMapTab) + Utils.halfX(menuNewGamePlayersTab), menuNewGameMapTab.getY());
 
 		menuNewGameLevelTab.setSize(menuNewGameMapTab.getWidth(), menuNewGameMapTab.getHeight());
-		menuNewGameLevelTab.setPosition(Utils.right(menuNewGamePlayersTab) + Utils.halfX(menuNewGameLevelTab), menuNewGameMapTab.getY());
+		menuNewGameLevelTab.setPosition(Utils.rightGlobal(menuNewGamePlayersTab) + Utils.halfX(menuNewGameLevelTab), menuNewGameMapTab.getY());
 
 		menuNewGameGoTab.setSize(menuNewGameMapTab.getWidth(), menuNewGameMapTab.getHeight());
-		menuNewGameGoTab.setPosition(Utils.right(menuNewGameLevelTab) + Utils.halfX(menuNewGameGoTab), menuNewGameMapTab.getY());
+		menuNewGameGoTab.setPosition(Utils.rightGlobal(menuNewGameLevelTab) + Utils.halfX(menuNewGameGoTab), menuNewGameMapTab.getY());
 
 		menuNewGame.attachChild(menuNewGameMapTab);
 		menuNewGame.attachChild(menuNewGamePlayersTab);

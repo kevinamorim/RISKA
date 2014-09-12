@@ -36,7 +36,7 @@ public class Region extends Element {
 		neighbourRegion = new ArrayList<Region>();
 	}
 
-	public int numberOfSoldiers()
+	public int getGarrison()
 	{
 		return garrisonArmy;
 	}
@@ -144,21 +144,16 @@ public class Region extends Element {
 		addSoldiers(number);
 	}
 	
-	public boolean hasOwner(Player player)
+	public boolean ownerIs(Player player)
 	{
 		return (owner.equals(player));
-	}
-	
-	public boolean canAttack()
-	{
-		return (garrisonArmy > GameInfo.minGarrison);
 	}
 
 	public boolean hasEnemyNeighbor()
 	{
 		for(Region neighbour : neighbourRegion)
 		{
-			if(!neighbour.owner().equals(owner))
+			if(!neighbour.ownerIs(owner))
 			{
 				return true;
 			}

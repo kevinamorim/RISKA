@@ -15,7 +15,7 @@ public class RiskaTextButtonSprite extends RiskaButtonSprite {
 	
 	private Text text;
 
-	private static final float textBoundingFactor = 0.55f;
+	private static final float textBoundingFactor = 0.8f;
 	private static final float animationTime = 0.2f;
 
 	// ==================================================
@@ -151,6 +151,14 @@ public class RiskaTextButtonSprite extends RiskaButtonSprite {
 		}
 	}
 
+	public void setTextColor(Color pColor)
+	{
+		if(text != null)
+		{
+			text.setColor(pColor);
+		}
+	}
+	
 	// ==================================================
 	// OVERRIDE
 	// ==================================================

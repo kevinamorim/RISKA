@@ -1,9 +1,7 @@
 package feup.lpoo.riska.gameInterface;
 
 import org.andengine.engine.camera.hud.HUD;
-import org.andengine.entity.sprite.ButtonSprite;
 import org.andengine.entity.sprite.Sprite;
-import org.andengine.entity.text.Text;
 import org.andengine.input.touch.TouchEvent;
 import org.andengine.opengl.vbo.VertexBufferObjectManager;
 import org.andengine.util.adt.color.Color;
@@ -13,6 +11,7 @@ import feup.lpoo.riska.logic.GameLogic;
 import feup.lpoo.riska.resources.ResourceCache;
 import feup.lpoo.riska.scenes.GameScene;
 import feup.lpoo.riska.utilities.Utils;
+
 import android.view.MotionEvent;
 
 public class GameHUD extends HUD implements Displayable {
@@ -37,22 +36,15 @@ public class GameHUD extends HUD implements Displayable {
 	// FIELDS
 	// ======================================================
 	private CameraManager camera;
-
-	private RiskaCanvas actionCanvas;
-	private RiskaCanvas summonPoolCanvas;
-	private RiskaCanvas movesPoolCanvas;
+	private GameLogic logic;
+	
+	private UIButton lowerBar;
 	
 	private RiskaButtonSprite attackButton;
 	private RiskaButtonSprite summonButton;
 	private RiskaButtonSprite deployButton;
-	
-	private RiskaCanvas movesPoolBarCanvas;
-	private Text movesPoolText;
-	private RiskaSprite movesPoolBar;
-	
-	private RiskaCanvas summonPoolBarCanvas;
-	private Text summonPoolText;
-	private RiskaSprite summonPoolBar;
+	private RiskaTextButtonSprite movesButton;
+	private RiskaTextButtonSprite poolButton;
 	
 	private RiskaTextButtonSprite currentPlayerButton;
 
@@ -61,9 +53,10 @@ public class GameHUD extends HUD implements Displayable {
 	// ======================================================
 	// ======================================================
 
-	public GameHUD(GameScene scene)
+	public GameHUD(GameScene scene, GameLogic logic)
 	{
-		gameScene = scene;
+		this.gameScene = scene;
+		this.logic = logic;
 
 		resources = ResourceCache.getSharedInstance();
 		vbom = resources.vbom;
@@ -125,30 +118,25 @@ public class GameHUD extends HUD implements Displayable {
 	public void createDisplay()
 	{
 
-		createActionCanvas();
-		createSummonPoolCanvas();
-		createMovesPoolCanvas();
-
-		actionCanvas.setAlpha(0.8f);
-		summonPoolCanvas.setAlpha(0.8f);
-		movesPoolCanvas.setAlpha(0.8f);
+		createMainCanvas();
 
 		registerTouchArea(summonButton);
 		registerTouchArea(deployButton);
 		registerTouchArea(attackButton);
-
-		registerTouchArea(summonPoolBarCanvas);
-		registerTouchArea(movesPoolBarCanvas);
 		
 		setTouchAreaBindingOnActionDownEnabled(true);
 	}
 
-	private void createActionCanvas()
+	private void createMainCanvas()
 	{
-		actionCanvas = new RiskaCanvas(0f, 0f, 0.5f * camera.getHeight(), 0.1f * camera.getHeight());
-
-		actionCanvas.setCanvasSprite(new RiskaSprite(resources.barLowRegion, vbom));
-
+		lowerBar = new UIButton(0.7f * camera.getHeight(), 0.1f * camera.getHeight(), resources.bottom, resources.vbom);
+		lowerBar.setPosition(0.5f * camera.getWidth(), Utils.halfY(lowerBar));
+		lowerBar.setSpriteColor(Utils.OtherColors.DARK_GREY);
+		
+		poolButton = new RiskaTextButtonSprite(resources.regionButtonRegion, vbom, "", resources.mGameFont, Utils.maxNumericChars);
+		poolButton.setTextColor(Color.BLACK);
+		poolButton.setText("" + logic.getCurrentPlayer().moves);
+		
 		attackButton = new RiskaButtonSprite(resources.attackButtonRegion, vbom)
 		{
 			@Override
@@ -179,7 +167,6 @@ public class GameHUD extends HUD implements Displayable {
 				return true;
 			}
 		};
-		actionCanvas.addGraphicWrap(attackButton, 0.75f, 0.5f, 0.2f, 0.9f);
 
 		deployButton = new RiskaButtonSprite(resources.deployButtonRegion, vbom)
 		{
@@ -211,7 +198,6 @@ public class GameHUD extends HUD implements Displayable {
 				return true;
 			}
 		};
-		actionCanvas.addGraphicWrap(deployButton, 0.5f, 0.5f, 0.2f, 0.9f);
 
 		summonButton = new RiskaButtonSprite(resources.summonButtonRegion, vbom)
 		{
@@ -244,127 +230,34 @@ public class GameHUD extends HUD implements Displayable {
 				return true;
 			}
 		};
-		actionCanvas.addGraphicWrap(summonButton, 0.25f, 0.5f, 0.2f, 0.9f);
 
-		actionCanvas.setPosition(0.5f * camera.getWidth(), Utils.halfY(actionCanvas));
+		movesButton = new RiskaTextButtonSprite(resources.regionButtonRegion, vbom, "", resources.mGameFont, Utils.maxNumericChars);
+		movesButton.setTextColor(Color.BLACK);
+		movesButton.setText("" + logic.getCurrentPlayer().soldiersPool);
 
 		attackButton.setColor(Utils.OtherColors.LIGHT_GREY);
 		deployButton.setColor(Utils.OtherColors.LIGHT_GREY);
 		summonButton.setColor(Utils.OtherColors.LIGHT_GREY);
-
-		attachChild(actionCanvas);
-	}
-
-	private void createSummonPoolCanvas()
-	{
-		summonPoolCanvas = new RiskaCanvas(0f, 0f, 0.15f * camera.getHeight(), 0.4f * camera.getHeight());
-
-		summonPoolCanvas.setCanvasSprite(new RiskaSprite(resources.barLeftRegion, vbom));
 		
-		summonPoolBarCanvas = new RiskaCanvas(0f, 0f, 0.55f * summonPoolCanvas.getWidth(), 0.64f * summonPoolCanvas.getWidth())
-		{
-			@Override
-			public boolean onAreaTouched(TouchEvent ev, float pX, float pY)
-			{
-
-				switch(ev.getMotionEvent().getActionMasked())
-				{
-
-				case MotionEvent.ACTION_DOWN:
-					pressed(BUTTON.SUMMON_POOL);
-					break;
-
-				case MotionEvent.ACTION_UP:
-					if(Utils.contains(this, pX, pY))
-					{
-						onButtonSelected(BUTTON.SUMMON_POOL);
-					}
-					else
-					{
-						released(BUTTON.SUMMON_POOL);
-					}
-					break;
-
-				default:
-					break;
-
-				}
-				return true;
-			}
-		};
+		Utils.wrap(poolButton, lowerBar, 0.8f);
+		Utils.wrap(summonButton, lowerBar, 0.8f);
+		Utils.wrap(deployButton, lowerBar, 0.8f);
+		Utils.wrap(attackButton, lowerBar, 0.8f);
+		Utils.wrap(movesButton, lowerBar, 0.8f);
 		
-		summonPoolBar = new RiskaSprite(resources.fillSquareRegion, vbom);
-		summonPoolBar.setAnchorCenterY(0f);
-		summonPoolBarCanvas.addGraphic(summonPoolBar, 0.5f, 0f, 0.99f, 0.75f);
-		summonPoolBarCanvas.setCanvasSprite(new RiskaSprite(resources.barFillRegion, vbom));
+		poolButton.setPosition(1/6f * lowerBar.getWidth(), 0.45f * lowerBar.getHeight());
+		summonButton.setPosition(2/6f * lowerBar.getWidth(), 0.45f * lowerBar.getHeight());
+		deployButton.setPosition(3/6f * lowerBar.getWidth(), 0.45f * lowerBar.getHeight());
+		attackButton.setPosition(4/6f * lowerBar.getWidth(), 0.45f * lowerBar.getHeight());
+		movesButton.setPosition(5/6f * lowerBar.getWidth(), 0.45f * lowerBar.getHeight());
 		
-		summonPoolText = new Text(0f, 0f, resources.mGameFont, "12", Utils.maxNumericChars, vbom);
+		lowerBar.attachChild(poolButton);
+		lowerBar.attachChild(summonButton);
+		lowerBar.attachChild(deployButton);
+		lowerBar.attachChild(attackButton);
+		lowerBar.attachChild(movesButton);
 		
-		summonPoolBarCanvas.setColor(Utils.OtherColors.WHITE);
-		summonPoolBar.setColor(Utils.OtherColors.DARK_YELLOW);
-
-		summonPoolCanvas.addGraphic(summonPoolBarCanvas, 0.4f, 0.55f, 0.55f, 0.64f);
-		summonPoolCanvas.addText(summonPoolText, 0.4f, 0.1f, 1f, 0.2f);
-		
-		summonPoolCanvas.setPosition(Utils.halfX(summonPoolCanvas), Utils.halfY(summonPoolCanvas));
-
-		attachChild(summonPoolCanvas);
-	}
-	
-	private void createMovesPoolCanvas()
-	{
-		movesPoolCanvas = new RiskaCanvas(0f, 0f, 0.15f * camera.getHeight(), 0.4f * camera.getHeight());
-
-		movesPoolCanvas.setCanvasSprite(new RiskaSprite(resources.barRightRegion, vbom));
-		
-		movesPoolBarCanvas = new RiskaCanvas(0f, 0f, 0.55f * movesPoolCanvas.getWidth(), 0.64f * movesPoolCanvas.getWidth())
-		{
-			@Override
-			public boolean onAreaTouched(TouchEvent ev, float pX, float pY)
-			{
-
-				switch(ev.getMotionEvent().getActionMasked())
-				{
-
-				case MotionEvent.ACTION_DOWN:
-					pressed(BUTTON.MOVES_POOL);
-					break;
-
-				case MotionEvent.ACTION_UP:
-					if(Utils.contains(this, pX, pY))
-					{
-						onButtonSelected(BUTTON.MOVES_POOL);
-					}
-					else
-					{
-						released(BUTTON.MOVES_POOL);
-					}
-					break;
-
-				default:
-					break;
-
-				}
-				return true;
-			}
-		};
-
-		movesPoolBar = new RiskaSprite(resources.fillSquareRegion, vbom);
-		movesPoolBar.setAnchorCenterY(0f);
-		movesPoolBarCanvas.addGraphic(movesPoolBar, 0.5f, 0f, 0.99f, 0.75f);
-		movesPoolBarCanvas.setCanvasSprite(new RiskaSprite(resources.barFillRegion, vbom));
-		
-		movesPoolText = new Text(0f, 0f, resources.mGameFont, "2", Utils.maxNumericChars, vbom);
-		
-		movesPoolBarCanvas.setColor(Utils.OtherColors.WHITE);
-		movesPoolBar.setColor(Utils.OtherColors.LIGHT_GREY);
-
-		movesPoolCanvas.addGraphic(movesPoolBarCanvas, 0.6f, 0.55f, 0.55f, 0.64f);
-		movesPoolCanvas.addText(movesPoolText, 0.6f, 0.1f, 1f, 0.2f);
-		
-		movesPoolCanvas.setPosition(camera.getWidth() - Utils.halfX(movesPoolCanvas), Utils.halfY(movesPoolCanvas));
-
-		attachChild(movesPoolCanvas);
+		attachChild(lowerBar);
 	}
 
 	// ======================================================
@@ -565,12 +458,6 @@ public class GameHUD extends HUD implements Displayable {
 		case DEPLOY:
 			return deployButton;
 			
-		case SUMMON_POOL:
-			return summonPoolBar;
-			
-		case MOVES_POOL:
-			return movesPoolBar;
-			
 		case PLAYER:
 			return currentPlayerButton;
 			
@@ -579,4 +466,18 @@ public class GameHUD extends HUD implements Displayable {
 		}
 	}
 
+	public void test()
+	{
+		UIButton buttonCanvas = new UIButton(100f, 100f, resources.center, vbom);
+		
+		buttonCanvas.setSprite(resources.center);
+		buttonCanvas.setSpriteColor(Color.RED);
+		buttonCanvas.setText("Test Text", resources.mMenuFont);
+		buttonCanvas.setTextColor(Color.BLACK);
+		
+		buttonCanvas.setPosition(camera.getCenterX(), camera.getCenterY());
+		buttonCanvas.setSize(0.5f * camera.getWidth(), 0.5f * camera.getHeight());
+		
+		attachChild(buttonCanvas);
+	}
 }

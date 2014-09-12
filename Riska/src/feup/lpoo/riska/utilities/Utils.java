@@ -37,6 +37,7 @@ public class Utils
 	}
 
 	public static final int maxNumericChars = 50;
+	public static final int maxTextChars = 200;
 	
 	private static MainActivity activity = MainActivity.getSharedInstance();
 
@@ -131,9 +132,9 @@ public class Utils
 		child.setSize(child.getWidth() * scale, child.getHeight() * scale);
 	}
 
-	public static void getWrapScale(IEntity child, IEntity parent, float boundingFactor)
+	public static float getWrapScale(IEntity child, IEntity parent, float boundingFactor)
 	{
-		getWrapScale(child, parent.getWidth(), parent.getHeight(), boundingFactor);
+		return getWrapScale(child, parent.getWidth(), parent.getHeight(), boundingFactor);
 	}
 
 	public static float getWrapScale(IEntity child, float pWidth, float pHeight, float boundingFactor)
@@ -147,6 +148,20 @@ public class Utils
 		{
 			// Dealing in Y
 			return boundingFactor * pHeight / child.getHeight();
+		}
+	}
+	
+	public static float getWrapScale(float cWidth, float cHeight, float pWidth, float pHeight, float boundingFactor)
+	{
+		if(cWidth / pWidth > cHeight / pHeight)
+		{
+			// Dealing in X
+			return boundingFactor * pWidth / cWidth;
+		}
+		else
+		{
+			// Dealing in Y
+			return boundingFactor * pHeight / cHeight;
 		}
 	}
 
@@ -316,25 +331,55 @@ public class Utils
 	}
 
 	// ======================================================
-	// ======================================================
-	public static float left(IEntity e)
+	// ======================================================	
+	public static float posX(IEntity e, float perc)
+	{
+		return e.getX() + perc * e.getWidth();
+	}
+	
+	public static float posY(IEntity e, float perc)
+	{
+		return e.getY() + perc * e.getHeight();
+	}
+	
+	public static float leftGlobal(IEntity e)
 	{
 		return e.getX() - 0.5f * e.getWidth();
 	}
 	
-	public static float right(IEntity e)
+	public static float rightGlobal(IEntity e)
 	{
 		return e.getX() + 0.5f * e.getWidth();
 	}
 	
-	public static float top(IEntity e)
+	public static float topGlobal(IEntity e)
 	{
 		return e.getY() + 0.5f * e.getHeight();
 	}
 	
-	public static float bottom(IEntity e)
+	public static float bottomGlobal(IEntity e)
 	{
 		return e.getY() - 0.5f * e.getHeight();
+	}
+	
+	public static float leftLocal(IEntity e)
+	{
+		return 0f;
+	}
+	
+	public static float rightLocal(IEntity e)
+	{
+		return e.getWidth();
+	}
+	
+	public static float topLocal(IEntity e)
+	{
+		return e.getHeight();
+	}
+	
+	public static float bottomLocal(IEntity e)
+	{
+		return 0f;
 	}
 
 	public static float halfX(IEntity e)

@@ -17,12 +17,12 @@ import org.andengine.input.touch.detector.SurfaceScrollDetector;
 import feup.lpoo.riska.elements.Map;
 import feup.lpoo.riska.elements.Region;
 import feup.lpoo.riska.gameInterface.GameHUD;
-import feup.lpoo.riska.gameInterface.GameHUD.BUTTON;
-import feup.lpoo.riska.gameInterface.GameHUD.SPRITE;
-import feup.lpoo.riska.generator.BattleGenerator;
+import feup.lpoo.riska.logic.BattleGenerator;
+import feup.lpoo.riska.logic.GameInfo;
 import feup.lpoo.riska.logic.GameLogic;
 import feup.lpoo.riska.logic.GameLogic.GAME_STATE;
 import feup.lpoo.riska.logic.SceneManager.SCENE_TYPE;
+import feup.lpoo.riska.resources.ResourceCache;
 import feup.lpoo.riska.utilities.Utils;
 import android.graphics.Point;
 import android.view.MotionEvent;
@@ -36,7 +36,6 @@ public class GameScene extends BaseScene implements IOnSceneTouchListener, IScro
 	private final long MIN_TOUCH_INTERVAL = 70;
 	private final long MAX_TOUCH_INTERVAL = 400;
 	private final float CPU_DELAY = 1.0f;
-	private final long REGION_BUTTON_MIN_TOUCH_INTERVAL = 30;
 	private final int MAX_REGION_CHARS = 10;
 
 	// ======================================================
@@ -44,16 +43,17 @@ public class GameScene extends BaseScene implements IOnSceneTouchListener, IScro
 	// ======================================================
 	private GameLogic logic;
 	private GameHUD hud;
-	private BattleScene battleScene;
-	private PreBattleScene preBattleScene;
-	private PreMoveScene preMoveScene;
+
+	private AttackScene attackScene;
+	private SummonScene summonScene;
+	private DeployScene deployScene;
+
 	private ScrollDetector scrollDetector;
 	private Map map;		
 	private ArrayList<ButtonSprite> regionButtons;
 	private ArrayList<Text> regionButtonsText;
 	private boolean doubleTapAllowed;
 	private long lastTouchTime;
-	private long lastTouchTimeInRegion;
 
 
 	@Override
@@ -61,12 +61,11 @@ public class GameScene extends BaseScene implements IOnSceneTouchListener, IScro
 	{
 		initVars();
 		createDisplay();
-		createChildScenes();
 		createScrollDetector();
 
 		setTouchAreaBindingOnActionDownEnabled(true);
 		setOnSceneTouchListener(this);	
-		
+
 		draw();
 	}
 
@@ -94,15 +93,15 @@ public class GameScene extends BaseScene implements IOnSceneTouchListener, IScro
 	// ======================================================
 	// CREATE DISPLAY
 	// ======================================================
-
 	private void createDisplay()
 	{
-		createMap();
+		createBackground();
 		createHUD();
-		createRegionButtons();
+		createRegions();
+		createChildScenes();
 	}
 
-	private void createMap()
+	private void createBackground()
 	{
 		Sprite mapSprite = new Sprite(
 				camera.getCenterX(),
@@ -116,12 +115,12 @@ public class GameScene extends BaseScene implements IOnSceneTouchListener, IScro
 
 	private void createHUD()
 	{
-		hud = new GameHUD(this);
+		hud = new GameHUD(this, logic);
 		//hud.show(SPRITE.INFO_TAB);	
 		camera.setHUD(hud);
 	}
 
-	private void createRegionButtons()
+	private void createRegions()
 	{
 		Text buttonText;
 		ButtonSprite regionButton;
@@ -138,16 +137,25 @@ public class GameScene extends BaseScene implements IOnSceneTouchListener, IScro
 				@Override
 				public boolean onAreaTouched(TouchEvent ev, float pX, float pY) 
 				{
-					switch(ev.getAction()) 
+					switch(ev.getMotionEvent().getActionMasked()) 
 					{
+					
 					case MotionEvent.ACTION_DOWN:
-						onRegionButtonPressed(this, getTag());
+						onRegionPressed(this, getTag());
 						break;
+						
 					case MotionEvent.ACTION_UP:
-						onRegionButtonReleased(this, getTag());
+						if(Utils.contains(this, pX, pY))
+						{
+							onRegionTouched(this, getTag());
+						}
+						else
+						{
+							onRegionReleased(this, getTag());
+						}
 						break;
-					case MotionEvent.ACTION_OUTSIDE:
-						onRegionButtonReleased(this, getTag());
+
+					default:
 						break;
 					}
 
@@ -161,7 +169,7 @@ public class GameScene extends BaseScene implements IOnSceneTouchListener, IScro
 
 			regionButton.setColor(region.getPrimaryColor());
 
-			buttonText.setText("" + logic.MIN_SOLDIERS_PER_REGION);
+			buttonText.setText("" + region.getGarrison());
 			buttonText.setPosition(Utils.getCenterX(regionButton), Utils.getCenterY(regionButton));
 			buttonText.setColor(region.getSecundaryColor());
 
@@ -177,18 +185,21 @@ public class GameScene extends BaseScene implements IOnSceneTouchListener, IScro
 
 	private void createChildScenes()
 	{
-		battleScene = new BattleScene();
-		preBattleScene = new PreBattleScene();
-		preMoveScene = new PreMoveScene();
+		attackScene = new AttackScene(logic);
+		summonScene = new SummonScene(logic);
+		deployScene = new DeployScene(logic);
 
-		battleScene.setVisible(false);
-		attachChild(battleScene);
+		attackScene.setVisible(false);
+		//attackScene.setAlpha(0f);
+		attachChild(attackScene);
 
-		preBattleScene.setVisible(false);
-		attachChild(preBattleScene);
+		summonScene.setVisible(false);
+		//summonScene.setAlpha(0f);
+		attachChild(summonScene);
 
-		preMoveScene.setVisible(false);
-		attachChild(preMoveScene);
+		deployScene.setVisible(false);
+		//deployScene.setAlpha(0f);
+		attachChild(deployScene);
 	}
 
 	// ======================================================
@@ -215,16 +226,16 @@ public class GameScene extends BaseScene implements IOnSceneTouchListener, IScro
 		drawRegionButtons();
 
 		hud.draw(logic);
-		
+
 		drawButtons();
-		
+
 	}
-	
+
 	private void drawButtons() {
-		
+
 		/* Reset */
 		hideAllButtons(); 
-		
+
 		if(!logic.getCurrentPlayer().isCpu) {
 			switch(logic.getState()) {
 			case SETUP:
@@ -240,7 +251,7 @@ public class GameScene extends BaseScene implements IOnSceneTouchListener, IScro
 					//hud.show(BUTTON.BUTTON);
 				}
 				break;
-			case DEPLOYMENT:
+			case DEPLOY:
 				//hud.show(BUTTON.AUTO_DEPLOY);
 				break;
 			case ENDTURN:
@@ -250,7 +261,7 @@ public class GameScene extends BaseScene implements IOnSceneTouchListener, IScro
 				break;
 			}
 		}
-		
+
 	}
 
 	public void showCpuMove(final Region pRegion1, final Region pRegion2)
@@ -340,18 +351,21 @@ public class GameScene extends BaseScene implements IOnSceneTouchListener, IScro
 	}
 
 	@Override
-	public void onScrollStarted(ScrollDetector pScollDetector, int pPointerID, float pX, float pY) {		
+	public void onScrollStarted(ScrollDetector pScollDetector, int pPointerID, float pX, float pY)
+	{		
 		unregisterTouchAreaForAllRegions();
 	}
 
 	@Override
-	public void onScroll(ScrollDetector pScollDetector, int pPointerID, float pX, float pY) {
+	public void onScroll(ScrollDetector pScollDetector, int pPointerID, float pX, float pY)
+	{
 		Point p = new Point((int)(activity.mCamera.getCenterX() - pX), (int)(activity.mCamera.getCenterY() + pY));
 		camera.jumpTo(p);	
 	}
 
 	@Override
-	public void onScrollFinished(ScrollDetector pScollDetector, int pPointerID, float pX, float pY) {		
+	public void onScrollFinished(ScrollDetector pScollDetector, int pPointerID, float pX, float pY)
+	{		
 		Point p = new Point((int)(activity.mCamera.getCenterX() - pX), (int)(activity.mCamera.getCenterY() + pY));
 		camera.jumpTo(p);
 
@@ -387,7 +401,7 @@ public class GameScene extends BaseScene implements IOnSceneTouchListener, IScro
 			if(btn.isVisible())
 			{
 				Region region = map.getRegionById(i);
-				btnText.setText("" + region.numberOfSoldiers());
+				btnText.setText("" + region.getGarrison());
 
 				if(region.getPrimaryColor() != btn.getColor())
 				{
@@ -399,31 +413,29 @@ public class GameScene extends BaseScene implements IOnSceneTouchListener, IScro
 
 	}
 
-	private void onRegionButtonPressed(ButtonSprite btn, int regionID)
+	private void onRegionPressed(ButtonSprite btn, int regionID)
 	{
 		btn.setCurrentTileIndex(1);
 	}
 
-	private void onRegionButtonReleased(ButtonSprite btn, int regionID)
+	private void onRegionTouched(ButtonSprite btn, int regionID)
 	{
-		btn.setCurrentTileIndex(0);
+		onRegionReleased(btn, regionID);
 
-		long now = System.currentTimeMillis();
-
-		if((now - lastTouchTimeInRegion) > REGION_BUTTON_MIN_TOUCH_INTERVAL)
-		{
-			logic.onRegionTouched(map.getRegionById(regionID));
-			updateRegionButton(regionID);
-			draw();
-		}
-
-		lastTouchTimeInRegion = System.currentTimeMillis();
+		logic.onRegionTouched(map.getRegionById(regionID));
+		updateRegion(regionID);
+		draw();
 	}
 
-	private void updateRegionButton(int i)
+	private void onRegionReleased(ButtonSprite btn, int regionID)
+	{
+		btn.setCurrentTileIndex(0);
+	}
+
+	private void updateRegion(int i)
 	{
 		Region reg = map.getRegionById(i);
-		regionButtonsText.get(i).setText("" + reg.numberOfSoldiers());
+		regionButtonsText.get(i).setText("" + reg.getGarrison());
 	}
 
 	public void showOnlyNeighbourRegions(Region pRegion) {
@@ -514,75 +526,75 @@ public class GameScene extends BaseScene implements IOnSceneTouchListener, IScro
 	// ======================================================
 	public void showBattleScene(Region pRegion1, Region pRegion2, BattleGenerator battleGenerator)
 	{
-		if(battleScene != null)
+		if(attackScene != null)
 		{
 			showChildScene();
 			//hud.show(BUTTON.DETAILS);
-			battleScene.update(pRegion1, pRegion2, battleGenerator);
-			battleScene.setVisible(true);
+			attackScene.update(pRegion1, pRegion2);
+			attackScene.setVisible(true);
 		}
 	}
 
 	private void hideBattleScene()
 	{
-		if(battleScene != null)
+		if(attackScene != null)
 		{
 			hideChildScene();
-			battleScene.setVisible(false);
+			attackScene.setVisible(false);
 			logic.resumeGame();
 		}
 	}
 
 	private void showPreBattleScene(int attackingSoldiers, int defendingSoldiers)
 	{
-		if(preBattleScene != null)
+		if(summonScene != null)
 		{
 			showChildScene();
 			//hud.show(BUTTON.ATTACK);
 			//hud.show(BUTTON.ARROW_LEFT);
 			//hud.show(BUTTON.ARROW_RIGHT);
-			preBattleScene.update(attackingSoldiers, defendingSoldiers);
-			preBattleScene.setVisible(true);
+			summonScene.update(attackingSoldiers, defendingSoldiers);
+			summonScene.setVisible(true);
 		}
 
 	}
 
 	private void showPreMoveScene(int maxSoldiers) {
-		if(preMoveScene != null) {
+		if(deployScene != null) {
 			showChildScene();
 			//hud.show(BUTTON.BUTTON);
 			//hud.show(BUTTON.ARROW_LEFT);
 			//hud.show(BUTTON.ARROW_RIGHT);
-			preMoveScene.update(maxSoldiers);
-			preMoveScene.setVisible(true);
+			deployScene.update(maxSoldiers);
+			deployScene.setVisible(true);
 		}
 	}
 
 	private void hidePreBattleScene()
 	{
-		if(preBattleScene != null)
+		if(summonScene != null)
 		{
 			hideChildScene();
-			preBattleScene.setVisible(false);
+			summonScene.setVisible(false);
 		}
 	}
 
 	private void hidePreMoveScene() {
-		if(preMoveScene != null) {
+		if(deployScene != null) {
 			hideChildScene();
-			preMoveScene.setVisible(false);
+			deployScene.setVisible(false);
 		}
 	}
 
 	private boolean anyChildSceneIsVisible()
 	{
 
-		if(battleScene.isVisible())
+		if(attackScene.isVisible())
 		{
 			return true;
 		}
 
-		if(preBattleScene.isVisible())
+		if(summonScene.isVisible())
 		{
 			return true;
 		}
@@ -592,17 +604,17 @@ public class GameScene extends BaseScene implements IOnSceneTouchListener, IScro
 
 	private void hideAllChildScenes() {
 
-		if(battleScene.isVisible())
+		if(attackScene.isVisible())
 		{
 			hideBattleScene();
 		}
 
-		if(preBattleScene.isVisible())
+		if(summonScene.isVisible())
 		{
 			hidePreBattleScene();
 		}
 
-		if(preMoveScene.isVisible()) {
+		if(deployScene.isVisible()) {
 			hidePreMoveScene();
 		}
 
@@ -610,28 +622,29 @@ public class GameScene extends BaseScene implements IOnSceneTouchListener, IScro
 
 	private void hideAllButtons()
 	{
-//		if(hud.get(BUTTON.ATTACK).isVisible()) {
-//			hud.hide(BUTTON.ATTACK);
-//		}
-//		if(hud.get(BUTTON.DETAILS).isVisible()) {
-//			hud.hide(BUTTON.DETAILS);
-//		}
-//		if(hud.get(BUTTON.AUTO_DEPLOY).isVisible()) {
-//			hud.hide(BUTTON.AUTO_DEPLOY);
-//		}
-//		if(hud.get(BUTTON.MOVE).isVisible()) {
-//			hud.hide(BUTTON.MOVE);
-//		}
-//		if(hud.get(BUTTON.ARROW_LEFT).isVisible()) {
-//			hud.hide(BUTTON.ARROW_LEFT);
-//		}
-//		if(hud.get(BUTTON.ARROW_RIGHT).isVisible()) {
-//			hud.hide(BUTTON.ARROW_RIGHT);
-//		}
+		//		if(hud.get(BUTTON.ATTACK).isVisible()) {
+		//			hud.hide(BUTTON.ATTACK);
+		//		}
+		//		if(hud.get(BUTTON.DETAILS).isVisible()) {
+		//			hud.hide(BUTTON.DETAILS);
+		//		}
+		//		if(hud.get(BUTTON.AUTO_DEPLOY).isVisible()) {
+		//			hud.hide(BUTTON.AUTO_DEPLOY);
+		//		}
+		//		if(hud.get(BUTTON.MOVE).isVisible()) {
+		//			hud.hide(BUTTON.MOVE);
+		//		}
+		//		if(hud.get(BUTTON.ARROW_LEFT).isVisible()) {
+		//			hud.hide(BUTTON.ARROW_LEFT);
+		//		}
+		//		if(hud.get(BUTTON.ARROW_RIGHT).isVisible()) {
+		//			hud.hide(BUTTON.ARROW_RIGHT);
+		//		}
 	}
 
 	/* Common operations when showing a child scene. */
-	private void showChildScene() {
+	private void showChildScene()
+	{
 		camera.zoomOut();
 		hideAllButtons();
 		//hud.hide(SPRITE.INFO_TAB);
@@ -647,8 +660,6 @@ public class GameScene extends BaseScene implements IOnSceneTouchListener, IScro
 		unlockUserInput();
 	}
 
-
-
 	// ======================================================
 	// HUD
 	// ======================================================
@@ -662,7 +673,7 @@ public class GameScene extends BaseScene implements IOnSceneTouchListener, IScro
 
 	public void onDetailButtonTouched()
 	{	
-		if(battleScene.isVisible())
+		if(attackScene.isVisible())
 		{
 			hideBattleScene();
 		}
@@ -670,7 +681,7 @@ public class GameScene extends BaseScene implements IOnSceneTouchListener, IScro
 		{
 			return;
 		}
-		
+
 		buttonTouched();
 	}
 
@@ -681,10 +692,11 @@ public class GameScene extends BaseScene implements IOnSceneTouchListener, IScro
 
 	public void onAttackButtonTouched()
 	{
-		if(preBattleScene.isVisible())
+		
+		if(summonScene.isVisible())
 		{
 			hidePreBattleScene();
-			logic.attackingSoldiers = preBattleScene.getAttackingSoldiers();
+			logic.attackingSoldiers = summonScene.getAttackingSoldiers();
 			logic.update();
 		}
 		else
@@ -701,30 +713,34 @@ public class GameScene extends BaseScene implements IOnSceneTouchListener, IScro
 
 	public void onLeftArrowTouched()
 	{
-		if(preBattleScene != null && preBattleScene.isVisible())
+		if(summonScene != null && summonScene.isVisible())
 		{
-			preBattleScene.decreaseSoldiers();
-		} else if(preMoveScene != null && preMoveScene.isVisible()) {
-			preMoveScene.decreaseSoldiers();
+			summonScene.decreaseSoldiers();
+		} else if(deployScene != null && deployScene.isVisible()) {
+			deployScene.decreaseSoldiers();
 		}
 	}
 
 	public void onRightArrowTouched()
 	{
-		if(preBattleScene != null && preBattleScene.isVisible())
+		if(summonScene != null && summonScene.isVisible())
 		{
-			preBattleScene.increaseSoldiers();
-		} else if(preMoveScene != null && preMoveScene.isVisible()) {
-			preMoveScene.increaseSoldiers();
+			summonScene.increaseSoldiers();
+		} else if(deployScene != null && deployScene.isVisible()) {
+			deployScene.increaseSoldiers();
 		}
 	}
 
-	public void onMoveButtonTouched() {
-		if(!preMoveScene.isVisible()) {
-			showPreMoveScene(logic.selectedRegion.numberOfSoldiers() - logic.MIN_SOLDIERS_PER_REGION);
-		} else {
+	public void onMoveButtonTouched()
+	{
+		if(!deployScene.isVisible())
+		{
+			showPreMoveScene(logic.selectedRegion.getGarrison() - GameInfo.minGarrison);
+		}
+		else
+		{
 			hidePreMoveScene();
-			logic.movingSoldiers = preMoveScene.getAttackingSoldiers();
+			logic.movingSoldiers = deployScene.getAttackingSoldiers();
 			buttonTouched();
 		}
 	}
@@ -732,24 +748,55 @@ public class GameScene extends BaseScene implements IOnSceneTouchListener, IScro
 	public void onNextTurnButtonTouched() {
 		buttonTouched();
 	}
-	
-	private void initVars() {
+
+	private void initVars()
+	{
 		logic = new GameLogic(this);
 
-		map = resources.maps.get(0);
+		map = ResourceCache.getSharedInstance().maps.get(GameInfo.currentMapIndex);
 
 		regionButtons = new ArrayList<ButtonSprite>();
 		regionButtonsText = new ArrayList<Text>();
 
 		lastTouchTime = 0;
-		lastTouchTimeInRegion = 0;
 		doubleTapAllowed = true;
 	}
-	
-	private void buttonTouched() {
+
+	private void buttonTouched()
+	{
 		logic.update();
 		draw();
 	}
+
+
+	// ======================================================
+	// ======================================================
+	public void onDeploy()
+	{
+		lockHUD();
+		deployScene.show();
+		// TODO Auto-generated method stub
+	}
+
+	public void onAttack()
+	{
+		lockHUD();
+		attackScene.show();
+		// TODO Auto-generated method stub
+
+	}
+
+	public void onSummon()
+	{
+		lockHUD();
+		summonScene.show();
+		// TODO Auto-generated method stub
+
+	}
+
+	// ======================================================
+	// ======================================================
+
 }
 
 

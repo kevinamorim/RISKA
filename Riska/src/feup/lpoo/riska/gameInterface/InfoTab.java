@@ -59,7 +59,7 @@ public class InfoTab {
 		case MOVE:
 			moveText(logic);
 			break;
-		case DEPLOYMENT:
+		case DEPLOY:
 			deploymentText(logic);
 			break;
 		case ENDTURN:

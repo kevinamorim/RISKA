@@ -9,6 +9,7 @@ public class GameInfo
 	
 	public static final int maxMoves = 5;
 	public static final int maxSummoned = 5;
+	public static int defaultDeployable = 1;
 
 	public static final int minGarrison = 1;
 	public static final int maxGarrison = 5;
