@@ -8,7 +8,9 @@ public class GameInfo
 	private static int playersIndex = 0;
 	
 	public static final int maxMoves = 5;
-	public static final int maxSummoned = 5;
+	public static final int maxSummonPool = 15;
+	public static final int minSummonPool = 0;
+	
 	public static int defaultDeployable = 1;
 
 	public static final int minGarrison = 1;

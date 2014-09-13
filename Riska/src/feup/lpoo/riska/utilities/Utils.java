@@ -15,7 +15,7 @@ public class Utils
 	
 	public static class OtherColors {
 	
-		// REGULAR
+		// VIVID
 		public final static Color BLACK = new Color(0.1f, 0.1f, 0.1f);
 		public final static Color WHITE = new Color(0.9f, 0.9f, 0.9f);
 		public final static Color GREY = new Color(0.5f, 0.5f, 0.5f);
@@ -34,7 +34,9 @@ public class Utils
 		public final static Color DARK_GREEN = new Color(0f, 0.4f, 0f);
 		
 		// LIGHT
+		public final static Color LIGHT_GREEN = new Color(0.5f, 0.9f, 0.5f);
 		public final static Color LIGHT_GREY = new Color(0.7f, 0.7f, 0.7f);
+		public final static Color LIGHT_BLUE = new Color(0.4f, 0.6f, 0.9f);
 	}
 
 	public static final int maxNumericChars = 50;
@@ -58,7 +60,14 @@ public class Utils
 	{
 		return (r.nextInt(max) + min);
 	}
-
+	
+	// ======================================================
+	// ======================================================
+	public static Color getColorWithAlpha(Color pColor, float pAlpha)
+	{
+		return new Color(pColor.getRed(), pColor.getGreen(), pColor.getBlue(), pAlpha);
+	}
+	
 	// ======================================================
 	// ======================================================
 

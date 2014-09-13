@@ -105,6 +105,8 @@ public class ResourceCache {
 	public ITiledTextureRegion topCenter;
 	public ITiledTextureRegion topRight;
 	
+	public ITiledTextureRegion midCenterSmall;
+	
 	public ITiledTextureRegion bottomCenterNoBorder;
 	public ITiledTextureRegion midCenterNoBorder;
 	public ITiledTextureRegion topCenterNoBorder;
@@ -361,6 +363,9 @@ public class ResourceCache {
 		
 		topRight = BitmapTextureAtlasTextureRegionFactory.createTiledFromAsset(gameTextureAtlas, activity, 
 				"top_right.png", 3, 3);
+		
+		midCenterSmall = BitmapTextureAtlasTextureRegionFactory.createTiledFromAsset(gameTextureAtlas, activity, 
+				"mid_center_small.png", 3, 3);
 		
 		bottomCenterNoBorder = BitmapTextureAtlasTextureRegionFactory.createTiledFromAsset(gameTextureAtlas, activity, 
 				"bottom_center_no_border.png", 3, 3);

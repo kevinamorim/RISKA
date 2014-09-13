@@ -186,6 +186,9 @@ public class GameHUD extends HUD implements Displayable {
 		
 		barTop.setSpriteAlpha(pAlpha);
 		barBottom.setSpriteAlpha(pAlpha);
+		
+		pAlpha = 0.9f;
+		
 		barLeft.setSpriteAlpha(pAlpha);
 		barRight.setSpriteAlpha(pAlpha);
 		
@@ -195,7 +198,7 @@ public class GameHUD extends HUD implements Displayable {
 		cornerTopLeft.setSpriteColor(Utils.OtherColors.BLACK);
 		cornerTopRight.setSpriteColor(Utils.OtherColors.BLACK);
 		
-		pAlpha = 0.9f;
+		pAlpha = 1f;
 		
 		cornerBottomLeft.setSpriteAlpha(pAlpha);
 		cornerBottomRight.setSpriteAlpha(pAlpha);
@@ -364,9 +367,8 @@ public class GameHUD extends HUD implements Displayable {
 
 	private void createModeButtons()
 	{
-		float width = 0.95f * barRight.getWidth();
-		float height = width;
-		//float height = 0.33f * barRight.getHeight();
+		float width = 0.75f * barRight.getWidth();
+		float height = 0.3f * barRight.getHeight();
 		
 		float pX = barRight.getX() + 1;
 		float pY = Utils.posY(1/6f, barRight);
@@ -384,27 +386,34 @@ public class GameHUD extends HUD implements Displayable {
 		summonButton = new UIElement(width, height, resources.midCenter, vbom);
 		summonButton.setPosition(pX, pY);
 		
-		width = 0.55f * attackButton.getWidth();
-		height = 0.55f * attackButton.getWidth();
+		width = 0.85f * attackButton.getWidth();
+		height = width;
+		//height = 0.85f * attackButton.getWidth();
 		
 		pX = 0.5f * attackButton.getWidth();
 		pY = 0.5f * attackButton.getHeight();
 		
 		attackSprite = new TiledSprite(pX, pY, width, height, resources.spriteAttack, vbom);
-		attackSprite.setColor(Utils.OtherColors.RED);
+		attackSprite.setColor(Utils.OtherColors.LIGHT_GREY);
 		attackButton.attachChild(attackSprite);
 		
 		deploySprite = new TiledSprite(pX, pY, width, height, resources.spriteDeploy, vbom);
-		deploySprite.setColor(Utils.OtherColors.BLUE_GREEN);
+		deploySprite.setColor(Utils.OtherColors.LIGHT_GREY);
 		deployButton.attachChild(deploySprite);
 		
 		summonSprite = new TiledSprite(pX, pY, width, height, resources.spriteSummon, vbom);
-		summonSprite.setColor(Utils.OtherColors.GREEN);
+		summonSprite.setColor(Utils.OtherColors.LIGHT_GREY);
 		summonButton.attachChild(summonSprite);
 		
-		attackButton.setSpriteColor(Utils.OtherColors.LIGHT_GREY);
-		deployButton.setSpriteColor(Utils.OtherColors.LIGHT_GREY);
-		summonButton.setSpriteColor(Utils.OtherColors.LIGHT_GREY);
+		attackButton.setSpriteColor(Utils.OtherColors.DARK_GREY);
+		deployButton.setSpriteColor(Utils.OtherColors.DARK_GREY);
+		summonButton.setSpriteColor(Utils.OtherColors.DARK_GREY);
+		
+		float pAlpha = 0.7f;
+		
+		attackButton.setSpriteAlpha(pAlpha);
+		deployButton.setSpriteAlpha(pAlpha);
+		summonButton.setSpriteAlpha(pAlpha);
 		
 		attachChild(attackButton);
 		attachChild(deployButton);
@@ -433,46 +442,50 @@ public class GameHUD extends HUD implements Displayable {
 		pool3 = new UIElement(width, height, resources.midCenter, vbom);
 		pool3.setPosition(pX, pY);
 		
-		attachChild(pool1);
-		attachChild(pool2);
-		attachChild(pool3);
-		
-		width = 0.95f * pool1.getWidth();
+		width = 0.9f * pool1.getWidth();
 		height = 0.95f * pool1.getHeight();
 		
 		pX = pool1.getX();
 		pY = pool1.getY();
 		
-		bar1 = new BarVertical(width, height, GameInfo.maxGarrison, GameInfo.minGarrison, resources.midCenterNoBorder, vbom);
+		bar1 = new BarVertical(width, height, GameInfo.maxGarrison, GameInfo.minGarrison, resources.midCenterSmall, vbom);
 		bar1.setPosition(pX, pY);
 		
 		pX = pool2.getX();
 		pY = pool2.getY();
 		
-		bar2 = new BarVertical(width, height, GameInfo.maxGarrison, GameInfo.minGarrison, resources.midCenterNoBorder, vbom);
+		bar2 = new BarVertical(width, height, GameInfo.maxGarrison, GameInfo.minGarrison, resources.midCenterSmall, vbom);
 		bar2.setPosition(pX, pY);
 		
-		width = 0.95f * pool3.getWidth();
+		width = 0.9f * pool3.getWidth();
 		height = 0.95f * pool3.getHeight();
 		
 		pX = pool3.getX();
 		pY = pool3.getY();
 		
-		bar1.setColors(Utils.OtherColors.DARK_GREY, Utils.OtherColors.DARK_GREEN, Utils.OtherColors.DARK_RED);
-		bar1.setValues(2, 1);
+		bar1.setColors(Utils.OtherColors.DARK_BLUE, Utils.OtherColors.CYAN);
+		bar1.setValue(5);
 		
-		bar2.setColors(Utils.OtherColors.DARK_GREY, Utils.OtherColors.DARK_GREEN, Utils.OtherColors.DARK_RED);
-		bar2.setValues(2);
+		bar2.setColors(Utils.OtherColors.DARK_BLUE, Utils.OtherColors.CYAN);
+		bar2.setValue(2);
 		
-		bar3 = new BarVertical(width, height, GameInfo.maxGarrison, GameInfo.minGarrison, resources.midCenterNoBorder, vbom);
+		bar3 = new BarVertical(width, height, GameInfo.maxSummonPool, GameInfo.minSummonPool, resources.midCenterSmall, vbom);
 		bar3.setPosition(pX, pY);
 		
-		pool3.setSpriteAlpha(0f);
-		bar3.setAlpha(0f);
+		bar3.setColors(Utils.OtherColors.DARK_BLUE, Utils.OtherColors.CYAN);
+		bar3.setValue(13);
+
+		pool1.setSpriteColor(Utils.OtherColors.LIGHT_GREY);
+		pool2.setSpriteColor(Utils.OtherColors.LIGHT_GREY);
+		pool3.setSpriteColor(Utils.OtherColors.LIGHT_GREY);
+			
+		//attachChild(pool1);
+		//attachChild(pool2);
+		attachChild(pool3);
 		
-		attachChild(bar1);
-		attachChild(bar2);
-		//attachChild(bar3);
+		//attachChild(bar1);
+		//attachChild(bar2);
+		attachChild(bar3);
 	}
 	
 	// ======================================================

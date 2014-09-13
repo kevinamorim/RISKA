@@ -210,7 +210,7 @@ public class UIElement extends Entity {
 	{
 		for(int i = 0; i < sprites.length; i++)
 		{
-			sprites[i].setColor(pColor);
+			sprites[i].setColor(Utils.getColorWithAlpha(pColor, sprites[i].getAlpha()));
 		}
 	}
 
@@ -237,7 +237,7 @@ public class UIElement extends Entity {
 	{
 		if(backgroundSprite != null)
 		{
-			backgroundSprite.setColor(pColor);
+			backgroundSprite.setColor(Utils.getColorWithAlpha(pColor, backgroundSprite.getAlpha()));
 		}
 
 		//super.setColor(pColor);

@@ -5,13 +5,10 @@ import org.andengine.opengl.texture.region.ITiledTextureRegion;
 import org.andengine.opengl.vbo.VertexBufferObjectManager;
 import org.andengine.util.adt.color.Color;
 
-import android.util.Log;
-import feup.lpoo.riska.utilities.Utils;
-
 public class BarVertical extends Entity {
 
-	private int used;
-	private int removed;
+	private int value;
+//	private int removed;
 	
 	private int min;
 	private int capacity;
@@ -20,7 +17,7 @@ public class BarVertical extends Entity {
 	
 	private Color usedColor = Color.GREEN;
 	private Color blockedColor = Color.BLACK;
-	private Color removedColor = Color.RED; 
+//	private Color removedColor = Color.RED; 
 	
 	public BarVertical(float pWidth, float pHeight, int pCapacity, int pMinCapacity, ITiledTextureRegion elementsTexture, VertexBufferObjectManager pVbom)
 	{
@@ -28,8 +25,8 @@ public class BarVertical extends Entity {
 		
 		this.capacity = pCapacity;
 		this.min = pMinCapacity;
-		this.used = 0;
-		this.removed = 0;
+		this.value = 0;
+//		this.removed = 0;
 		
 		this.elements = new UIElement[capacity];
 		
@@ -54,30 +51,30 @@ public class BarVertical extends Entity {
 		updateColor();
 	}
 	
-	public void setColors(Color pBlockedColor, Color pUsedColor, Color pRemovedColor)
+	public void setColors(Color pBlockedColor, Color pUsedColor/*, Color pRemovedColor*/)
 	{
 		this.usedColor = pUsedColor;
 		this.blockedColor = pBlockedColor;
-		this.removedColor = pRemovedColor;
+//		this.removedColor = pRemovedColor;
 		
 		updateColor();
 	}
 	
-	public void setValues(int pUsed)
+	public void setValue(int pValue)
 	{
-		this.used = pUsed;
-		this.removed = 0;
+		this.value = Math.min(free(), pValue);
+//		this.removed = 0;
 		
 		updateColor();
 	}
 	
-	public void setValues(int pUsed, int pRemoved)
-	{
-		this.used = pUsed;
-		this.removed = pRemoved;
-		
-		updateColor();
-	}
+//	public void setValues(int pUsed, int pRemoved)
+//	{
+//		this.used = pUsed;
+//		this.removed = pRemoved;
+//		
+//		updateColor();
+//	}
 	
 	private void updateColor()
 	{		
@@ -88,18 +85,18 @@ public class BarVertical extends Entity {
 				elements[i].setSpriteColor(blockedColor);
 				continue;
 			}
-			if(i < (min + used))
+			if(i < (min + value))
 			{
 				elements[i].setSpriteColor(usedColor);
 				continue;
 			}
-			if(i < (min + used + removed))
-			{
-				elements[i].setSpriteColor(removedColor);
-				continue;
-			}
+//			if(i < (min + used + removed))
+//			{
+//				elements[i].setSpriteColor(removedColor);
+//				continue;
+//			}
 			
-			elements[i].setSpriteColor(Color.TRANSPARENT);
+			elements[i].setSpriteColor(Color.BLACK);
 		}
 		
 		updateAlpha();
@@ -111,23 +108,28 @@ public class BarVertical extends Entity {
 		{
 			if(i < min)
 			{
-				elements[i].setAlpha(getAlpha());
+				elements[i].setSpriteAlpha(getAlpha());
 				continue;
 			}
-			if(i < (min + used))
+			if(i < (min + value))
 			{
-				elements[i].setAlpha(getAlpha());
+				elements[i].setSpriteAlpha(getAlpha());
 				continue;
 			}
-			if(i < (min + used + removed))
-			{
-				elements[i].setAlpha(getAlpha());
-				continue;
-			}
-			elements[i].setAlpha(0f);
+//			if(i < (min + used + removed))
+//			{
+//				elements[i].setSpriteAlpha(getAlpha());
+//				continue;
+//			}
+			elements[i].setSpriteAlpha(0f);
 		}
 	}
 
+	private int free()
+	{
+		return capacity - min;
+	}
+	
 	@Override
 	public void setPosition(float pX, float pY)
 	{		
