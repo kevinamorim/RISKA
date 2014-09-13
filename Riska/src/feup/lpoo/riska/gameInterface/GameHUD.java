@@ -1,17 +1,19 @@
 package feup.lpoo.riska.gameInterface;
 
 import org.andengine.engine.camera.hud.HUD;
+import org.andengine.entity.IEntity;
 import org.andengine.entity.sprite.Sprite;
+import org.andengine.entity.sprite.TiledSprite;
 import org.andengine.input.touch.TouchEvent;
 import org.andengine.opengl.vbo.VertexBufferObjectManager;
 import org.andengine.util.adt.color.Color;
 
 import feup.lpoo.riska.interfaces.Displayable;
+import feup.lpoo.riska.logic.GameInfo;
 import feup.lpoo.riska.logic.GameLogic;
 import feup.lpoo.riska.resources.ResourceCache;
 import feup.lpoo.riska.scenes.GameScene;
 import feup.lpoo.riska.utilities.Utils;
-
 import android.view.MotionEvent;
 
 public class GameHUD extends HUD implements Displayable {
@@ -38,13 +40,14 @@ public class GameHUD extends HUD implements Displayable {
 	private CameraManager camera;
 	private GameLogic logic;
 	
-	private UIButton lowerBar;
+	private UIElement barLeft, barBottom, barRight, barTop;
+	private UIElement cornerTopLeft, cornerTopRight, cornerBottomLeft, cornerBottomRight;
 	
-	private RiskaButtonSprite attackButton;
-	private RiskaButtonSprite summonButton;
-	private RiskaButtonSprite deployButton;
-	private RiskaTextButtonSprite movesButton;
-	private RiskaTextButtonSprite poolButton;
+	private UIElement attackButton, summonButton, deployButton;
+	private TiledSprite attackSprite, summonSprite, deploySprite;
+	
+	private UIElement pool1, pool2, pool3;
+	private BarVertical bar1, bar2, bar3;
 	
 	private RiskaTextButtonSprite currentPlayerButton;
 
@@ -118,7 +121,9 @@ public class GameHUD extends HUD implements Displayable {
 	public void createDisplay()
 	{
 
-		createMainCanvas();
+		createFrame();
+		createModeButtons();
+		createPools();
 
 		registerTouchArea(summonButton);
 		registerTouchArea(deployButton);
@@ -127,15 +132,100 @@ public class GameHUD extends HUD implements Displayable {
 		setTouchAreaBindingOnActionDownEnabled(true);
 	}
 
-	private void createMainCanvas()
+	private void createFrame()
 	{
-		lowerBar = new UIButton(0.7f * camera.getHeight(), 0.1f * camera.getHeight(), resources.bottom, resources.vbom);
-		lowerBar.setPosition(0.5f * camera.getWidth(), Utils.halfY(lowerBar));
-		lowerBar.setSpriteColor(Utils.OtherColors.DARK_GREY);
+		float width = 0.18f * camera.getHeight();
+		float height = 0.18f * camera.getHeight();
+		
+		cornerBottomLeft = new UIElement(width, height, resources.bottomLeft, vbom);
+		cornerBottomLeft.setPosition(Utils.halfX(cornerBottomLeft), Utils.halfY(cornerBottomLeft));
+		
+		cornerBottomRight = new UIElement(cornerBottomLeft.getWidth(), cornerBottomLeft.getHeight(), resources.bottomRight, vbom);
+		cornerBottomRight.setPosition(camera.getWidth() - Utils.halfX(cornerBottomRight), cornerBottomLeft.getY());
+		
+		cornerTopLeft = new UIElement(cornerBottomLeft.getWidth(), cornerBottomLeft.getHeight(), resources.topLeft, vbom);
+		cornerTopLeft.setPosition(cornerBottomLeft.getX(), camera.getHeight() - Utils.halfY(cornerTopLeft));
+		
+		cornerTopRight = new UIElement(cornerBottomLeft.getWidth(), cornerBottomLeft.getHeight(), resources.topRight, vbom);
+		cornerTopRight.setPosition(cornerBottomRight.getX(), cornerTopLeft.getY());
+		
+		width = Utils.leftGlobal(cornerTopRight) - Utils.rightGlobal(cornerTopLeft);
+		height *= 0.8f;
+		
+		barTop = new UIElement(width, height, resources.topCenterNoBorder, vbom);
+		barTop.setPosition(camera.getCenterX(), camera.getHeight() - Utils.halfY(barTop));
+		
+		barBottom = new UIElement(width, height, resources.bottomCenterNoBorder, vbom);
+		barBottom.setPosition(camera.getCenterX(), Utils.halfY(barBottom));
+		
+		width = height;
+		height = Utils.bottomGlobal(cornerTopLeft) - Utils.topGlobal(cornerBottomLeft);
+		
+		barLeft = new UIElement(width, height, resources.midLeftNoBorder, vbom);
+		barLeft.setPosition(Utils.halfX(barLeft), camera.getCenterY());
+		
+		barRight = new UIElement(width, height, resources.midRightNoBorder, vbom);
+		barRight.setPosition(camera.getWidth() - Utils.halfX(barRight), camera.getCenterY());
+		
+		attachChild(barTop);
+		attachChild(barBottom);
+		attachChild(barLeft);
+		attachChild(barRight);
+	
+		attachChild(cornerBottomLeft);
+		attachChild(cornerBottomRight);
+		attachChild(cornerTopLeft);
+		attachChild(cornerTopRight);
+		
+		barTop.setSpriteColor(Utils.OtherColors.DARK_GREY);
+		barBottom.setSpriteColor(Utils.OtherColors.DARK_GREY);
+		barLeft.setSpriteColor(Utils.OtherColors.BLACK);
+		barRight.setSpriteColor(Utils.OtherColors.BLACK);
+		
+		float pAlpha = 0.7f;
+		
+		barTop.setSpriteAlpha(pAlpha);
+		barBottom.setSpriteAlpha(pAlpha);
+		barLeft.setSpriteAlpha(pAlpha);
+		barRight.setSpriteAlpha(pAlpha);
+		
+		
+		cornerBottomLeft.setSpriteColor(Utils.OtherColors.BLACK);
+		cornerBottomRight.setSpriteColor(Utils.OtherColors.BLACK);
+		cornerTopLeft.setSpriteColor(Utils.OtherColors.BLACK);
+		cornerTopRight.setSpriteColor(Utils.OtherColors.BLACK);
+		
+		pAlpha = 0.9f;
+		
+		cornerBottomLeft.setSpriteAlpha(pAlpha);
+		cornerBottomRight.setSpriteAlpha(pAlpha);
+		cornerTopLeft.setSpriteAlpha(pAlpha);
+		cornerTopRight.setSpriteAlpha(pAlpha);
+		
+		
+		/*
+		width = 0.6f;
+		height = 0.12f;
+		
+		lowerBarCenter = new UIElement(width * camera.getWidth(), height * camera.getHeight(), resources.bottom, resources.vbom);
+		lowerBarCenter.setPosition(0.5f * camera.getWidth(), Utils.halfY(lowerBarCenter));
+		lowerBarCenter.setSpriteColor(Utils.OtherColors.LIGHT_GREY);
+		
+		width = 0.15f;
+		height = 0.15f;
+		
+		lowerBarLeft = new UIElement(width * camera.getHeight(), height * camera.getHeight(), resources.bottomLeft, resources.vbom);
+		lowerBarLeft.setPosition(Utils.halfX(lowerBarLeft), Utils.halfY(lowerBarLeft));
+		lowerBarLeft.setSpriteColor(Utils.OtherColors.LIGHT_GREY);
+		
+		lowerBarRight = new UIElement(width * camera.getHeight(), height * camera.getHeight(), resources.bottomRight, resources.vbom);
+		lowerBarRight.setPosition(camera.getWidth() - Utils.halfX(lowerBarRight), Utils.halfY(lowerBarRight));
+		lowerBarRight.setSpriteColor(Utils.OtherColors.LIGHT_GREY);
 		
 		poolButton = new RiskaTextButtonSprite(resources.regionButtonRegion, vbom, "", resources.mGameFont, Utils.maxNumericChars);
 		poolButton.setTextColor(Color.BLACK);
 		poolButton.setText("" + logic.getCurrentPlayer().moves);
+		poolButton.setTextColor(Color.WHITE);
 		
 		attackButton = new RiskaButtonSprite(resources.attackButtonRegion, vbom)
 		{
@@ -234,32 +324,157 @@ public class GameHUD extends HUD implements Displayable {
 		movesButton = new RiskaTextButtonSprite(resources.regionButtonRegion, vbom, "", resources.mGameFont, Utils.maxNumericChars);
 		movesButton.setTextColor(Color.BLACK);
 		movesButton.setText("" + logic.getCurrentPlayer().soldiersPool);
-
+		movesButton.setTextColor(Color.WHITE);
+		
+		poolButton.setColor(Utils.OtherColors.LIGHT_GREY);
 		attackButton.setColor(Utils.OtherColors.LIGHT_GREY);
 		deployButton.setColor(Utils.OtherColors.LIGHT_GREY);
 		summonButton.setColor(Utils.OtherColors.LIGHT_GREY);
+		movesButton.setColor(Utils.OtherColors.LIGHT_GREY);
 		
-		Utils.wrap(poolButton, lowerBar, 0.8f);
-		Utils.wrap(summonButton, lowerBar, 0.8f);
-		Utils.wrap(deployButton, lowerBar, 0.8f);
-		Utils.wrap(attackButton, lowerBar, 0.8f);
-		Utils.wrap(movesButton, lowerBar, 0.8f);
+		float factor = 0.8f;
 		
-		poolButton.setPosition(1/6f * lowerBar.getWidth(), 0.45f * lowerBar.getHeight());
-		summonButton.setPosition(2/6f * lowerBar.getWidth(), 0.45f * lowerBar.getHeight());
-		deployButton.setPosition(3/6f * lowerBar.getWidth(), 0.45f * lowerBar.getHeight());
-		attackButton.setPosition(4/6f * lowerBar.getWidth(), 0.45f * lowerBar.getHeight());
-		movesButton.setPosition(5/6f * lowerBar.getWidth(), 0.45f * lowerBar.getHeight());
+		Utils.wrap(poolButton, lowerBarCenter, factor);
+		Utils.wrap(summonButton, lowerBarCenter, factor);
+		Utils.wrap(deployButton, lowerBarCenter, factor);
+		Utils.wrap(attackButton, lowerBarCenter, factor);
+		Utils.wrap(movesButton, lowerBarCenter, factor);
 		
-		lowerBar.attachChild(poolButton);
-		lowerBar.attachChild(summonButton);
-		lowerBar.attachChild(deployButton);
-		lowerBar.attachChild(attackButton);
-		lowerBar.attachChild(movesButton);
+		height = 0.45f;
 		
-		attachChild(lowerBar);
+		//poolButton.setPosition(1/8f * lowerBarCenter.getWidth(), height * lowerBarCenter.getHeight());
+		//movesButton.setPosition(7/8f * lowerBarCenter.getWidth(), height * lowerBarCenter.getHeight());
+		
+		summonButton.setPosition(3/8f * lowerBarCenter.getWidth(), height * lowerBarCenter.getHeight());
+		deployButton.setPosition(4/8f * lowerBarCenter.getWidth(), height * lowerBarCenter.getHeight());
+		attackButton.setPosition(5/8f * lowerBarCenter.getWidth(),height * lowerBarCenter.getHeight());
+		
+		
+		//lowerBarCenter.attachChild(poolButton);
+		//lowerBarCenter.attachChild(movesButton);
+		lowerBarCenter.attachChild(summonButton);
+		lowerBarCenter.attachChild(deployButton);
+		lowerBarCenter.attachChild(attackButton);
+		
+		//attachChild(lowerBarLeft);
+		//attachChild(lowerBarRight);
+		//attachChild(lowerBarCenter);
+		*/
 	}
 
+	private void createModeButtons()
+	{
+		float width = 0.95f * barRight.getWidth();
+		float height = width;
+		//float height = 0.33f * barRight.getHeight();
+		
+		float pX = barRight.getX() + 1;
+		float pY = Utils.posY(1/6f, barRight);
+		
+		attackButton = new UIElement(width, height, resources.midCenter, vbom);
+		attackButton.setPosition(pX, pY);
+		
+		pY = Utils.posY(3/6f, barRight);
+		
+		deployButton = new UIElement(width, height, resources.midCenter, vbom);
+		deployButton.setPosition(pX, pY);
+		
+		pY = Utils.posY(5/6f, barRight);
+		
+		summonButton = new UIElement(width, height, resources.midCenter, vbom);
+		summonButton.setPosition(pX, pY);
+		
+		width = 0.55f * attackButton.getWidth();
+		height = 0.55f * attackButton.getWidth();
+		
+		pX = 0.5f * attackButton.getWidth();
+		pY = 0.5f * attackButton.getHeight();
+		
+		attackSprite = new TiledSprite(pX, pY, width, height, resources.spriteAttack, vbom);
+		attackSprite.setColor(Utils.OtherColors.RED);
+		attackButton.attachChild(attackSprite);
+		
+		deploySprite = new TiledSprite(pX, pY, width, height, resources.spriteDeploy, vbom);
+		deploySprite.setColor(Utils.OtherColors.BLUE_GREEN);
+		deployButton.attachChild(deploySprite);
+		
+		summonSprite = new TiledSprite(pX, pY, width, height, resources.spriteSummon, vbom);
+		summonSprite.setColor(Utils.OtherColors.GREEN);
+		summonButton.attachChild(summonSprite);
+		
+		attackButton.setSpriteColor(Utils.OtherColors.LIGHT_GREY);
+		deployButton.setSpriteColor(Utils.OtherColors.LIGHT_GREY);
+		summonButton.setSpriteColor(Utils.OtherColors.LIGHT_GREY);
+		
+		attachChild(attackButton);
+		attachChild(deployButton);
+		attachChild(summonButton);
+	}
+
+	private void createPools()
+	{
+		float width = 0.6f * barLeft.getWidth();
+		float height = 0.46f * barLeft.getHeight();
+		
+		float pX = barLeft.getX() - 1;
+		float pY = Utils.posY(0.75f, barLeft);
+		
+		pool1 = new UIElement(width, height, resources.midCenter, vbom);
+		pool1.setPosition(pX, pY);
+		
+		pY = Utils.posY(0.25f, barLeft);
+		
+		pool2 = new UIElement(width, height, resources.midCenter, vbom);
+		pool2.setPosition(pX, pY);
+		
+		height = 0.96f * barLeft.getHeight();
+		pY = Utils.posY(0.5f, barLeft);
+		
+		pool3 = new UIElement(width, height, resources.midCenter, vbom);
+		pool3.setPosition(pX, pY);
+		
+		attachChild(pool1);
+		attachChild(pool2);
+		attachChild(pool3);
+		
+		width = 0.95f * pool1.getWidth();
+		height = 0.95f * pool1.getHeight();
+		
+		pX = pool1.getX();
+		pY = pool1.getY();
+		
+		bar1 = new BarVertical(width, height, GameInfo.maxGarrison, GameInfo.minGarrison, resources.midCenterNoBorder, vbom);
+		bar1.setPosition(pX, pY);
+		
+		pX = pool2.getX();
+		pY = pool2.getY();
+		
+		bar2 = new BarVertical(width, height, GameInfo.maxGarrison, GameInfo.minGarrison, resources.midCenterNoBorder, vbom);
+		bar2.setPosition(pX, pY);
+		
+		width = 0.95f * pool3.getWidth();
+		height = 0.95f * pool3.getHeight();
+		
+		pX = pool3.getX();
+		pY = pool3.getY();
+		
+		bar1.setColors(Utils.OtherColors.DARK_GREY, Utils.OtherColors.DARK_GREEN, Utils.OtherColors.DARK_RED);
+		bar1.setValues(2, 1);
+		
+		bar2.setColors(Utils.OtherColors.DARK_GREY, Utils.OtherColors.DARK_GREEN, Utils.OtherColors.DARK_RED);
+		bar2.setValues(2);
+		
+		bar3 = new BarVertical(width, height, GameInfo.maxGarrison, GameInfo.minGarrison, resources.midCenterNoBorder, vbom);
+		bar3.setPosition(pX, pY);
+		
+		pool3.setSpriteAlpha(0f);
+		bar3.setAlpha(0f);
+		
+		attachChild(bar1);
+		attachChild(bar2);
+		//attachChild(bar3);
+	}
+	
 	// ======================================================
 	// LOCK / UNLOCK
 	// ======================================================
@@ -282,15 +497,15 @@ public class GameHUD extends HUD implements Displayable {
 		{
 
 		case ATTACK:
-			attackButton.setCurrentTileIndex(1);
+			//attackButton.setCurrentTileIndex(1);
 			break;
 
 		case SUMMON:
-			summonButton.setCurrentTileIndex(1);
+			//summonButton.setCurrentTileIndex(1);
 			break;
 
 		case DEPLOY:
-			deployButton.setCurrentTileIndex(1);
+			//deployButton.setCurrentTileIndex(1);
 			break;
 
 		default:
@@ -306,15 +521,15 @@ public class GameHUD extends HUD implements Displayable {
 		switch(currentButton)
 		{
 		case ATTACK:
-			attackButton.setColor(Utils.OtherColors.LIGHT_GREY, attackButton.getAlpha());
+			//attackButton.setColor(Utils.OtherColors.LIGHT_GREY, attackButton.getAlpha());
 			break;
 
 		case DEPLOY:
-			deployButton.setColor(Utils.OtherColors.LIGHT_GREY, deployButton.getAlpha());
+			//deployButton.setColor(Utils.OtherColors.LIGHT_GREY, deployButton.getAlpha());
 			break;
 
 		case SUMMON:
-			summonButton.setColor(Utils.OtherColors.LIGHT_GREY, summonButton.getAlpha());
+			//summonButton.setColor(Utils.OtherColors.LIGHT_GREY, summonButton.getAlpha());
 			break;
 
 		default:
@@ -326,15 +541,15 @@ public class GameHUD extends HUD implements Displayable {
 		switch(mode)
 		{
 		case ATTACK:
-			attackButton.setColor(Utils.OtherColors.RED, attackButton.getAlpha());
+			//attackButton.setColor(Utils.OtherColors.RED, attackButton.getAlpha());
 			break;
 
 		case DEPLOY:
-			deployButton.setColor(Utils.OtherColors.CYAN, deployButton.getAlpha());
+			//deployButton.setColor(Utils.OtherColors.CYAN, deployButton.getAlpha());
 			break;
 
 		case SUMMON:
-			summonButton.setColor(Utils.OtherColors.GREEN, summonButton.getAlpha());
+			//summonButton.setColor(Utils.OtherColors.GREEN, summonButton.getAlpha());
 			break;
 
 			/*
@@ -377,15 +592,15 @@ public class GameHUD extends HUD implements Displayable {
 		{
 
 		case ATTACK:
-			attackButton.setCurrentTileIndex(0);
+			//attackButton.setCurrentTileIndex(0);
 			break;
 
 		case SUMMON:
-			summonButton.setCurrentTileIndex(0);
+			//summonButton.setCurrentTileIndex(0);
 			break;
 
 		case DEPLOY:
-			deployButton.setCurrentTileIndex(0);
+			//deployButton.setCurrentTileIndex(0);
 			break;
 
 			/*
@@ -417,7 +632,7 @@ public class GameHUD extends HUD implements Displayable {
 
 	public void hide(BUTTON toHide)
 	{
-		Sprite x = get(toHide);
+		Sprite x = (Sprite)get(toHide);
 
 		if(x == null)
 		{
@@ -432,7 +647,7 @@ public class GameHUD extends HUD implements Displayable {
 
 	public void show(BUTTON toShow)
 	{
-		Sprite x = get(toShow);
+		Sprite x = (Sprite)get(toShow);
 
 		if(x == null)
 		{
@@ -445,7 +660,7 @@ public class GameHUD extends HUD implements Displayable {
 		}
 	}
 
-	public Sprite get(BUTTON x)
+	public IEntity get(BUTTON x)
 	{
 		switch(x)
 		{
@@ -468,9 +683,9 @@ public class GameHUD extends HUD implements Displayable {
 
 	public void test()
 	{
-		UIButton buttonCanvas = new UIButton(100f, 100f, resources.center, vbom);
+		UIElement buttonCanvas = new UIElement(100f, 100f, resources.midCenter, vbom);
 		
-		buttonCanvas.setSprite(resources.center);
+		buttonCanvas.setSprite(resources.midCenter);
 		buttonCanvas.setSpriteColor(Color.RED);
 		buttonCanvas.setText("Test Text", resources.mMenuFont);
 		buttonCanvas.setTextColor(Color.BLACK);

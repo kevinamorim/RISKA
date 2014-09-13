@@ -103,7 +103,7 @@ public class AttackScene extends BaseScene {
 		
 		windowCanvas.addGraphic(attackerCanvas, 0.25f, 0.5f, 0.5f, 1f);
 		
-		attackerPlayerColor = new RiskaSprite(resources.regionButtonRegion, vbom, "PLAYER", resources.mGameFont);
+		attackerPlayerColor = new RiskaSprite(resources.buttonRegion, vbom, "PLAYER", resources.mGameFont);
 		attackerPlayerColor.setColor(Color.RED);
 		
 		attackerRegionName = new Text(0f, 0f, resources.mGameFont, "REGION NAME", 100, vbom);

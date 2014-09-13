@@ -19,7 +19,7 @@ import feup.lpoo.riska.gameInterface.MenuHUD;
 import feup.lpoo.riska.gameInterface.RiskaSprite;
 import feup.lpoo.riska.gameInterface.RiskaCanvas;
 import feup.lpoo.riska.gameInterface.RiskaMenuItem;
-import feup.lpoo.riska.gameInterface.UIButton;
+import feup.lpoo.riska.gameInterface.UIElement;
 import feup.lpoo.riska.interfaces.Displayable;
 import feup.lpoo.riska.io.IOManager;
 import feup.lpoo.riska.logic.GameInfo;
@@ -254,11 +254,11 @@ public class MainMenuScene extends BaseScene implements Displayable, IOnMenuItem
 
 
 		menuStartNewButton = new RiskaMenuItem(START_NEW,
-				resources.buttonRegion,
+				resources.button,
 				vbom, "New", resources.mMenuFont);
 
 		menuStartLoadButton = new RiskaMenuItem(START_LOAD,
-				resources.buttonRegion,
+				resources.button,
 				vbom, "Load", resources.mMenuFont);
 
 

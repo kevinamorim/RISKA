@@ -132,7 +132,7 @@ public class GameScene extends BaseScene implements IOnSceneTouchListener, IScro
 
 			buttonText = new Text(0, 0, resources.mGameFont, "", MAX_REGION_CHARS, vbom);
 
-			regionButton = new ButtonSprite(x, y, resources.regionButtonRegion, vbom) {
+			regionButton = new ButtonSprite(x, y, resources.buttonRegion, vbom) {
 
 				@Override
 				public boolean onAreaTouched(TouchEvent ev, float pX, float pY) 

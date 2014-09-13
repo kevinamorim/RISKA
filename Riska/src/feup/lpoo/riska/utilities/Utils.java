@@ -23,6 +23,7 @@ public class Utils
 		public final static Color GREEN = new Color(0f, 0.7f, 0.16f);
 		public final static Color YELLOW = new Color(1f, 1f, 0.35f);
 		public final static Color CYAN = new Color(0f, 0.45f, 0.9f);
+		public final static Color BLUE_GREEN = new Color(0f, 0.8f, 0.8f);
 		public final static Color RED = new Color(0.9f, 0.1f, 0.1f);
 		
 		// DARK
@@ -332,14 +333,14 @@ public class Utils
 
 	// ======================================================
 	// ======================================================	
-	public static float posX(IEntity e, float perc)
+	public static float posX(float perc, IEntity e)
 	{
-		return e.getX() + perc * e.getWidth();
+		return leftGlobal(e) + perc * e.getWidth();
 	}
 	
-	public static float posY(IEntity e, float perc)
+	public static float posY(float perc, IEntity e)
 	{
-		return e.getY() + perc * e.getHeight();
+		return bottomGlobal(e) + perc * e.getHeight();
 	}
 	
 	public static float leftGlobal(IEntity e)

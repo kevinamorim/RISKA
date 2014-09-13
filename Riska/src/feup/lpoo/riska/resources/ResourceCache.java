@@ -57,7 +57,7 @@ public class ResourceCache {
 	public ITextureRegion menuBackgroundRegion;
 
 	private BuildableBitmapTextureAtlas mainMenuTextureAtlas;
-	public ITextureRegion buttonRegion;
+	public ITextureRegion button;
 	public ITextureRegion emptyButtonRegion;
 	
 	private BuildableBitmapTextureAtlas propsTextureAtlas;
@@ -79,7 +79,7 @@ public class ResourceCache {
 	// ==================================================
 	// GAME RESOURCES
 	// ==================================================
-	public ITiledTextureRegion regionButtonRegion;
+	public ITiledTextureRegion buttonRegion;
 	
 	private BitmapTextureAtlas mapTextureAtlas;
 	public ITextureRegion mapRegion;
@@ -91,19 +91,25 @@ public class ResourceCache {
 	public ITextureRegion windowRegionGenericInverted;
 
 	private BuildableBitmapTextureAtlas gameNEWTextureAtlas;
-	public ITiledTextureRegion attackButtonRegion;
-	public ITiledTextureRegion deployButtonRegion;
-	public ITiledTextureRegion summonButtonRegion;
+	public ITiledTextureRegion spriteAttack;
+	public ITiledTextureRegion spriteDeploy;
+	public ITiledTextureRegion spriteSummon;
 
 	public ITiledTextureRegion bottomLeft;
-	public ITiledTextureRegion bottom;
+	public ITiledTextureRegion bottomCenter;
 	public ITiledTextureRegion bottomRight;
-	public ITiledTextureRegion centerLeft;
-	public ITiledTextureRegion center;
-	public ITiledTextureRegion centerRight;
+	public ITiledTextureRegion midLeft;
+	public ITiledTextureRegion midCenter;
+	public ITiledTextureRegion midRight;
 	public ITiledTextureRegion topLeft;
-	public ITiledTextureRegion top;
+	public ITiledTextureRegion topCenter;
 	public ITiledTextureRegion topRight;
+	
+	public ITiledTextureRegion bottomCenterNoBorder;
+	public ITiledTextureRegion midCenterNoBorder;
+	public ITiledTextureRegion topCenterNoBorder;
+	public ITiledTextureRegion midLeftNoBorder;
+	public ITiledTextureRegion midRightNoBorder;
 	
 	public ITextureRegion fillSquareRegion;
 	
@@ -187,7 +193,7 @@ public class ResourceCache {
 		mainMenuTextureAtlas = new BuildableBitmapTextureAtlas(activity.getTextureManager(), 
 				mainTextureWidth, mainTextureHeight, TextureOptions.REPEATING_BILINEAR);
 		
-		buttonRegion = BitmapTextureAtlasTextureRegionFactory.createFromAsset(mainMenuTextureAtlas, activity, 
+		button = BitmapTextureAtlasTextureRegionFactory.createFromAsset(mainMenuTextureAtlas, activity, 
 				"button.png");
 		
 		emptyButtonRegion = BitmapTextureAtlasTextureRegionFactory.createFromAsset(mainMenuTextureAtlas, activity, 
@@ -300,8 +306,8 @@ public class ResourceCache {
 		gameTextureAtlas = new BuildableBitmapTextureAtlas(activity.getTextureManager(),
 				gameTextureWidth, gameTextureHeight, TextureOptions.REPEATING_BILINEAR);
 
-		regionButtonRegion = BitmapTextureAtlasTextureRegionFactory.createTiledFromAsset(gameTextureAtlas, activity, 
-				"region.png", 1, 3);
+		buttonRegion = BitmapTextureAtlasTextureRegionFactory.createTiledFromAsset(gameTextureAtlas, activity, 
+				"button_region.png", 1, 3);
 
 		infoTabRegion = BitmapTextureAtlasTextureRegionFactory.createTiledFromAsset(gameTextureAtlas, activity, 
 				"info_tab.png", 1, 2);
@@ -319,26 +325,27 @@ public class ResourceCache {
 		gameNEWTextureAtlas = new BuildableBitmapTextureAtlas(activity.getTextureManager(),
 				gameTextureWidth, gameTextureHeight, TextureOptions.REPEATING_BILINEAR);
 		
-		attackButtonRegion = BitmapTextureAtlasTextureRegionFactory.createTiledFromAsset(gameTextureAtlas, activity,
-				"button_attack.png", 1, 3);
+		spriteAttack = BitmapTextureAtlasTextureRegionFactory.createTiledFromAsset(gameTextureAtlas, activity,
+				"sprite_attack.png", 1, 3);
 		
-		deployButtonRegion = BitmapTextureAtlasTextureRegionFactory.createTiledFromAsset(gameTextureAtlas, activity,
-				"button_deploy.png", 1, 3);
+		spriteDeploy = BitmapTextureAtlasTextureRegionFactory.createTiledFromAsset(gameTextureAtlas, activity,
+				"sprite_deploy.png", 1, 3);
 		
-		summonButtonRegion = BitmapTextureAtlasTextureRegionFactory.createTiledFromAsset(gameTextureAtlas, activity,
-				"button_summon.png", 1, 3);
+		spriteSummon = BitmapTextureAtlasTextureRegionFactory.createTiledFromAsset(gameTextureAtlas, activity,
+				"sprite_summon.png", 1, 3);
 		
-		center = BitmapTextureAtlasTextureRegionFactory.createTiledFromAsset(gameTextureAtlas, activity, 
-				"center.png", 3, 3);
 		
-		centerLeft = BitmapTextureAtlasTextureRegionFactory.createTiledFromAsset(gameTextureAtlas, activity, 
-				"center_left.png", 3, 3);
+		midCenter = BitmapTextureAtlasTextureRegionFactory.createTiledFromAsset(gameTextureAtlas, activity, 
+				"mid_center.png", 3, 3);
 		
-		centerRight = BitmapTextureAtlasTextureRegionFactory.createTiledFromAsset(gameTextureAtlas, activity, 
-				"center_right.png", 3, 3);
+		midLeft = BitmapTextureAtlasTextureRegionFactory.createTiledFromAsset(gameTextureAtlas, activity, 
+				"mid_left.png", 3, 3);
 		
-		bottom = BitmapTextureAtlasTextureRegionFactory.createTiledFromAsset(gameTextureAtlas, activity, 
-				"bottom.png", 3, 3);
+		midRight = BitmapTextureAtlasTextureRegionFactory.createTiledFromAsset(gameTextureAtlas, activity, 
+				"mid_right.png", 3, 3);
+		
+		bottomCenter = BitmapTextureAtlasTextureRegionFactory.createTiledFromAsset(gameTextureAtlas, activity, 
+				"bottom_center.png", 3, 3);
 		
 		bottomLeft = BitmapTextureAtlasTextureRegionFactory.createTiledFromAsset(gameTextureAtlas, activity, 
 				"bottom_left.png", 3, 3);
@@ -346,14 +353,29 @@ public class ResourceCache {
 		bottomRight = BitmapTextureAtlasTextureRegionFactory.createTiledFromAsset(gameTextureAtlas, activity, 
 				"bottom_right.png", 3, 3);
 		
-		top = BitmapTextureAtlasTextureRegionFactory.createTiledFromAsset(gameTextureAtlas, activity, 
-				"top.png", 3, 3);
+		topCenter = BitmapTextureAtlasTextureRegionFactory.createTiledFromAsset(gameTextureAtlas, activity, 
+				"top_center.png", 3, 3);
 		
 		topLeft = BitmapTextureAtlasTextureRegionFactory.createTiledFromAsset(gameTextureAtlas, activity, 
 				"top_left.png", 3, 3);
 		
 		topRight = BitmapTextureAtlasTextureRegionFactory.createTiledFromAsset(gameTextureAtlas, activity, 
 				"top_right.png", 3, 3);
+		
+		bottomCenterNoBorder = BitmapTextureAtlasTextureRegionFactory.createTiledFromAsset(gameTextureAtlas, activity, 
+				"bottom_center_no_border.png", 3, 3);
+		
+		midCenterNoBorder = BitmapTextureAtlasTextureRegionFactory.createTiledFromAsset(gameTextureAtlas, activity, 
+				"mid_center_no_border.png", 3, 3);
+		
+		topCenterNoBorder = BitmapTextureAtlasTextureRegionFactory.createTiledFromAsset(gameTextureAtlas, activity, 
+				"top_center_no_border.png", 3, 3);
+		
+		midLeftNoBorder = BitmapTextureAtlasTextureRegionFactory.createTiledFromAsset(gameTextureAtlas, activity, 
+				"mid_left_no_border.png", 3, 3);
+		
+		midRightNoBorder = BitmapTextureAtlasTextureRegionFactory.createTiledFromAsset(gameTextureAtlas, activity, 
+				"mid_right_no_border.png", 3, 3);
 		
 		fillSquareRegion = BitmapTextureAtlasTextureRegionFactory.createFromAsset(gameTextureAtlas, activity,
 				"fill_square.png");

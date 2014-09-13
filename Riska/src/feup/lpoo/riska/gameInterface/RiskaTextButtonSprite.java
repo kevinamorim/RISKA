@@ -171,19 +171,6 @@ public class RiskaTextButtonSprite extends RiskaButtonSprite {
 	}
 
 	@Override
-	public void setColor(Color pColor)
-	{
-		for(int i = 0; i < getChildCount(); i++)
-		{
-			IEntity e = this.getChildByIndex(i);
-
-			e.setColor(pColor);
-		}
-
-		super.setColor(pColor);
-	}
-
-	@Override
 	public void setScale(float pScale)
 	{
 		for(int i = 0; i < getChildCount(); i++)
