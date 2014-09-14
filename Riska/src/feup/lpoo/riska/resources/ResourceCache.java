@@ -307,7 +307,7 @@ public class ResourceCache {
 				"background.png");
 		
 		map = BitmapTextureAtlasTextureRegionFactory.createFromAsset(mapTextureAtlas, activity,
-				"map_1.png");
+				"map.png");
 
 		
 		gameTextureAtlas = new BuildableBitmapTextureAtlas(activity.getTextureManager(),
