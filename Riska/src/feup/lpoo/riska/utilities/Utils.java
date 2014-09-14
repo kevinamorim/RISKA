@@ -141,7 +141,21 @@ public class Utils
 		//child.setScale(scale);
 		child.setSize(child.getWidth() * scale, child.getHeight() * scale);
 	}
-
+	
+	public static void wrapX(Text text, IEntity parent, float textBoundingFactorX)
+	{
+		float pScale = getWrapScale(text, textBoundingFactorX * parent.getWidth(), parent.getHeight(), 1f);
+		
+		text.setScale(pScale);
+	}
+	
+	public static void wrapY(Text text, IEntity parent, float textBoundingFactorY)
+	{
+		float pScale = getWrapScale(text, parent.getWidth(), textBoundingFactorY * parent.getHeight(), 1f);
+		
+		text.setScale(pScale);
+	}
+	
 	public static float getWrapScale(IEntity child, IEntity parent, float boundingFactor)
 	{
 		return getWrapScale(child, parent.getWidth(), parent.getHeight(), boundingFactor);
@@ -437,4 +451,17 @@ public class Utils
 	{
 		return (isBetween(pX, 0, e.getWidth()) && isBetween(pY, 0, e.getHeight()));
 	}
+
+	// ======================================================
+	// ======================================================
+	public static float getRatio()
+	{
+		return MainActivity.RES_RATIO;
+	}
+	
+	public static float getRatioInverted()
+	{
+		return MainActivity.RES_RATIO_INVERTED;
+	}
+	
 }

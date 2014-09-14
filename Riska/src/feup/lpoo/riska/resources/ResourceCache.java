@@ -81,8 +81,9 @@ public class ResourceCache {
 	// ==================================================
 	public ITiledTextureRegion buttonRegion;
 	
-	private BitmapTextureAtlas mapTextureAtlas;
-	public ITextureRegion mapRegion;
+	private BuildableBitmapTextureAtlas mapTextureAtlas;
+	public ITextureRegion background;
+	public ITextureRegion map;
 	
 	private BuildableBitmapTextureAtlas gameTextureAtlas;	
 	public ITiledTextureRegion infoTabRegion;
@@ -299,14 +300,18 @@ public class ResourceCache {
 		int mapTextureWidth = 4096, mapTextureHeight = 2048;
 		int gameTextureWidth = 4096, gameTextureHeight = 2048;
 
-		mapTextureAtlas = new BitmapTextureAtlas(activity.getTextureManager(), mapTextureWidth, mapTextureHeight, 
-				TextureOptions.BILINEAR);
-		mapRegion = BitmapTextureAtlasTextureRegionFactory.createFromAsset(mapTextureAtlas, activity,
-				"map.png", 0, 0);
+		mapTextureAtlas = new BuildableBitmapTextureAtlas(activity.getTextureManager(),
+				mapTextureWidth, mapTextureHeight, TextureOptions.BILINEAR);
+		
+		background = BitmapTextureAtlasTextureRegionFactory.createFromAsset(mapTextureAtlas, activity,
+				"background.png");
+		
+		map = BitmapTextureAtlasTextureRegionFactory.createFromAsset(mapTextureAtlas, activity,
+				"map_1.png");
 
 		
 		gameTextureAtlas = new BuildableBitmapTextureAtlas(activity.getTextureManager(),
-				gameTextureWidth, gameTextureHeight, TextureOptions.REPEATING_BILINEAR);
+				gameTextureWidth, gameTextureHeight, TextureOptions.BILINEAR);
 
 		buttonRegion = BitmapTextureAtlasTextureRegionFactory.createTiledFromAsset(gameTextureAtlas, activity, 
 				"button_region.png", 1, 3);
@@ -325,7 +330,7 @@ public class ResourceCache {
 	
 		
 		gameNEWTextureAtlas = new BuildableBitmapTextureAtlas(activity.getTextureManager(),
-				gameTextureWidth, gameTextureHeight, TextureOptions.REPEATING_BILINEAR);
+				gameTextureWidth, gameTextureHeight, TextureOptions.BILINEAR);
 		
 		spriteAttack = BitmapTextureAtlasTextureRegionFactory.createTiledFromAsset(gameTextureAtlas, activity,
 				"sprite_attack.png", 1, 3);
@@ -386,7 +391,8 @@ public class ResourceCache {
 				"fill_square.png");
 		
 		try
-		{		
+		{
+			mapTextureAtlas.build(new BlackPawnTextureAtlasBuilder<IBitmapTextureAtlasSource, BitmapTextureAtlas>(0, 1, 0));
 			gameTextureAtlas.build(new BlackPawnTextureAtlasBuilder<IBitmapTextureAtlasSource, BitmapTextureAtlas>(0, 1, 0));
 			gameNEWTextureAtlas.build(new BlackPawnTextureAtlasBuilder<IBitmapTextureAtlasSource, BitmapTextureAtlas>(0, 1, 0));
 		}

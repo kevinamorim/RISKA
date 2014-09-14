@@ -68,6 +68,15 @@ public class BarVertical extends Entity {
 		updateColor();
 	}
 	
+	public void setMin(int pMin)
+	{
+		this.min = Math.min(capacity, pMin);
+		this.value = Math.min(free(), value);
+//		this.removed = 0;
+		
+		updateColor();
+	}
+	
 //	public void setValues(int pUsed, int pRemoved)
 //	{
 //		this.used = pUsed;

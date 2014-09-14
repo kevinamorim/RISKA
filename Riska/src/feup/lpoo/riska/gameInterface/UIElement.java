@@ -20,9 +20,13 @@ public class UIElement extends Entity {
 	private Text text;
 	private TiledSprite[] sprites;
 
-	private float textBoundingFactor = 0.8f;
-
+	private float textBoundingFactorX = 1f;
+	private float textBoundingFactorY = 1f;
+	
 	private Sprite backgroundSprite;
+	
+	private Color spriteColor = Color.WHITE;
+	private Color textColor = Color.BLACK;
 
 	public UIElement(float pSize, ITiledTextureRegion pTexture, VertexBufferObjectManager pVbom)
 	{
@@ -107,15 +111,23 @@ public class UIElement extends Entity {
 	private void wrapText()
 	{
 		if(text != null)
-		{
-			Utils.wrap(text, this, textBoundingFactor);
+		{	
+			Utils.wrapX(text, this, textBoundingFactorX);
+			Utils.wrapY(text, this, textBoundingFactorY);
 
 			text.setPosition(Utils.halfX(this), Utils.halfY(this));
 		}
 	}
+	
+	public void setTextBoundingFactor(float pX, float pY)
+	{
+		this.textBoundingFactorX = pX;
+		this.textBoundingFactorY = pY;
+		
+		wrapText();
+	}
 
 	// ==================================================
-	// OVERRIDE
 	// ==================================================
 	@Override
 	public void setSize(float pWidth, float pHeight)
@@ -208,18 +220,16 @@ public class UIElement extends Entity {
 
 	public void setSpriteColor(Color pColor)
 	{
-		for(int i = 0; i < sprites.length; i++)
-		{
-			sprites[i].setColor(Utils.getColorWithAlpha(pColor, sprites[i].getAlpha()));
-		}
+		this.spriteColor = pColor;
+		
+		updateSprite();
 	}
 
 	public void setTextColor(Color pColor)
 	{
-		if(text != null)
-		{
-			text.setColor(pColor);
-		}
+		this.textColor = pColor;
+		
+		updateText();
 	}
 
 	public void setColorChildren(Color pColor)
@@ -241,6 +251,25 @@ public class UIElement extends Entity {
 		}
 
 		//super.setColor(pColor);
+	}
+
+	private void updateSprite()
+	{
+		if(sprites != null)
+		{
+			for(TiledSprite spr : sprites)
+			{
+				spr.setColor(Utils.getColorWithAlpha(spriteColor, spr.getAlpha()));
+			}
+		}
+	}
+	
+	private void updateText()
+	{
+		if(text != null)
+		{
+			text.setColor(textColor);
+		}
 	}
 
 }

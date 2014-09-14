@@ -1,18 +1,23 @@
 package feup.lpoo.riska.gameInterface;
 
 import org.andengine.entity.sprite.ButtonSprite;
-import org.andengine.entity.text.Text;
 import org.andengine.opengl.texture.region.ITiledTextureRegion;
 import org.andengine.opengl.vbo.VertexBufferObjectManager;
 import org.andengine.util.adt.color.Color;
 
+import feup.lpoo.riska.utilities.Utils;
+
 public class RiskaButtonSprite extends ButtonSprite {
 
+	private Color spriteColor = Utils.OtherColors.GREY;
+	
 	public void setColor(Color pColor, float pAlpha)
 	{
-		setColor(new Color(pColor.getRed(), pColor.getGreen(), pColor.getBlue(), pAlpha));
+		spriteColor = Utils.getColorWithAlpha(pColor, pAlpha);
+		
+		update();	
 	}
-	
+
 	public RiskaButtonSprite(ITiledTextureRegion pTexture, VertexBufferObjectManager vbom)
 	{	
 		this(0f, 0f, pTexture, vbom);
@@ -23,4 +28,9 @@ public class RiskaButtonSprite extends ButtonSprite {
 		super(pX, pY, pTexture, vbom);
 	}
 
+	
+	private void update()
+	{
+		setColor(spriteColor);
+	}
 }

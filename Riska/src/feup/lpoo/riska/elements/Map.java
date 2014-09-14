@@ -126,7 +126,8 @@ public class Map {
 		checkNeighbours();
 	}
 
-	private void checkNeighbours() {
+	private void checkNeighbours()
+	{
 		for(Region reg : getRegions())
 		{
 			for(Region region : reg.getNeighbours())
@@ -137,6 +138,11 @@ public class Map {
 				}
 			}
 		}
+	}
+
+	public Region getRegionByIndex(int index)
+	{
+		return regions.get(index);
 	}
 	
 	

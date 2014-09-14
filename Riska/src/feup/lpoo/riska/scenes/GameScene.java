@@ -1,14 +1,12 @@
 package feup.lpoo.riska.scenes;
 
-import java.util.ArrayList;
-
 import org.andengine.entity.IEntity;
 import org.andengine.entity.modifier.DelayModifier;
 import org.andengine.entity.scene.IOnSceneTouchListener;
 import org.andengine.entity.scene.Scene;
+import org.andengine.entity.scene.background.SpriteBackground;
 import org.andengine.entity.sprite.ButtonSprite;
 import org.andengine.entity.sprite.Sprite;
-import org.andengine.entity.text.Text;
 import org.andengine.input.touch.TouchEvent;
 import org.andengine.input.touch.detector.ScrollDetector;
 import org.andengine.input.touch.detector.ScrollDetector.IScrollDetectorListener;
@@ -17,6 +15,7 @@ import org.andengine.input.touch.detector.SurfaceScrollDetector;
 import feup.lpoo.riska.elements.Map;
 import feup.lpoo.riska.elements.Region;
 import feup.lpoo.riska.gameInterface.GameHUD;
+import feup.lpoo.riska.gameInterface.RiskaTextButtonSprite;
 import feup.lpoo.riska.logic.BattleGenerator;
 import feup.lpoo.riska.logic.GameInfo;
 import feup.lpoo.riska.logic.GameLogic;
@@ -36,7 +35,6 @@ public class GameScene extends BaseScene implements IOnSceneTouchListener, IScro
 	private final long MIN_TOUCH_INTERVAL = 70;
 	private final long MAX_TOUCH_INTERVAL = 400;
 	private final float CPU_DELAY = 1.0f;
-	private final int MAX_REGION_CHARS = 10;
 
 	// ======================================================
 	// FIELDS
@@ -47,11 +45,13 @@ public class GameScene extends BaseScene implements IOnSceneTouchListener, IScro
 	private AttackScene attackScene;
 	private SummonScene summonScene;
 	private DeployScene deployScene;
+	
+	private Sprite mapSprite;
+	
+	private RiskaTextButtonSprite[] regionButton;
 
 	private ScrollDetector scrollDetector;
-	private Map map;		
-	private ArrayList<ButtonSprite> regionButtons;
-	private ArrayList<Text> regionButtonsText;
+	private Map map;
 	private boolean doubleTapAllowed;
 	private long lastTouchTime;
 
@@ -97,20 +97,22 @@ public class GameScene extends BaseScene implements IOnSceneTouchListener, IScro
 	{
 		createBackground();
 		createHUD();
-		createRegions();
+		createMapSprite();
+		createRegionButtons();
 		createChildScenes();
 	}
 
+
 	private void createBackground()
 	{
-		Sprite mapSprite = new Sprite(
+		SpriteBackground background = new SpriteBackground(new Sprite(
 				camera.getCenterX(),
 				camera.getCenterY(),
 				camera.getWidth() + 2,
 				camera.getHeight() + 2,
-				resources.mapRegion, vbom);
+				resources.background, vbom));
 
-		attachChild(mapSprite);	
+		setBackground(background);
 	}
 
 	private void createHUD()
@@ -120,19 +122,33 @@ public class GameScene extends BaseScene implements IOnSceneTouchListener, IScro
 		camera.setHUD(hud);
 	}
 
-	private void createRegions()
+	private void createMapSprite()
 	{
-		Text buttonText;
-		ButtonSprite regionButton;
+		float pX = camera.getCenterX();
+		float pY = camera.getCenterY();
+		float pWidth = hud.mapWidth();
+		float pHeight = Utils.getRatioInverted() * pWidth;
+		
+		mapSprite = new Sprite(pX, pY, pWidth, pHeight, resources.map, vbom);
+		
+		attachChild(mapSprite);	
+	}
 
-		for(Region region : map.getRegions()) {
+	private void createRegionButtons()
+	{	
+		float pWidth = 0.1f * mapSprite.getHeight();
+		float pHeight = pWidth;
+		
+		regionButton = new RiskaTextButtonSprite[map.getNumberOfRegions()];
 
-			int x = (int)((region.getX() * camera.getWidth()) / 100);
-			int y = (int)((region.getY() * camera.getHeight()) / 100);
+		for(int i = 0; i < map.getNumberOfRegions(); i++) {
+			
+			Region region = map.getRegionByIndex(i);
 
-			buttonText = new Text(0, 0, resources.mGameFont, "", MAX_REGION_CHARS, vbom);
+			float x = 0.01f * region.getX() * mapSprite.getWidth();
+			float y = 0.01f * region.getY() * mapSprite.getHeight();
 
-			regionButton = new ButtonSprite(x, y, resources.buttonRegion, vbom) {
+			regionButton[i] = new RiskaTextButtonSprite(resources.buttonRegion, vbom, "", resources.mGameFont, Utils.maxNumericChars) {
 
 				@Override
 				public boolean onAreaTouched(TouchEvent ev, float pX, float pY) 
@@ -163,23 +179,16 @@ public class GameScene extends BaseScene implements IOnSceneTouchListener, IScro
 				}
 			};
 
-			regionButton.setTag(region.ID);
-			regionButton.setPosition(x, y);
-			regionButton.setSize(0.1f * camera.getHeight(), 0.1f * camera.getHeight());
+			regionButton[i].setTag(region.ID);
+			regionButton[i].setPosition(x, y);
+			regionButton[i].setSize(pWidth, pHeight);
 
-			regionButton.setColor(region.getPrimaryColor());
+			regionButton[i].setColor(region.getPrimaryColor());
+			
+			regionButton[i].setTextColor(region.getSecundaryColor());
+			regionButton[i].setText("" + region.getGarrison());
 
-			buttonText.setText("" + region.getGarrison());
-			buttonText.setPosition(Utils.getCenterX(regionButton), Utils.getCenterY(regionButton));
-			buttonText.setColor(region.getSecundaryColor());
-
-			regionButton.attachChild(buttonText);
-
-			regionButtons.add(regionButton);
-			regionButtonsText.add(buttonText);
-
-			attachChild(regionButton);
-			registerTouchArea(regionButton);
+			mapSprite.attachChild(regionButton[i]);
 		}
 	}
 
@@ -393,20 +402,19 @@ public class GameScene extends BaseScene implements IOnSceneTouchListener, IScro
 	// ======================================================
 	private void drawRegionButtons() {
 
-		for(int i = 0; i < regionButtons.size(); i++)
+		for(int i = 0; i < regionButton.length; i++)
 		{
-			ButtonSprite btn = regionButtons.get(i);
-			Text btnText = regionButtonsText.get(i);
+			RiskaTextButtonSprite button = regionButton[i];
 
-			if(btn.isVisible())
+			if(button.isVisible())
 			{
-				Region region = map.getRegionById(i);
-				btnText.setText("" + region.getGarrison());
+				Region region = map.getRegionByIndex(i);
+				button.setText("" + region.getGarrison());
 
-				if(region.getPrimaryColor() != btn.getColor())
+				if(region.getPrimaryColor() != button.getColor())
 				{
-					btn.setColor(region.getPrimaryColor());
-					btnText.setColor(region.getSecundaryColor());
+					button.setColor(region.getPrimaryColor());
+					button.setTextColor(region.getSecundaryColor());
 				}
 			}
 		}
@@ -435,7 +443,7 @@ public class GameScene extends BaseScene implements IOnSceneTouchListener, IScro
 	private void updateRegion(int i)
 	{
 		Region reg = map.getRegionById(i);
-		regionButtonsText.get(i).setText("" + reg.getGarrison());
+		regionButton[i].setText("" + reg.getGarrison());
 	}
 
 	public void showOnlyNeighbourRegions(Region pRegion) {
@@ -448,14 +456,14 @@ public class GameScene extends BaseScene implements IOnSceneTouchListener, IScro
 			{
 				if(!comp.isNeighbourOf(pRegion))
 				{
-					regionButtons.get(i).setVisible(false);
+					regionButton[i].setVisible(false);
 					//regionButtons.get(i).first.setEnabled(false);
 				}
 				else
 				{
 					if(comp.owner() == logic.getCurrentPlayer())
 					{
-						regionButtons.get(i).setVisible(false);
+						regionButton[i].setVisible(false);
 						//regionButtons.get(i).first.setEnabled(false);
 					}
 				}
@@ -472,14 +480,14 @@ public class GameScene extends BaseScene implements IOnSceneTouchListener, IScro
 			{
 				if(!comp.isNeighbourOf(pRegion))
 				{
-					regionButtons.get(i).setVisible(false);
+					regionButton[i].setVisible(false);
 					//regionButtons.get(i).first.setEnabled(false);
 				}
 				else
 				{
 					if(comp.owner() != logic.getCurrentPlayer())
 					{
-						regionButtons.get(i).setVisible(false);
+						regionButton[i].setVisible(false);
 					}
 				}
 			}
@@ -488,9 +496,9 @@ public class GameScene extends BaseScene implements IOnSceneTouchListener, IScro
 
 	private void showAllRegions()
 	{
-		for(int i = 0; i < regionButtons.size(); i++)
+		for(int i = 0; i < regionButton.length; i++)
 		{
-			ButtonSprite btn = regionButtons.get(i);
+			ButtonSprite btn = regionButton[i];
 
 			if(!btn.isVisible())
 			{
@@ -501,22 +509,22 @@ public class GameScene extends BaseScene implements IOnSceneTouchListener, IScro
 
 	private void registerTouchAreaForAllRegions()
 	{
-		for(ButtonSprite regionButton : regionButtons)
+		for(ButtonSprite region : regionButton)
 		{
-			if(!getTouchAreas().contains(regionButton))
+			if(!getTouchAreas().contains(region))
 			{
-				registerTouchArea(regionButton);
+				registerTouchArea(region);
 			}
 		}
 	}
 
 	private void unregisterTouchAreaForAllRegions()
 	{
-		for(ButtonSprite regionButton : regionButtons)
+		for(ButtonSprite region : regionButton)
 		{
-			if(getTouchAreas().contains(regionButton))
+			if(getTouchAreas().contains(region))
 			{
-				unregisterTouchArea(regionButton);
+				unregisterTouchArea(region);
 			}
 		}
 	}
@@ -754,9 +762,6 @@ public class GameScene extends BaseScene implements IOnSceneTouchListener, IScro
 		logic = new GameLogic(this);
 
 		map = ResourceCache.getSharedInstance().maps.get(GameInfo.currentMapIndex);
-
-		regionButtons = new ArrayList<ButtonSprite>();
-		regionButtonsText = new ArrayList<Text>();
 
 		lastTouchTime = 0;
 		doubleTapAllowed = true;

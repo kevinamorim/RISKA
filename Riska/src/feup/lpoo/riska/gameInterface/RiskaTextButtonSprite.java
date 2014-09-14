@@ -17,14 +17,11 @@ public class RiskaTextButtonSprite extends RiskaButtonSprite {
 
 	private static final float textBoundingFactor = 0.8f;
 	private static final float animationTime = 0.2f;
+	
+	public Color textColor = Color.PINK;
 
 	// ==================================================
-	// ==================================================
-	public RiskaTextButtonSprite(ITiledTextureRegion pTexture, VertexBufferObjectManager vbom)
-	{
-		this(pTexture, vbom, null, null, 0);
-	}
-	
+	// ==================================================	
 	public RiskaTextButtonSprite(ITiledTextureRegion pTexture, VertexBufferObjectManager vbom, String pString, Font pFont)
 	{
 		super(0f, 0f, pTexture, vbom);
@@ -153,12 +150,20 @@ public class RiskaTextButtonSprite extends RiskaButtonSprite {
 
 	public void setTextColor(Color pColor)
 	{
-		if(text != null)
-		{
-			text.setColor(pColor);
-		}
+		textColor = pColor;
+		
+		updateText();
+		
 	}
 	
+	private void updateText()
+	{
+		if(text != null)
+		{
+			text.setColor(textColor);
+		}
+	}
+
 	// ==================================================
 	// OVERRIDE
 	// ==================================================

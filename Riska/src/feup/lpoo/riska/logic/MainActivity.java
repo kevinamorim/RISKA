@@ -25,6 +25,7 @@ public class MainActivity extends BaseGameActivity {
 	private final float MAX_VELOCITY = 700f;
 
 	public final static float RES_RATIO = 16f/10f;
+	public final static float RES_RATIO_INVERTED = 10f/16f;
 
 	// ======================================================
 	// FIELDS
