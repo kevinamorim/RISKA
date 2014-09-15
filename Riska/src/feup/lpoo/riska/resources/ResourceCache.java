@@ -25,6 +25,7 @@ import android.graphics.Color;
 import android.graphics.Typeface;
 import feup.lpoo.riska.elements.Map;
 import feup.lpoo.riska.gameInterface.CameraManager;
+import feup.lpoo.riska.logic.GameInfo;
 import feup.lpoo.riska.logic.GameOptions;
 import feup.lpoo.riska.logic.MainActivity;
 import feup.lpoo.riska.music.Conductor;
@@ -40,7 +41,7 @@ public class ResourceCache {
 	public CameraManager camera;
 	public VertexBufferObjectManager vbom;
 
-	private static ResourceCache instance = new ResourceCache();
+	public static ResourceCache instance = new ResourceCache();
 
 	private static String currentTheme = "dark/";
 
@@ -81,8 +82,10 @@ public class ResourceCache {
 	// ==================================================
 	public ITiledTextureRegion buttonRegion;
 	
-	private BuildableBitmapTextureAtlas mapTextureAtlas;
+	private BuildableBitmapTextureAtlas gameBackgroundTextureAtlas;
 	public ITextureRegion background;
+	
+	private BuildableBitmapTextureAtlas mapTextureAtlas;
 	public ITextureRegion map;
 	
 	private BuildableBitmapTextureAtlas gameTextureAtlas;	
@@ -115,6 +118,8 @@ public class ResourceCache {
 	public ITiledTextureRegion midRightNoBorder;
 	
 	public ITextureRegion fillSquareRegion;
+	
+	public ITextureRegion[] regions;
 	
 	public ArrayList<Map> maps;	
 	
@@ -293,21 +298,18 @@ public class ResourceCache {
 		createMaps();
 	}
 
-	private void createGameGraphics() {
-
+	private void createGameGraphics()
+	{
 		BitmapTextureAtlasTextureRegionFactory.setAssetBasePath("gfx/themes/" + currentTheme + "game/");
 
-		int mapTextureWidth = 4096, mapTextureHeight = 2048;
+		int backgroundTextureWidth = 4096, backgroundTextureHeight = 2048;
 		int gameTextureWidth = 4096, gameTextureHeight = 2048;
 
-		mapTextureAtlas = new BuildableBitmapTextureAtlas(activity.getTextureManager(),
-				mapTextureWidth, mapTextureHeight, TextureOptions.BILINEAR);
+		gameBackgroundTextureAtlas = new BuildableBitmapTextureAtlas(activity.getTextureManager(),
+				backgroundTextureWidth, backgroundTextureHeight, TextureOptions.BILINEAR);
 		
-		background = BitmapTextureAtlasTextureRegionFactory.createFromAsset(mapTextureAtlas, activity,
+		background = BitmapTextureAtlasTextureRegionFactory.createFromAsset(gameBackgroundTextureAtlas, activity,
 				"background.png");
-		
-		map = BitmapTextureAtlasTextureRegionFactory.createFromAsset(mapTextureAtlas, activity,
-				"map.png");
 
 		
 		gameTextureAtlas = new BuildableBitmapTextureAtlas(activity.getTextureManager(),
@@ -332,67 +334,67 @@ public class ResourceCache {
 		gameNEWTextureAtlas = new BuildableBitmapTextureAtlas(activity.getTextureManager(),
 				gameTextureWidth, gameTextureHeight, TextureOptions.BILINEAR);
 		
-		spriteAttack = BitmapTextureAtlasTextureRegionFactory.createTiledFromAsset(gameTextureAtlas, activity,
+		spriteAttack = BitmapTextureAtlasTextureRegionFactory.createTiledFromAsset(gameNEWTextureAtlas, activity,
 				"sprite_attack.png", 1, 3);
 		
-		spriteDeploy = BitmapTextureAtlasTextureRegionFactory.createTiledFromAsset(gameTextureAtlas, activity,
+		spriteDeploy = BitmapTextureAtlasTextureRegionFactory.createTiledFromAsset(gameNEWTextureAtlas, activity,
 				"sprite_deploy.png", 1, 3);
 		
-		spriteSummon = BitmapTextureAtlasTextureRegionFactory.createTiledFromAsset(gameTextureAtlas, activity,
+		spriteSummon = BitmapTextureAtlasTextureRegionFactory.createTiledFromAsset(gameNEWTextureAtlas, activity,
 				"sprite_summon.png", 1, 3);
 		
 		
-		midCenter = BitmapTextureAtlasTextureRegionFactory.createTiledFromAsset(gameTextureAtlas, activity, 
+		midCenter = BitmapTextureAtlasTextureRegionFactory.createTiledFromAsset(gameNEWTextureAtlas, activity, 
 				"mid_center.png", 3, 3);
 		
-		midLeft = BitmapTextureAtlasTextureRegionFactory.createTiledFromAsset(gameTextureAtlas, activity, 
+		midLeft = BitmapTextureAtlasTextureRegionFactory.createTiledFromAsset(gameNEWTextureAtlas, activity, 
 				"mid_left.png", 3, 3);
 		
-		midRight = BitmapTextureAtlasTextureRegionFactory.createTiledFromAsset(gameTextureAtlas, activity, 
+		midRight = BitmapTextureAtlasTextureRegionFactory.createTiledFromAsset(gameNEWTextureAtlas, activity, 
 				"mid_right.png", 3, 3);
 		
-		bottomCenter = BitmapTextureAtlasTextureRegionFactory.createTiledFromAsset(gameTextureAtlas, activity, 
+		bottomCenter = BitmapTextureAtlasTextureRegionFactory.createTiledFromAsset(gameNEWTextureAtlas, activity, 
 				"bottom_center.png", 3, 3);
 		
-		bottomLeft = BitmapTextureAtlasTextureRegionFactory.createTiledFromAsset(gameTextureAtlas, activity, 
+		bottomLeft = BitmapTextureAtlasTextureRegionFactory.createTiledFromAsset(gameNEWTextureAtlas, activity, 
 				"bottom_left.png", 3, 3);
 		
-		bottomRight = BitmapTextureAtlasTextureRegionFactory.createTiledFromAsset(gameTextureAtlas, activity, 
+		bottomRight = BitmapTextureAtlasTextureRegionFactory.createTiledFromAsset(gameNEWTextureAtlas, activity, 
 				"bottom_right.png", 3, 3);
 		
-		topCenter = BitmapTextureAtlasTextureRegionFactory.createTiledFromAsset(gameTextureAtlas, activity, 
+		topCenter = BitmapTextureAtlasTextureRegionFactory.createTiledFromAsset(gameNEWTextureAtlas, activity, 
 				"top_center.png", 3, 3);
 		
-		topLeft = BitmapTextureAtlasTextureRegionFactory.createTiledFromAsset(gameTextureAtlas, activity, 
+		topLeft = BitmapTextureAtlasTextureRegionFactory.createTiledFromAsset(gameNEWTextureAtlas, activity, 
 				"top_left.png", 3, 3);
 		
-		topRight = BitmapTextureAtlasTextureRegionFactory.createTiledFromAsset(gameTextureAtlas, activity, 
+		topRight = BitmapTextureAtlasTextureRegionFactory.createTiledFromAsset(gameNEWTextureAtlas, activity, 
 				"top_right.png", 3, 3);
 		
-		midCenterSmall = BitmapTextureAtlasTextureRegionFactory.createTiledFromAsset(gameTextureAtlas, activity, 
+		midCenterSmall = BitmapTextureAtlasTextureRegionFactory.createTiledFromAsset(gameNEWTextureAtlas, activity, 
 				"mid_center_small.png", 3, 3);
 		
-		bottomCenterNoBorder = BitmapTextureAtlasTextureRegionFactory.createTiledFromAsset(gameTextureAtlas, activity, 
+		bottomCenterNoBorder = BitmapTextureAtlasTextureRegionFactory.createTiledFromAsset(gameNEWTextureAtlas, activity, 
 				"bottom_center_no_border.png", 3, 3);
 		
-		midCenterNoBorder = BitmapTextureAtlasTextureRegionFactory.createTiledFromAsset(gameTextureAtlas, activity, 
+		midCenterNoBorder = BitmapTextureAtlasTextureRegionFactory.createTiledFromAsset(gameNEWTextureAtlas, activity, 
 				"mid_center_no_border.png", 3, 3);
 		
-		topCenterNoBorder = BitmapTextureAtlasTextureRegionFactory.createTiledFromAsset(gameTextureAtlas, activity, 
+		topCenterNoBorder = BitmapTextureAtlasTextureRegionFactory.createTiledFromAsset(gameNEWTextureAtlas, activity, 
 				"top_center_no_border.png", 3, 3);
 		
-		midLeftNoBorder = BitmapTextureAtlasTextureRegionFactory.createTiledFromAsset(gameTextureAtlas, activity, 
+		midLeftNoBorder = BitmapTextureAtlasTextureRegionFactory.createTiledFromAsset(gameNEWTextureAtlas, activity, 
 				"mid_left_no_border.png", 3, 3);
 		
-		midRightNoBorder = BitmapTextureAtlasTextureRegionFactory.createTiledFromAsset(gameTextureAtlas, activity, 
+		midRightNoBorder = BitmapTextureAtlasTextureRegionFactory.createTiledFromAsset(gameNEWTextureAtlas, activity, 
 				"mid_right_no_border.png", 3, 3);
 		
-		fillSquareRegion = BitmapTextureAtlasTextureRegionFactory.createFromAsset(gameTextureAtlas, activity,
+		fillSquareRegion = BitmapTextureAtlasTextureRegionFactory.createFromAsset(gameNEWTextureAtlas, activity,
 				"fill_square.png");
 		
 		try
 		{
-			mapTextureAtlas.build(new BlackPawnTextureAtlasBuilder<IBitmapTextureAtlasSource, BitmapTextureAtlas>(0, 1, 0));
+			gameBackgroundTextureAtlas.build(new BlackPawnTextureAtlasBuilder<IBitmapTextureAtlasSource, BitmapTextureAtlas>(0, 1, 0));
 			gameTextureAtlas.build(new BlackPawnTextureAtlasBuilder<IBitmapTextureAtlasSource, BitmapTextureAtlas>(0, 1, 0));
 			gameNEWTextureAtlas.build(new BlackPawnTextureAtlasBuilder<IBitmapTextureAtlasSource, BitmapTextureAtlas>(0, 1, 0));
 		}
@@ -409,7 +411,7 @@ public class ResourceCache {
 		mGameFont = FontFactory.create(
 				engine.getFontManager(), 
 				engine.getTextureManager(), 512, 512, TextureOptions.BILINEAR,
-				Typeface.create(Typeface.DEFAULT, Typeface.BOLD), 32f,
+				Typeface.create(Typeface.DEFAULT, Typeface.BOLD), 48f,
 				Color.WHITE);
 
 		mInfoTabFont = FontFactory.create(engine.getFontManager(), 
@@ -438,13 +440,47 @@ public class ResourceCache {
 		// Texture Atlas
 		gameTextureAtlas.load();
 		gameNEWTextureAtlas.load();
-		mapTextureAtlas.load();
+		gameBackgroundTextureAtlas.load();
 		
 		// Fonts
 		mGameFont.load();
 		mInfoTabFont.load();
+		
+		createAndLoadGameMapResources();
 	}
 
+	private void createAndLoadGameMapResources()
+	{
+		BitmapTextureAtlasTextureRegionFactory.setAssetBasePath("gfx/themes/" + currentTheme + "game/" + GameInfo.currentMapIndex + "/");
+		
+		int mapTextureWidth = 4096, mapTextureHeight = 4096;
+
+		mapTextureAtlas = new BuildableBitmapTextureAtlas(activity.getTextureManager(),
+				mapTextureWidth, mapTextureHeight, TextureOptions.DEFAULT);
+		
+		map = BitmapTextureAtlasTextureRegionFactory.createFromAsset(mapTextureAtlas, activity,
+				"map.png");
+		
+		regions = new ITextureRegion[GameInfo.currentMap.getNumberOfRegions()];
+		
+		for(int i = 0; i < GameInfo.currentMap.getNumberOfRegions(); i++)
+		{
+			regions[i] = BitmapTextureAtlasTextureRegionFactory.createFromAsset(mapTextureAtlas, activity,
+					i + ".png");
+		}
+		
+		try
+		{
+			mapTextureAtlas.build(new BlackPawnTextureAtlasBuilder<IBitmapTextureAtlasSource, BitmapTextureAtlas>(0, 1, 0));
+		}
+		catch(final TextureAtlasBuilderException e)
+		{
+			Debug.e(e);
+		}
+		
+		mapTextureAtlas.load();
+	}
+	
 	public void unloadGameSceneResources()
 	{
 		gameTextureAtlas.unload();
@@ -516,8 +552,8 @@ public class ResourceCache {
 	// ==================================================
 	// GETTERS & SETTERS
 	// ==================================================
-	public static ResourceCache getSharedInstance() {
-		return instance;	
-	}
+//	public static ResourceCache getSharedInstance() {
+//		return instance;	
+//	}
 
 }

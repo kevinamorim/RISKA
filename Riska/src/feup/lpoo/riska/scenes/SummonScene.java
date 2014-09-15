@@ -196,5 +196,11 @@ public class SummonScene extends BaseScene implements Displayable {
 	{
 		// TODO
 	}
+
+	@Override
+	public void onMenuKeyPressed() {
+		// TODO Auto-generated method stub
+		
+	}
 	
 }

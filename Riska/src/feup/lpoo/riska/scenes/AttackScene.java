@@ -166,4 +166,10 @@ public class AttackScene extends BaseScene {
 		// TODO
 	}
 
+	@Override
+	public void onMenuKeyPressed() {
+		// TODO Auto-generated method stub
+		
+	}
+
 }

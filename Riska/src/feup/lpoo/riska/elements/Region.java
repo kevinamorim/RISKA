@@ -4,7 +4,6 @@ import java.util.ArrayList;
 
 import org.andengine.util.adt.color.Color;
 
-import feup.lpoo.riska.logic.GameInfo;
 import android.graphics.Point;
 
 public class Region extends Element {
@@ -20,14 +19,16 @@ public class Region extends Element {
 	private int garrisonArmy;
 	
 	private ArrayList<Region> neighbourRegion;
-
+	
+	private Point stratCenter;
 	
 	// ======================================================
 	// ======================================================
-	public Region(final int id, String name, Point pos, String continent)
+	public Region(final int id, String name, float pX, float pY, int sX, int sY, String continent)
 	{
+		super(pX, pY, name);
 		
-		super(pos.x, pos.y, name);
+		stratCenter = new Point(sX, sY);
 		
 		ID = id;
 		owner = null;
@@ -174,4 +175,10 @@ public class Region extends Element {
 
 		return false;
 	}
+
+	public Point getStratCenter()
+	{
+		return stratCenter;
+	}
+	
 }

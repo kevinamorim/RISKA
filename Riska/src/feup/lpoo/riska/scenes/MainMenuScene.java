@@ -13,13 +13,11 @@ import org.andengine.entity.text.Text;
 import org.andengine.input.touch.TouchEvent;
 import org.andengine.util.adt.color.Color;
 
-import android.util.Log;
 import android.view.MotionEvent;
-import feup.lpoo.riska.gameInterface.MenuHUD;
 import feup.lpoo.riska.gameInterface.RiskaSprite;
 import feup.lpoo.riska.gameInterface.RiskaCanvas;
 import feup.lpoo.riska.gameInterface.RiskaMenuItem;
-import feup.lpoo.riska.gameInterface.UIElement;
+import feup.lpoo.riska.hud.MenuHUD;
 import feup.lpoo.riska.interfaces.Displayable;
 import feup.lpoo.riska.io.IOManager;
 import feup.lpoo.riska.logic.GameInfo;
@@ -124,7 +122,8 @@ public class MainMenuScene extends BaseScene implements Displayable, IOnMenuItem
 
 	private int[] playerColor;
 
-	private int level = GameOptions.defaultLvl;
+	private int levelIndex = GameOptions.defaultLvlIndex;
+	private int mapIndex = GameOptions.defaultMapIndex;
 
 	// ==================================================
 	// ==================================================
@@ -158,6 +157,12 @@ public class MainMenuScene extends BaseScene implements Displayable, IOnMenuItem
 		}
 	}
 
+	@Override
+	public void onMenuKeyPressed()
+	{
+		// TODO Auto-generated method stub
+	}
+	
 	@Override
 	public void disposeScene()
 	{
@@ -1383,7 +1388,7 @@ public class MainMenuScene extends BaseScene implements Displayable, IOnMenuItem
 			else
 			{
 				mapCanvas[index].setColor(Utils.OtherColors.DARK_GREY);
-				GameInfo.currentMapIndex = i;
+				mapIndex = i;
 			}
 		}
 	}
@@ -1517,7 +1522,7 @@ public class MainMenuScene extends BaseScene implements Displayable, IOnMenuItem
 		{
 			if(i == index)
 			{
-				level = i;
+				levelIndex = i;
 				levelCheckBox[i].setColor(Color.WHITE);
 				levelText[i].setColor(Color.WHITE);
 			}
@@ -1806,6 +1811,7 @@ public class MainMenuScene extends BaseScene implements Displayable, IOnMenuItem
 	{
 		int numOfPlayers = 0;
 
+		// Defines number of active players
 		for(int i = 0; i < GameOptions.maxPlayers; i++)
 		{
 			if(playerActive[i])
@@ -1818,6 +1824,7 @@ public class MainMenuScene extends BaseScene implements Displayable, IOnMenuItem
 			}
 		}
 
+		// Assigns automatic colors if not assigned by player
 		for(int i = 0; i < GameOptions.maxPlayers; i++)
 		{
 			if(playerActive[i] && playerColor[i] == GameOptions.numberOfFactions)
@@ -1833,6 +1840,7 @@ public class MainMenuScene extends BaseScene implements Displayable, IOnMenuItem
 			}
 		}
 
+		// Creates the players
 		GameInfo.setNumberOfPlayers(numOfPlayers);
 		GameInfo.clearPlayers();
 
@@ -1844,7 +1852,8 @@ public class MainMenuScene extends BaseScene implements Displayable, IOnMenuItem
 			}	
 		}
 		
-		GameInfo.setLevel(level);
+		GameInfo.setMap(mapIndex);
+		GameInfo.setLevel(levelIndex);
 	}
 
 	private void resetGameInfo()
@@ -1861,5 +1870,6 @@ public class MainMenuScene extends BaseScene implements Displayable, IOnMenuItem
 			playerColor[i] = (playerActive[i] ? i : GameOptions.numberOfFactions);
 		}
 	}
+
 
 }

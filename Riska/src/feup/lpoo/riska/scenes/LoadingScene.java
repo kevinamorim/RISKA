@@ -42,4 +42,10 @@ public class LoadingScene extends BaseScene {
 		return SCENE_TYPE.LOADING;
 	}
 
+	@Override
+	public void onMenuKeyPressed() {
+		// TODO Auto-generated method stub
+		
+	}
+
 }

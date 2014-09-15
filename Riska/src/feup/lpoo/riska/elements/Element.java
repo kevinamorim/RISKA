@@ -1,15 +1,19 @@
 package feup.lpoo.riska.elements;
 
-import android.graphics.Point;
-
 public class Element extends Object {
 	
 	public String name;
-	protected Point position;
+	protected float x, y;
 
 	protected Element(int x, int y, String pName)
 	{
-		position = new Point(x, y);
+		this((float)x, (float)y, pName);
+	}
+	
+	protected Element(float x, float y, String pName)
+	{
+		this.x = x;
+		this.y = y;
 		name = pName;
 	}
 	
@@ -19,18 +23,13 @@ public class Element extends Object {
 		return (name.length() > 0 ? name : "");
 	}
 	
-	public Point getPosition()
+	public float getX()
 	{
-		return position;
+		return x;
 	}
 	
-	public int getX()
+	public float getY()
 	{
-		return position.x;
-	}
-	
-	public int getY()
-	{
-		return position.y;
+		return y;
 	}
 }

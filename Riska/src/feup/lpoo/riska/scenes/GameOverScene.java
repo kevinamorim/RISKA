@@ -41,4 +41,10 @@ public class GameOverScene extends BaseScene {
 		attachChild(text);
 	}
 
+	@Override
+	public void onMenuKeyPressed() {
+		// TODO Auto-generated method stub
+		
+	}
+
 }

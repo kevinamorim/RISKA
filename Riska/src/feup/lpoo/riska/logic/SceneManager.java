@@ -46,7 +46,7 @@ public class SceneManager {
 	
 	public static SceneManager instance = new SceneManager();
 	private BaseScene currentScene;
-	private Engine engine = ResourceCache.getSharedInstance().engine;
+	private Engine engine = ResourceCache.instance.engine;
 	
 	private SCENE_TYPE currentSceneType = SCENE_TYPE.SPLASH;
 
@@ -57,7 +57,7 @@ public class SceneManager {
 	public void createSplashScene(OnCreateSceneCallback pOnCreateSceneCallback)
 	{
 		
-		ResourceCache.getSharedInstance().loadSplashSceneResources();
+		ResourceCache.instance.loadSplashSceneResources();
 		splashScene = new SplashScene();
 		currentScene = splashScene;
 		pOnCreateSceneCallback.onCreateSceneFinished(splashScene);
@@ -66,14 +66,14 @@ public class SceneManager {
 	
 	public void disposeSplashScene()
 	{
-		ResourceCache.getSharedInstance().unloadSplashSceneResources();
+		ResourceCache.instance.unloadSplashSceneResources();
 		splashScene.dispose();
 		splashScene = null;
 	}
 	
 	public void createMainMenuScene()
 	{
-		ResourceCache.getSharedInstance().loadMainMenuResources();
+		ResourceCache.instance.loadMainMenuResources();
 		mainMenuScene = new MainMenuScene();
 		loadingScene = new LoadingScene();
 		setScene(mainMenuScene);
@@ -83,7 +83,7 @@ public class SceneManager {
 	public void createGameScene()
 	{
 		setScene(loadingScene);
-		ResourceCache.getSharedInstance().unloadMainMenuResources();
+		ResourceCache.instance.unloadMainMenuResources();
 		mainMenuScene.disposeScene();
 		mainMenuScene = null;
 		engine.registerUpdateHandler(new TimerHandler(MIN_LOAD_SECONDS, new ITimerCallback()
@@ -92,16 +92,17 @@ public class SceneManager {
 			public void onTimePassed(TimerHandler pTimerHandler)
 			{
 				engine.unregisterUpdateHandler(pTimerHandler);
-				ResourceCache.getSharedInstance().loadGameSceneResources();
+				ResourceCache.instance.loadGameSceneResources();
 				gameScene = new GameScene();
 				setScene(gameScene);
 			}
 		}));
 	}
 	
-	public void createGameOverScene() {
+	public void createGameOverScene()
+	{
 		setScene(loadingScene);
-		ResourceCache.getSharedInstance().unloadGameSceneResources();
+		ResourceCache.instance.unloadGameSceneResources();
 		gameScene.dispose();
 		gameScene = null;
 		engine.registerUpdateHandler(new TimerHandler(MIN_LOAD_SECONDS, new ITimerCallback() {
@@ -109,7 +110,7 @@ public class SceneManager {
 			@Override
 			public void onTimePassed(TimerHandler pTimerHandler) {
 				engine.unregisterUpdateHandler(pTimerHandler);
-				ResourceCache.getSharedInstance().loadGameOverSceneResources();
+				ResourceCache.instance.loadGameOverSceneResources();
 				gameOverScene = new GameOverScene();
 				setScene(gameOverScene);
 			}
@@ -130,12 +131,14 @@ public class SceneManager {
 		switch(type) {
 		case GAME:
 			gameScene.disposeScene();
-			ResourceCache.getSharedInstance().unloadGameSceneResources();
+			ResourceCache.instance.unloadGameSceneResources();
 			break;
+			
 		case GAMEOVER:
 			gameOverScene.disposeScene();
-			ResourceCache.getSharedInstance().unloadGameOverSceneResources();
+			ResourceCache.instance.unloadGameOverSceneResources();
 			break;
+			
 		default:
 			/* Not an handled scene. */
 			return;
@@ -143,12 +146,11 @@ public class SceneManager {
 
 		mEngine.registerUpdateHandler(new TimerHandler(MIN_LOAD_SECONDS, new ITimerCallback()
 		{
-
 			@Override
 			public void onTimePassed(TimerHandler pTimerHandler)
 			{
 				mEngine.unregisterUpdateHandler(pTimerHandler);
-				ResourceCache.getSharedInstance().loadMainMenuResources();
+				ResourceCache.instance.loadMainMenuResources();
 				mainMenuScene = new MainMenuScene();
 				setScene(mainMenuScene);
 			}
@@ -176,33 +178,38 @@ public class SceneManager {
 		currentSceneType = scene.getSceneType();
 	}
 	
-	public void setScene(SCENE_TYPE sceneType) {
-		switch(sceneType) {
+	public void setScene(SCENE_TYPE sceneType)
+	{
+		switch(sceneType)
+		{
+		
 		case SPLASH:
 			setScene(splashScene);
 			break;
+			
 		case MAIN_MENU:
 			setScene(mainMenuScene);
 			break;
+			
 		case GAMEOVER:
 			setScene(gameOverScene);
 			break;
+			
 		case GAME:
 			setScene(gameScene);
 			break;
+			
 		case LOADING:
 			setScene(loadingScene);
 			break;
+			
 		default:
 				break;
 		}
 	}
 	
-	public static SceneManager getSharedInstance() {
-		return instance;
-	}
-	
-	public GameScene getGameScene() {
+	public GameScene getGameScene()
+	{
 		return ((GameScene) gameScene);
 	}
 

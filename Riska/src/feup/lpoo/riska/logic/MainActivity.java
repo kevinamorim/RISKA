@@ -10,6 +10,7 @@ import org.andengine.engine.options.resolutionpolicy.RatioResolutionPolicy;
 import org.andengine.entity.scene.Scene;
 import org.andengine.ui.activity.BaseGameActivity;
 
+import android.util.Log;
 import android.view.KeyEvent;
 import feup.lpoo.riska.gameInterface.CameraManager;
 import feup.lpoo.riska.io.IOManager;
@@ -56,9 +57,9 @@ public class MainActivity extends BaseGameActivity {
 	public void onCreateResources(OnCreateResourcesCallback pOnCreateResourcesCallback) throws IOException
 	{
 		ResourceCache.prepareManager(mEngine, this, mCamera, getVertexBufferObjectManager());	
-		ResourceCache.getSharedInstance().loadSplashScene();
-		ResourceCache.getSharedInstance().createMainMenuResources();
-		ResourceCache.getSharedInstance().createGameResources();
+		ResourceCache.instance.loadSplashScene();
+		ResourceCache.instance.createMainMenuResources();
+		ResourceCache.instance.createGameResources();
 
 		IOManager.loadGameOptions();
 
@@ -68,7 +69,7 @@ public class MainActivity extends BaseGameActivity {
 	@Override
 	public void onCreateScene(OnCreateSceneCallback pOnCreateSceneCallback) throws IOException
 	{
-		SceneManager.getSharedInstance().createSplashScene(pOnCreateSceneCallback);
+		SceneManager.instance.createSplashScene(pOnCreateSceneCallback);
 	}
 
 	@Override
@@ -82,7 +83,7 @@ public class MainActivity extends BaseGameActivity {
 			public void onTimePassed(TimerHandler pTimerHandler)
 			{
 				mEngine.unregisterUpdateHandler(pTimerHandler);
-				SceneManager.getSharedInstance().createMainMenuScene();
+				SceneManager.instance.createMainMenuScene();
 			}
 		}));
 
@@ -92,9 +93,28 @@ public class MainActivity extends BaseGameActivity {
 	@Override
 	public boolean onKeyDown(int keyCode, KeyEvent event)
 	{
+		
+		switch(keyCode)
+		{
+		case KeyEvent.KEYCODE_BACK:
+			SceneManager.instance.getCurrentScene().onBackKeyPressed();
+			break;
+			
+		case KeyEvent.KEYCODE_MENU:
+			SceneManager.instance.getCurrentScene().onMenuKeyPressed();
+		break;
+			
+		default:
+			break;
+		}
 		if(keyCode == KeyEvent.KEYCODE_BACK)
 		{
-			SceneManager.getSharedInstance().getCurrentScene().onBackKeyPressed();
+			
+		}
+		
+		if(keyCode == KeyEvent.KEYCODE_BACK)
+		{
+			
 		}
 		
 		return false;

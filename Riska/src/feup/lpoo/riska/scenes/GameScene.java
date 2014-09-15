@@ -14,14 +14,14 @@ import org.andengine.input.touch.detector.SurfaceScrollDetector;
 
 import feup.lpoo.riska.elements.Map;
 import feup.lpoo.riska.elements.Region;
-import feup.lpoo.riska.gameInterface.GameHUD;
 import feup.lpoo.riska.gameInterface.RiskaTextButtonSprite;
+import feup.lpoo.riska.hud.GameHUD;
 import feup.lpoo.riska.logic.BattleGenerator;
 import feup.lpoo.riska.logic.GameInfo;
 import feup.lpoo.riska.logic.GameLogic;
 import feup.lpoo.riska.logic.GameLogic.GAME_STATE;
+import feup.lpoo.riska.logic.GameOptions;
 import feup.lpoo.riska.logic.SceneManager.SCENE_TYPE;
-import feup.lpoo.riska.resources.ResourceCache;
 import feup.lpoo.riska.utilities.Utils;
 import android.graphics.Point;
 import android.view.MotionEvent;
@@ -46,6 +46,7 @@ public class GameScene extends BaseScene implements IOnSceneTouchListener, IScro
 	private SummonScene summonScene;
 	private DeployScene deployScene;
 	
+	private Sprite[] regions;
 	private Sprite mapSprite;
 	
 	private RiskaTextButtonSprite[] regionButton;
@@ -98,10 +99,9 @@ public class GameScene extends BaseScene implements IOnSceneTouchListener, IScro
 		createBackground();
 		createHUD();
 		createMapSprite();
-		createRegionButtons();
+		createRegions();
 		createChildScenes();
 	}
-
 
 	private void createBackground()
 	{
@@ -134,22 +134,23 @@ public class GameScene extends BaseScene implements IOnSceneTouchListener, IScro
 		attachChild(mapSprite);	
 	}
 
-	private void createRegionButtons()
+	private void createRegions()
 	{	
 		float pWidth = 0.1f * mapSprite.getHeight();
 		float pHeight = pWidth;
 		
+		regions = new Sprite[map.getNumberOfRegions()];
 		regionButton = new RiskaTextButtonSprite[map.getNumberOfRegions()];
 
-		for(int i = 0; i < map.getNumberOfRegions(); i++) {
-			
+		for(int i = 0; i < map.getNumberOfRegions(); i++)
+		{
 			Region region = map.getRegionByIndex(i);
 
-			float x = 0.01f * region.getX() * mapSprite.getWidth();
-			float y = 0.01f * region.getY() * mapSprite.getHeight();
+			float pX = 0.01f * region.getStratCenter().x * mapSprite.getWidth();
+			float pY = 0.01f * region.getStratCenter().y * mapSprite.getHeight();
 
-			regionButton[i] = new RiskaTextButtonSprite(resources.buttonRegion, vbom, "", resources.mGameFont, Utils.maxNumericChars) {
-
+			regionButton[i] = new RiskaTextButtonSprite(resources.buttonRegion, vbom, "", resources.mGameFont, Utils.maxNumericChars)
+			{
 				@Override
 				public boolean onAreaTouched(TouchEvent ev, float pX, float pY) 
 				{
@@ -180,14 +181,36 @@ public class GameScene extends BaseScene implements IOnSceneTouchListener, IScro
 			};
 
 			regionButton[i].setTag(region.ID);
-			regionButton[i].setPosition(x, y);
+			regionButton[i].setPosition(pX, pY);
 			regionButton[i].setSize(pWidth, pHeight);
 
 			regionButton[i].setColor(region.getPrimaryColor());
 			
 			regionButton[i].setTextColor(region.getSecundaryColor());
 			regionButton[i].setText("" + region.getGarrison());
-
+			
+			regions[i] = new Sprite(0f, 0f, resources.regions[i], vbom);
+			
+			float width = mapSprite.getWidth() * resources.regions[i].getWidth() / resources.map.getWidth();
+			float height = mapSprite.getHeight() * resources.regions[i].getHeight() / resources.map.getHeight();
+			
+			regions[i].setSize(/*0.5f * */width,/* 0.5f * */height); // TEMPORARY !!!
+			
+			pX = 0.01f * region.getX() * mapSprite.getWidth();
+			pY = 0.01f * region.getY() * mapSprite.getHeight();
+			
+			regions[i].setPosition(pX, pY);
+		}
+		
+		for(int i = 0; i < map.getNumberOfRegions(); i++)
+		{
+			regions[i].setColor(map.getRegionByIndex(i).owner().priColor);
+			
+			mapSprite.attachChild(regions[i]);
+		}
+		
+		for(int i = 0; i < map.getNumberOfRegions(); i++)
+		{
 			mapSprite.attachChild(regionButton[i]);
 		}
 	}
@@ -214,7 +237,7 @@ public class GameScene extends BaseScene implements IOnSceneTouchListener, IScro
 	// ======================================================
 	// ======================================================
 
-	private void draw()
+	public void draw()
 	{		
 		if(anyChildSceneIsVisible())
 		{
@@ -224,7 +247,9 @@ public class GameScene extends BaseScene implements IOnSceneTouchListener, IScro
 		if(logic.selectedRegion == null)
 		{
 			showAllRegions();
-		} else {
+		}
+		else
+		{
 			if(logic.getState() == GAME_STATE.ATTACK) {
 				showOnlyNeighbourRegions(logic.selectedRegion);
 			} else if(logic.getState() == GAME_STATE.MOVE) {
@@ -234,7 +259,7 @@ public class GameScene extends BaseScene implements IOnSceneTouchListener, IScro
 
 		drawRegionButtons();
 
-		hud.draw(logic);
+		//hud.draw();
 
 		drawButtons();
 
@@ -245,7 +270,8 @@ public class GameScene extends BaseScene implements IOnSceneTouchListener, IScro
 		/* Reset */
 		hideAllButtons(); 
 
-		if(!logic.getCurrentPlayer().isCpu) {
+		if(!logic.getCurrentPlayer().isCpu)
+		{
 			switch(logic.getState()) {
 			case SETUP:
 				//hud.show(BUTTON.AUTO_DEPLOY);
@@ -322,9 +348,10 @@ public class GameScene extends BaseScene implements IOnSceneTouchListener, IScro
 	// SCENE TOUCH TODO: Create a class for the ScrollDetector, that would clean a lot of code.
 	// ======================================================
 	@Override
-	public boolean onSceneTouchEvent(Scene pScene, TouchEvent pSceneTouchEvent) {
-
-		switch(pSceneTouchEvent.getMotionEvent().getActionMasked()) {
+	public boolean onSceneTouchEvent(Scene pScene, TouchEvent pSceneTouchEvent)
+	{
+		switch(pSceneTouchEvent.getMotionEvent().getActionMasked())
+		{
 		case TouchEvent.ACTION_UP:
 
 			if( ((System.currentTimeMillis() - lastTouchTime) >  MIN_TOUCH_INTERVAL) &&
@@ -351,18 +378,17 @@ public class GameScene extends BaseScene implements IOnSceneTouchListener, IScro
 		return true;
 	}
 
-	private void createScrollDetector() {
-
+	private void createScrollDetector()
+	{
 		scrollDetector = new SurfaceScrollDetector(this);
 		scrollDetector.setTriggerScrollMinimumDistance(MIN_SCROLLING_DIST);
 		scrollDetector.setEnabled(true);
-
 	}
 
 	@Override
 	public void onScrollStarted(ScrollDetector pScollDetector, int pPointerID, float pX, float pY)
 	{		
-		unregisterTouchAreaForAllRegions();
+		//unregisterTouchAreaForAllRegions();
 	}
 
 	@Override
@@ -378,7 +404,7 @@ public class GameScene extends BaseScene implements IOnSceneTouchListener, IScro
 		Point p = new Point((int)(activity.mCamera.getCenterX() - pX), (int)(activity.mCamera.getCenterY() + pY));
 		camera.jumpTo(p);
 
-		registerTouchAreaForAllRegions();
+		//registerTouchAreaForAllRegions();
 	}
 
 	private void lockUserInput() {
@@ -386,7 +412,7 @@ public class GameScene extends BaseScene implements IOnSceneTouchListener, IScro
 		doubleTapAllowed = false;
 		scrollDetector.setEnabled(false);
 
-		unregisterTouchAreaForAllRegions();
+		//unregisterTouchAreaForAllRegions();
 	}
 
 	private void unlockUserInput() {
@@ -394,7 +420,7 @@ public class GameScene extends BaseScene implements IOnSceneTouchListener, IScro
 		doubleTapAllowed = true;
 		scrollDetector.setEnabled(true);
 
-		registerTouchAreaForAllRegions();
+		//registerTouchAreaForAllRegions();
 	}
 
 	// ======================================================
@@ -661,7 +687,8 @@ public class GameScene extends BaseScene implements IOnSceneTouchListener, IScro
 	}
 
 	/* Common operations when hiding a child scene. */
-	private void hideChildScene() {
+	private void hideChildScene()
+	{
 		hideAllButtons();
 		//hud.show(SPRITE.INFO_TAB);	
 		//hud.setDetailButtonToQuestion();	
@@ -759,9 +786,9 @@ public class GameScene extends BaseScene implements IOnSceneTouchListener, IScro
 
 	private void initVars()
 	{
-		logic = new GameLogic(this);
+		logic = new GameLogic(this, hud);
 
-		map = ResourceCache.getSharedInstance().maps.get(GameInfo.currentMapIndex);
+		map = GameInfo.currentMap;
 
 		lastTouchTime = 0;
 		doubleTapAllowed = true;
@@ -797,6 +824,12 @@ public class GameScene extends BaseScene implements IOnSceneTouchListener, IScro
 		summonScene.show();
 		// TODO Auto-generated method stub
 
+	}
+
+	@Override
+	public void onMenuKeyPressed() {
+		// TODO Auto-generated method stub
+		
 	}
 
 	// ======================================================

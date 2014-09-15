@@ -10,6 +10,8 @@ public class BarVertical extends Entity {
 	private int value;
 //	private int removed;
 	
+	private boolean upwards;
+	
 	private int min;
 	private int capacity;
 	
@@ -26,6 +28,7 @@ public class BarVertical extends Entity {
 		this.capacity = pCapacity;
 		this.min = pMinCapacity;
 		this.value = 0;
+		this.upwards = true;
 //		this.removed = 0;
 		
 		this.elements = new UIElement[capacity];
@@ -89,23 +92,25 @@ public class BarVertical extends Entity {
 	{		
 		for(int i = 0; i < capacity; i++)
 		{
+			int index = upwards ? i : capacity - (i + 1);
+			
 			if(i < min)
 			{
-				elements[i].setSpriteColor(blockedColor);
+				elements[index].setSpriteColor(blockedColor);
 				continue;
 			}
 			if(i < (min + value))
 			{
-				elements[i].setSpriteColor(usedColor);
+				elements[index].setSpriteColor(usedColor);
 				continue;
 			}
 //			if(i < (min + used + removed))
 //			{
-//				elements[i].setSpriteColor(removedColor);
+//				elements[index].setSpriteColor(removedColor);
 //				continue;
 //			}
 			
-			elements[i].setSpriteColor(Color.BLACK);
+			elements[index].setSpriteColor(Color.BLACK);
 		}
 		
 		updateAlpha();
@@ -115,22 +120,24 @@ public class BarVertical extends Entity {
 	{
 		for(int i = 0; i < capacity; i++)
 		{
+			int index = upwards ? i : capacity - (i + 1);
+			
 			if(i < min)
 			{
-				elements[i].setSpriteAlpha(getAlpha());
+				elements[index].setSpriteAlpha(getAlpha());
 				continue;
 			}
 			if(i < (min + value))
 			{
-				elements[i].setSpriteAlpha(getAlpha());
+				elements[index].setSpriteAlpha(getAlpha());
 				continue;
 			}
 //			if(i < (min + used + removed))
 //			{
-//				elements[i].setSpriteAlpha(getAlpha());
+//				elements[index].setSpriteAlpha(getAlpha());
 //				continue;
 //			}
-			elements[i].setSpriteAlpha(0f);
+			elements[index].setSpriteAlpha(0f);
 		}
 	}
 
@@ -166,5 +173,12 @@ public class BarVertical extends Entity {
 		
 		updateAlpha();
 	}
+
+	public void invertOrientation(boolean pValue)
+	{
+		this.upwards = !pValue;
 		
+		updateColor();
+	}
+	
 }

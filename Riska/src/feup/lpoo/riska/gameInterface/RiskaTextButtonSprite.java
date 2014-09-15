@@ -24,16 +24,12 @@ public class RiskaTextButtonSprite extends RiskaButtonSprite {
 	// ==================================================	
 	public RiskaTextButtonSprite(ITiledTextureRegion pTexture, VertexBufferObjectManager vbom, String pString, Font pFont)
 	{
-		super(0f, 0f, pTexture, vbom);
-
-
-		createText(pString, pFont, vbom, Utils.maxNumericChars);
-		wrapText();
+		this(pTexture, vbom, pString, pFont, Utils.maxNumericChars);
 	}
 
 	public RiskaTextButtonSprite(ITiledTextureRegion pTexture, VertexBufferObjectManager vbom, String pString, Font pFont, int maxCharacters)
 	{
-		super(0f, 0f, pTexture, vbom);
+		super(pTexture, vbom);
 
 
 		createText(pString, pFont, vbom, maxCharacters);

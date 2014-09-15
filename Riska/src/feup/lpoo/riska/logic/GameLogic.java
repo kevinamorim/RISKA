@@ -3,10 +3,10 @@ package feup.lpoo.riska.logic;
 import java.util.ArrayList;
 import java.util.Random;
 
-import android.util.Log;
 import feup.lpoo.riska.elements.Map;
 import feup.lpoo.riska.elements.Player;
 import feup.lpoo.riska.elements.Region;
+import feup.lpoo.riska.hud.GameHUD;
 import feup.lpoo.riska.resources.ResourceCache;
 import feup.lpoo.riska.scenes.GameScene;
 
@@ -20,7 +20,11 @@ public class GameLogic
 
 	public enum GAME_STATE { PAUSED, SETUP, DEPLOY, ATTACK, MOVE, CPU, PLAY, ENDTURN, GAMEOVER };
 	
-	public enum GAME_ACTION { SUMMON, DEPLOY, ATTACK };
+	public enum MODE { NONE, SUMMON, DEPLOY, ATTACK };
+	
+	private GAME_STATE currentState;
+	private GAME_STATE tempState;
+	private MODE currentMode;
 
 	// ======================================================
 	// FIELDS
@@ -28,10 +32,9 @@ public class GameLogic
 	public Map map;
 
 	private Player[] players;
-	private GAME_STATE currentState;
-	private GAME_STATE tempState;
 
 	private GameScene gameScene;
+	private GameHUD gameHUD;
 
 	private Player currentPlayer;
 	private int currentPlayerIndex;
@@ -46,21 +49,32 @@ public class GameLogic
 	// ======================================================
 	// ======================================================
 
-	public GameLogic(GameScene scene)
+	public GameLogic(GameScene scene, GameHUD hud)
 	{
 		gameScene = scene;
-
-		players = GameInfo.players();
-		currentPlayer = players[0];
-
+		gameHUD = hud;
+		createPlayers();
 		createMap();
 
 		currentState = GAME_STATE.SETUP;
+		currentMode = MODE.NONE;
+	}
+
+	private void createPlayers()
+	{
+		players = GameInfo.players();
+		currentPlayer = players[0];
+		
+		for(Player p : players)
+		{
+			p.moves = GameInfo.defaultPlayerMoves;
+			p.soldiersPool = GameInfo.defaultSummonPoolSize;
+		}
 	}
 
 	private void createMap()
 	{
-		map = ResourceCache.getSharedInstance().maps.get(GameInfo.currentMapIndex);
+		map = GameInfo.currentMap;
 
 		map.handOutRegions(players);
 		map.initRegions();
@@ -79,7 +93,7 @@ public class GameLogic
 		{
 
 		case SETUP:
-			onSetup();
+			//onSetup();
 			break;
 
 		default:
@@ -187,6 +201,18 @@ public class GameLogic
 		}
 	}
 
+	public void setMode(MODE pMode)
+	{
+		this.currentMode = pMode;
+		
+		gameScene.draw();
+	}
+	
+	public MODE Mode()
+	{
+		return currentMode;
+	}
+	
 	// ======================================================
 	// GAME STATE
 	// ======================================================
@@ -224,7 +250,6 @@ public class GameLogic
 	// ======================================================
 	// PLAYERS
 	// ======================================================
-
 	public Player getCurrentPlayer()
 	{
 		return currentPlayer;
@@ -401,7 +426,6 @@ public class GameLogic
 		}
 	}
 
-
 	private void untargetRegion() 
 	{
 		if(targetedRegion != null)
@@ -411,13 +435,11 @@ public class GameLogic
 		}	
 	}
 
-
 	public void pauseGame()
 	{
 		tempState = currentState;
 		currentState = GAME_STATE.PAUSED;
 	}
-
 
 	public void resumeGame()
 	{

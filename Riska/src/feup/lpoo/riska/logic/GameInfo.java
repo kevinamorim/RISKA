@@ -1,11 +1,16 @@
 package feup.lpoo.riska.logic;
 
+import feup.lpoo.riska.elements.Map;
 import feup.lpoo.riska.elements.Player;
+import feup.lpoo.riska.resources.ResourceCache;
 
 public class GameInfo
 {
 	private static Player[] players;
 	private static int playersIndex = 0;
+	
+	public static int defaultSummonPoolSize;
+	public static int defaultPlayerMoves = 1;
 	
 	public static final int maxMoves = 5;
 	public static final int maxSummonPool = 15;
@@ -16,24 +21,20 @@ public class GameInfo
 	public static final int minGarrison = 1;
 	public static final int maxGarrison = 5;
 	
-	public static int level = 0;
+	public static int currentLevelIndex;
 
-	public static int numberOfPlayers = 0;
-	public static int cpuPlayers = 0;
-	public static int humanPlayers = 0;
+	public static int numberOfPlayers;
+	public static int cpuPlayers;
+	public static int humanPlayers;
 
-	public static int currentMapIndex = 0;
+	public static Map currentMap;
+	public static int currentMapIndex;
 
 	// ======================================================
-	// ======================================================	
-	public static void assignPlayerFaction(int index)
+	// ======================================================
+	public static void setLevel(int levelIndex)
 	{
-		
-	}
-	
-	public static void setLevel(int lvl)
-	{
-		level = lvl;
+		currentLevelIndex = levelIndex;
 	}
 	
 	public static void setNumberOfPlayers(int value)
@@ -56,5 +57,18 @@ public class GameInfo
 	public static Player[] players()
 	{
 		return players;
+	}
+
+	public static void setMap(int mapIndex)
+	{
+		currentMapIndex = mapIndex;
+		currentMap = ResourceCache.instance.maps.get(currentMapIndex);
+		
+		setPlayersVars();
+	}
+	
+	private static void setPlayersVars()
+	{
+		defaultSummonPoolSize = (currentMap.getNumberOfRegions() / numberOfPlayers * 2);
 	}
 }

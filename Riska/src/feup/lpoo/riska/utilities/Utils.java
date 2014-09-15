@@ -25,6 +25,7 @@ public class Utils
 		public final static Color CYAN = new Color(0f, 0.45f, 0.9f);
 		public final static Color BLUE_GREEN = new Color(0f, 0.8f, 0.8f);
 		public final static Color RED = new Color(0.9f, 0.1f, 0.1f);
+		public final static Color BEIGE = new Color(0.78f, 0.72f, 0.59f);
 		
 		// DARK
 		public final static Color DARK_GREY = new Color(0.3f, 0.3f, 0.3f);
@@ -37,6 +38,8 @@ public class Utils
 		public final static Color LIGHT_GREEN = new Color(0.5f, 0.9f, 0.5f);
 		public final static Color LIGHT_GREY = new Color(0.7f, 0.7f, 0.7f);
 		public final static Color LIGHT_BLUE = new Color(0.4f, 0.6f, 0.9f);
+		
+		
 	}
 
 	public static final int maxNumericChars = 50;

@@ -24,10 +24,10 @@ public class SplashScene extends BaseScene implements Displayable {
 	}
 
 	@Override
-	public void onBackKeyPressed()
-	{
-		return;
-	}
+	public void onBackKeyPressed() { }
+	
+	@Override
+	public void onMenuKeyPressed() { }
 
 	@Override
 	public void disposeScene()

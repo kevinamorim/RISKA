@@ -54,4 +54,10 @@ public class LoadMapScene extends BaseScene implements Displayable {
 //		
 //		}
 	}
+
+	@Override
+	public void onMenuKeyPressed() {
+		// TODO Auto-generated method stub
+		
+	}
 }

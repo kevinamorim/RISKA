@@ -18,17 +18,17 @@ public class RiskaButtonSprite extends ButtonSprite {
 		update();	
 	}
 
-	public RiskaButtonSprite(ITiledTextureRegion pTexture, VertexBufferObjectManager vbom)
-	{	
-		this(0f, 0f, pTexture, vbom);
-	}
-
 	public RiskaButtonSprite(float pX, float pY, ITiledTextureRegion pTexture, VertexBufferObjectManager vbom)
 	{	
 		super(pX, pY, pTexture, vbom);
 	}
 
 	
+	public RiskaButtonSprite(ITiledTextureRegion pTexture, VertexBufferObjectManager vbom)
+	{
+		this(0f, 0f, pTexture, vbom);
+	}
+
 	private void update()
 	{
 		setColor(spriteColor);

@@ -58,14 +58,18 @@ public class Map {
 			i++;
 			String name = mapData.get(i);
 			i++;
-			int x = Integer.parseInt(mapData.get(i));
+			int stratX = Integer.parseInt(mapData.get(i));
 			i++;
-			int y = Integer.parseInt(mapData.get(i));
+			int stratY = Integer.parseInt(mapData.get(i));
 			i++;
 			String continent = mapData.get(i);
 			i++;
+			float posX = Float.parseFloat(mapData.get(i));
+			i++;
+			float posY = Float.parseFloat(mapData.get(i));
+			i++;
 
-			Region newRegion = new Region(id, name, new Point(x, y), continent);
+			Region newRegion = new Region(id, name, posX, posY, stratX, stratY, continent);
 
 			regions.add(newRegion);
 		}
