@@ -7,7 +7,6 @@ import feup.lpoo.riska.elements.Map;
 import feup.lpoo.riska.elements.Player;
 import feup.lpoo.riska.elements.Region;
 import feup.lpoo.riska.hud.GameHUD;
-import feup.lpoo.riska.resources.ResourceCache;
 import feup.lpoo.riska.scenes.GameScene;
 
 public class GameLogic
@@ -21,6 +20,8 @@ public class GameLogic
 	public enum GAME_STATE { PAUSED, SETUP, DEPLOY, ATTACK, MOVE, CPU, PLAY, ENDTURN, GAMEOVER };
 	
 	public enum MODE { NONE, SUMMON, DEPLOY, ATTACK };
+
+	private final GAME_STATE startingState = GAME_STATE.PLAY;
 	
 	private GAME_STATE currentState;
 	private GAME_STATE tempState;
@@ -56,7 +57,7 @@ public class GameLogic
 		createPlayers();
 		createMap();
 
-		currentState = GAME_STATE.SETUP;
+		currentState = startingState;
 		currentMode = MODE.NONE;
 	}
 
@@ -109,8 +110,8 @@ public class GameLogic
 		}
 		else
 		{
-			unselectRegion();
-			untargetRegion();
+			Unselect();
+			Untarget();
 			gameScene.setInitialHUD();
 
 			if(currentPlayer.isCpu) /* if the new player is cpu, then auto-update */
@@ -157,8 +158,8 @@ public class GameLogic
 		Region pRegion1 = selectedRegion;
 		Region pRegion2 = targetedRegion;
 
-		untargetRegion();
-		unselectRegion();
+		Untarget();
+		Unselect();
 	}
 
 	public void updateCPU()
@@ -309,50 +310,60 @@ public class GameLogic
 		switch(currentState)
 		{
 		case PLAY:
+			if(pRegion.equals(selectedRegion))
+			{
+				Untarget();
+				Unselect();
+				return;
+			}
+			if(pRegion.equals(targetedRegion))
+			{
+				Untarget();
+				return;
+			}
 			if(pRegion.ownerIs(currentPlayer))
 			{
-				if(selectedRegion != null)
+				if(Targeted())
 				{
-					if(pRegion.equals(selectedRegion))
-					{
-						unselectRegion();
-						if(targetedRegion != null) 
-						{
-							untargetRegion();
-						}
-					}
-					else
-					{
-						targetRegion(pRegion);
-					}
+					Untarget();
 				}
-				else
+				
+				if(Selected())
 				{
-					if(canAttack(pRegion))
-					{
-						selectRegion(pRegion);
-					}	
+//					if(canDeploy(selectedRegion))
+//					{
+						Target(pRegion);
+//					}
+//					else
+//					{
+//						// TODO : Warn player!
+//					}
+					return;
 				}
+				
+				Select(pRegion);
+				return;
 			}
 			else
 			{
-				if(selectedRegion != null)
+				if(Selected())
 				{
-					if(pRegion.equals(targetedRegion))
+					if(Targeted())
 					{
-						untargetRegion();
+						Untarget();
 					}
-					else if(pRegion.isNeighbourOf(selectedRegion))
-					{
-						if(targetedRegion != null)
-						{
-							untargetRegion();
-						}
-						targetRegion(pRegion);
-					}
+					
+//					if(canAttack(selectedRegion))
+//					{
+						Target(pRegion);
+//					}
+//					else
+//					{
+//						// TODO : Warn player!
+//					}
 				}
+				return;
 			}
-			break;
 			
 		case SETUP:
 			if(pRegion.ownerIs(currentPlayer))
@@ -370,6 +381,21 @@ public class GameLogic
 		
 		update();
 
+	}
+
+	private boolean Selected()
+	{
+		return selectedRegion != null;
+	}
+	
+	private boolean Targeted()
+	{
+		return targetedRegion != null;
+	}
+
+	private boolean canDeploy(Region pRegion)
+	{
+		return pRegion.getGarrison() > GameInfo.minGarrison;
 	}
 
 	private boolean canAttack(Region pRegion)
@@ -405,33 +431,35 @@ public class GameLogic
 		return result;
 	}
 
-	public void selectRegion(Region pRegion)
+	public void Select(Region pRegion)
 	{
 		selectedRegion = pRegion;
 		selectedRegion.setFocus(true);
+		gameScene.Select(pRegion.ID);
 	}
 
-	public void targetRegion(Region pRegion)
+	public void Target(Region pRegion)
 	{
-		//targetedRegion = pRegion;
+		targetedRegion = pRegion;
 		targetedRegion.setFocus(true);
+		gameScene.Target(pRegion.ID);
 	}
 
-	private void unselectRegion()
+	private void Unselect()
 	{
 		if(selectedRegion != null)
 		{
-			//selectedRegion.setFocus(false);
+			gameScene.Unselect(selectedRegion.ID);
 			selectedRegion = null;
 		}
 	}
 
-	private void untargetRegion() 
+	private void Untarget() 
 	{
 		if(targetedRegion != null)
 		{
-			//targetedRegion.setFocus(false);	
-			targetedRegion = null;
+			gameScene.Untarget(targetedRegion.ID);
+			targetedRegion = null;	
 		}	
 	}
 

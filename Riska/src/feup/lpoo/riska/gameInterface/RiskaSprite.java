@@ -2,7 +2,8 @@ package feup.lpoo.riska.gameInterface;
 
 import org.andengine.entity.IEntity;
 import org.andengine.entity.modifier.AlphaModifier;
-import org.andengine.entity.modifier.DelayModifier;
+import org.andengine.entity.modifier.LoopEntityModifier;
+import org.andengine.entity.modifier.RotationModifier;
 import org.andengine.entity.sprite.Sprite;
 import org.andengine.entity.text.Text;
 import org.andengine.opengl.font.Font;
@@ -16,8 +17,16 @@ public class RiskaSprite extends Sprite {
 
 	private Text text;
 
-	private static final float textBoundingFactor = 0.55f;
-	private static final float animationTime = 0.2f;
+	private final float textBoundingFactor = 0.55f;
+	private final float fadeAnimationTime = 0.2f;
+	private final float rotateAnimationTime = 3f;
+	private final float rotateStartingAngle = 0f;
+	private final float rotateEndingAngle = -360f;
+	
+	private boolean rotating = false;
+	
+	private AlphaModifier alphaModifier;
+	private RotationModifier rotationModifier;
 
 	// ==================================================
 	// ==================================================
@@ -69,58 +78,71 @@ public class RiskaSprite extends Sprite {
 
 	public void fadeOut(float deltaTime)
 	{
+		unregisterEntityModifier(alphaModifier);
+		
 		if(deltaTime == 0f)
 		{
 			setAlpha(0f);
 		}
 		else
 		{
-			AlphaModifier alphaOut = new AlphaModifier(deltaTime, 1f, 0f);
-			registerEntityModifier(alphaOut);
+			alphaModifier = new AlphaModifier(deltaTime, 1f, 0f);
+			registerEntityModifier(alphaModifier);
 		}
 	}
 
 	public void fadeOut()
 	{
-		fadeOut(animationTime);
+		fadeOut(fadeAnimationTime);
 	}
 
 	public void fadeIn(float deltaTime)
 	{
+		unregisterEntityModifier(alphaModifier);
+		
 		if(deltaTime == 0f)
 		{
 			setAlpha(1f);
 		}
 		else
 		{
-			AlphaModifier alphaIn = new AlphaModifier(deltaTime, 0f, 1f);
-			registerEntityModifier(alphaIn);
+			alphaModifier = new AlphaModifier(deltaTime, 0f, 1f);
+			registerEntityModifier(alphaModifier);
 		}	
 	}
 
 	public void fadeIn()
 	{
-		fadeIn(animationTime);
+		fadeIn(fadeAnimationTime);
 	}
 
-	public void animate()
+	public void rotate()
 	{
-		final float newAnimationTime = 0.5f * animationTime;
-
-		DelayModifier waitForAnim = new DelayModifier(newAnimationTime)
-		{
-			@Override
-			protected void onModifierFinished(IEntity pItem)
-			{
-				fadeIn(newAnimationTime);
-			}
-
-		};
-		registerEntityModifier(waitForAnim);
-
-		fadeOut(newAnimationTime);
+		rotate(rotateAnimationTime, rotateStartingAngle, rotateEndingAngle);
 	}
+	
+	public void rotate(float pSpeed)
+	{
+		rotate(pSpeed, rotateStartingAngle, rotateEndingAngle);
+	}
+	
+	public void rotate(float pSpeed, float pStartingAngle, float pEndingAngle)
+	{
+		if(!rotating)
+		{
+			rotationModifier = new RotationModifier(pSpeed, pStartingAngle, pEndingAngle);
 
+			registerEntityModifier(new LoopEntityModifier(rotationModifier));
+		}
+	}
+	
+	public void stopRotation()
+	{
+		unregisterEntityModifier(rotationModifier);
+		
+		rotating = false;
+	}
+	
 	public String getText()
 	{
 		return text.getText().toString();
@@ -201,4 +223,32 @@ public class RiskaSprite extends Sprite {
 
 		super.setAlpha(pAlpha);
 	}
+
+	
+	public void fadeOutFollowByStoppedRotation(float deltaTime)
+	{
+		unregisterEntityModifier(alphaModifier);
+		
+		if(deltaTime == 0f)
+		{
+			setAlpha(0f);
+			stopRotation();
+		}
+		else
+		{
+			alphaModifier = new AlphaModifier(deltaTime, 1f, 0f)
+			{
+				@Override
+				protected void onModifierFinished(IEntity pItem)
+				{
+					stopRotation();
+					super.onModifierFinished(pItem);
+				}
+				
+			};
+			registerEntityModifier(alphaModifier);
+		}
+	}
+
+	
 }

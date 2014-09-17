@@ -110,6 +110,12 @@ public class CameraManager extends SmoothCamera {
 	
 	public void zoomOut()
 	{
+		
 		super.setZoomFactor(MIN_ZOOM_FACTOR);
-	}	
+	}
+	
+	public void zoomOutImmediate()
+	{
+		super.setZoomFactorDirect(MIN_ZOOM_FACTOR);
+	}
 }

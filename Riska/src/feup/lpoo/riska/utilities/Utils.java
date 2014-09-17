@@ -3,6 +3,7 @@ package feup.lpoo.riska.utilities;
 import java.util.Random;
 
 import org.andengine.entity.IEntity;
+import org.andengine.entity.sprite.Sprite;
 import org.andengine.entity.text.Text;
 import org.andengine.opengl.font.Font;
 import org.andengine.opengl.vbo.VertexBufferObjectManager;
@@ -465,6 +466,16 @@ public class Utils
 	public static float getRatioInverted()
 	{
 		return MainActivity.RES_RATIO_INVERTED;
+	}
+
+	public static float offsetX(IEntity e, float pX)
+	{
+		return pX - halfX(e);
+	}
+	
+	public static float offsetY(IEntity e, float pY)
+	{
+		return pY - halfY(e);
 	}
 	
 }

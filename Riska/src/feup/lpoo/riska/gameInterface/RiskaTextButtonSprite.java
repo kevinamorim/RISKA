@@ -15,7 +15,7 @@ public class RiskaTextButtonSprite extends RiskaButtonSprite {
 	
 	private Text text;
 
-	private static final float textBoundingFactor = 0.8f;
+	private static float textBoundingFactor = 0.8f;
 	private static final float animationTime = 0.2f;
 	
 	public Color textColor = Color.PINK;
@@ -142,6 +142,11 @@ public class RiskaTextButtonSprite extends RiskaButtonSprite {
 
 			wrapText();
 		}
+	}
+	
+	public void setTextBoundingFactor(float pValue)
+	{
+		textBoundingFactor = pValue;
 	}
 
 	public void setTextColor(Color pColor)

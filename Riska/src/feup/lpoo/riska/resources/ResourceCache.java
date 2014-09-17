@@ -81,6 +81,7 @@ public class ResourceCache {
 	// GAME RESOURCES
 	// ==================================================
 	public ITiledTextureRegion buttonRegion;
+	public ITiledTextureRegion empty;
 	
 	private BuildableBitmapTextureAtlas gameBackgroundTextureAtlas;
 	public ITextureRegion background;
@@ -121,6 +122,10 @@ public class ResourceCache {
 	
 	public ITextureRegion[] regions;
 	
+	
+	public ITextureRegion selection;
+	
+	
 	public ArrayList<Map> maps;	
 	
 	// ==================================================
@@ -134,6 +139,7 @@ public class ResourceCache {
 	public Font mMenuFont;
 	public Font mInfoTabFont;
 	public Font mGameFont;
+	public Font mGameNumbersFont;
 	public Font mGameOverFont;
 
 	protected BitmapTextureAtlas mFontTexture;
@@ -317,6 +323,12 @@ public class ResourceCache {
 
 		buttonRegion = BitmapTextureAtlasTextureRegionFactory.createTiledFromAsset(gameTextureAtlas, activity, 
 				"button_region.png", 1, 3);
+		
+		empty = BitmapTextureAtlasTextureRegionFactory.createTiledFromAsset(gameTextureAtlas, activity, 
+				"empty.png", 1, 3);
+		
+		selection = BitmapTextureAtlasTextureRegionFactory.createFromAsset(gameTextureAtlas, activity, 
+				"animated/selection.png");
 
 		infoTabRegion = BitmapTextureAtlasTextureRegionFactory.createTiledFromAsset(gameTextureAtlas, activity, 
 				"info_tab.png", 1, 2);
@@ -413,6 +425,11 @@ public class ResourceCache {
 				engine.getTextureManager(), 512, 512, TextureOptions.BILINEAR,
 				Typeface.create(Typeface.DEFAULT, Typeface.BOLD), 48f,
 				Color.WHITE);
+		
+		mGameNumbersFont = FontFactory.createFromAsset(engine.getFontManager(),
+				engine.getTextureManager(), 512, 512, TextureOptions.BILINEAR,
+				activity.getAssets(), "Sarpanch-Bold.ttf", 48f, true,
+				Color.WHITE);
 
 		mInfoTabFont = FontFactory.create(engine.getFontManager(), 
 				engine.getTextureManager(), 512, 512, TextureOptions.BILINEAR,
@@ -445,6 +462,7 @@ public class ResourceCache {
 		// Fonts
 		mGameFont.load();
 		mInfoTabFont.load();
+		mGameNumbersFont.load();
 		
 		createAndLoadGameMapResources();
 	}
@@ -456,7 +474,7 @@ public class ResourceCache {
 		int mapTextureWidth = 4096, mapTextureHeight = 4096;
 
 		mapTextureAtlas = new BuildableBitmapTextureAtlas(activity.getTextureManager(),
-				mapTextureWidth, mapTextureHeight, TextureOptions.DEFAULT);
+				mapTextureWidth, mapTextureHeight, TextureOptions.REPEATING_BILINEAR);
 		
 		map = BitmapTextureAtlasTextureRegionFactory.createFromAsset(mapTextureAtlas, activity,
 				"map.png");
