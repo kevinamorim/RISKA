@@ -73,7 +73,7 @@ public class Player extends Object {
 		soldiersPool = value;
 	}
 
-	public void deploy(int value)
+	public void subtractFromSoldiersPool(int value)
 	{
 		soldiersPool -= value;
 	}
@@ -81,19 +81,6 @@ public class Player extends Object {
 	public boolean hasSoldiersInPool()
 	{
 		return (soldiersPool > 0);
-	}
-	
-	public void deployAllSoldiers()
-	{
-
-		int i = 0;
-		while(soldiersPool > 0)
-		{
-			regionsPool.get(i).addSoldiers(1);
-			i = (i + 1) % regionsPool.size();
-			soldiersPool--;
-		}
-
 	}
 	
 	public Region pickRegionForAttack()

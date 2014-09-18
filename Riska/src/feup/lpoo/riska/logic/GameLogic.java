@@ -18,11 +18,11 @@ public class GameLogic
 	private final int TURN_REPLENISHMENT = 3;
 
 	public enum GAME_STATE { PAUSED, SETUP, DEPLOY, ATTACK, MOVE, CPU, PLAY, ENDTURN, GAMEOVER };
-	
+
 	public enum MODE { NONE, SUMMON, DEPLOY, ATTACK };
 
-	private final GAME_STATE startingState = GAME_STATE.PLAY;
-	
+	private final GAME_STATE startingState = GAME_STATE.SETUP;
+
 	private GAME_STATE currentState;
 	private GAME_STATE tempState;
 	private MODE currentMode;
@@ -65,7 +65,7 @@ public class GameLogic
 	{
 		players = GameInfo.players();
 		currentPlayer = players[0];
-		
+
 		for(Player p : players)
 		{
 			p.moves = GameInfo.defaultPlayerMoves;
@@ -83,18 +83,16 @@ public class GameLogic
 
 	// ======================================================
 	// ======================================================
-	public void update()
+	public void Update()
 	{
-		if(currentPlayer.isCpu)
-		{
-			updateCPU();
-		}
-
 		switch(currentState)
 		{
+		
+		case PLAY:
+			break;
 
 		case SETUP:
-			//onSetup();
+			OnSetupUpdate();
 			break;
 
 		default:
@@ -116,14 +114,14 @@ public class GameLogic
 
 			if(currentPlayer.isCpu) /* if the new player is cpu, then auto-update */
 			{
-				update();
+				Update();
 			}
 		}
-		
-		update();
+
+		Update();
 	}
 
-	private void onSetup()
+	private void OnSetupUpdate()
 	{
 		if(!currentPlayer.hasSoldiersInPool()) /* If player has deployed all of his soldiers. */
 		{
@@ -131,19 +129,38 @@ public class GameLogic
 
 			if(currentPlayer.equals(players[0])) /* If all players have deployed their soldiers. */
 			{
-				//gameScene.setInitialHUD();
 				currentState = GAME_STATE.PLAY;
 			}
 			else
 			{
 				if(currentPlayer.isCpu)
 				{
-					currentPlayer.deployAllSoldiers();	
+					deployAllSoldiers(currentPlayer);	
 				}
 			}
 		}
-
-		update();
+	}
+	
+	public void deployAllSoldiers(Player player)
+	{
+		int i = 0;
+		
+		while(player.soldiersPool > 0)
+		{
+			int toDeploy = Math.min(GameInfo.defaultDeployable, player.soldiersPool);
+			
+			Region pRegion = player.getRegions().get(i);
+			
+			pRegion.addSoldiers(toDeploy);
+			player.soldiersPool -= toDeploy;
+			
+			i++;
+			i %= player.getRegions().size();
+			
+			gameScene.UpdateRegion(pRegion.ID);
+		}
+		
+		Update();
 	}
 
 	public void attack()
@@ -205,15 +222,15 @@ public class GameLogic
 	public void setMode(MODE pMode)
 	{
 		this.currentMode = pMode;
-		
+
 		gameScene.draw();
 	}
-	
+
 	public MODE Mode()
 	{
 		return currentMode;
 	}
-	
+
 	// ======================================================
 	// GAME STATE
 	// ======================================================
@@ -327,20 +344,23 @@ public class GameLogic
 				{
 					Untarget();
 				}
-				
+
 				if(Selected())
 				{
-//					if(canDeploy(selectedRegion))
-//					{
-						Target(pRegion);
-//					}
-//					else
-//					{
-//						// TODO : Warn player!
-//					}
+					if(pRegion.isNeighbourOf(selectedRegion))
+					{
+						if(canDeploy(selectedRegion))
+						{
+							Target(pRegion);
+						}
+						else
+						{
+							// TODO : Warn player!
+						}
+					}	
 					return;
 				}
-				
+
 				Select(pRegion);
 				return;
 			}
@@ -352,42 +372,57 @@ public class GameLogic
 					{
 						Untarget();
 					}
-					
-//					if(canAttack(selectedRegion))
-//					{
-						Target(pRegion);
-//					}
-//					else
-//					{
-//						// TODO : Warn player!
-//					}
+
+					if(pRegion.isNeighbourOf(selectedRegion))
+					{
+						if(canAttack(selectedRegion))
+						{
+							Target(pRegion);
+						}
+						else
+						{
+							// TODO : Warn player!
+						}
+					}
 				}
 				return;
 			}
-			
+
 		case SETUP:
 			if(pRegion.ownerIs(currentPlayer))
 			{
-				int soldiersToDeploy = Math.min(GameInfo.defaultDeployable, currentPlayer.soldiersPool);
-				
-				currentPlayer.deploy(soldiersToDeploy);
-				pRegion.deploy(soldiersToDeploy);
+				SummonOn(pRegion);
 			}
+			Update();
 			break;
-			
+
 		default:
 			break;
 		}
 		
-		update();
+		gameScene.updateHUD();
+	}
 
+	private void SummonOn(Region targetRegion)
+	{
+		// Can't summon more than the soldiers on the player's pool
+		int soldiersToDeploy = Math.min(GameInfo.defaultDeployable, currentPlayer.soldiersPool);
+
+		// Subtract the summoned players from the player's pool
+		currentPlayer.subtractFromSoldiersPool(soldiersToDeploy);
+		
+		// Add summoned soldiers to the region's garrison
+		targetRegion.addSoldiers(soldiersToDeploy);
+		
+		// Update the region's visual data
+		gameScene.UpdateRegion(targetRegion.ID);
 	}
 
 	private boolean Selected()
 	{
 		return selectedRegion != null;
 	}
-	
+
 	private boolean Targeted()
 	{
 		return targetedRegion != null;
@@ -435,6 +470,7 @@ public class GameLogic
 	{
 		selectedRegion = pRegion;
 		selectedRegion.setFocus(true);
+		gameScene.UpdateRegion(pRegion.ID);
 		gameScene.Select(pRegion.ID);
 	}
 
@@ -442,6 +478,7 @@ public class GameLogic
 	{
 		targetedRegion = pRegion;
 		targetedRegion.setFocus(true);
+		gameScene.UpdateRegion(pRegion.ID);
 		gameScene.Target(pRegion.ID);
 	}
 
@@ -449,6 +486,8 @@ public class GameLogic
 	{
 		if(selectedRegion != null)
 		{
+			selectedRegion.setFocus(false);
+			gameScene.UpdateRegion(selectedRegion.ID);
 			gameScene.Unselect(selectedRegion.ID);
 			selectedRegion = null;
 		}
@@ -458,6 +497,8 @@ public class GameLogic
 	{
 		if(targetedRegion != null)
 		{
+			targetedRegion.setFocus(false);
+			gameScene.UpdateRegion(targetedRegion.ID);
 			gameScene.Untarget(targetedRegion.ID);
 			targetedRegion = null;	
 		}	
@@ -477,7 +518,7 @@ public class GameLogic
 	public void onDeploy(Region from, Region to, int soldiers)
 	{
 	}
-	
+
 	public void onAttack(Region attacker, int soldiersSent)
 	{
 		attacker.addSoldiers(-soldiersSent);
@@ -488,7 +529,7 @@ public class GameLogic
 		defender.setSoldiers(soldiersLeft);
 		defender.setOwner(attacker.owner());
 	}
-	
+
 	public void onDefeat(Region attacker, Region defender, int soldiersLeft)
 	{
 		defender.setSoldiers(soldiersLeft);

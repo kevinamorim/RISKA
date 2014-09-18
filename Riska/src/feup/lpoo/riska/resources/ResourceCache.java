@@ -8,6 +8,7 @@ import org.andengine.audio.music.MusicFactory;
 import org.andengine.engine.Engine;
 import org.andengine.opengl.font.Font;
 import org.andengine.opengl.font.FontFactory;
+import org.andengine.opengl.font.FontManager;
 import org.andengine.opengl.texture.TextureOptions;
 import org.andengine.opengl.texture.atlas.bitmap.BitmapTextureAtlas;
 import org.andengine.opengl.texture.atlas.bitmap.BitmapTextureAtlasTextureRegionFactory;
@@ -135,6 +136,8 @@ public class ResourceCache {
 	// ======================================================
 	// FONTS
 	// ======================================================
+	private BitmapTextureAtlas fontTextureAtlas;
+	
 	public Font mSplashFont;
 	public Font mMenuFont;
 	public Font mInfoTabFont;
@@ -416,8 +419,8 @@ public class ResourceCache {
 		}
 	}
 
-	private void createGameFonts() {
-
+	private void createGameFonts()
+	{
 		FontFactory.setAssetBasePath("fonts/");
 
 		mGameFont = FontFactory.create(
@@ -426,10 +429,13 @@ public class ResourceCache {
 				Typeface.create(Typeface.DEFAULT, Typeface.BOLD), 48f,
 				Color.WHITE);
 		
-		mGameNumbersFont = FontFactory.createFromAsset(engine.getFontManager(),
-				engine.getTextureManager(), 512, 512, TextureOptions.BILINEAR,
-				activity.getAssets(), "Sarpanch-Bold.ttf", 48f, true,
-				Color.WHITE);
+		fontTextureAtlas = new BitmapTextureAtlas(engine.getTextureManager(), 256, 256, TextureOptions.BILINEAR);
+		
+		mGameNumbersFont = FontFactory.create(
+				engine.getFontManager(),
+				fontTextureAtlas,
+				Typeface.createFromAsset(activity.getAssets(), FontFactory.getAssetBasePath() + "Prototype.ttf"),
+				48f, true, Color.WHITE);
 
 		mInfoTabFont = FontFactory.create(engine.getFontManager(), 
 				engine.getTextureManager(), 512, 512, TextureOptions.BILINEAR,

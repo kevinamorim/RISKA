@@ -27,11 +27,13 @@ public class GameHUD extends HUD implements Displayable {
 	// CONSTANTS
 	// ======================================================
 
-	public enum BUTTON { SUMMON, DEPLOY, ATTACK, PLAYER, NONE };
+	public enum BUTTON { SUMMON, DEPLOY, ATTACK, PLAYER, AUTO_DEPLOY, NONE };
 
 	public enum SPRITE { BUTTON_TAB };
 
 	private BUTTON currentButton;
+
+	private static float animationTime = 0.5f;
 
 	// ======================================================
 	// SINGLETONS
@@ -61,6 +63,9 @@ public class GameHUD extends HUD implements Displayable {
 
 	private RiskaTextButtonSprite currentPlayerButton;
 
+	private RiskaTextButtonSprite playerPoolSprite;
+
+
 	private GameScene gameScene;
 
 	// ======================================================
@@ -85,19 +90,19 @@ public class GameHUD extends HUD implements Displayable {
 	{
 		switch(logic.Mode())
 		{
-		
+
 		case NONE:
 			break;
-			
+
 		case SUMMON:
 			break;
-			
+
 		case DEPLOY:
 			break;
-			
+
 		case ATTACK:
 			break;
-			
+
 		default:
 			break;
 		}
@@ -157,15 +162,15 @@ public class GameHUD extends HUD implements Displayable {
 		barRight = new UIElement(width, height, resources.midRightNoBorder, vbom);
 		barRight.setPosition(camera.getWidth() - Utils.halfX(barRight), camera.getCenterY());
 
-		attachChild(barTop);
-		attachChild(barBottom);
-		attachChild(barLeft);
-		attachChild(barRight);
-
-		attachChild(cornerBottomLeft);
-		attachChild(cornerBottomRight);
-		attachChild(cornerTopLeft);
-		attachChild(cornerTopRight);
+		//		attachChild(barTop);
+		//		attachChild(barBottom);
+		//		attachChild(barLeft);
+		//		attachChild(barRight);
+		//
+		//		attachChild(cornerBottomLeft);
+		//		attachChild(cornerBottomRight);
+		//		attachChild(cornerTopLeft);
+		//		attachChild(cornerTopRight);
 
 		barTop.setSpriteColor(Utils.OtherColors.GREY);
 		barBottom.setSpriteColor(Utils.OtherColors.GREY);
@@ -211,11 +216,11 @@ public class GameHUD extends HUD implements Displayable {
 			{
 				switch(ev.getMotionEvent().getActionMasked()) 
 				{
-				
+
 				case MotionEvent.ACTION_DOWN:
 					//onRegionPressed(this, getTag());
 					break;
-					
+
 				case MotionEvent.ACTION_UP:
 					if(Utils.contains(this, pX, pY))
 					{
@@ -245,11 +250,11 @@ public class GameHUD extends HUD implements Displayable {
 			{
 				switch(ev.getMotionEvent().getActionMasked()) 
 				{
-				
+
 				case MotionEvent.ACTION_DOWN:
 					//onRegionPressed(this, getTag());
 					break;
-					
+
 				case MotionEvent.ACTION_UP:
 					if(Utils.contains(this, pX, pY))
 					{
@@ -279,11 +284,11 @@ public class GameHUD extends HUD implements Displayable {
 			{
 				switch(ev.getMotionEvent().getActionMasked()) 
 				{
-				
+
 				case MotionEvent.ACTION_DOWN:
 					//onRegionPressed(this, getTag());
 					break;
-					
+
 				case MotionEvent.ACTION_UP:
 					if(Utils.contains(this, pX, pY))
 					{
@@ -333,9 +338,9 @@ public class GameHUD extends HUD implements Displayable {
 		//		deployButton.setSpriteAlpha(pAlpha);
 		//		summonButton.setSpriteAlpha(pAlpha);
 
-		attachChild(attackButton);
-		attachChild(deployButton);
-		attachChild(summonButton);
+		//		attachChild(attackButton);
+		//		attachChild(deployButton);
+		//		attachChild(summonButton);
 	}
 
 	private void createPools()
@@ -399,9 +404,9 @@ public class GameHUD extends HUD implements Displayable {
 		bar3.setAlpha(0f);
 		pool3.setSpriteAlpha(0f);
 
-		attachChild(pool1);
-		attachChild(pool2);
-		attachChild(pool3);
+		//		attachChild(pool1);
+		//		attachChild(pool2);
+		//		attachChild(pool3);
 	}
 
 	private void createActionButtons()
@@ -427,8 +432,49 @@ public class GameHUD extends HUD implements Displayable {
 
 		endTurnButton.setPosition(Utils.posX(0.75f, barBottom), barBottom.getY() - 1);
 
-		attachChild(actionButton);
-		attachChild(endTurnButton);
+		//		attachChild(actionButton);
+		//		attachChild(endTurnButton);
+
+		playerPoolSprite = new RiskaTextButtonSprite(resources.buttonRegion, vbom, "", resources.mGameFont)
+		{
+			@Override
+			public boolean onAreaTouched(TouchEvent ev, float pX, float pY) 
+			{
+				switch(ev.getMotionEvent().getActionMasked()) 
+				{
+
+				case MotionEvent.ACTION_DOWN:
+					pressed(BUTTON.AUTO_DEPLOY);
+					break;
+
+				case MotionEvent.ACTION_UP:
+					if(Utils.contains(this, pX, pY))
+					{
+						onButtonSelected(BUTTON.AUTO_DEPLOY);
+					}
+					else
+					{
+						released(BUTTON.AUTO_DEPLOY);
+					}
+					break;
+
+				default:
+					break;
+				}
+
+				return true;
+			}
+		};
+
+		playerPoolSprite.setSize(0.1f * camera.getHeight(), 0.1f * camera.getHeight());
+		playerPoolSprite.setPosition(Utils.halfX(playerPoolSprite), camera.getHeight() - Utils.halfY(playerPoolSprite));
+		playerPoolSprite.setColor(Utils.OtherColors.GREY);
+		playerPoolSprite.setTextBoundingFactor(0.7f);
+
+		updateInfo();
+		registerTouchArea(playerPoolSprite);
+
+		attachChild(playerPoolSprite);
 	}
 
 	private void createInfoElements()
@@ -482,10 +528,31 @@ public class GameHUD extends HUD implements Displayable {
 
 		soldiers3.setPosition(Utils.posX(0.5f, cornerBottomLeft), Utils.posY(0.5f, cornerBottomLeft));
 
-		attachChild(movesLeft);
-		attachChild(soldiers1);
-		attachChild(soldiers2);
-		attachChild(soldiers3);
+		//		attachChild(movesLeft);
+		//		attachChild(soldiers1);
+		//		attachChild(soldiers2);
+		//		attachChild(soldiers3);
+	}
+
+	public void updateInfo()
+	{
+		switch(logic.getState())
+		{
+		case SETUP:
+			if( logic.getCurrentPlayer().soldiersPool > 0)
+			{
+				playerPoolSprite.setText("" + logic.getCurrentPlayer().soldiersPool);
+			}
+			break;
+
+		default:
+			if(playerPoolSprite.isVisible())
+			{
+				playerPoolSprite.fadeOut(animationTime);
+			}	
+			break;
+
+		}
 	}
 
 	// ======================================================
@@ -521,6 +588,10 @@ public class GameHUD extends HUD implements Displayable {
 			//deployButton.setCurrentTileIndex(1);
 			break;
 
+		case AUTO_DEPLOY:
+			playerPoolSprite.setCurrentTileIndex(1);
+			break;
+
 		default:
 			// Do nothing
 			break;
@@ -529,61 +600,32 @@ public class GameHUD extends HUD implements Displayable {
 
 	private void onButtonSelected(BUTTON mode)
 	{
-		released(mode);
-
-		switch(currentButton)
+		switch(mode)
 		{
-		
-		case ATTACK:
-			attackButton.setSpriteColor(Utils.OtherColors.BLACK);
-			attackSprite.setColor(Utils.OtherColors.LIGHT_GREY);
-			break;
 
-		case DEPLOY:
-			deployButton.setSpriteColor(Utils.OtherColors.BLACK);
-			deployButton.setColor(Utils.OtherColors.LIGHT_GREY);
-			break;
+//		case ATTACK:
+//			attackButton.setSpriteColor(Utils.OtherColors.BLACK);
+//			attackSprite.setColor(Utils.OtherColors.LIGHT_GREY);
+//			break;
+//
+//		case DEPLOY:
+//			deployButton.setSpriteColor(Utils.OtherColors.BLACK);
+//			deployButton.setColor(Utils.OtherColors.LIGHT_GREY);
+//			break;
+//
+//		case SUMMON:
+//			summonButton.setSpriteColor(Utils.OtherColors.BLACK);
+//			summonButton.setColor(Utils.OtherColors.LIGHT_GREY);
+//			break;
 
-		case SUMMON:
-			summonButton.setSpriteColor(Utils.OtherColors.BLACK);
-			summonButton.setColor(Utils.OtherColors.LIGHT_GREY);
+		case AUTO_DEPLOY:
+			gameScene.onAutoDeployButtonTouched();
+			updateInfo();
 			break;
 
 		default:
 			break;
 		}
-
-		if(currentButton != mode)
-		{
-			currentButton = mode;
-
-			switch(mode)
-			{
-			
-			case ATTACK:
-				attackButton.setSpriteColor(Utils.OtherColors.DARK_GREY);
-				attackSprite.setColor(Utils.OtherColors.WHITE);
-				break;
-
-			case DEPLOY:
-				deployButton.setSpriteColor(Utils.OtherColors.DARK_GREY);
-				deploySprite.setColor(Utils.OtherColors.WHITE);
-				break;
-
-			case SUMMON:
-				summonButton.setSpriteColor(Utils.OtherColors.DARK_GREY);
-				summonSprite.setColor(Utils.OtherColors.WHITE);
-				break;
-				
-			default:
-				break;
-			}
-		}
-		else
-		{
-			currentButton = BUTTON.NONE;
-		}
-		
 	}
 
 	private void released(BUTTON mode)
@@ -603,27 +645,10 @@ public class GameHUD extends HUD implements Displayable {
 			//deployButton.setCurrentTileIndex(0);
 			break;
 
-			/*
-		case MOVE:
-			moveButton.setCurrentTileIndex(0);
-			break;
-
-		case DETAILS:
-			// Do something
-			break;
-
 		case AUTO_DEPLOY:
-			autoDeployButton.setCurrentTileIndex(0);
+			playerPoolSprite.setCurrentTileIndex(0);
 			break;
 
-		case ARROW_LEFT:
-			arrowLeft.setCurrentTileIndex(0);
-			break;
-
-		case ARROW_RIGHT:
-			arrowRight.setCurrentTileIndex(0);
-			break;
-			 */
 		default:
 			// Do nothing
 			break;
@@ -695,7 +720,6 @@ public class GameHUD extends HUD implements Displayable {
 
 		attachChild(buttonCanvas);
 	}
-
 
 	// THE FOLLOWING ARE ONLY TO THE GAME'S MAP !!
 

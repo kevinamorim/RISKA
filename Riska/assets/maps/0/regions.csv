@@ -18,8 +18,8 @@ ID;Country;X;Y;Continent;posX;posY
 16;Northern Europe;48;66;Europe;48.11;66.79
 17;Southern Europe;49;58;Europe;49.05;58.15
 18;Soviet Union;57;72;Europe;57.37;70.7
-19;Egypt;51;46;Africa;43.89;41.22
-20;North Africa;44;39;Africa;50.66;45.64
+19;Egypt;51;46;Africa;50.66;45.64
+20;North Africa;44;39;Africa;43.89;41.22
 21;Congo;49;27;Africa;49.53;27.17
 22;East Africa;55;34;Africa;55.18;30.89
 23;South Africa;50;14;Africa;52.47;14.55

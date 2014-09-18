@@ -12,7 +12,6 @@ import org.andengine.util.adt.color.Color;
 import feup.lpoo.riska.utilities.Utils;
 
 public class RiskaTextButtonSprite extends RiskaButtonSprite {
-	
 	private Text text;
 
 	private static float textBoundingFactor = 0.8f;
@@ -201,4 +200,11 @@ public class RiskaTextButtonSprite extends RiskaButtonSprite {
 
 		super.setAlpha(pAlpha);
 	}
+	
+	@Override
+	public boolean isVisible()
+	{
+		return (getAlpha() > 0) && super.isVisible();
+	}
+
 }

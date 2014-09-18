@@ -140,7 +140,7 @@ public class Region extends Element {
 		return secColor;
 	}
 
-	public void deploy(int number)
+	public void add(int number)
 	{
 		addSoldiers(number);
 	}
