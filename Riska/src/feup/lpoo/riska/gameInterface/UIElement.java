@@ -2,28 +2,25 @@ package feup.lpoo.riska.gameInterface;
 
 import org.andengine.entity.Entity;
 import org.andengine.entity.IEntity;
-import org.andengine.entity.sprite.Sprite;
 import org.andengine.entity.sprite.TiledSprite;
 import org.andengine.entity.text.Text;
 import org.andengine.opengl.font.IFont;
-import org.andengine.opengl.texture.region.ITextureRegion;
 import org.andengine.opengl.texture.region.ITiledTextureRegion;
 import org.andengine.opengl.vbo.VertexBufferObjectManager;
 import org.andengine.util.adt.color.Color;
 
+import feup.lpoo.riska.interfaces.Animated;
 import feup.lpoo.riska.utilities.Utils;
 
-public class UIElement extends Entity {
+public class UIElement extends Entity implements Animated {
 
 	VertexBufferObjectManager vbom;
 
 	private Text text;
-	private TiledSprite[] sprites;
+	private RiskaTiledSprite[] sprites;
 
 	private float textBoundingFactorX = 1f;
 	private float textBoundingFactorY = 1f;
-	
-	private Sprite backgroundSprite;
 	
 	private Color spriteColor = Color.WHITE;
 	private Color textColor = Color.BLACK;
@@ -42,33 +39,15 @@ public class UIElement extends Entity {
 		this.vbom = pVbom;
 	}
 
-	public void setBackgroundSprite(ITextureRegion pTexture)
-	{
-
-		if(backgroundSprite == null)
-		{
-			backgroundSprite = new Sprite(
-					Utils.getCenterX(this), Utils.getCenterY(this),
-					getWidth(), getHeight(),
-					pTexture, vbom);
-
-			attachChild(backgroundSprite);
-		}
-		else
-		{
-			backgroundSprite = new Sprite(0f, 0f, getWidth(), getHeight(), pTexture, vbom);
-		}
-	}
-
 	public void setSprite(ITiledTextureRegion pTiledTexture)
 	{
 		if(sprites == null)
 		{
-			sprites = new TiledSprite[9];
+			sprites = new RiskaTiledSprite[9];
 		}
 		else
 		{
-			for(TiledSprite spr : sprites)
+			for(RiskaTiledSprite spr : sprites)
 			{
 				spr.detachSelf();
 			}
@@ -80,7 +59,7 @@ public class UIElement extends Entity {
 			{
 				int index = j + i*3;
 				
-				sprites[index] = new TiledSprite(0f, 0f, pTiledTexture.getWidth(), pTiledTexture.getWidth(), pTiledTexture, vbom);
+				sprites[index] = new RiskaTiledSprite(pTiledTexture.getWidth(), pTiledTexture.getWidth(), pTiledTexture, vbom);
 
 				Utils.wrap(sprites[index], this, 1/3f);
 				
@@ -133,12 +112,6 @@ public class UIElement extends Entity {
 	public void setSize(float pWidth, float pHeight)
 	{
 		super.setSize(pWidth, pHeight);
-
-		if(backgroundSprite != null)
-		{
-			backgroundSprite.setSize(pWidth, pHeight);
-			backgroundSprite.setPosition(Utils.halfX(this), Utils.halfY(this));
-		}
 
 		if(text != null)
 		{
@@ -198,14 +171,6 @@ public class UIElement extends Entity {
 
 		super.setScale(pScale);
 	}
-
-	public void setBackgroundAlpha(float pAlpha)
-	{
-		if(backgroundSprite != null)
-		{
-			backgroundSprite.setAlpha(pAlpha);
-		}
-	}
 	
 	public void setSpriteAlpha(float pAlpha)
 	{
@@ -245,12 +210,7 @@ public class UIElement extends Entity {
 	@Override
 	public void setColor(Color pColor)
 	{
-		if(backgroundSprite != null)
-		{
-			backgroundSprite.setColor(Utils.getColorWithAlpha(pColor, backgroundSprite.getAlpha()));
-		}
-
-		//super.setColor(pColor);
+		setSpriteColor(pColor);
 	}
 
 	private void updateSprite()
@@ -269,6 +229,90 @@ public class UIElement extends Entity {
 		if(text != null)
 		{
 			text.setColor(textColor);
+		}
+	}
+
+	// ==================================================
+	// 'Animated' interface
+	// ==================================================
+	@Override
+	public void fadeOut(float deltaTime)
+	{
+		for(RiskaTiledSprite spr : sprites)
+		{
+			spr.fadeOut(deltaTime);
+		}
+	}
+
+	@Override
+	public void fadeOut()
+	{
+		for(RiskaTiledSprite spr : sprites)
+		{
+			spr.fadeOut();
+		}
+	}
+
+	@Override
+	public void fadeIn(float deltaTime)
+	{
+		for(RiskaTiledSprite spr : sprites)
+		{
+			spr.fadeIn(deltaTime);
+		}
+	}
+
+	@Override
+	public void fadeIn()
+	{
+		for(RiskaTiledSprite spr : sprites)
+		{
+			spr.fadeIn();
+		}
+	}
+
+	@Override
+	public void rotate()
+	{
+		for(RiskaTiledSprite spr : sprites)
+		{
+			spr.rotate();
+		}
+	}
+
+	@Override
+	public void rotate(float pSpeed)
+	{
+		for(RiskaTiledSprite spr : sprites)
+		{
+			spr.rotate(pSpeed);
+		}
+	}
+
+	@Override
+	public void rotate(float pSpeed, float pStartingAngle, float pEndingAngle)
+	{
+		for(RiskaTiledSprite spr : sprites)
+		{
+			spr.rotate(pSpeed, pStartingAngle, pEndingAngle);
+		}
+	}
+
+	@Override
+	public void stopRotation()
+	{
+		for(RiskaTiledSprite spr : sprites)
+		{
+			spr.stopRotation();
+		}
+	}
+
+	@Override
+	public void fadeOutAndStopRotation(float deltaTime)
+	{
+		for(RiskaTiledSprite spr : sprites)
+		{
+			spr.fadeOutAndStopRotation(deltaTime);
 		}
 	}
 

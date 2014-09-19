@@ -203,7 +203,7 @@ public class GameScene extends BaseScene implements IOnSceneTouchListener, IScro
 			float width = mapSprite.getWidth() * resources.regions[i].getWidth() / resources.map.getWidth();
 			float height = mapSprite.getHeight() * resources.regions[i].getHeight() / resources.map.getHeight();
 
-			regions[i].setSize(/*0.5f * */width,/* 0.5f * */height); // TEMPORARY !!!
+			regions[i].setSize(width, height);
 
 			pX = 0.01f * region.getX() * mapSprite.getWidth();
 			pY = 0.01f * region.getY() * mapSprite.getHeight();
@@ -488,14 +488,14 @@ public class GameScene extends BaseScene implements IOnSceneTouchListener, IScro
 
 		//focusSprite[rID].fadeOut(fadeDuration);
 
-		focusSprite[rID].fadeOutFollowByStoppedRotation(fadeDuration);
+		focusSprite[rID].fadeOutAndStopRotation(fadeDuration);
 	}
 
 	public void Unselect(int rID)
 	{
 		float fadeDuration = 0.5f;
 
-		focusSprite[rID].fadeOutFollowByStoppedRotation(fadeDuration);
+		focusSprite[rID].fadeOutAndStopRotation(fadeDuration);
 	}
 
 	public void Select(int rID)
@@ -793,7 +793,7 @@ public class GameScene extends BaseScene implements IOnSceneTouchListener, IScro
 		{
 			hidePreBattleScene();
 			logic.attackingSoldiers = summonScene.getAttackingSoldiers();
-			logic.Update();
+			logic.UpdatePlayer();
 		}
 		else
 		{

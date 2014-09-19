@@ -42,6 +42,9 @@ public class GameLogic
 
 	public Region selectedRegion;
 	public Region targetedRegion;
+	
+	private boolean targeted = false;
+	private boolean selected = false;
 
 	public int attackingSoldiers;
 	public int defendingSoldiers;
@@ -83,7 +86,7 @@ public class GameLogic
 
 	// ======================================================
 	// ======================================================
-	public void Update()
+	public void UpdatePlayer()
 	{
 		switch(currentState)
 		{
@@ -92,7 +95,7 @@ public class GameLogic
 			break;
 
 		case SETUP:
-			OnSetupUpdate();
+			currentState = GAME_STATE.PLAY;
 			break;
 
 		default:
@@ -114,11 +117,11 @@ public class GameLogic
 
 			if(currentPlayer.isCpu) /* if the new player is cpu, then auto-update */
 			{
-				Update();
+				UpdatePlayer();
 			}
 		}
 
-		Update();
+		UpdatePlayer();
 	}
 
 	private void OnSetupUpdate()
@@ -160,7 +163,7 @@ public class GameLogic
 			gameScene.UpdateRegion(pRegion.ID);
 		}
 		
-		Update();
+		UpdatePlayer();
 	}
 
 	public void attack()
@@ -349,14 +352,7 @@ public class GameLogic
 				{
 					if(pRegion.isNeighbourOf(selectedRegion))
 					{
-						if(canDeploy(selectedRegion))
-						{
-							Target(pRegion);
-						}
-						else
-						{
-							// TODO : Warn player!
-						}
+						Target(pRegion);
 					}	
 					return;
 				}
@@ -375,14 +371,7 @@ public class GameLogic
 
 					if(pRegion.isNeighbourOf(selectedRegion))
 					{
-						if(canAttack(selectedRegion))
-						{
-							Target(pRegion);
-						}
-						else
-						{
-							// TODO : Warn player!
-						}
+						Target(pRegion);
 					}
 				}
 				return;
@@ -393,7 +382,6 @@ public class GameLogic
 			{
 				SummonOn(pRegion);
 			}
-			Update();
 			break;
 
 		default:
@@ -418,14 +406,14 @@ public class GameLogic
 		gameScene.UpdateRegion(targetRegion.ID);
 	}
 
-	private boolean Selected()
+	public boolean Selected()
 	{
-		return selectedRegion != null;
+		return selected;
 	}
 
-	private boolean Targeted()
+	public boolean Targeted()
 	{
-		return targetedRegion != null;
+		return targeted;
 	}
 
 	private boolean canDeploy(Region pRegion)
@@ -470,6 +458,8 @@ public class GameLogic
 	{
 		selectedRegion = pRegion;
 		selectedRegion.setFocus(true);
+		selected = true;
+		
 		gameScene.UpdateRegion(pRegion.ID);
 		gameScene.Select(pRegion.ID);
 	}
@@ -478,6 +468,8 @@ public class GameLogic
 	{
 		targetedRegion = pRegion;
 		targetedRegion.setFocus(true);
+		targeted = true;
+		
 		gameScene.UpdateRegion(pRegion.ID);
 		gameScene.Target(pRegion.ID);
 	}
@@ -487,9 +479,12 @@ public class GameLogic
 		if(selectedRegion != null)
 		{
 			selectedRegion.setFocus(false);
+			
 			gameScene.UpdateRegion(selectedRegion.ID);
 			gameScene.Unselect(selectedRegion.ID);
+			
 			selectedRegion = null;
+			selected = false;
 		}
 	}
 
@@ -498,9 +493,12 @@ public class GameLogic
 		if(targetedRegion != null)
 		{
 			targetedRegion.setFocus(false);
+			
 			gameScene.UpdateRegion(targetedRegion.ID);
 			gameScene.Untarget(targetedRegion.ID);
-			targetedRegion = null;	
+			
+			targetedRegion = null;
+			targeted = false;
 		}	
 	}
 

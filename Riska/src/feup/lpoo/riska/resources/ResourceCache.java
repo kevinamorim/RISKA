@@ -8,7 +8,6 @@ import org.andengine.audio.music.MusicFactory;
 import org.andengine.engine.Engine;
 import org.andengine.opengl.font.Font;
 import org.andengine.opengl.font.FontFactory;
-import org.andengine.opengl.font.FontManager;
 import org.andengine.opengl.texture.TextureOptions;
 import org.andengine.opengl.texture.atlas.bitmap.BitmapTextureAtlas;
 import org.andengine.opengl.texture.atlas.bitmap.BitmapTextureAtlasTextureRegionFactory;
@@ -82,8 +81,9 @@ public class ResourceCache {
 	// GAME RESOURCES
 	// ==================================================
 	public ITiledTextureRegion buttonRegion;
+	public ITiledTextureRegion buttonRegionBig;
 	public ITiledTextureRegion empty;
-	
+
 	private BuildableBitmapTextureAtlas gameBackgroundTextureAtlas;
 	public ITextureRegion background;
 	
@@ -118,6 +118,8 @@ public class ResourceCache {
 	public ITiledTextureRegion topCenterNoBorder;
 	public ITiledTextureRegion midLeftNoBorder;
 	public ITiledTextureRegion midRightNoBorder;
+	
+	public ITiledTextureRegion midCenterGlow;
 	
 	public ITextureRegion fillSquareRegion;
 	
@@ -327,6 +329,9 @@ public class ResourceCache {
 		buttonRegion = BitmapTextureAtlasTextureRegionFactory.createTiledFromAsset(gameTextureAtlas, activity, 
 				"button_region.png", 1, 3);
 		
+		buttonRegionBig = BitmapTextureAtlasTextureRegionFactory.createTiledFromAsset(gameTextureAtlas, activity, 
+				"button_region_big.png", 1, 3);
+		
 		empty = BitmapTextureAtlasTextureRegionFactory.createTiledFromAsset(gameTextureAtlas, activity, 
 				"empty.png", 1, 3);
 		
@@ -406,6 +411,9 @@ public class ResourceCache {
 		
 		fillSquareRegion = BitmapTextureAtlasTextureRegionFactory.createFromAsset(gameNEWTextureAtlas, activity,
 				"fill_square.png");
+		
+		midCenterGlow = BitmapTextureAtlasTextureRegionFactory.createTiledFromAsset(gameNEWTextureAtlas, activity, 
+				"mid_center_glow.png", 3, 3);
 		
 		try
 		{

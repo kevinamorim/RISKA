@@ -4,19 +4,19 @@ import org.andengine.engine.camera.hud.HUD;
 import org.andengine.entity.IEntity;
 import org.andengine.entity.sprite.Sprite;
 import org.andengine.entity.sprite.TiledSprite;
+import org.andengine.entity.text.Text;
 import org.andengine.input.touch.TouchEvent;
 import org.andengine.opengl.vbo.VertexBufferObjectManager;
 import org.andengine.util.adt.color.Color;
 
 import android.view.MotionEvent;
-import feup.lpoo.riska.gameInterface.BarVertical;
 import feup.lpoo.riska.gameInterface.CameraManager;
+import feup.lpoo.riska.gameInterface.RiskaButtonSprite;
 import feup.lpoo.riska.gameInterface.RiskaTextButtonSprite;
 import feup.lpoo.riska.gameInterface.UIElement;
 import feup.lpoo.riska.interfaces.Displayable;
 import feup.lpoo.riska.logic.GameInfo;
 import feup.lpoo.riska.logic.GameLogic;
-import feup.lpoo.riska.logic.GameLogic.MODE;
 import feup.lpoo.riska.resources.ResourceCache;
 import feup.lpoo.riska.scenes.GameScene;
 import feup.lpoo.riska.utilities.Utils;
@@ -28,10 +28,6 @@ public class GameHUD extends HUD implements Displayable {
 	// ======================================================
 
 	public enum BUTTON { SUMMON, DEPLOY, ATTACK, PLAYER, AUTO_DEPLOY, NONE };
-
-	public enum SPRITE { BUTTON_TAB };
-
-	private BUTTON currentButton;
 
 	private static float animationTime = 0.5f;
 
@@ -53,17 +49,17 @@ public class GameHUD extends HUD implements Displayable {
 	private UIElement attackButton, summonButton, deployButton;
 	private TiledSprite attackSprite, summonSprite, deploySprite;
 
-	private UIElement pool1, pool2, pool3;
-	private BarVertical bar1, bar2, bar3;
+	private RiskaButtonSprite[] poolLeft, poolRight;
+	private RiskaTextButtonSprite soldiersLeft, soldiersRight;
+	private Text soldiersLeftNum, soldiersRightNum;
 
 	private UIElement actionButton, endTurnButton;
 
 	private RiskaTextButtonSprite movesLeft;
-	private RiskaTextButtonSprite soldiers1, soldiers2, soldiers3;
-
-	private RiskaTextButtonSprite currentPlayerButton;
 
 	private RiskaTextButtonSprite playerPoolSprite;
+
+	private RiskaTextButtonSprite currentPlayerButton;
 
 
 	private GameScene gameScene;
@@ -80,8 +76,6 @@ public class GameHUD extends HUD implements Displayable {
 		vbom = resources.vbom;
 
 		camera = resources.camera;
-
-		currentButton = BUTTON.NONE;
 
 		createDisplay();
 	}
@@ -116,9 +110,9 @@ public class GameHUD extends HUD implements Displayable {
 
 		createFrame();
 		createModeButtons();
-		createPools();
 		createActionButtons();
 		createInfoElements();
+		createPools();
 
 		registerTouchArea(summonButton);
 		registerTouchArea(deployButton);
@@ -166,9 +160,9 @@ public class GameHUD extends HUD implements Displayable {
 		//		attachChild(barBottom);
 		//		attachChild(barLeft);
 		//		attachChild(barRight);
-		//
-		//		attachChild(cornerBottomLeft);
-		//		attachChild(cornerBottomRight);
+
+		//attachChild(cornerBottomLeft);
+		//attachChild(cornerBottomRight);
 		//		attachChild(cornerTopLeft);
 		//		attachChild(cornerTopRight);
 
@@ -188,10 +182,10 @@ public class GameHUD extends HUD implements Displayable {
 		barRight.setSpriteAlpha(pAlpha);
 
 
-		cornerBottomLeft.setSpriteColor(Utils.OtherColors.BLACK);
-		cornerBottomRight.setSpriteColor(Utils.OtherColors.BLACK);
-		cornerTopLeft.setSpriteColor(Utils.OtherColors.BLACK);
-		cornerTopRight.setSpriteColor(Utils.OtherColors.BLACK);
+		cornerBottomLeft.setSpriteColor(Utils.OtherColors.GREY);
+		cornerBottomRight.setSpriteColor(Utils.OtherColors.GREY);
+		cornerTopLeft.setSpriteColor(Utils.OtherColors.GREY);
+		cornerTopRight.setSpriteColor(Utils.OtherColors.GREY);
 
 		pAlpha = 1f;
 
@@ -199,6 +193,10 @@ public class GameHUD extends HUD implements Displayable {
 		cornerBottomRight.setSpriteAlpha(pAlpha);
 		cornerTopLeft.setSpriteAlpha(pAlpha);
 		cornerTopRight.setSpriteAlpha(pAlpha);
+
+		// TEMPORARY !!!!!!!!!!!!
+		//		cornerBottomLeft.rotate();
+		//		cornerBottomRight.rotate();
 	}
 
 	private void createModeButtons()
@@ -345,68 +343,100 @@ public class GameHUD extends HUD implements Displayable {
 
 	private void createPools()
 	{
-		// ----------------------------------------
-		// CREATE BARS/POOLS
-		// ----------------------------------------
-		float width = 0.6f * barLeft.getWidth();
-		float height = 0.46f * barLeft.getHeight();
-
-		pool1 = new UIElement(width, height, resources.midCenter, vbom);
-		pool2 = new UIElement(width, height, resources.midCenter, vbom);
-
-		height = 0.96f * barLeft.getHeight();	
-		pool3 = new UIElement(width, height, resources.midCenter, vbom);
-
-		width = 0.9f * pool1.getWidth();
-		height = 0.95f * pool1.getHeight();
-
-		bar1 = new BarVertical(width, height, GameInfo.maxGarrison, GameInfo.minGarrison, resources.midCenterSmall, vbom);
-		bar1.setColors(Utils.OtherColors.DARK_GREY, Utils.OtherColors.BLUE_GREEN);
-		bar1.invertOrientation(true);
-
-		bar2 = new BarVertical(width, height, GameInfo.maxGarrison, GameInfo.minGarrison, resources.midCenterSmall, vbom);
-		bar2.setColors(Utils.OtherColors.DARK_GREY, Utils.OtherColors.BLUE_GREEN);
-
-		width = 0.9f * pool3.getWidth();
-		height = 0.95f * pool3.getHeight();
-		bar3 = new BarVertical(width, height, GameInfo.maxSummonPool, GameInfo.minSummonPool, resources.midCenterSmall, vbom);
-		bar3.setColors(Utils.OtherColors.DARK_GREY, Utils.OtherColors.BLUE_GREEN);
+		float pWidth = 0.35f * camera.getHeight();
+		float pHeight = pWidth;
+		
+		float posOffset = 0.2f;
 
 		// ----------------------------------------
-		// SET POSITION OF BARS/POOLS
+		// CREATE POOL CIRCLES
 		// ----------------------------------------
-		float pX = barLeft.getX() - 1;
+		soldiersLeft = new RiskaTextButtonSprite(resources.buttonRegionBig, vbom, "", resources.mGameNumbersFont);
+		soldiersLeft.setColor(Utils.OtherColors.CYAN);
+		soldiersLeft.setSize(pWidth, pHeight);
+		soldiersLeft.setTextColor(Utils.OtherColors.BLACK);
+		soldiersLeft.setText("");
+		soldiersLeft.setTextBoundingFactor(0.4f);
+		soldiersLeft.setAlpha(0.9f);
+		soldiersLeft.setPosition(posOffset * Utils.halfX(soldiersLeft), posOffset * Utils.halfY(soldiersLeft));
+		
+		soldiersRight = new RiskaTextButtonSprite(resources.buttonRegionBig, vbom, "", resources.mGameNumbersFont);
+		soldiersRight.setColor(Utils.OtherColors.DARK_RED);
+		soldiersRight.setSize(pWidth, pHeight);
+		soldiersRight.setTextColor(Utils.OtherColors.BLACK);
+		soldiersRight.setText("");
+		soldiersRight.setTextBoundingFactor(0.4f);
+		soldiersRight.setAlpha(0.9f);
+		
+		soldiersRight.setPosition(camera.getWidth() - posOffset * Utils.halfX(soldiersRight), posOffset * Utils.halfY(soldiersRight));
 
-		pool1.setPosition(pX, Utils.posY(0.75f, barLeft));
-		pool2.setPosition(pX, Utils.posY(0.25f, barLeft));
-		pool3.setPosition(pX, Utils.posY(0.5f, barLeft));
-
-		bar1.setPosition(Utils.halfX(pool1), Utils.halfY(pool1));
-		bar2.setPosition(Utils.halfX(pool2), Utils.halfY(pool2));
-		bar3.setPosition(Utils.halfX(pool3), Utils.halfY(pool3));
-
-		pool1.attachChild(bar1);
-		pool2.attachChild(bar2);
-		pool3.attachChild(bar3);
+		soldiersLeftNum = new Text(0f, 0f, resources.mGameNumbersFont, "2", Utils.maxNumericChars, vbom);
+		Utils.wrap(soldiersLeftNum, soldiersLeft, 0.5f);
+		soldiersLeftNum.setColor(Utils.OtherColors.WHITE);
+		soldiersLeftNum.setPosition(0.4f * Utils.halfX(soldiersLeft), 0.4f * Utils.halfY(soldiersLeft));
+		
+		soldiersRightNum = new Text(0f, 0f, resources.mGameNumbersFont, "2", Utils.maxNumericChars, vbom);
+		Utils.wrap(soldiersRightNum, soldiersRight, 0.5f);
+		soldiersRightNum.setColor(Utils.OtherColors.DARK_YELLOW);
+		soldiersRightNum.setPosition(camera.getWidth() - 0.4f * Utils.halfX(soldiersRight), 0.4f * Utils.halfY(soldiersRight));
+		
+		//registerTouchArea(soldiersLeft);
+		//registerTouchArea(soldiersRight);
 
 		// ----------------------------------------
+		// CREATE POOLS
 		// ----------------------------------------
-		pool1.setSpriteColor(Utils.OtherColors.BLACK);
-		pool2.setSpriteColor(Utils.OtherColors.BLACK);
-		pool3.setSpriteColor(Utils.OtherColors.BLACK);
+		int soldiersPerPool = GameInfo.maxGarrison;
 
-		bar1.setAlpha(0f);
-		pool1.setSpriteAlpha(0f);
+		poolLeft = new RiskaButtonSprite[soldiersPerPool];
+		poolRight = new RiskaButtonSprite[soldiersPerPool];
+		
+		double arch = Math.PI / 2;
+		arch *= Utils.halfX(soldiersLeft);
 
-		bar2.setAlpha(0f);
-		pool2.setSpriteAlpha(0f);
+		pWidth = (float) ((0.8f / soldiersPerPool) * arch);
+		pHeight = pWidth;
 
-		bar3.setAlpha(0f);
-		pool3.setSpriteAlpha(0f);
+		double angleInc = Math.PI / (2 * (soldiersPerPool - 1));
 
-		//		attachChild(pool1);
-		//		attachChild(pool2);
-		//		attachChild(pool3);
+		for(int i = 0; i < soldiersPerPool; i++)
+		{
+			poolLeft[i] = new RiskaButtonSprite(pWidth, pHeight, resources.buttonRegion, vbom);
+			poolRight[i] = new RiskaButtonSprite(pWidth, pHeight, resources.buttonRegion, vbom);
+		}
+		
+		for(int i = 0; i < soldiersPerPool; i++)
+		{
+			float radiusX = Utils.halfX(soldiersLeft) - Utils.halfX(poolLeft[i]);
+			float radiusY = Utils.halfY(soldiersLeft) - Utils.halfY(poolLeft[i]);
+			
+			// Set Position
+			float pX = soldiersLeft.getX() + (float) (radiusX * Math.cos((double)i * angleInc));
+			float pY = soldiersLeft.getY() + (float) (radiusY * Math.sin((double)i * angleInc));
+			poolLeft[i].setPosition(pX, pY);
+			
+			radiusX = Utils.halfX(soldiersRight) - Utils.halfX(poolRight[i]);
+			radiusY = Utils.halfY(soldiersRight) - Utils.halfY(poolRight[i]);
+
+			pX = soldiersRight.getX() - (float) (radiusX * Math.cos((double)i * angleInc));
+			pY = soldiersRight.getY() + (float) (radiusY * Math.sin((double)i * angleInc));
+			poolRight[i].setPosition(pX, pY);
+		}
+		
+		attachChild(soldiersLeft);
+		attachChild(soldiersRight);
+		
+		attachChild(soldiersLeftNum);
+		attachChild(soldiersRightNum);
+
+		for(int i = 0; i < soldiersPerPool; i++)
+		{
+			// Attach to HUD
+			attachChild(poolRight[i]);
+			attachChild(poolLeft[i]);
+		}
+
+		updatePoolsColors();
 	}
 
 	private void createActionButtons()
@@ -466,20 +496,20 @@ public class GameHUD extends HUD implements Displayable {
 			}
 		};
 
-		playerPoolSprite.setSize(0.1f * camera.getHeight(), 0.1f * camera.getHeight());
-		playerPoolSprite.setPosition(Utils.halfX(playerPoolSprite), camera.getHeight() - Utils.halfY(playerPoolSprite));
+		playerPoolSprite.setSize(0.15f * camera.getHeight(), 0.15f * camera.getHeight());
+		playerPoolSprite.setPosition(Utils.halfX(playerPoolSprite), Utils.halfY(playerPoolSprite));
 		playerPoolSprite.setColor(Utils.OtherColors.GREY);
 		playerPoolSprite.setTextBoundingFactor(0.7f);
 
 		updateInfo();
-		registerTouchArea(playerPoolSprite);
+		//registerTouchArea(playerPoolSprite);
 
-		attachChild(playerPoolSprite);
+		//attachChild(playerPoolSprite);
 	}
 
 	private void createInfoElements()
 	{
-		float pWidth = 0.8f * cornerBottomRight.getWidth();
+		float pWidth = 0.35f * camera.getHeight();
 		float pHeight = pWidth;
 
 		movesLeft = new RiskaTextButtonSprite(resources.buttonRegion, vbom, "", resources.mGameFont);
@@ -490,48 +520,6 @@ public class GameHUD extends HUD implements Displayable {
 		movesLeft.setText("" + logic.getCurrentPlayer().moves);
 
 		movesLeft.setPosition(Utils.posX(0.5f, cornerBottomRight), Utils.posY(0.5f, cornerBottomRight));
-
-
-		soldiers1 = new RiskaTextButtonSprite(resources.buttonRegion, vbom, "", resources.mGameFont);
-		soldiers1.setColor(Utils.OtherColors.GREY);
-		soldiers1.setSize(pWidth, pHeight);
-
-		soldiers1.setTextColor(Utils.OtherColors.BLACK);
-		soldiers1.setText("");
-
-		soldiers1.setPosition(Utils.posX(0.5f, cornerTopLeft), Utils.posY(0.5f, cornerTopLeft));
-
-		soldiers1 = new RiskaTextButtonSprite(resources.buttonRegion, vbom, "", resources.mGameFont);
-		soldiers1.setColor(Utils.OtherColors.GREY);
-		soldiers1.setSize(pWidth, pHeight);
-
-		soldiers1.setTextColor(Utils.OtherColors.BLACK);
-		soldiers1.setText("");
-
-		soldiers1.setPosition(Utils.posX(0.5f, cornerTopLeft), Utils.posY(0.5f, cornerTopLeft));
-
-		soldiers2 = new RiskaTextButtonSprite(resources.buttonRegion, vbom, "", resources.mGameFont);
-		soldiers2.setColor(Utils.OtherColors.GREY);
-		soldiers2.setSize(pWidth, pHeight);
-
-		soldiers2.setTextColor(Utils.OtherColors.BLACK);
-		soldiers2.setText("");
-
-		soldiers2.setPosition(Utils.posX(0.5f, cornerBottomLeft), Utils.posY(0.5f, cornerBottomLeft));
-
-		soldiers3 = new RiskaTextButtonSprite(resources.buttonRegion, vbom, "", resources.mGameFont);
-		soldiers3.setColor(Utils.OtherColors.GREY);
-		soldiers3.setSize(pWidth, pHeight);
-
-		soldiers3.setTextColor(Utils.OtherColors.BLACK);
-		soldiers3.setText("");
-
-		soldiers3.setPosition(Utils.posX(0.5f, cornerBottomLeft), Utils.posY(0.5f, cornerBottomLeft));
-
-		//		attachChild(movesLeft);
-		//		attachChild(soldiers1);
-		//		attachChild(soldiers2);
-		//		attachChild(soldiers3);
 	}
 
 	public void updateInfo()
@@ -545,14 +533,27 @@ public class GameHUD extends HUD implements Displayable {
 			}
 			break;
 
+		case PLAY:
+			updatePoolsColors();
+			break;
+
 		default:
 			if(playerPoolSprite.isVisible())
 			{
 				playerPoolSprite.fadeOut(animationTime);
 			}	
 			break;
-
 		}
+	}
+
+	public void updatePoolsColors()
+	{
+		for(int i = 0; i < poolLeft.length; i++)
+		{
+			// Set Color
+			poolLeft[i].setColor(logic.Selected() ? logic.selectedRegion.priColor : Utils.OtherColors.WHITE);
+			poolRight[i].setColor(logic.Targeted() ? logic.targetedRegion.priColor : Utils.OtherColors.DARK_YELLOW);
+		}	
 	}
 
 	// ======================================================
@@ -603,20 +604,20 @@ public class GameHUD extends HUD implements Displayable {
 		switch(mode)
 		{
 
-//		case ATTACK:
-//			attackButton.setSpriteColor(Utils.OtherColors.BLACK);
-//			attackSprite.setColor(Utils.OtherColors.LIGHT_GREY);
-//			break;
-//
-//		case DEPLOY:
-//			deployButton.setSpriteColor(Utils.OtherColors.BLACK);
-//			deployButton.setColor(Utils.OtherColors.LIGHT_GREY);
-//			break;
-//
-//		case SUMMON:
-//			summonButton.setSpriteColor(Utils.OtherColors.BLACK);
-//			summonButton.setColor(Utils.OtherColors.LIGHT_GREY);
-//			break;
+		//		case ATTACK:
+		//			attackButton.setSpriteColor(Utils.OtherColors.BLACK);
+		//			attackSprite.setColor(Utils.OtherColors.LIGHT_GREY);
+		//			break;
+		//
+		//		case DEPLOY:
+		//			deployButton.setSpriteColor(Utils.OtherColors.BLACK);
+		//			deployButton.setColor(Utils.OtherColors.LIGHT_GREY);
+		//			break;
+		//
+		//		case SUMMON:
+		//			summonButton.setSpriteColor(Utils.OtherColors.BLACK);
+		//			summonButton.setColor(Utils.OtherColors.LIGHT_GREY);
+		//			break;
 
 		case AUTO_DEPLOY:
 			gameScene.onAutoDeployButtonTouched();

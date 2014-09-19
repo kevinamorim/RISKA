@@ -11,9 +11,10 @@ import org.andengine.opengl.texture.region.ITextureRegion;
 import org.andengine.opengl.vbo.VertexBufferObjectManager;
 import org.andengine.util.adt.color.Color;
 
+import feup.lpoo.riska.interfaces.Animated;
 import feup.lpoo.riska.utilities.Utils;
 
-public class RiskaSprite extends Sprite {
+public class RiskaSprite extends Sprite implements Animated {
 
 	private Text text;
 
@@ -30,6 +31,13 @@ public class RiskaSprite extends Sprite {
 
 	// ==================================================
 	// ==================================================
+	public RiskaSprite(float pWidth, float pHeight, ITextureRegion pTexture, VertexBufferObjectManager vbom)
+	{
+		this(pTexture, vbom, null, null, 0);
+		
+		setSize(pWidth, pHeight);
+	}
+	
 	public RiskaSprite(ITextureRegion pTexture, VertexBufferObjectManager vbom)
 	{
 		this(pTexture, vbom, null, null, 0);
@@ -76,73 +84,6 @@ public class RiskaSprite extends Sprite {
 		}
 	}
 
-	public void fadeOut(float deltaTime)
-	{
-		unregisterEntityModifier(alphaModifier);
-		
-		if(deltaTime == 0f)
-		{
-			setAlpha(0f);
-		}
-		else
-		{
-			alphaModifier = new AlphaModifier(deltaTime, 1f, 0f);
-			registerEntityModifier(alphaModifier);
-		}
-	}
-
-	public void fadeOut()
-	{
-		fadeOut(fadeAnimationTime);
-	}
-
-	public void fadeIn(float deltaTime)
-	{
-		unregisterEntityModifier(alphaModifier);
-		
-		if(deltaTime == 0f)
-		{
-			setAlpha(1f);
-		}
-		else
-		{
-			alphaModifier = new AlphaModifier(deltaTime, 0f, 1f);
-			registerEntityModifier(alphaModifier);
-		}	
-	}
-
-	public void fadeIn()
-	{
-		fadeIn(fadeAnimationTime);
-	}
-
-	public void rotate()
-	{
-		rotate(rotateAnimationTime, rotateStartingAngle, rotateEndingAngle);
-	}
-	
-	public void rotate(float pSpeed)
-	{
-		rotate(pSpeed, rotateStartingAngle, rotateEndingAngle);
-	}
-	
-	public void rotate(float pSpeed, float pStartingAngle, float pEndingAngle)
-	{
-		if(!rotating)
-		{
-			rotationModifier = new RotationModifier(pSpeed, pStartingAngle, pEndingAngle);
-
-			registerEntityModifier(new LoopEntityModifier(rotationModifier));
-		}
-	}
-	
-	public void stopRotation()
-	{
-		unregisterEntityModifier(rotationModifier);
-		
-		rotating = false;
-	}
-	
 	public String getText()
 	{
 		return text.getText().toString();
@@ -223,9 +164,84 @@ public class RiskaSprite extends Sprite {
 
 		super.setAlpha(pAlpha);
 	}
-
 	
-	public void fadeOutFollowByStoppedRotation(float deltaTime)
+	@Override
+	public void fadeOut(float deltaTime)
+	{
+		unregisterEntityModifier(alphaModifier);
+		
+		if(deltaTime == 0f)
+		{
+			setAlpha(0f);
+		}
+		else
+		{
+			alphaModifier = new AlphaModifier(deltaTime, 1f, 0f);
+			registerEntityModifier(alphaModifier);
+		}
+	}
+
+	@Override
+	public void fadeOut()
+	{
+		fadeOut(fadeAnimationTime);
+	}
+
+	@Override
+	public void fadeIn(float deltaTime)
+	{
+		unregisterEntityModifier(alphaModifier);
+		
+		if(deltaTime == 0f)
+		{
+			setAlpha(1f);
+		}
+		else
+		{
+			alphaModifier = new AlphaModifier(deltaTime, 0f, 1f);
+			registerEntityModifier(alphaModifier);
+		}	
+	}
+
+	@Override
+	public void fadeIn()
+	{
+		fadeIn(fadeAnimationTime);
+	}
+
+	@Override
+	public void rotate()
+	{
+		rotate(rotateAnimationTime, rotateStartingAngle, rotateEndingAngle);
+	}
+	
+	@Override
+	public void rotate(float pSpeed)
+	{
+		rotate(pSpeed, rotateStartingAngle, rotateEndingAngle);
+	}
+	
+	@Override
+	public void rotate(float pSpeed, float pStartingAngle, float pEndingAngle)
+	{
+		if(!rotating)
+		{
+			rotationModifier = new RotationModifier(pSpeed, pStartingAngle, pEndingAngle);
+
+			registerEntityModifier(new LoopEntityModifier(rotationModifier));
+		}
+	}
+	
+	@Override
+	public void stopRotation()
+	{
+		unregisterEntityModifier(rotationModifier);
+		
+		rotating = false;
+	}
+	
+	@Override
+	public void fadeOutAndStopRotation(float deltaTime)
 	{
 		unregisterEntityModifier(alphaModifier);
 		
@@ -249,6 +265,6 @@ public class RiskaSprite extends Sprite {
 			registerEntityModifier(alphaModifier);
 		}
 	}
-
+	
 	
 }

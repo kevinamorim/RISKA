@@ -10,17 +10,12 @@ import feup.lpoo.riska.utilities.Utils;
 public class RiskaButtonSprite extends ButtonSprite {
 
 	private Color spriteColor = Utils.OtherColors.GREY;
-	
-	public void setColor(Color pColor, float pAlpha)
-	{
-		spriteColor = Utils.getColorWithAlpha(pColor, pAlpha);
-		
-		update();	
-	}
 
-	public RiskaButtonSprite(float pX, float pY, ITiledTextureRegion pTexture, VertexBufferObjectManager vbom)
+	public RiskaButtonSprite(float pWidth, float pHeight, ITiledTextureRegion pTexture, VertexBufferObjectManager vbom)
 	{	
-		super(pX, pY, pTexture, vbom);
+		super(0f, 0f, pTexture, vbom);
+		
+		setSize(pWidth, pHeight);
 	}
 
 	
@@ -33,4 +28,13 @@ public class RiskaButtonSprite extends ButtonSprite {
 	{
 		setColor(spriteColor);
 	}
+
+	@Override
+	public void setColor(Color pColor)
+	{
+		spriteColor = Utils.getColorWithAlpha(pColor, getAlpha());
+		
+		super.setColor(spriteColor);
+	}
+
 }

@@ -1786,7 +1786,6 @@ public class MainMenuScene extends BaseScene implements Displayable, IOnMenuItem
 
 		if(GameOptions.menuAnimationsEnabled())
 		{
-			menuHUD.animateSlideDoors();
 
 			DelayModifier waitForAnimation = new DelayModifier(MenuHUD.doorsAnimationWaitingTime)
 			{
@@ -1795,7 +1794,6 @@ public class MainMenuScene extends BaseScene implements Displayable, IOnMenuItem
 				{
 					camera.setHUD(null);
 					sceneManager.createGameScene();
-
 				}
 			};
 			registerEntityModifier(waitForAnimation);
