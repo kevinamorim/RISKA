@@ -25,7 +25,6 @@ import feup.lpoo.riska.logic.SceneManager.SCENE_TYPE;
 import feup.lpoo.riska.utilities.Utils;
 
 import android.graphics.Point;
-import android.util.Log;
 import android.view.MotionEvent;
 
 public class GameScene extends BaseScene implements IOnSceneTouchListener, IScrollDetectorListener {
@@ -557,7 +556,6 @@ public class GameScene extends BaseScene implements IOnSceneTouchListener, IScro
 
 	private void onRegionReleased(ButtonSprite btn, int regionID)
 	{
-		
 		//btn.setCurrentTileIndex(0);
 	}
 

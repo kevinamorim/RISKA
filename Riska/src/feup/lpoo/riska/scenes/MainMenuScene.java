@@ -205,8 +205,8 @@ public class MainMenuScene extends BaseScene implements Displayable, IOnMenuItem
 		background = new SpriteBackground(new Sprite(
 				camera.getCenterX(), 
 				camera.getCenterY(),
-				camera.getWidth() + 4,
-				camera.getHeight() + 4,
+				camera.getWidth(),
+				camera.getHeight(),
 				resources.menuBackgroundRegion, 
 				vbom));
 

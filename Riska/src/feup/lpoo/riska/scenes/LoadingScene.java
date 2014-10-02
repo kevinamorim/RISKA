@@ -1,20 +1,19 @@
 package feup.lpoo.riska.scenes;
 
-import org.andengine.entity.scene.background.Background;
+import org.andengine.entity.scene.background.SpriteBackground;
+import org.andengine.entity.sprite.Sprite;
 import org.andengine.entity.text.Text;
-import org.andengine.util.adt.color.Color;
-
 import feup.lpoo.riska.logic.SceneManager.SCENE_TYPE;
 
 public class LoadingScene extends BaseScene {
 
-	//private Sprite background;
+	private SpriteBackground background;
 	private Text loadingText;
 	
 	@Override
 	public void createScene()
 	{
-		setBackground(new Background(Color.BLACK));
+		background = new SpriteBackground(new Sprite(camera.getCenterX(), camera.getCenterY(), camera.getWidth(), camera.getHeight(), resources.loadingBackground, vbom));
 		
 		loadingText = new Text(
 				camera.getCenterX(),
@@ -23,6 +22,7 @@ public class LoadingScene extends BaseScene {
 		
 		loadingText.setScale(0.5f);
 		
+		setBackground(background);
 		attachChild(loadingText);	
 	}
 

@@ -52,6 +52,12 @@ public class ResourceCache {
 	public ITextureRegion splashRegion;
 	
 	// ==================================================
+	// LOADING SCREEN RESOURCES
+	// ==================================================
+	private BitmapTextureAtlas loadingTextureAtlas;
+	public ITextureRegion loadingBackground;
+	
+	// ==================================================
 	// MAIN MENU RESOURCES
 	// ==================================================
 	private BitmapTextureAtlas menuBackgroundTextureAtlas;
@@ -186,6 +192,32 @@ public class ResourceCache {
 	}
 
 	// ==================================================
+	// LOADING SCENE
+	// ==================================================
+	public void createLoadingSceneResources()
+	{
+		int textureWidth = 4096, textureHeight = 2048;
+
+		BitmapTextureAtlasTextureRegionFactory.setAssetBasePath("gfx/themes/" + currentTheme + "loading/");
+
+		loadingTextureAtlas = new BitmapTextureAtlas(activity.getTextureManager(), 
+				textureWidth, textureHeight, TextureOptions.BILINEAR);
+		
+		loadingBackground = BitmapTextureAtlasTextureRegionFactory.createFromAsset(loadingTextureAtlas, 
+				activity, "background.png", 0, 0);
+	}
+	
+	public void loadLoadingSceneResources()
+	{
+		loadingTextureAtlas.load();
+	}
+	
+	public void unloadLoadingSceneResources()
+	{
+		loadingTextureAtlas.unload();
+	}
+	
+	// ==================================================
 	// MAIN MENU SCENE
 	// ==================================================
 	
@@ -199,7 +231,7 @@ public class ResourceCache {
 	{
 		BitmapTextureAtlasTextureRegionFactory.setAssetBasePath("gfx/themes/" + currentTheme + "menu/");
 
-		int bgTextureWidth = 2048, bgTextureHeight = 1024;
+		int bgTextureWidth = 4096, bgTextureHeight = 2048;
 
 		menuBackgroundTextureAtlas = new BitmapTextureAtlas(activity.getTextureManager(), 
 				bgTextureWidth, bgTextureHeight, TextureOptions.REPEATING_BILINEAR);
@@ -580,6 +612,7 @@ public class ResourceCache {
 		instance.camera = camera;
 		instance.vbom = vbom;
 	}
+
 
 	// ==================================================
 	// GETTERS & SETTERS

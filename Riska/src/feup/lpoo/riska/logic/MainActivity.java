@@ -58,6 +58,7 @@ public class MainActivity extends BaseGameActivity {
 	{
 		ResourceCache.prepareManager(mEngine, this, mCamera, getVertexBufferObjectManager());	
 		ResourceCache.instance.loadSplashScene();
+		ResourceCache.instance.createLoadingSceneResources();
 		ResourceCache.instance.createMainMenuResources();
 		ResourceCache.instance.createGameResources();
 

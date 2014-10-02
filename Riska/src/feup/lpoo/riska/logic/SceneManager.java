@@ -58,7 +58,9 @@ public class SceneManager {
 	{
 		
 		ResourceCache.instance.loadSplashSceneResources();
+		ResourceCache.instance.loadLoadingSceneResources();
 		splashScene = new SplashScene();
+		loadingScene = new LoadingScene();
 		currentScene = splashScene;
 		pOnCreateSceneCallback.onCreateSceneFinished(splashScene);
 		
@@ -75,7 +77,6 @@ public class SceneManager {
 	{
 		ResourceCache.instance.loadMainMenuResources();
 		mainMenuScene = new MainMenuScene();
-		loadingScene = new LoadingScene();
 		setScene(mainMenuScene);
 		disposeSplashScene();
 	}
