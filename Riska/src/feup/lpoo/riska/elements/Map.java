@@ -3,7 +3,6 @@ package feup.lpoo.riska.elements;
 import java.util.ArrayList;
 import java.util.Random;
 
-import android.graphics.Point;
 import android.util.Log;
 import feup.lpoo.riska.io.FileRead;
 

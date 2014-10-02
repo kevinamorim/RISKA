@@ -4,13 +4,14 @@ import org.andengine.entity.IEntity;
 import org.andengine.entity.modifier.DelayModifier;
 import org.andengine.entity.scene.IOnSceneTouchListener;
 import org.andengine.entity.scene.Scene;
-import org.andengine.entity.scene.background.SpriteBackground;
+import org.andengine.entity.scene.background.Background;
 import org.andengine.entity.sprite.ButtonSprite;
 import org.andengine.entity.sprite.Sprite;
 import org.andengine.input.touch.TouchEvent;
 import org.andengine.input.touch.detector.ScrollDetector;
 import org.andengine.input.touch.detector.ScrollDetector.IScrollDetectorListener;
 import org.andengine.input.touch.detector.SurfaceScrollDetector;
+import org.andengine.util.adt.color.Color;
 
 import feup.lpoo.riska.elements.Map;
 import feup.lpoo.riska.elements.Region;
@@ -24,6 +25,7 @@ import feup.lpoo.riska.logic.SceneManager.SCENE_TYPE;
 import feup.lpoo.riska.utilities.Utils;
 
 import android.graphics.Point;
+import android.util.Log;
 import android.view.MotionEvent;
 
 public class GameScene extends BaseScene implements IOnSceneTouchListener, IScrollDetectorListener {
@@ -46,13 +48,16 @@ public class GameScene extends BaseScene implements IOnSceneTouchListener, IScro
 	private SummonScene summonScene;
 	private DeployScene deployScene;
 
-	private ButtonSprite[] regions;
+//	private ButtonSprite[] regions;
 	private Sprite mapSprite;
 
 	private RiskaSprite[] focusSprite;
 
 	private RiskaTextButtonSprite[] regionButton;
 
+	private float regionButtonSize;
+	private float regionButtonSizeSelected;
+	private float regionButtonSizeTargeted;
 	
 	private ScrollDetector scrollDetector;
 	private Map map;
@@ -110,14 +115,16 @@ public class GameScene extends BaseScene implements IOnSceneTouchListener, IScro
 
 	private void createBackground()
 	{
-		SpriteBackground background = new SpriteBackground(new Sprite(
-				camera.getCenterX(),
-				camera.getCenterY(),
-				camera.getWidth() + 2,
-				camera.getHeight() + 2,
-				resources.background, vbom));
-
-		setBackground(background);
+		setBackground(new Background(Color.BLACK));
+		
+//		SpriteBackground background = new SpriteBackground(new Sprite(
+//				camera.getCenterX(),
+//				camera.getCenterY(),
+//				camera.getWidth() + 2,
+//				camera.getHeight() + 2,
+//				resources.background, vbom));
+//
+//		setBackground(background);
 	}
 
 	private void createHUD()
@@ -144,10 +151,11 @@ public class GameScene extends BaseScene implements IOnSceneTouchListener, IScro
 
 	private void createRegions()
 	{
-		float pWidth = 0.1f * mapSprite.getHeight();
-		float pHeight = pWidth;
+		regionButtonSize = 0.07f * mapSprite.getHeight();
+		regionButtonSizeSelected = 1.5f * regionButtonSize;
+		regionButtonSizeTargeted = 1.2f * regionButtonSize;
 
-		regions = new ButtonSprite[map.getNumberOfRegions()];
+		//regions = new ButtonSprite[map.getNumberOfRegions()];
 		regionButton = new RiskaTextButtonSprite[map.getNumberOfRegions()];
 
 		for(int i = 0; i < map.getNumberOfRegions(); i++)
@@ -190,34 +198,34 @@ public class GameScene extends BaseScene implements IOnSceneTouchListener, IScro
 
 			regionButton[i].setTag(region.ID);
 			regionButton[i].setPosition(pX, pY);
-			regionButton[i].setSize(pWidth, pHeight);
+			regionButton[i].setSize(regionButtonSize, regionButtonSize);
 
 			regionButton[i].setColor(region.getPrimaryColor());
 
-			regionButton[i].setTextBoundingFactor(0.8f);
+			regionButton[i].setTextBoundingFactor(0.9f);
 			regionButton[i].setTextColor(region.getSecundaryColor());
 			regionButton[i].setText("" + region.getGarrison());
 
-			regions[i] = new ButtonSprite(0f, 0f, resources.regions[i], vbom);
-
-			float width = mapSprite.getWidth() * resources.regions[i].getWidth() / resources.map.getWidth();
-			float height = mapSprite.getHeight() * resources.regions[i].getHeight() / resources.map.getHeight();
-
-			regions[i].setSize(width, height);
-
-			pX = 0.01f * region.getX() * mapSprite.getWidth();
-			pY = 0.01f * region.getY() * mapSprite.getHeight();
-
-			regions[i].setPosition(pX, pY);
+//			regions[i] = new ButtonSprite(0f, 0f, resources.regions[i], vbom);
+//
+//			float width = mapSprite.getWidth() * resources.regions[i].getWidth() / resources.map.getWidth();
+//			float height = mapSprite.getHeight() * resources.regions[i].getHeight() / resources.map.getHeight();
+//
+//			regions[i].setSize(width, height);
+//
+//			pX = 0.01f * region.getX() * mapSprite.getWidth();
+//			pY = 0.01f * region.getY() * mapSprite.getHeight();
+//
+//			regions[i].setPosition(pX, pY);
 		}
 
-		for(int i = 0; i < map.getNumberOfRegions(); i++)
-		{
-			regions[i].setColor(map.getRegionByIndex(i).owner().priColor);
-			regions[i].setAlpha(0.8f);
-
-			mapSprite.attachChild(regions[i]);
-		}
+//		for(int i = 0; i < map.getNumberOfRegions(); i++)
+//		{
+//			regions[i].setColor(map.getRegionByIndex(i).owner().priColor);
+//			regions[i].setAlpha(0.8f);
+//
+//			mapSprite.attachChild(regions[i]);
+//		}
 
 		for(int i = 0; i < map.getNumberOfRegions(); i++)
 		{
@@ -253,8 +261,9 @@ public class GameScene extends BaseScene implements IOnSceneTouchListener, IScro
 		for(int i = 0; i < focusSprite.length; i++)
 		{
 			focusSprite[i] = new RiskaSprite(resources.selection, vbom);
-
-			focusSprite[i].setSize(1.4f * regionButton[0].getWidth(), 1.4f * regionButton[0].getHeight());
+			
+			focusSprite[i].setPosition(regionButton[i]);
+			
 			focusSprite[i].fadeOut(0f);
 
 			attachChild(focusSprite[i]);
@@ -472,7 +481,7 @@ public class GameScene extends BaseScene implements IOnSceneTouchListener, IScro
 
 	private void onRegionPressed(ButtonSprite btn, int regionID)
 	{
-		btn.setCurrentTileIndex(1);
+		//btn.setCurrentTileIndex(1);
 	}
 
 	private void onRegionTouched(ButtonSprite btn, int regionID)
@@ -484,45 +493,71 @@ public class GameScene extends BaseScene implements IOnSceneTouchListener, IScro
 
 	public void Untarget(int rID)
 	{
+		Region region = map.getRegionById(rID);	
+		region.setFocus(false);
+		
+		UpdateRegion(rID);
+		
 		float fadeDuration = 0.5f;
 
-		//focusSprite[rID].fadeOut(fadeDuration);
-
-		focusSprite[rID].fadeOutAndStopRotation(fadeDuration);
+		regionButton[rID].setCurrentTileIndex(0);
+		regionButton[rID].setSize(regionButtonSize, regionButtonSize);
+//		focusSprite[rID].fadeOutAndStopRotation(fadeDuration);
 	}
 
 	public void Unselect(int rID)
 	{
+		Region region = map.getRegionById(rID);	
+		region.setFocus(false);
+		
+		UpdateRegion(rID);
+		
 		float fadeDuration = 0.5f;
 
-		focusSprite[rID].fadeOutAndStopRotation(fadeDuration);
+		regionButton[rID].setCurrentTileIndex(0);
+		regionButton[rID].setSize(regionButtonSize, regionButtonSize);
+//		focusSprite[rID].fadeOutAndStopRotation(fadeDuration);
 	}
 
 	public void Select(int rID)
 	{
+		Region region = map.getRegionById(rID);	
+		region.setFocus(true);
+		
+		UpdateRegion(rID);
+		
 		float fadeDuration = 0.5f;
 		float rotationSpeed = 3f;
 
-		focusSprite[rID].setPosition(regionButton[rID]);
-		focusSprite[rID].setColor(Utils.OtherColors.WHITE);
-		focusSprite[rID].fadeIn(fadeDuration);
-		focusSprite[rID].rotate(rotationSpeed);
+		regionButton[rID].setCurrentTileIndex(1);
+		regionButton[rID].setSize(regionButtonSizeSelected, regionButtonSizeSelected);
+//		focusSprite[rID].setSize(1.8f * regionButton[rID].getWidth(), 1.8f * regionButton[rID].getHeight());
+//		focusSprite[rID].setColor(Utils.OtherColors.WHITE);
+//		focusSprite[rID].fadeIn(fadeDuration);
+//		focusSprite[rID].rotate(rotationSpeed);
 	}
 
 	public void Target(int rID)
 	{
+		Region region = map.getRegionById(rID);	
+		region.setFocus(true);
+		
+		UpdateRegion(rID);
+		
 		float fadeDuration = 0.5f;
 		float rotationSpeed = 3f;
 
-		focusSprite[rID].setPosition(regionButton[rID]);
-		focusSprite[rID].setColor(Utils.OtherColors.DARK_YELLOW);
-		focusSprite[rID].fadeIn(fadeDuration);
-		focusSprite[rID].rotate(rotationSpeed);
+		regionButton[rID].setCurrentTileIndex(1);
+		regionButton[rID].setSize(regionButtonSizeTargeted, regionButtonSizeTargeted);
+//		focusSprite[rID].setSize(1.8f * regionButton[rID].getWidth(), 1.8f * regionButton[rID].getHeight());
+//		focusSprite[rID].setColor(Utils.OtherColors.BLACK);
+//		focusSprite[rID].fadeIn(fadeDuration);
+//		focusSprite[rID].rotate(rotationSpeed);
 	}
 
 	private void onRegionReleased(ButtonSprite btn, int regionID)
 	{
-		btn.setCurrentTileIndex(0);
+		//btn.setCurrentTileIndex(0);
 	}
 
 	public void UpdateRegion(int rID)

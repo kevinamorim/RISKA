@@ -483,7 +483,7 @@ public class ResourceCache {
 
 	private void createAndLoadGameMapResources()
 	{
-		BitmapTextureAtlasTextureRegionFactory.setAssetBasePath("gfx/themes/" + currentTheme + "game/" + GameInfo.currentMapIndex + "/");
+		BitmapTextureAtlasTextureRegionFactory.setAssetBasePath("gfx/themes/" + currentTheme + "game/" /*+ GameInfo.currentMapIndex + "/"*/);
 		
 		int mapTextureWidth = 4096, mapTextureHeight = 4096;
 
@@ -493,13 +493,13 @@ public class ResourceCache {
 		map = BitmapTextureAtlasTextureRegionFactory.createFromAsset(mapTextureAtlas, activity,
 				"map.png");
 		
-		regions = new ITextureRegion[GameInfo.currentMap.getNumberOfRegions()];
-		
-		for(int i = 0; i < GameInfo.currentMap.getNumberOfRegions(); i++)
-		{
-			regions[i] = BitmapTextureAtlasTextureRegionFactory.createFromAsset(mapTextureAtlas, activity,
-					i + ".png");
-		}
+//		regions = new ITextureRegion[GameInfo.currentMap.getNumberOfRegions()];
+//		
+//		for(int i = 0; i < GameInfo.currentMap.getNumberOfRegions(); i++)
+//		{
+//			regions[i] = BitmapTextureAtlasTextureRegionFactory.createFromAsset(mapTextureAtlas, activity,
+//					i + ".png");
+//		}
 		
 		try
 		{

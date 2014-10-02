@@ -21,7 +21,7 @@ public class GameLogic
 
 	public enum MODE { NONE, SUMMON, DEPLOY, ATTACK };
 
-	private final GAME_STATE startingState = GAME_STATE.SETUP;
+	private final GAME_STATE startingState = GAME_STATE.PLAY;
 
 	private GAME_STATE currentState;
 	private GAME_STATE tempState;
@@ -457,20 +457,16 @@ public class GameLogic
 	public void Select(Region pRegion)
 	{
 		selectedRegion = pRegion;
-		selectedRegion.setFocus(true);
 		selected = true;
-		
-		gameScene.UpdateRegion(pRegion.ID);
+
 		gameScene.Select(pRegion.ID);
 	}
 
 	public void Target(Region pRegion)
 	{
 		targetedRegion = pRegion;
-		targetedRegion.setFocus(true);
 		targeted = true;
 		
-		gameScene.UpdateRegion(pRegion.ID);
 		gameScene.Target(pRegion.ID);
 	}
 
@@ -478,9 +474,6 @@ public class GameLogic
 	{
 		if(selectedRegion != null)
 		{
-			selectedRegion.setFocus(false);
-			
-			gameScene.UpdateRegion(selectedRegion.ID);
 			gameScene.Unselect(selectedRegion.ID);
 			
 			selectedRegion = null;
@@ -492,9 +485,6 @@ public class GameLogic
 	{
 		if(targetedRegion != null)
 		{
-			targetedRegion.setFocus(false);
-			
-			gameScene.UpdateRegion(targetedRegion.ID);
 			gameScene.Untarget(targetedRegion.ID);
 			
 			targetedRegion = null;

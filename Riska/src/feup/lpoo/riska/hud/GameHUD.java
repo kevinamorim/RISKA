@@ -423,17 +423,17 @@ public class GameHUD extends HUD implements Displayable {
 			poolRight[i].setPosition(pX, pY);
 		}
 		
-		attachChild(soldiersLeft);
-		attachChild(soldiersRight);
+		//attachChild(soldiersLeft);
+		//attachChild(soldiersRight);
 		
-		attachChild(soldiersLeftNum);
-		attachChild(soldiersRightNum);
+		//attachChild(soldiersLeftNum);
+		//attachChild(soldiersRightNum);
 
 		for(int i = 0; i < soldiersPerPool; i++)
 		{
 			// Attach to HUD
-			attachChild(poolRight[i]);
-			attachChild(poolLeft[i]);
+			//attachChild(poolRight[i]);
+			//attachChild(poolLeft[i]);
 		}
 
 		updatePoolsColors();
@@ -548,12 +548,12 @@ public class GameHUD extends HUD implements Displayable {
 
 	public void updatePoolsColors()
 	{
-		for(int i = 0; i < poolLeft.length; i++)
-		{
-			// Set Color
-			poolLeft[i].setColor(logic.Selected() ? logic.selectedRegion.priColor : Utils.OtherColors.WHITE);
-			poolRight[i].setColor(logic.Targeted() ? logic.targetedRegion.priColor : Utils.OtherColors.DARK_YELLOW);
-		}	
+//		for(int i = 0; i < poolLeft.length; i++)
+//		{
+//			// Set Color
+//			poolLeft[i].setColor(logic.Selected() ? logic.selectedRegion.priColor : Utils.OtherColors.WHITE);
+//			poolRight[i].setColor(logic.Targeted() ? logic.targetedRegion.priColor : Utils.OtherColors.DARK_YELLOW);
+//		}	
 	}
 
 	// ======================================================
