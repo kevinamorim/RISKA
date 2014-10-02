@@ -557,6 +557,7 @@ public class GameScene extends BaseScene implements IOnSceneTouchListener, IScro
 
 	private void onRegionReleased(ButtonSprite btn, int regionID)
 	{
+		
 		//btn.setCurrentTileIndex(0);
 	}
 
