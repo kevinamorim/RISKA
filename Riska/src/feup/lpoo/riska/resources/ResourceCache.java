@@ -93,9 +93,6 @@ public class ResourceCache {
 	public ITiledTextureRegion buttonRegion;
 	public ITiledTextureRegion buttonRegionBig;
 	public ITiledTextureRegion empty;
-
-	private BuildableBitmapTextureAtlas gameBackgroundTextureAtlas;
-	public ITextureRegion background;
 	
 	private BuildableBitmapTextureAtlas mapTextureAtlas;
 	public ITextureRegion map;
@@ -390,15 +387,8 @@ public class ResourceCache {
 	private void createGameGraphics()
 	{
 		BitmapTextureAtlasTextureRegionFactory.setAssetBasePath("gfx/themes/" + currentTheme + "game/");
-
-		int backgroundTextureWidth = 4096, backgroundTextureHeight = 2048;
-		int gameTextureWidth = 4096, gameTextureHeight = 2048;
-
-		gameBackgroundTextureAtlas = new BuildableBitmapTextureAtlas(activity.getTextureManager(),
-				backgroundTextureWidth, backgroundTextureHeight, TextureOptions.BILINEAR);
 		
-		background = BitmapTextureAtlasTextureRegionFactory.createFromAsset(gameBackgroundTextureAtlas, activity,
-				"background.png");
+		int gameTextureWidth = 4096, gameTextureHeight = 2048;
 
 		
 		gameTextureAtlas = new BuildableBitmapTextureAtlas(activity.getTextureManager(),
@@ -495,7 +485,6 @@ public class ResourceCache {
 		
 		try
 		{
-			gameBackgroundTextureAtlas.build(new BlackPawnTextureAtlasBuilder<IBitmapTextureAtlasSource, BitmapTextureAtlas>(0, 1, 0));
 			gameTextureAtlas.build(new BlackPawnTextureAtlasBuilder<IBitmapTextureAtlasSource, BitmapTextureAtlas>(0, 1, 0));
 			gameNEWTextureAtlas.build(new BlackPawnTextureAtlasBuilder<IBitmapTextureAtlasSource, BitmapTextureAtlas>(0, 1, 0));
 		}
@@ -549,7 +538,6 @@ public class ResourceCache {
 		// Texture Atlas
 		gameTextureAtlas.load();
 		gameNEWTextureAtlas.load();
-		gameBackgroundTextureAtlas.load();
 		
 		// Fonts
 		mGameFont.load();

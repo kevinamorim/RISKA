@@ -31,7 +31,7 @@ public class MainMenuScene extends BaseScene implements Displayable, IOnMenuItem
 	// ==================================================
 	// CONSTANTS
 	// ==================================================
-	private enum CHILD { MAIN, OPTIONS, START, NEW, GO, ANY, ALL};
+	private enum CHILD { MAIN, OPTIONS, START, NEW, GO, NONE };
 
 	private enum OPTIONS_BUTTON { SFX, MUSIC, MENU_ANIMATIONS, GAME_ANIMATIONS};
 	
@@ -55,9 +55,6 @@ public class MainMenuScene extends BaseScene implements Displayable, IOnMenuItem
 
 	private MenuHUD menuHUD;
 
-	private final int START_NEW = 2;
-	private final int START_LOAD = 3;
-
 	private final int NEW_GO = 4;
 
 	private SpriteBackground background;
@@ -67,12 +64,13 @@ public class MainMenuScene extends BaseScene implements Displayable, IOnMenuItem
 	private RiskaSprite menuMainRiskaTitle;
 	//private RiskaSprite menuMainCreditsTitle;
 	private RiskaSprite menuMainStartButton;
-	private RiskaButtonSprite menuMainOptionsButton;
+	private RiskaSprite menuMainOptionsButton;
 
 	// --------------------------
 	// START MENU
-	private RiskaMenuItem menuStartNewButton;
-	private RiskaMenuItem menuStartLoadButton;
+	private RiskaSprite startTitle;
+	private RiskaSprite menuStartNewButton;
+	private RiskaSprite menuStartLoadButton;
 
 	// --------------------------
 	// OPTIONS MENU
@@ -122,10 +120,10 @@ public class MainMenuScene extends BaseScene implements Displayable, IOnMenuItem
 	@Override
 	public void createScene()
 	{
-		currentChild = CHILD.MAIN;
-		currentNewGameTab = NEWGAME_TAB.NONE;
-
 		createDisplay();
+		
+		changeChildScene(CHILD.NONE, CHILD.MAIN);
+		currentNewGameTab = NEWGAME_TAB.NONE;
 	}
 
 	@Override
@@ -179,8 +177,6 @@ public class MainMenuScene extends BaseScene implements Displayable, IOnMenuItem
 		createStartGameMenu();
 		createOptionsMenu();
 		createNewGameMenu();
-
-		setChildScene(currentChild);
 	}
 
 	private void createBackground()
@@ -245,7 +241,7 @@ public class MainMenuScene extends BaseScene implements Displayable, IOnMenuItem
 		Utils.wrap(menuMainStartButton, 0.5f * camera.getWidth(), 0.5f * camera.getHeight(), 1f);
 		menuMainStartButton.setPosition(0.72f * camera.getWidth(), 0.35f * camera.getHeight());
 
-		menuMainOptionsButton = new RiskaButtonSprite(resources.optionsTitle, vbom)
+		menuMainOptionsButton = new RiskaSprite(resources.optionsTitle, vbom)
 		{
 			@Override
 			public boolean onAreaTouched(TouchEvent ev, float pX, float pY)
@@ -273,9 +269,6 @@ public class MainMenuScene extends BaseScene implements Displayable, IOnMenuItem
 		
 		Utils.wrap(menuMainOptionsButton, 0.5f * camera.getWidth(), 0.5f * camera.getHeight(), 1f);
 		menuMainOptionsButton.setPosition(0.28f * camera.getWidth(), 0.35f * camera.getHeight());
-
-		registerTouchArea(menuMainStartButton);
-		registerTouchArea(menuMainOptionsButton);
 		
 		menuMain.attachChild(menuMainRiskaTitle);
 		menuMain.attachChild(menuMainStartButton);
@@ -284,6 +277,10 @@ public class MainMenuScene extends BaseScene implements Displayable, IOnMenuItem
 		menuMain.setOnMenuItemClickListener(this);
 		menuMain.setTouchAreaBindingOnActionDownEnabled(true);
 		//menuMain.setTouchAreaBindingOnActionMoveEnabled(true);
+		
+		menuMainRiskaTitle.fadeOut(0f);
+		menuMainStartButton.fadeOut(0f);
+		menuMainOptionsButton.fadeOut(0f);
 	}
 
 	private void onMenuButtonTouched(MENU_BUTTON x)
@@ -318,40 +315,47 @@ public class MainMenuScene extends BaseScene implements Displayable, IOnMenuItem
 			break;
 		}
 	}
+	
 	// ==================================================
 	// START GAME
 	// ==================================================
 	private void createStartGameMenu()
 	{
+		float textBoundingFactor = 0.8f;
+		
 		menuStart = new MenuScene(camera);
-
 		menuStart.setBackgroundEnabled(false);
 
-
-		menuStartNewButton = new RiskaMenuItem(START_NEW,
-				resources.button,
-				vbom, "New", resources.mMenuFont);
-
-		menuStartLoadButton = new RiskaMenuItem(START_LOAD,
-				resources.button,
-				vbom, "Load", resources.mMenuFont);
-
-
-		Utils.wrap(menuStartNewButton, 0.5f * camera.getWidth(), 0.25f * camera.getHeight(), 1f);
-		menuStartNewButton.setPosition(camera.getCenterX(), 0.53f * camera.getHeight());
-
-		Utils.wrap(menuStartLoadButton, 0.5f * camera.getWidth(), 0.25f * camera.getHeight(), 1f);
-		menuStartLoadButton.setPosition(camera.getCenterX(), 0.23f * camera.getHeight());
-
-		menuStart.addMenuItem(menuStartNewButton);
-		menuStart.addMenuItem(menuStartLoadButton);
+		menuStartNewButton = new RiskaSprite(resources.labelRegion, vbom, "New", resources.mMenuFont);
+		//Utils.wrap(menuStartNewButton, 0.45f * camera.getHeight(), 0.45f * camera.getHeight(), 1f);
+		menuStartNewButton.setSize(0.5f * camera.getWidth(), 0.25f * camera.getHeight());
+		menuStartNewButton.setPosition(0.5f * camera.getWidth(), 0.5f * camera.getHeight());
+		menuStartNewButton.setTextBoundingFactor(textBoundingFactor);
+		
+		menuStartLoadButton = new RiskaSprite(resources.labelLargeRegion, vbom, "Load", resources.mMenuFont);
+		//Utils.wrap(menuStartLoadButton, 0.4f * camera.getWidth(), 0.25f * camera.getHeight(), 1f);
+		menuStartLoadButton.setSize(menuStartNewButton.getWidth(), menuStartNewButton.getHeight());
+		menuStartLoadButton.setPosition(menuStartNewButton.getX(), 0.22f * camera.getHeight());
+		menuStartLoadButton.setTextBoundingFactor(textBoundingFactor);
+			
+		menuStart.attachChild(menuStartNewButton);
+		menuStart.attachChild(menuStartLoadButton);
 
 		menuStart.setOnMenuItemClickListener(this);
 		menuStart.setTouchAreaBindingOnActionDownEnabled(true);
 		//menuStart.setTouchAreaBindingOnActionMoveEnabled(true);
 
-		menuStartNewButton.setAlpha(0f);
-		menuStartLoadButton.setAlpha(0f);
+		menuStartNewButton.fadeOut(0f);
+		menuStartLoadButton.fadeOut(0f);
+		
+		startTitle = new RiskaSprite(resources.labelLargeRegion, vbom, "Start", resources.mMenuFont);
+		startTitle.setTextColor(Color.BLACK);
+		startTitle.setSize(0.6f * camera.getWidth(), 0.25f * camera.getHeight());
+		startTitle.setTextBoundingFactor(0.9f);
+		startTitle.setPosition(camera.getCenterX(), 0.85f * camera.getHeight());
+		startTitle.fadeOut(0f);
+		
+		menuStart.attachChild(startTitle);
 	}
 
 	// ==================================================
@@ -398,7 +402,6 @@ public class MainMenuScene extends BaseScene implements Displayable, IOnMenuItem
 		switchAudioMusic.setCurrentTileIndex(GameOptions.musicEnabled() ? 0 : 1);	
 		switchAudioMusic.setSize(0.15f * camera.getHeight(), 0.15f * camera.getHeight());
 		switchAudioMusic.setPosition(0.75f * camera.getWidth(), 0.60f * camera.getHeight());
-		switchAudioMusic.fadeOut(0f);
 		
 		textAudioMusic = new RiskaSprite(resources.labelRegion, vbom, "Music", resources.mMenuFont)
 		{
@@ -423,11 +426,11 @@ public class MainMenuScene extends BaseScene implements Displayable, IOnMenuItem
 			}
 
 		};
-		textAudioMusic.setTextColor(GameOptions.musicEnabled() ? Color.WHITE : Utils.OtherColors.DARK_GREY);
+		textAudioMusic.setTextColor(GameOptions.musicEnabled() ? Color.WHITE : Utils.OtherColors.DEACTIVATED_TEXT);
+		textAudioMusic.setColor(GameOptions.musicEnabled() ? Color.WHITE : Utils.OtherColors.DEACTIVATED);
 		textAudioMusic.setSize(0.4f * camera.getWidth(), 0.2f * camera.getHeight());
 		textAudioMusic.setTextBoundingFactor(textBoundingFactor);
 		textAudioMusic.setPosition(0.5f * camera.getWidth(), switchAudioMusic.getY());
-		textAudioMusic.fadeOut(0f);
 		
 		switchAudioSfx = new RiskaButtonSprite(resources.checkBoxRegion, vbom)
 		{
@@ -455,7 +458,6 @@ public class MainMenuScene extends BaseScene implements Displayable, IOnMenuItem
 		switchAudioSfx.setCurrentTileIndex(GameOptions.sfxEnabled() ? 0 : 1);	
 		switchAudioSfx.setSize(switchAudioMusic.getHeight(), switchAudioMusic.getHeight());
 		switchAudioSfx.setPosition(switchAudioMusic.getX(), 0.40f * camera.getHeight());
-		switchAudioSfx.fadeOut(0f);
 		
 		textAudioSfx = new RiskaSprite(resources.labelLargeRegion, vbom, "Sound Effects", resources.mMenuFont)
 		{
@@ -480,11 +482,11 @@ public class MainMenuScene extends BaseScene implements Displayable, IOnMenuItem
 			}
 
 		};
-		textAudioSfx.setTextColor(GameOptions.sfxEnabled() ? Color.WHITE : Utils.OtherColors.DARK_GREY);				
+		textAudioSfx.setTextColor(GameOptions.sfxEnabled() ? Color.WHITE : Utils.OtherColors.DEACTIVATED_TEXT);
+		textAudioSfx.setColor(GameOptions.sfxEnabled() ? Color.WHITE : Utils.OtherColors.DEACTIVATED);	
 		textAudioSfx.setSize(textAudioMusic.getWidth(), textAudioMusic.getHeight());
 		textAudioSfx.setTextBoundingFactor(textBoundingFactor);
 		textAudioSfx.setPosition(textAudioMusic.getX(), switchAudioSfx.getY());
-		textAudioSfx.fadeOut(0f);
 		
 		switchAnimations = new RiskaButtonSprite(resources.checkBoxRegion, vbom)
 		{
@@ -511,7 +513,6 @@ public class MainMenuScene extends BaseScene implements Displayable, IOnMenuItem
 		switchAnimations.setCurrentTileIndex(GameOptions.animationsEnabled() ? 0 : 1);
 		switchAnimations.setSize(switchAudioMusic.getHeight(), switchAudioMusic.getHeight());
 		switchAnimations.setPosition(switchAudioMusic.getX(), 0.20f * camera.getHeight());
-		switchAnimations.fadeOut(0f);
 		
 		textAnimations = new RiskaSprite(resources.labelRegion, vbom, "Animations", resources.mMenuFont)
 		{
@@ -535,11 +536,11 @@ public class MainMenuScene extends BaseScene implements Displayable, IOnMenuItem
 				return true;
 			}
 		};
-		textAnimations.setTextColor(GameOptions.animationsEnabled() ? Color.WHITE : Utils.OtherColors.DARK_GREY);
+		textAnimations.setTextColor(GameOptions.animationsEnabled() ? Color.WHITE : Utils.OtherColors.DEACTIVATED_TEXT);
+		textAnimations.setColor(GameOptions.animationsEnabled() ? Color.WHITE : Utils.OtherColors.DEACTIVATED);
 		textAnimations.setSize(textAudioMusic.getWidth(), textAudioMusic.getHeight());
 		textAnimations.setTextBoundingFactor(textBoundingFactor);
 		textAnimations.setPosition(textAudioMusic.getX(), switchAnimations.getY());
-		textAnimations.fadeOut(0f);
 		
 		menuOptions.attachChild(textAudioMusic);
 		menuOptions.attachChild(textAudioSfx);
@@ -548,6 +549,14 @@ public class MainMenuScene extends BaseScene implements Displayable, IOnMenuItem
 		//menuOptions.attachChild(switchAudioMusic);
 		//menuOptions.attachChild(switchAudioSfx);
 		//menuOptions.attachChild(switchAnimations);
+		
+		switchAudioMusic.fadeOut(0f);
+		switchAudioSfx.fadeOut(0f);
+		switchAnimations.fadeOut(0f);
+		textAudioMusic.fadeOut(0f);
+		textAudioSfx.fadeOut(0f);
+		textAnimations.fadeOut(0f);
+		
 		
 		optionsTitle = new RiskaSprite(resources.labelLargeRegion, vbom, "Options", resources.mMenuFont);
 		optionsTitle.setTextColor(Color.BLACK);
@@ -570,13 +579,15 @@ public class MainMenuScene extends BaseScene implements Displayable, IOnMenuItem
 			{
 				GameOptions.setSfxEnabled(false);
 				switchAudioSfx.setCurrentTileIndex(1);
-				textAudioSfx.setColor(Utils.OtherColors.DARK_GREY);
+				textAudioSfx.setTextColor(Utils.OtherColors.DEACTIVATED_TEXT);
+				textAudioSfx.setColor(Utils.OtherColors.DEACTIVATED);
 			}
 			else
 			{
 				GameOptions.setSfxEnabled(true);
 				switchAudioSfx.setCurrentTileIndex(0);
-				textAudioSfx.setColor(Color.WHITE);
+				textAudioSfx.setTextColor(Utils.OtherColors.WHITE);
+				textAudioSfx.setColor(Utils.OtherColors.WHITE);
 			}
 			break;
 
@@ -585,13 +596,15 @@ public class MainMenuScene extends BaseScene implements Displayable, IOnMenuItem
 			{
 				GameOptions.setMusicEnabled(false);
 				switchAudioMusic.setCurrentTileIndex(1);
-				textAudioMusic.setColor(Utils.OtherColors.DARK_GREY);
+				textAudioMusic.setTextColor(Utils.OtherColors.DEACTIVATED_TEXT);
+				textAudioMusic.setColor(Utils.OtherColors.DEACTIVATED);
 			}
 			else
 			{
 				GameOptions.setMusicEnabled(true);
 				switchAudioMusic.setCurrentTileIndex(0);
-				textAudioMusic.setColor(Color.WHITE);
+				textAudioMusic.setTextColor(Utils.OtherColors.WHITE);
+				textAudioMusic.setColor(Utils.OtherColors.WHITE);
 			}
 			break;
 
@@ -600,13 +613,15 @@ public class MainMenuScene extends BaseScene implements Displayable, IOnMenuItem
 			{
 				GameOptions.setAnimationsEnabled(false);
 				switchAnimations.setCurrentTileIndex(1);
-				textAnimations.setColor(Utils.OtherColors.DARK_GREY);
+				textAnimations.setTextColor(Utils.OtherColors.DEACTIVATED_TEXT);
+				textAnimations.setColor(Utils.OtherColors.DEACTIVATED);
 			}
 			else
 			{
 				GameOptions.setAnimationsEnabled(true);
 				switchAnimations.setCurrentTileIndex(0);
-				textAnimations.setColor(Color.WHITE);
+				textAnimations.setTextColor(Utils.OtherColors.WHITE);
+				textAnimations.setColor(Utils.OtherColors.WHITE);
 			}
 			animationTime = GameOptions.animationTime;
 			break;
@@ -1458,11 +1473,16 @@ public class MainMenuScene extends BaseScene implements Displayable, IOnMenuItem
 			menuMainRiskaTitle.fadeIn(animationTime);
 			menuMainStartButton.fadeIn(animationTime);
 			menuMainOptionsButton.fadeIn(animationTime);
+			menuMain.registerTouchArea(menuMainStartButton);
+			menuMain.registerTouchArea(menuMainOptionsButton);
 			break;
 
 		case START:
+			startTitle.fadeIn(animationTime);
 			menuStartNewButton.fadeIn(animationTime);
 			menuStartLoadButton.fadeIn(animationTime);
+			//menuStart.registerTouchArea(menuStartNewButton);
+			//menuStart.registerTouchArea(menuStartLoadButton);
 			break;
 
 		case OPTIONS:
@@ -1473,6 +1493,9 @@ public class MainMenuScene extends BaseScene implements Displayable, IOnMenuItem
 			textAnimations.fadeIn(animationTime);
 			textAudioSfx.fadeIn(animationTime);
 			textAudioMusic.fadeIn(animationTime);
+			menuOptions.registerTouchArea(textAnimations);
+			menuOptions.registerTouchArea(textAudioSfx);
+			menuOptions.registerTouchArea(textAudioMusic);
 			break;
 
 		case NEW:
@@ -1518,12 +1541,17 @@ public class MainMenuScene extends BaseScene implements Displayable, IOnMenuItem
 		case MAIN:
 			menuMainRiskaTitle.fadeOut(animationTime);
 			menuMainStartButton.fadeOut(animationTime);
-			menuMainOptionsButton.fadeOut(animationTime);
+			menuMainOptionsButton.fadeOut(animationTime);		
+			menuMain.unregisterTouchArea(menuMainStartButton);
+			menuMain.unregisterTouchArea(menuMainOptionsButton);
 			break;
 
 		case START:
+			startTitle.fadeOut(animationTime);
 			menuStartNewButton.fadeOut(animationTime);
-			menuStartLoadButton.fadeOut(animationTime);
+			menuStartLoadButton.fadeOut(animationTime);		
+			//menuStart.unregisterTouchArea(menuStartNewButton);
+			//menuStart.unregisterTouchArea(menuStartLoadButton);
 			break;
 
 		case OPTIONS:
@@ -1533,7 +1561,10 @@ public class MainMenuScene extends BaseScene implements Displayable, IOnMenuItem
 			switchAudioMusic.fadeOut(animationTime);
 			textAnimations.fadeOut(animationTime);
 			textAudioSfx.fadeOut(animationTime);
-			textAudioMusic.fadeOut(animationTime);
+			textAudioMusic.fadeOut(animationTime);	
+			menuOptions.unregisterTouchArea(textAnimations);
+			menuOptions.unregisterTouchArea(textAudioSfx);
+			menuOptions.unregisterTouchArea(textAudioMusic);
 			break;
 
 		case NEW:

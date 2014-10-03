@@ -40,7 +40,9 @@ public class Utils
 		public final static Color LIGHT_GREY = new Color(0.7f, 0.7f, 0.7f);
 		public final static Color LIGHT_BLUE = new Color(0.4f, 0.6f, 0.9f);
 		
-		
+		// OTHERS
+		public final static Color DEACTIVATED_TEXT = GREY;
+		public final static Color DEACTIVATED = DARK_GREY;
 	}
 
 	public static final int maxNumericChars = 50;
