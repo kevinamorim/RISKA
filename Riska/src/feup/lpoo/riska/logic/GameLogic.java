@@ -21,7 +21,7 @@ public class GameLogic
 
 	public enum MODE { NONE, SUMMON, DEPLOY, ATTACK };
 
-	private final GAME_STATE startingState = GAME_STATE.PLAY;
+	private final GAME_STATE startingState = GAME_STATE.SETUP;
 
 	private GAME_STATE currentState;
 	private GAME_STATE tempState;

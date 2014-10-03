@@ -1,8 +1,6 @@
 package feup.lpoo.riska.gameInterface;
 
 import org.andengine.entity.IEntity;
-import org.andengine.entity.modifier.AlphaModifier;
-import org.andengine.entity.modifier.DelayModifier;
 import org.andengine.entity.text.Text;
 import org.andengine.opengl.font.Font;
 import org.andengine.opengl.texture.region.ITiledTextureRegion;
@@ -15,7 +13,6 @@ public class RiskaTextButtonSprite extends RiskaButtonSprite {
 	private Text text;
 
 	private static float textBoundingFactor = 0.8f;
-	private static final float animationTime = 0.2f;
 	
 	public Color textColor = Color.PINK;
 
@@ -56,60 +53,6 @@ public class RiskaTextButtonSprite extends RiskaButtonSprite {
 
 			text.setPosition(Utils.halfX(this), Utils.halfY(this));
 		}
-	}
-
-	public void fadeOut(float deltaTime)
-	{
-		if(deltaTime == 0f)
-		{
-			setAlpha(0f);
-		}
-		else
-		{
-			AlphaModifier alphaOut = new AlphaModifier(deltaTime, 1f, 0f);
-			registerEntityModifier(alphaOut);
-		}
-	}
-
-	public void fadeOut()
-	{
-		fadeOut(animationTime);
-	}
-
-	public void fadeIn(float deltaTime)
-	{
-		if(deltaTime == 0f)
-		{
-			setAlpha(1f);
-		}
-		else
-		{
-			AlphaModifier alphaIn = new AlphaModifier(deltaTime, 0f, 1f);
-			registerEntityModifier(alphaIn);
-		}	
-	}
-
-	public void fadeIn()
-	{
-		fadeIn(animationTime);
-	}
-
-	public void animate()
-	{
-		final float newAnimationTime = 0.5f * animationTime;
-
-		DelayModifier waitForAnim = new DelayModifier(newAnimationTime)
-		{
-			@Override
-			protected void onModifierFinished(IEntity pItem)
-			{
-				fadeIn(newAnimationTime);
-			}
-
-		};
-		registerEntityModifier(waitForAnim);
-
-		fadeOut(newAnimationTime);
 	}
 
 	public Text getText()

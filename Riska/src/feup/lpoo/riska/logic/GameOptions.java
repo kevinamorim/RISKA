@@ -47,7 +47,7 @@ public class GameOptions {
 	private static boolean sfx = true;
 	private static boolean menuAnimations = true;
 	
-	private static final float defaultAnimationTime = 0.25f;
+	private static final float defaultAnimationTime = 0.21f;
 
 	public static float animationTime = defaultAnimationTime;
 	

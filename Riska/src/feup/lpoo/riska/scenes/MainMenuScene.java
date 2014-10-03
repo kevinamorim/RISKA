@@ -14,6 +14,7 @@ import org.andengine.input.touch.TouchEvent;
 import org.andengine.util.adt.color.Color;
 
 import android.view.MotionEvent;
+import feup.lpoo.riska.gameInterface.RiskaButtonSprite;
 import feup.lpoo.riska.gameInterface.RiskaSprite;
 import feup.lpoo.riska.gameInterface.RiskaCanvas;
 import feup.lpoo.riska.gameInterface.RiskaMenuItem;
@@ -34,6 +35,8 @@ public class MainMenuScene extends BaseScene implements Displayable, IOnMenuItem
 
 	private enum OPTIONS_TAB { MENU, AUDIO, GAME, NONE };
 	private enum OPTIONS_BUTTON { SFX, MUSIC, MENU_ANIMATIONS, GAME_ANIMATIONS};
+	
+	private enum MENU_BUTTON {OPTIONS, START, NEW, LOAD};
 
 	private enum NEWGAME_TAB { MAP, PLAYERS, LEVEL, GO, NONE };
 
@@ -66,8 +69,10 @@ public class MainMenuScene extends BaseScene implements Displayable, IOnMenuItem
 
 	// --------------------------
 	// MAIN MENU
-	private RiskaMenuItem menuMainStartButton;
-	private RiskaMenuItem menuMainOptionsButton;
+	private RiskaSprite menuMainRiskaTitle;
+	private RiskaSprite menuMainCreditsTitle;
+	private RiskaSprite menuMainStartButton;
+	private RiskaButtonSprite menuMainOptionsButton;
 
 	// --------------------------
 	// START MENU
@@ -228,26 +233,113 @@ public class MainMenuScene extends BaseScene implements Displayable, IOnMenuItem
 		menuMain = new MenuScene(camera);
 
 		menuMain.setBackgroundEnabled(false);
+		
+		menuMainRiskaTitle = new RiskaSprite(resources.riskaTitle, vbom);
+		Utils.wrap(menuMainRiskaTitle, camera.getWidth(), 0.33f * camera.getHeight(), 1f);
+		menuMainRiskaTitle.setPosition(0.5f * camera.getWidth(), 0.78f * camera.getHeight());
 
-		menuMainStartButton = new RiskaMenuItem(MAIN_START, resources.emptyButtonRegion, vbom, "Start", resources.mMenuFont);
+		menuMainStartButton = new RiskaSprite(resources.startTitle, vbom)
+		{
+			@Override
+			public boolean onAreaTouched(TouchEvent ev, float pX, float pY)
+			{
+				switch(ev.getMotionEvent().getActionMasked()) 
+				{
 
-		Utils.wrap(menuMainStartButton, 0.5f * camera.getWidth(), 0.25f * camera.getHeight(), 1f);
-		menuMainStartButton.setPosition(camera.getCenterX(), 0.53f * camera.getHeight());
-		//startButton.debug();
+				case MotionEvent.ACTION_DOWN:
+					break;
 
-		menuMainOptionsButton = new RiskaMenuItem(MAIN_OPTIONS, resources.emptyButtonRegion, vbom, "Options", resources.mMenuFont);
+				case MotionEvent.ACTION_OUTSIDE:
+					break;
 
-		Utils.wrap(menuMainOptionsButton, 0.5f * camera.getWidth(), 0.25f * camera.getHeight(), 1f);
-		menuMainOptionsButton.setPosition(camera.getCenterX(), 0.23f * camera.getHeight());
+				case MotionEvent.ACTION_UP:
+					if(Utils.contains(this, pX, pY))
+					{
+						onMenuButtonTouched(MENU_BUTTON.START);		
+					}
+					break;
+				}
 
-		menuMain.addMenuItem(menuMainStartButton);
-		menuMain.addMenuItem(menuMainOptionsButton);
+				return true;
+			}
+		};
+		
+		Utils.wrap(menuMainStartButton, 0.5f * camera.getWidth(), 0.5f * camera.getHeight(), 1f);
+		menuMainStartButton.setPosition(0.72f * camera.getWidth(), 0.35f * camera.getHeight());
+
+		menuMainOptionsButton = new RiskaButtonSprite(resources.optionsTitle, vbom)
+		{
+			@Override
+			public boolean onAreaTouched(TouchEvent ev, float pX, float pY)
+			{
+				switch(ev.getMotionEvent().getActionMasked()) 
+				{
+
+				case MotionEvent.ACTION_DOWN:
+					break;
+
+				case MotionEvent.ACTION_OUTSIDE:
+					break;
+
+				case MotionEvent.ACTION_UP:
+					if(Utils.contains(this, pX, pY))
+					{
+						onMenuButtonTouched(MENU_BUTTON.OPTIONS);		
+					}
+					break;
+				}
+
+				return true;
+			}
+		};
+		
+		Utils.wrap(menuMainOptionsButton, 0.5f * camera.getWidth(), 0.5f * camera.getHeight(), 1f);
+		menuMainOptionsButton.setPosition(0.28f * camera.getWidth(), 0.35f * camera.getHeight());
+
+		registerTouchArea(menuMainStartButton);
+		registerTouchArea(menuMainOptionsButton);
+		
+		menuMain.attachChild(menuMainRiskaTitle);
+		menuMain.attachChild(menuMainStartButton);
+		menuMain.attachChild(menuMainOptionsButton);
 
 		menuMain.setOnMenuItemClickListener(this);
 		menuMain.setTouchAreaBindingOnActionDownEnabled(true);
 		//menuMain.setTouchAreaBindingOnActionMoveEnabled(true);
 	}
 
+	private void onMenuButtonTouched(MENU_BUTTON x)
+	{
+		switch(x)
+		{
+
+		case START:
+			changeChildScene(CHILD.MAIN, CHILD.START);	
+			break;
+
+		case OPTIONS:
+			changeChildScene(CHILD.MAIN, CHILD.OPTIONS);
+			break;
+
+		case NEW:
+			resetGameInfo();
+			changeChildScene(CHILD.START, CHILD.NEW);
+			break;
+
+		case LOAD:
+			// TODO
+			break;
+
+//		case GO:
+//			onNewGameTabSelected(NEWGAME_TAB.GO);
+//			saveGameInfo();
+//			changeSceneToGame();
+//			break;
+
+		default:
+			break;
+		}
+	}
 	// ==================================================
 	// START GAME
 	// ==================================================
@@ -1580,23 +1672,6 @@ public class MainMenuScene extends BaseScene implements Displayable, IOnMenuItem
 		switch(pMenuItem.getID())
 		{
 
-		case MAIN_START:
-			changeChildScene(CHILD.MAIN, CHILD.START);	
-			break;
-
-		case MAIN_OPTIONS:
-			changeChildScene(CHILD.MAIN, CHILD.OPTIONS);
-			break;
-
-		case START_NEW:
-			resetGameInfo();
-			changeChildScene(CHILD.START, CHILD.NEW);
-			break;
-
-		case START_LOAD:
-			// TODO
-			break;
-
 		case NEW_GO:
 			onNewGameTabSelected(NEWGAME_TAB.GO);
 			saveGameInfo();
@@ -1636,6 +1711,7 @@ public class MainMenuScene extends BaseScene implements Displayable, IOnMenuItem
 		{
 
 		case MAIN:
+			menuMainRiskaTitle.fadeIn(animationTime);
 			menuMainStartButton.fadeIn(animationTime);
 			menuMainOptionsButton.fadeIn(animationTime);
 			break;
@@ -1711,6 +1787,7 @@ public class MainMenuScene extends BaseScene implements Displayable, IOnMenuItem
 		{
 
 		case MAIN:
+			menuMainRiskaTitle.fadeOut(animationTime);
 			menuMainStartButton.fadeOut(animationTime);
 			menuMainOptionsButton.fadeOut(animationTime);
 			break;

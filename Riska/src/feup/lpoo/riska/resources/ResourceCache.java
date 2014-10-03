@@ -6,6 +6,7 @@ import java.util.ArrayList;
 import org.andengine.audio.music.Music;
 import org.andengine.audio.music.MusicFactory;
 import org.andengine.engine.Engine;
+import org.andengine.extension.svg.opengl.texture.atlas.bitmap.SVGBitmapTextureAtlasTextureRegionFactory;
 import org.andengine.opengl.font.Font;
 import org.andengine.opengl.font.FontFactory;
 import org.andengine.opengl.texture.TextureOptions;
@@ -15,6 +16,7 @@ import org.andengine.opengl.texture.atlas.bitmap.BuildableBitmapTextureAtlas;
 import org.andengine.opengl.texture.atlas.bitmap.source.IBitmapTextureAtlasSource;
 import org.andengine.opengl.texture.atlas.buildable.builder.BlackPawnTextureAtlasBuilder;
 import org.andengine.opengl.texture.atlas.buildable.builder.ITextureAtlasBuilder.TextureAtlasBuilderException;
+import org.andengine.opengl.texture.region.BaseTextureRegion;
 import org.andengine.opengl.texture.region.ITextureRegion;
 import org.andengine.opengl.texture.region.ITiledTextureRegion;
 import org.andengine.opengl.vbo.VertexBufferObjectManager;
@@ -43,7 +45,7 @@ public class ResourceCache {
 
 	public static ResourceCache instance = new ResourceCache();
 
-	private static String currentTheme = "dark/";
+	private static String currentTheme = "arrrrgh/";
 
 	// ==================================================
 	// SPLASH RESOURCES
@@ -60,6 +62,9 @@ public class ResourceCache {
 	// ==================================================
 	// MAIN MENU RESOURCES
 	// ==================================================
+	private BuildableBitmapTextureAtlas mainMenuNewTextureAtlas;
+	public ITextureRegion riskaTitle, optionsTitle, startTitle;
+	
 	private BitmapTextureAtlas menuBackgroundTextureAtlas;
 	public ITextureRegion menuBackgroundRegion;
 
@@ -145,6 +150,7 @@ public class ResourceCache {
 	// FONTS
 	// ======================================================
 	private BitmapTextureAtlas fontTextureAtlas;
+	private BitmapTextureAtlas menuFontTextureAtlas;
 	
 	public Font mSplashFont;
 	public Font mMenuFont;
@@ -224,20 +230,51 @@ public class ResourceCache {
 	public void createMainMenuResources()
 	{
 		createMainMenuGraphics();
+		createMainMenuNewGraphics();
+		
 		createMainMenuFonts();
 	}
-	
+
+	private void createMainMenuNewGraphics()
+	{
+		BitmapTextureAtlasTextureRegionFactory.setAssetBasePath("gfx/themes/" + currentTheme + "menu/main/");
+		
+		int mainTextureWidth = 4096, mainTextureHeight = 4096;
+		int bgTextureWidth = 4096, bgTextureHeight = 2048;
+
+		
+		menuBackgroundTextureAtlas = new BitmapTextureAtlas(activity.getTextureManager(), 
+				bgTextureWidth, bgTextureHeight, TextureOptions.REPEATING_BILINEAR_PREMULTIPLYALPHA);
+		
+		menuBackgroundRegion = BitmapTextureAtlasTextureRegionFactory.createFromAsset(menuBackgroundTextureAtlas, 
+				activity, "Background.png", 0, 0);
+		
+		
+		mainMenuNewTextureAtlas = new BuildableBitmapTextureAtlas(activity.getTextureManager(), 
+				mainTextureWidth, mainTextureHeight, TextureOptions.BILINEAR);
+		
+		riskaTitle = BitmapTextureAtlasTextureRegionFactory.createFromAsset(mainMenuNewTextureAtlas, 
+				activity, "RiskaTitle.png");
+		
+		optionsTitle = BitmapTextureAtlasTextureRegionFactory.createFromAsset(mainMenuNewTextureAtlas, 
+				activity, "OptionsTitle.png");
+		
+		startTitle = BitmapTextureAtlasTextureRegionFactory.createFromAsset(mainMenuNewTextureAtlas, 
+				activity, "StartTitle.png");
+		
+		try
+		{
+			mainMenuNewTextureAtlas.build(new BlackPawnTextureAtlasBuilder<IBitmapTextureAtlasSource, BitmapTextureAtlas>(0, 1, 0));
+		}
+		catch(final TextureAtlasBuilderException e)
+		{
+			Debug.e(e);
+		}
+	}
+
 	private void createMainMenuGraphics()
 	{
 		BitmapTextureAtlasTextureRegionFactory.setAssetBasePath("gfx/themes/" + currentTheme + "menu/");
-
-		int bgTextureWidth = 4096, bgTextureHeight = 2048;
-
-		menuBackgroundTextureAtlas = new BitmapTextureAtlas(activity.getTextureManager(), 
-				bgTextureWidth, bgTextureHeight, TextureOptions.REPEATING_BILINEAR);
-		
-		menuBackgroundRegion = BitmapTextureAtlasTextureRegionFactory.createFromAsset(menuBackgroundTextureAtlas, 
-				activity, "background.png", 0, 0);
 
 		int mainTextureWidth = 2048, mainTextureHeight = 2048;
 
@@ -306,11 +343,14 @@ public class ResourceCache {
 	private void createMainMenuFonts()
 	{
 		FontFactory.setAssetBasePath("fonts/");
+		
+		menuFontTextureAtlas = new BitmapTextureAtlas(engine.getTextureManager(), 1024, 1024, TextureOptions.BILINEAR);
 
-		mMenuFont = FontFactory.createFromAsset(engine.getFontManager(),
-				engine.getTextureManager(), 1024, 1024, TextureOptions.BILINEAR,
-				activity.getAssets(), "Calibri.ttf", 125f, true,
-				Color.WHITE);
+		mMenuFont = FontFactory.create(
+				engine.getFontManager(),
+				menuFontTextureAtlas,
+				Typeface.createFromAsset(activity.getAssets(), FontFactory.getAssetBasePath() + "Cursive Option.ttf"),
+				125, true, Color.WHITE);
 	}
 	
 	public void loadMainMenuResources()
@@ -318,7 +358,10 @@ public class ResourceCache {
 		// Graphics
 		menuBackgroundTextureAtlas.load();		
 		mainMenuTextureAtlas.load();
+		mainMenuNewTextureAtlas.load();
 		propsTextureAtlas.load();
+		
+		//SVGTextureAtlas.load();
 		
 		// Fonts
 		mMenuFont.load();
@@ -327,6 +370,7 @@ public class ResourceCache {
 	public void unloadMainMenuResources()
 	{
 		mainMenuTextureAtlas.unload();
+		mainMenuNewTextureAtlas.unload();
 		menuBackgroundTextureAtlas.unload();
 		propsTextureAtlas.unload();
 	}
@@ -475,7 +519,7 @@ public class ResourceCache {
 				engine.getFontManager(),
 				fontTextureAtlas,
 				Typeface.createFromAsset(activity.getAssets(), FontFactory.getAssetBasePath() + "Prototype.ttf"),
-				48f, true, Color.WHITE);
+				48, true, Color.WHITE);
 
 		mInfoTabFont = FontFactory.create(engine.getFontManager(), 
 				engine.getTextureManager(), 512, 512, TextureOptions.BILINEAR,

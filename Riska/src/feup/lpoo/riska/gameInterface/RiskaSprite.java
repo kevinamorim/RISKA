@@ -18,7 +18,7 @@ public class RiskaSprite extends Sprite implements Animated {
 
 	private Text text;
 
-	private final float textBoundingFactor = 0.55f;
+	private float textBoundingFactor = 0.55f;
 	private final float fadeAnimationTime = 0.2f;
 	private final float rotateAnimationTime = 3f;
 	private final float rotateStartingAngle = 0f;
@@ -115,6 +115,11 @@ public class RiskaSprite extends Sprite implements Animated {
 		}
 	}
 
+	public void setTextBoundingFactor(float pFactor)
+	{
+		textBoundingFactor = pFactor;
+		wrapText();
+	}
 	// ==================================================
 	// OVERRIDE
 	// ==================================================
