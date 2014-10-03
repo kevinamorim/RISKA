@@ -120,6 +120,15 @@ public class RiskaSprite extends Sprite implements Animated {
 		textBoundingFactor = pFactor;
 		wrapText();
 	}
+	
+	public void setTextColor(Color pColor)
+	{
+		if(text != null)
+		{
+			text.setColor(pColor);
+		}
+	}
+	
 	// ==================================================
 	// OVERRIDE
 	// ==================================================
@@ -129,19 +138,6 @@ public class RiskaSprite extends Sprite implements Animated {
 		super.setSize(pWidth, pHeight);
 
 		wrapText();
-	}
-
-	@Override
-	public void setColor(Color pColor)
-	{
-		for(int i = 0; i < getChildCount(); i++)
-		{
-			IEntity e = this.getChildByIndex(i);
-
-			e.setColor(pColor);
-		}
-
-		super.setColor(pColor);
 	}
 
 	@Override

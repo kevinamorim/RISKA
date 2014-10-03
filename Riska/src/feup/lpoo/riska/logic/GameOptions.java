@@ -45,7 +45,7 @@ public class GameOptions {
 	
 	private static boolean music = true;
 	private static boolean sfx = true;
-	private static boolean menuAnimations = true;
+	private static boolean animations = true;
 	
 	private static final float defaultAnimationTime = 0.21f;
 
@@ -86,21 +86,21 @@ public class GameOptions {
 		sfx = value;
 	}
 	
-	public static boolean menuAnimationsEnabled()
+	public static boolean animationsEnabled()
 	{
-		return menuAnimations;
+		return animations;
 	}
 	
-	public static void setMenuAnimationsEnabled(boolean value)
+	public static void setAnimationsEnabled(boolean value)
 	{
 		if(value)
 		{
-			menuAnimations = true;
+			animations = true;
 			animationTime = defaultAnimationTime;
 		}
 		else
 		{
-			menuAnimations = false;
+			animations = false;
 			animationTime = 0f;
 		}
 	}

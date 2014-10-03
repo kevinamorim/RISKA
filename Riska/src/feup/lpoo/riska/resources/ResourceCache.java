@@ -6,7 +6,6 @@ import java.util.ArrayList;
 import org.andengine.audio.music.Music;
 import org.andengine.audio.music.MusicFactory;
 import org.andengine.engine.Engine;
-import org.andengine.extension.svg.opengl.texture.atlas.bitmap.SVGBitmapTextureAtlasTextureRegionFactory;
 import org.andengine.opengl.font.Font;
 import org.andengine.opengl.font.FontFactory;
 import org.andengine.opengl.texture.TextureOptions;
@@ -16,7 +15,6 @@ import org.andengine.opengl.texture.atlas.bitmap.BuildableBitmapTextureAtlas;
 import org.andengine.opengl.texture.atlas.bitmap.source.IBitmapTextureAtlasSource;
 import org.andengine.opengl.texture.atlas.buildable.builder.BlackPawnTextureAtlasBuilder;
 import org.andengine.opengl.texture.atlas.buildable.builder.ITextureAtlasBuilder.TextureAtlasBuilderException;
-import org.andengine.opengl.texture.region.BaseTextureRegion;
 import org.andengine.opengl.texture.region.ITextureRegion;
 import org.andengine.opengl.texture.region.ITiledTextureRegion;
 import org.andengine.opengl.vbo.VertexBufferObjectManager;
@@ -27,7 +25,6 @@ import android.graphics.Color;
 import android.graphics.Typeface;
 import feup.lpoo.riska.elements.Map;
 import feup.lpoo.riska.gameInterface.CameraManager;
-import feup.lpoo.riska.logic.GameInfo;
 import feup.lpoo.riska.logic.GameOptions;
 import feup.lpoo.riska.logic.MainActivity;
 import feup.lpoo.riska.music.Conductor;
@@ -73,12 +70,14 @@ public class ResourceCache {
 	public ITextureRegion emptyButtonRegion;
 	
 	private BuildableBitmapTextureAtlas propsTextureAtlas;
-	public ITextureRegion doorLeftRegion;
-	public ITextureRegion doorRightRegion;
 	public ITiledTextureRegion switchRegion;
 	public ITiledTextureRegion checkBoxRegion;
 	public ITiledTextureRegion factionColorRegion;
 	public ITiledTextureRegion mapsRegion;
+	
+	public ITiledTextureRegion labelSmallRegion;
+	public ITextureRegion labelRegion;
+	public ITextureRegion labelLargeRegion;
 	
 	public ITextureRegion barHRegion;
 	public ITextureRegion barVRegion;
@@ -297,16 +296,19 @@ public class ResourceCache {
 				"small_frame_covered.png");
 
 		
-		int propsTextureWidth = 2048, propsTextureHeight = 2048;
+		int propsTextureWidth = 4096, propsTextureHeight = 2048;
 		
 		propsTextureAtlas = new BuildableBitmapTextureAtlas(activity.getTextureManager(), 
 				propsTextureWidth, propsTextureHeight, TextureOptions.REPEATING_BILINEAR);
 		
-		doorLeftRegion = BitmapTextureAtlasTextureRegionFactory.createFromAsset(propsTextureAtlas, activity, 
-				"door_left.png");
+		labelSmallRegion = BitmapTextureAtlasTextureRegionFactory.createTiledFromAsset(propsTextureAtlas, activity, 
+				"props/label_small.png", 1, 3);
 		
-		doorRightRegion = BitmapTextureAtlasTextureRegionFactory.createFromAsset(propsTextureAtlas, activity, 
-				"door_right.png");
+		labelRegion = BitmapTextureAtlasTextureRegionFactory.createFromAsset(propsTextureAtlas, activity, 
+				"props/label.png");
+		
+		labelLargeRegion = BitmapTextureAtlasTextureRegionFactory.createFromAsset(propsTextureAtlas, activity, 
+				"props/label_large.png");
 		
 		barHRegion = BitmapTextureAtlasTextureRegionFactory.createFromAsset(propsTextureAtlas, activity, 
 				"bar.png");

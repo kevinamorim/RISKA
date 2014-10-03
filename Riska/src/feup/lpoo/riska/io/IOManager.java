@@ -16,7 +16,7 @@ public class IOManager {
 		
 		editor.putBoolean("Music", GameOptions.musicEnabled());
 		editor.putBoolean("SFX", GameOptions.sfxEnabled());
-		editor.putBoolean("MenuAnimations", GameOptions.menuAnimationsEnabled());
+		editor.putBoolean("MenuAnimations", GameOptions.animationsEnabled());
 		
 		editor.commit();
 	}
@@ -25,6 +25,6 @@ public class IOManager {
 	{	
 		GameOptions.setMusicEnabled(prefs.getBoolean("Music", true));
 		GameOptions.setSfxEnabled(prefs.getBoolean("SFX", true));
-		GameOptions.setMenuAnimationsEnabled(prefs.getBoolean("MenuAnimations", false /* TODO : change this to true, debug only*/));
+		GameOptions.setAnimationsEnabled(prefs.getBoolean("MenuAnimations", false /* TODO : change this to true, debug only*/));
 	}
 }
