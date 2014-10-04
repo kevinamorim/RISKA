@@ -1388,20 +1388,6 @@ public class MainMenuScene extends BaseScene implements Displayable, IOnMenuItem
 	// ==================================================
 	// UPDATE DATA
 	// ==================================================
-	private void setChildScene(CHILD x)
-	{	
-		MenuScene toSet = getChildScene(x);
-
-		if(toSet != null)
-		{
-			if(toSet.hasParent())
-			{
-				toSet.detachSelf();
-			}
-			setChildScene(toSet);
-		}
-	}
-
 	private MenuScene getChildScene(CHILD x)
 	{
 		switch(x)

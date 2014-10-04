@@ -10,7 +10,6 @@ import org.andengine.engine.options.resolutionpolicy.RatioResolutionPolicy;
 import org.andengine.entity.scene.Scene;
 import org.andengine.ui.activity.BaseGameActivity;
 
-import android.util.Log;
 import android.view.KeyEvent;
 import feup.lpoo.riska.gameInterface.CameraManager;
 import feup.lpoo.riska.io.IOManager;

@@ -34,11 +34,6 @@ public class RiskaButtonSprite extends ButtonSprite {
 		this(0f, 0f, pTexture, vbom);
 	}
 
-	private void update()
-	{
-		setColor(spriteColor);
-	}
-
 	@Override
 	public void setColor(Color pColor)
 	{

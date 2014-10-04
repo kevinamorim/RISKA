@@ -1,7 +1,6 @@
 package feup.lpoo.riska.logic;
 
 import java.util.ArrayList;
-import java.util.Random;
 
 import feup.lpoo.riska.elements.Map;
 import feup.lpoo.riska.elements.Player;
@@ -14,9 +13,6 @@ public class GameLogic
 	// ======================================================
 	// CONSTANTS
 	// ======================================================
-	private final int WIN_BONUS = 2;
-	private final int TURN_REPLENISHMENT = 3;
-
 	public enum GAME_STATE { PAUSED, SETUP, DEPLOY, ATTACK, MOVE, CPU, PLAY, ENDTURN, GAMEOVER };
 
 	public enum MODE { NONE, SUMMON, DEPLOY, ATTACK };
@@ -35,7 +31,6 @@ public class GameLogic
 	private Player[] players;
 
 	private GameScene gameScene;
-	private GameHUD gameHUD;
 
 	private Player currentPlayer;
 	private int currentPlayerIndex;
@@ -56,7 +51,6 @@ public class GameLogic
 	public GameLogic(GameScene scene, GameHUD hud)
 	{
 		gameScene = scene;
-		gameHUD = hud;
 		createPlayers();
 		createMap();
 
@@ -428,14 +422,7 @@ public class GameLogic
 
 	private Region selectTargetRegion(Region pRegion1)
 	{
-		if(pRegion1.hasEnemyNeighbor())
-		{
-			ArrayList<Region> neighbours = getEnemyNeighbours(pRegion1);
-			Random r = new Random();
-			int i = r.nextInt(neighbours.size());
-			return neighbours.get(i);
-		}
-
+		// TODO : Complete this for CPU
 		return null;
 	}
 
