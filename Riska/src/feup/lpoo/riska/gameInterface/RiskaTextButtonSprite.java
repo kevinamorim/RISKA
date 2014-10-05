@@ -9,7 +9,8 @@ import org.andengine.util.adt.color.Color;
 
 import feup.lpoo.riska.utilities.Utils;
 
-public class RiskaTextButtonSprite extends RiskaButtonSprite {
+public class RiskaTextButtonSprite extends RiskaButtonSprite
+{
 	private Text text;
 
 	private static float textBoundingFactor = 0.8f;
@@ -89,6 +90,8 @@ public class RiskaTextButtonSprite extends RiskaButtonSprite {
 	public void setTextBoundingFactor(float pValue)
 	{
 		textBoundingFactor = pValue;
+		
+		wrapText();
 	}
 
 	public void setTextColor(Color pColor)
@@ -96,7 +99,6 @@ public class RiskaTextButtonSprite extends RiskaButtonSprite {
 		textColor = pColor;
 		
 		updateText();
-		
 	}
 	
 	private void updateText()

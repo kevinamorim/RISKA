@@ -5,14 +5,16 @@ import org.andengine.entity.modifier.AlphaModifier;
 import org.andengine.entity.modifier.LoopEntityModifier;
 import org.andengine.entity.modifier.RotationModifier;
 import org.andengine.entity.sprite.TiledSprite;
+import org.andengine.entity.text.Text;
 import org.andengine.opengl.texture.region.ITiledTextureRegion;
 import org.andengine.opengl.vbo.VertexBufferObjectManager;
 
 import feup.lpoo.riska.interfaces.Animated;
+import feup.lpoo.riska.logic.GameOptions;
 
 public class RiskaTiledSprite extends TiledSprite implements Animated {
-
-	private final float fadeAnimationTime = 0.2f;
+	
+	private final float fadeAnimationTime = GameOptions.animationTime;
 	private final float rotateAnimationTime = 3f;
 	private final float rotateStartingAngle = 0f;
 	private final float rotateEndingAngle = -360f;

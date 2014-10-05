@@ -9,9 +9,10 @@ import org.andengine.opengl.texture.region.ITiledTextureRegion;
 import org.andengine.opengl.vbo.VertexBufferObjectManager;
 import org.andengine.util.adt.color.Color;
 
+import feup.lpoo.riska.interfaces.Animated;
 import feup.lpoo.riska.utilities.Utils;
 
-public class RiskaButtonSprite extends ButtonSprite {
+public class RiskaButtonSprite extends ButtonSprite implements Animated {
 
 	private Color spriteColor = Utils.OtherColors.GREY;
 	private static final float animationTime = 0.2f;
@@ -94,6 +95,36 @@ public class RiskaButtonSprite extends ButtonSprite {
 		registerEntityModifier(waitForAnim);
 
 		fadeOut(newAnimationTime);
+	}
+
+	@Override
+	public void rotate() {
+		// TODO Auto-generated method stub
+		
+	}
+
+	@Override
+	public void rotate(float pSpeed) {
+		// TODO Auto-generated method stub
+		
+	}
+
+	@Override
+	public void rotate(float pSpeed, float pStartingAngle, float pEndingAngle) {
+		// TODO Auto-generated method stub
+		
+	}
+
+	@Override
+	public void stopRotation() {
+		// TODO Auto-generated method stub
+		
+	}
+
+	@Override
+	public void fadeOutAndStopRotation(float deltaTime) {
+		// TODO Auto-generated method stub
+		
 	}
 
 

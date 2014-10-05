@@ -74,15 +74,18 @@ public class ResourceCache {
 	public ITiledTextureRegion checkBoxRegion;
 	public ITiledTextureRegion factionColorRegion;
 	
-	private BuildableBitmapTextureAtlas mapsTextureAtlas;
-	public ITiledTextureRegion mapsRegion;
-	
 	public ITiledTextureRegion labelSmallRegion;
 	public ITextureRegion labelRegion;
 	public ITextureRegion labelLargeRegion;
 	
 	public ITextureRegion tabRegion;
 	
+	public ITiledTextureRegion plusMinusButton;
+	
+	// NEW GAME MENU RESOURCES
+	private BuildableBitmapTextureAtlas mapsTextureAtlas;
+	public ITiledTextureRegion mapsRegion;
+
 	// ==================================================
 	// GAME RESOURCES
 	// ==================================================
@@ -318,6 +321,9 @@ public class ResourceCache {
 		
 		tabRegion = BitmapTextureAtlasTextureRegionFactory.createFromAsset(propsTextureAtlas, activity, 
 				"tab.png");
+		
+		plusMinusButton = BitmapTextureAtlasTextureRegionFactory.createTiledFromAsset(propsTextureAtlas, activity,
+				"plus_minus_button.png", 1, 3);
 		
 		try
 		{
