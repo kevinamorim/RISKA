@@ -278,7 +278,20 @@ public class ResourceCache {
 		
 		emptyButtonRegion = BitmapTextureAtlasTextureRegionFactory.createFromAsset(mainMenuTextureAtlas, activity, 
 				"empty_button.png");
-
+		
+		// CREATE THE MAPS SPRITES REGIONS
+		
+		int cols = 2;
+		int rows = 1;
+		
+		// THIS MUST BE CHANGED IF MAPS RESOLUTION CHANGE
+		int width = cols * 500;
+		int height = rows * 310;
+		
+		mapsTextureAtlas = new BuildableBitmapTextureAtlas(activity.getTextureManager(), width, height, TextureOptions.BILINEAR);
+		
+		mapsRegion = BitmapTextureAtlasTextureRegionFactory.createTiledFromAsset(mapsTextureAtlas, activity, 
+				"maps/maps_tiled.png", 2, 1);
 		
 		int propsTextureWidth = 4096, propsTextureHeight = 2048;
 		
@@ -306,11 +319,9 @@ public class ResourceCache {
 		tabRegion = BitmapTextureAtlasTextureRegionFactory.createFromAsset(propsTextureAtlas, activity, 
 				"tab.png");
 		
-		mapsRegion = BitmapTextureAtlasTextureRegionFactory.createTiledFromAsset(propsTextureAtlas, activity, 
-				"maps_tiled_atlas.png", 2, 2);
-		
 		try
 		{
+			mapsTextureAtlas.build(new BlackPawnTextureAtlasBuilder<IBitmapTextureAtlasSource, BitmapTextureAtlas>(0, 1, 0));
 			mainMenuTextureAtlas.build(new BlackPawnTextureAtlasBuilder<IBitmapTextureAtlasSource, BitmapTextureAtlas>(0, 1, 0));
 			propsTextureAtlas.build(new BlackPawnTextureAtlasBuilder<IBitmapTextureAtlasSource, BitmapTextureAtlas>(0, 1, 0));
 		}
@@ -338,6 +349,7 @@ public class ResourceCache {
 		// Graphics
 		menuBackgroundTextureAtlas.load();		
 		mainMenuTextureAtlas.load();
+		mapsTextureAtlas.load();
 		mainMenuNewTextureAtlas.load();
 		propsTextureAtlas.load();
 		
@@ -592,6 +604,7 @@ public class ResourceCache {
 		mGameOverFont.load();
 		
 	}
+	
 	// ==================================================
 	// SFX
 	// ==================================================

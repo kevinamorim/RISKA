@@ -22,11 +22,16 @@ public class RiskaCanvas extends Entity implements IEntity {
 		super(pX, pY, pWidth, pHeight);
 	}
 	
+	public RiskaCanvas(float pWidth, float pHeight)
+	{
+		super(0f, 0f, pWidth, pHeight);
+	}
+	
 	public RiskaCanvas(Camera camera)
 	{
 		super(camera.getCenterX(), camera.getCenterY(), camera.getWidth(), camera.getHeight());
 	}
-	
+
 	// ==================================================
 	// METHODS
 	// ==================================================

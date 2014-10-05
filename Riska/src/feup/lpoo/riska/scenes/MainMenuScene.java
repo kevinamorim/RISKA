@@ -8,21 +8,23 @@ import org.andengine.entity.scene.menu.item.IMenuItem;
 import org.andengine.entity.scene.menu.MenuScene.IOnMenuItemClickListener;
 import org.andengine.entity.sprite.ButtonSprite;
 import org.andengine.entity.sprite.Sprite;
-import org.andengine.entity.sprite.TiledSprite;
 import org.andengine.entity.text.Text;
 import org.andengine.input.touch.TouchEvent;
 import org.andengine.util.adt.color.Color;
 
+import android.util.Log;
 import android.view.MotionEvent;
 import feup.lpoo.riska.gameInterface.RiskaButtonSprite;
 import feup.lpoo.riska.gameInterface.RiskaSprite;
 import feup.lpoo.riska.gameInterface.RiskaCanvas;
 import feup.lpoo.riska.gameInterface.RiskaMenuItem;
+import feup.lpoo.riska.gameInterface.UIElement;
 import feup.lpoo.riska.hud.MenuHUD;
 import feup.lpoo.riska.interfaces.Displayable;
 import feup.lpoo.riska.io.IOManager;
 import feup.lpoo.riska.logic.GameInfo;
 import feup.lpoo.riska.logic.GameOptions;
+import feup.lpoo.riska.logic.MainActivity;
 import feup.lpoo.riska.logic.SceneManager.SCENE_TYPE;
 import feup.lpoo.riska.utilities.Utils;
 
@@ -57,14 +59,11 @@ public class MainMenuScene extends BaseScene implements Displayable, IOnMenuItem
 
 	private MenuHUD menuHUD;
 
-	private final int NEW_GO = 4;
-
 	private SpriteBackground background;
 
 	// --------------------------
 	// MAIN MENU
 	private RiskaSprite menuMainRiskaTitle;
-	//private RiskaSprite menuMainCreditsTitle;
 	private RiskaSprite menuMainStartButton;
 	private RiskaSprite menuMainOptionsButton;
 
@@ -86,7 +85,9 @@ public class MainMenuScene extends BaseScene implements Displayable, IOnMenuItem
 
 	// --------------------------
 	// NEW GAME MENU
-	private RiskaSprite[] mapSprites;
+	private UIElement mapsFrame;
+	private RiskaCanvas mapsContainer;
+	private RiskaButtonSprite[] mapSprite;
 
 	private RiskaSprite menuNewGamePlayersTab;
 	private RiskaCanvas menuNewGamePlayersCanvas;
@@ -113,6 +114,7 @@ public class MainMenuScene extends BaseScene implements Displayable, IOnMenuItem
 
 	private int levelIndex = GameOptions.defaultLvlIndex;
 	private int mapIndex = GameOptions.defaultMapIndex;
+	private final float maxMapScale = 1.2f;
 
 	// ==================================================
 	// ==================================================
@@ -397,7 +399,7 @@ public class MainMenuScene extends BaseScene implements Displayable, IOnMenuItem
 		{
 
 		case NEW:
-			resetGameInfo();
+			//resetGameInfo();
 			changeChildScene(CHILD.START, CHILD.NEW);
 			break;
 
@@ -703,25 +705,10 @@ public class MainMenuScene extends BaseScene implements Displayable, IOnMenuItem
 		menuNewGame = new MenuScene(camera);
 		menuNewGame.setBackgroundEnabled(false);
 
-		playerIsCpu = new boolean[GameOptions.maxPlayers];
-		playerActive = new boolean[GameOptions.maxPlayers];
-		playerActivable = new boolean[GameOptions.maxPlayers];
-		playerEditable = new boolean[GameOptions.maxPlayers];
-
-		playerColor = new int[GameOptions.maxPlayers];
-
 		createMaps();
-		createPlayersCanvas();
-		createLevelCanvas();
-		createGoCanvas();
-
-		menuNewGamePlayersCanvas.setAlpha(0f);
-		menuNewGameLevelCanvas.setAlpha(0f);
-		menuNewGameGoCanvas.setAlpha(0f);
-
-		menuNewGamePlayersTab.setAlpha(0f);
-		menuNewGameLevelTab.setAlpha(0f);
-		menuNewGameGoTab.setAlpha(0f);			
+		//createPlayersCanvas();
+		//createLevelCanvas();
+		//createGoCanvas();	
 
 		menuNewGame.setOnMenuItemClickListener(this);
 		menuNewGame.setTouchAreaBindingOnActionDownEnabled(true);
@@ -730,18 +717,60 @@ public class MainMenuScene extends BaseScene implements Displayable, IOnMenuItem
 
 	private void createMaps()
 	{
-		mapSprites = new RiskaSprite[GameOptions.numberOfMaps];
+		mapSprite = new RiskaButtonSprite[GameOptions.numberOfMaps];
 		
-		for(int i = 0; i < mapSprites.length; i++)
+		float width = 0.5f * camera.getWidth();
+		float height = MainActivity.RES_RATIO_INVERTED * width;
+	
+//		Log.d("Riska","");
+//		Log.d("Riska","Width: " + width);
+//		Log.d("Riska","Height: " + height);
+		
+		float sizeX = (maxMapScale + 0.1f) * width;
+		float sizeY = (maxMapScale + 0.1f) * height;
+		
+		float percWidth = width / (sizeX * GameOptions.numberOfMaps);
+		float percHeight = height / sizeY;
+		
+//		Log.d("Riska","percWidth: " + percWidth);
+//		Log.d("Riska","percHeight: " + percHeight);
+//		Log.d("Riska","");
+		mapsContainer = new RiskaCanvas(GameOptions.numberOfMaps * sizeX, sizeY);
+		
+//		Utils.printEntityDebugInfo(mapsContainer, "Container");
+		
+		float offset = 1f / (GameOptions.numberOfMaps * 2);
+		
+		for(int i = 0; i < mapSprite.length; i++)
 		{
-			//mapSprites[i] = new RiskaSprite
+			mapSprite[i] = new RiskaButtonSprite(resources.mapsRegion, vbom);	
+			mapSprite[i].setSize(width, height);
+			mapSprite[i].setCurrentTileIndex(i);
+			
+			float pX = ((float)i)/GameOptions.numberOfMaps + offset;
+			float pY = 0.5f;
+			
+			mapsContainer.addGraphic(mapSprite[i], pX, pY, percWidth, percHeight);
+			
+//			Utils.printEntityDebugInfo(mapSprite[i], "Map " + i);
 		}
+
+//		mapsContainer.addGraphic(new Sprite(0f, 0f, 10f, 10f, resources.button, vbom), 0.5f, 0.5f, 1f, 1f);
+		
+		mapSprite[mapIndex].setScale(1.2f);
+		
+		mapsContainer.setPosition(0.5f * camera.getWidth() + (0.5f * mapsContainer.getWidth() - mapSprite[mapIndex].getX()), 0.5f * camera.getHeight());
+		
+		menuNewGame.attachChild(mapsContainer);
 	}
 
 	private void createPlayersCanvas()
 	{
-		Sprite frame;
-		//frame = new Sprite(0, 0, resources.frameRegion, vbom);
+		playerIsCpu = new boolean[GameOptions.maxPlayers];
+		playerActive = new boolean[GameOptions.maxPlayers];
+		playerActivable = new boolean[GameOptions.maxPlayers];
+		playerEditable = new boolean[GameOptions.maxPlayers];
+		playerColor = new int[GameOptions.maxPlayers];
 
 		menuNewGamePlayersCanvas = new RiskaCanvas(camera.getCenterX(), camera.getCenterY(), 0.8f * camera.getWidth(), 0.65f * camera.getHeight());
 
@@ -1261,15 +1290,9 @@ public class MainMenuScene extends BaseScene implements Displayable, IOnMenuItem
 			break;
 
 		case NEW:
-			//menuNewGameMapTab.fadeIn(animationTime);
-			menuNewGamePlayersTab.fadeIn(animationTime);
-			menuNewGameLevelTab.fadeIn(animationTime);
-			menuNewGameGoTab.fadeIn(animationTime);
-
 			switch(currentNewGameTab)
 			{
 			case MAP:
-				//menuNewGameMapCanvas.fadeIn(animationTime);
 				break;
 
 			case PLAYERS:
@@ -1330,27 +1353,18 @@ public class MainMenuScene extends BaseScene implements Displayable, IOnMenuItem
 			break;
 
 		case NEW:
-			//menuNewGameMapTab.fadeOut(animationTime);
-			menuNewGamePlayersTab.fadeOut(animationTime);
-			menuNewGameLevelTab.fadeOut(animationTime);
-			menuNewGameGoTab.fadeOut(animationTime);
-
 			switch(currentNewGameTab)
 			{
 			case MAP:
-				//menuNewGameMapCanvas.fadeOut(animationTime);
 				break;
 
 			case PLAYERS:
-				menuNewGamePlayersCanvas.fadeOut(animationTime);
 				break;
 
 			case LEVEL:
-				menuNewGameLevelCanvas.fadeOut(animationTime);
 				break;
 
 			case GO:
-				menuNewGameGoCanvas.fadeOut(animationTime);
 				break;
 
 			default:

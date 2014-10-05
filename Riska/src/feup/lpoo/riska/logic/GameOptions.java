@@ -40,7 +40,7 @@ public class GameOptions {
 	public static int numberOfLevels = 4;
 	public static int defaultLvlIndex = 0;
 	
-	public static int numberOfMaps = 1;
+	public static int numberOfMaps = 2;
 	public static int defaultMapIndex = 0;
 	
 	private static boolean music = true;

@@ -9,6 +9,9 @@ import org.andengine.opengl.font.Font;
 import org.andengine.opengl.vbo.VertexBufferObjectManager;
 import org.andengine.util.adt.color.Color;
 
+import android.util.Log;
+import feup.lpoo.riska.gameInterface.CameraManager;
+import feup.lpoo.riska.gameInterface.RiskaButtonSprite;
 import feup.lpoo.riska.logic.MainActivity;
 
 public class Utils
@@ -478,6 +481,11 @@ public class Utils
 	public static float offsetY(IEntity e, float pY)
 	{
 		return pY - halfY(e);
+	}
+	
+	public static void printEntityDebugInfo(IEntity e, String name)
+	{
+		Log.d("Riska", ((name != null) ? name: "Entity") + ": at ("+ e.getX() + ", " + e.getY() + ") sized (" + e.getWidth() + ", " + e.getHeight() + ")");
 	}
 	
 }
