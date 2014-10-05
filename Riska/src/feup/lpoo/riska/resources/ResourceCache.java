@@ -73,19 +73,15 @@ public class ResourceCache {
 	public ITiledTextureRegion switchRegion;
 	public ITiledTextureRegion checkBoxRegion;
 	public ITiledTextureRegion factionColorRegion;
+	
+	private BuildableBitmapTextureAtlas mapsTextureAtlas;
 	public ITiledTextureRegion mapsRegion;
 	
 	public ITiledTextureRegion labelSmallRegion;
 	public ITextureRegion labelRegion;
 	public ITextureRegion labelLargeRegion;
 	
-	public ITextureRegion barHRegion;
-	public ITextureRegion barVRegion;
-	
 	public ITextureRegion tabRegion;
-	public ITextureRegion frameRegion;
-	public ITextureRegion smallFrameRegion;
-	public ITextureRegion coveredSmallFrameRegion;
 	
 	// ==================================================
 	// GAME RESOURCES
@@ -282,15 +278,6 @@ public class ResourceCache {
 		
 		emptyButtonRegion = BitmapTextureAtlasTextureRegionFactory.createFromAsset(mainMenuTextureAtlas, activity, 
 				"empty_button.png");
-		
-		smallFrameRegion = BitmapTextureAtlasTextureRegionFactory.createFromAsset(mainMenuTextureAtlas, activity, 
-				"small_frame.png");
-		
-		frameRegion = BitmapTextureAtlasTextureRegionFactory.createFromAsset(mainMenuTextureAtlas, activity, 
-				"frame.png");
-		
-		coveredSmallFrameRegion = BitmapTextureAtlasTextureRegionFactory.createFromAsset(mainMenuTextureAtlas, activity, 
-				"small_frame_covered.png");
 
 		
 		int propsTextureWidth = 4096, propsTextureHeight = 2048;
@@ -306,12 +293,6 @@ public class ResourceCache {
 		
 		labelLargeRegion = BitmapTextureAtlasTextureRegionFactory.createFromAsset(propsTextureAtlas, activity, 
 				"props/label_large.png");
-		
-		barHRegion = BitmapTextureAtlasTextureRegionFactory.createFromAsset(propsTextureAtlas, activity, 
-				"bar.png");
-		
-		barVRegion = BitmapTextureAtlasTextureRegionFactory.createFromAsset(propsTextureAtlas, activity, 
-				"bar_vertical.png");
 		
 		switchRegion = BitmapTextureAtlasTextureRegionFactory.createTiledFromAsset(propsTextureAtlas, activity, 
 				"switch.png", 1, 3);
@@ -529,7 +510,7 @@ public class ResourceCache {
 		{
 			String currentMapPath = "maps/" + i + "/";
 			
-			maps.add(new Map(currentMapPath + "regions.csv", currentMapPath + "neighbours.csv"));
+			maps.add(new Map(i, currentMapPath + "descr.des", currentMapPath + "regions.csv", currentMapPath + "neighbours.csv"));
 		}
 	}
 	

@@ -9,12 +9,19 @@ import feup.lpoo.riska.io.FileRead;
 
 public class Map {
 	
-	public final int MIN_SOLDIERS_PER_REGION = 1;
+	//public final int MIN_SOLDIERS_PER_REGION = 1;
 
 	private ArrayList<Region> regions;
+	
+	private String descr;
+	
+	private int INDEX;
 
-	public Map(String regionsFilename, String neighboursFilename)
+	public Map(int mapIndex, String descrFilename, String regionsFilename, String neighboursFilename)
 	{
+		INDEX = mapIndex;
+		
+		readDescription(descrFilename);
 		regions = readRegions(regionsFilename);
 		readNeighbours(neighboursFilename);
 	}
@@ -37,17 +44,19 @@ public class Map {
 		return regions.size();
 	}
 
-	public void initRegions() {
+	public void initRegions(int minGarrison)
+	{
 		for(Region region : regions)
 		{
-			region.setSoldiers(Math.max(MIN_SOLDIERS_PER_REGION, region.getGarrison()));
+			region.setSoldiers(Math.max(minGarrison, region.getGarrison()));
 		}
 	}
 	
-	private ArrayList<Region> readRegions(String filename) {
+	private ArrayList<Region> readRegions(String filename)
+	{
 		ArrayList<String> mapData = new ArrayList<String>();
 
-		new FileRead(filename, mapData);
+		FileRead.ReadCSV(filename, mapData);
 
 		ArrayList<Region> regions = new ArrayList<Region>();
 
@@ -74,7 +83,15 @@ public class Map {
 		}
 
 		return regions;
+	}
 
+	private void readDescription(String filename)
+	{
+		ArrayList<String> mapDescr = new ArrayList<String>();
+
+		FileRead.ReadDES(filename, mapDescr);
+		
+		//this.descr = mapDescr.get(0);
 	}
 
 	public void handOutRegions(Player[] players) {
@@ -111,7 +128,7 @@ public class Map {
 	private void readNeighbours(String filename) {
 
 		ArrayList<String> data = new ArrayList<String>();
-		new FileRead(filename, data);
+		FileRead.ReadCSV(filename, data);
 
 		for(int i = 0; i < data.size(); i++) {
 			int id = Integer.parseInt(data.get(i));
@@ -146,6 +163,16 @@ public class Map {
 	public Region getRegionByIndex(int index)
 	{
 		return regions.get(index);
+	}
+	
+	public String getDescription()
+	{
+		return descr;
+	}
+	
+	public int getIndex()
+	{
+		return INDEX;
 	}
 	
 	

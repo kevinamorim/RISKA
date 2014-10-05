@@ -86,9 +86,7 @@ public class MainMenuScene extends BaseScene implements Displayable, IOnMenuItem
 
 	// --------------------------
 	// NEW GAME MENU
-	private RiskaSprite menuNewGameMapTab;
-	private RiskaCanvas menuNewGameMapCanvas;
-	private RiskaCanvas[] mapCanvas;
+	private RiskaSprite[] mapSprites;
 
 	private RiskaSprite menuNewGamePlayersTab;
 	private RiskaCanvas menuNewGamePlayersCanvas;
@@ -125,7 +123,7 @@ public class MainMenuScene extends BaseScene implements Displayable, IOnMenuItem
 		createDisplay();
 
 		changeChildScene(CHILD.NONE, CHILD.MAIN);
-		currentNewGameTab = NEWGAME_TAB.NONE;
+		currentNewGameTab = NEWGAME_TAB.MAP;
 	}
 
 	@Override
@@ -493,7 +491,7 @@ public class MainMenuScene extends BaseScene implements Displayable, IOnMenuItem
 		textAudioMusic.setPosition(0.5f * camera.getWidth(), switchAudioMusic.getY());	
 		textAudioMusic.setTextBoundingFactor(textBoundingFactor);
 		textAudioMusic.setTextColor(GameOptions.musicEnabled() ? Color.WHITE : Utils.OtherColors.DEACTIVATED_TEXT);
-		textAudioMusic.setColor(GameOptions.musicEnabled() ? Color.WHITE : Utils.OtherColors.DEACTIVATED);
+		//textAudioMusic.setColor(GameOptions.musicEnabled() ? Color.WHITE : Utils.OtherColors.DEACTIVATED);
 
 		switchAudioSfx = new RiskaButtonSprite(resources.checkBoxRegion, vbom)
 		{
@@ -545,11 +543,11 @@ public class MainMenuScene extends BaseScene implements Displayable, IOnMenuItem
 			}
 
 		};
-		textAudioSfx.setTextColor(GameOptions.sfxEnabled() ? Color.WHITE : Utils.OtherColors.DEACTIVATED_TEXT);
-		textAudioSfx.setColor(GameOptions.sfxEnabled() ? Color.WHITE : Utils.OtherColors.DEACTIVATED);	
 		textAudioSfx.setSize(textAudioMusic.getWidth(), textAudioMusic.getHeight());
-		textAudioSfx.setTextBoundingFactor(textBoundingFactor);
 		textAudioSfx.setPosition(textAudioMusic.getX(), switchAudioSfx.getY());
+		textAudioSfx.setTextBoundingFactor(textBoundingFactor);
+		textAudioSfx.setTextColor(GameOptions.sfxEnabled() ? Color.WHITE : Utils.OtherColors.DEACTIVATED_TEXT);
+		//textAudioSfx.setColor(GameOptions.sfxEnabled() ? Color.WHITE : Utils.OtherColors.DEACTIVATED);
 
 		switchAnimations = new RiskaButtonSprite(resources.checkBoxRegion, vbom)
 		{
@@ -599,11 +597,11 @@ public class MainMenuScene extends BaseScene implements Displayable, IOnMenuItem
 				return true;
 			}
 		};
-		textAnimations.setTextColor(GameOptions.animationsEnabled() ? Color.WHITE : Utils.OtherColors.DEACTIVATED_TEXT);
-		textAnimations.setColor(GameOptions.animationsEnabled() ? Color.WHITE : Utils.OtherColors.DEACTIVATED);
 		textAnimations.setSize(textAudioMusic.getWidth(), textAudioMusic.getHeight());
-		textAnimations.setTextBoundingFactor(textBoundingFactor);
 		textAnimations.setPosition(textAudioMusic.getX(), switchAnimations.getY());
+		textAnimations.setTextBoundingFactor(textBoundingFactor);
+		textAnimations.setTextColor(GameOptions.animationsEnabled() ? Color.WHITE : Utils.OtherColors.DEACTIVATED_TEXT);
+		//textAnimations.setColor(GameOptions.animationsEnabled() ? Color.WHITE : Utils.OtherColors.DEACTIVATED);
 
 		menuOptions.attachChild(textAudioMusic);
 		menuOptions.attachChild(textAudioSfx);
@@ -712,21 +710,15 @@ public class MainMenuScene extends BaseScene implements Displayable, IOnMenuItem
 
 		playerColor = new int[GameOptions.maxPlayers];
 
-		createMapCanvas();
+		createMaps();
 		createPlayersCanvas();
 		createLevelCanvas();
 		createGoCanvas();
 
-		createNewGameTabs();
-
-		onNewGameTabSelected(NEWGAME_TAB.MAP);
-
-		menuNewGameMapCanvas.setAlpha(0f);
 		menuNewGamePlayersCanvas.setAlpha(0f);
 		menuNewGameLevelCanvas.setAlpha(0f);
 		menuNewGameGoCanvas.setAlpha(0f);
 
-		menuNewGameMapTab.setAlpha(0f);
 		menuNewGamePlayersTab.setAlpha(0f);
 		menuNewGameLevelTab.setAlpha(0f);
 		menuNewGameGoTab.setAlpha(0f);			
@@ -736,88 +728,20 @@ public class MainMenuScene extends BaseScene implements Displayable, IOnMenuItem
 		//menuNewGame.setTouchAreaBindingOnActionMoveEnabled(true);
 	}
 
-	private void createMapCanvas()
+	private void createMaps()
 	{
-		Sprite frame;
-
-		int numberOfMaps = GameOptions.numberOfMaps;
-
-		int maxCols = 4;
-		//int maxRows = 2;
-		int maxRows = numberOfMaps / maxCols + (numberOfMaps % maxCols > 0 ? 1 : 0 );
-
-		mapCanvas = new RiskaCanvas[numberOfMaps];
-
-		float heightFactor = 1f / (maxRows + 1);
-		float widthFactor = 1f / (maxCols + 1);
-
-		frame = new Sprite(0, 0, resources.frameRegion, vbom);
-
-		menuNewGameMapCanvas = new RiskaCanvas(camera.getCenterX(), camera.getCenterY(), 0.8f * camera.getWidth(), 0.65f * camera.getHeight());
-
-		for(int i = 0; i < numberOfMaps; i++)
-		{			
-			int hIndex = i % maxCols;
-			int vIndex = i / maxCols;
-
-			float x = (hIndex * widthFactor) + widthFactor;
-			float y = (vIndex * heightFactor) + heightFactor;
-
-			mapCanvas[i] = new RiskaCanvas(0f, 0f,
-					0.9f * widthFactor * menuNewGameMapCanvas.getWidth(),
-					0.9f * heightFactor * menuNewGameMapCanvas.getHeight())
-			{
-
-				@Override
-				public boolean onAreaTouched(TouchEvent ev, float pX, float pY)
-				{
-					switch(ev.getMotionEvent().getActionMasked()) 
-					{
-
-					case MotionEvent.ACTION_DOWN:
-						break;
-
-					case MotionEvent.ACTION_OUTSIDE:
-						break;
-
-					case MotionEvent.ACTION_UP:
-						onMapSelected(getTag());
-						break;
-
-					default:
-						break;
-					}
-
-					return true;
-				}
-
-			};
-			mapCanvas[i].setTag(i);
-
-			TiledSprite map = new TiledSprite(0, 0, resources.mapsRegion, vbom);
-			map.setCurrentTileIndex(i);
-			mapCanvas[i].addGraphicWrap(map, 0.5f, 0.725f, 0.9f, 0.55f);
-
-			Text text = new Text(0f, 0f, resources.mMenuFont, "Map " + i, 20, vbom);
-			mapCanvas[i].addText(text, 0.5f, 0.25f, 0.9f, 0.35f);
-
-			Sprite mapFrame = new Sprite(0, 0, resources.smallFrameRegion, vbom);
-			mapCanvas[i].addGraphic(mapFrame, 0.5f, 0.5f, 1f, 1f);
-
-			mapCanvas[i].setColor(i == 0 ? Color.WHITE : Utils.OtherColors.DARK_GREY);
-
-			menuNewGameMapCanvas.addGraphic(mapCanvas[i], x, y, 0.9f * widthFactor, 0.9f * heightFactor);
+		mapSprites = new RiskaSprite[GameOptions.numberOfMaps];
+		
+		for(int i = 0; i < mapSprites.length; i++)
+		{
+			//mapSprites[i] = new RiskaSprite
 		}
-
-		menuNewGameMapCanvas.addGraphic(frame, 0.5f, 0.5f, 1f, 1f);
-
-		menuNewGame.attachChild(menuNewGameMapCanvas);
 	}
 
 	private void createPlayersCanvas()
 	{
 		Sprite frame;
-		frame = new Sprite(0, 0, resources.frameRegion, vbom);
+		//frame = new Sprite(0, 0, resources.frameRegion, vbom);
 
 		menuNewGamePlayersCanvas = new RiskaCanvas(camera.getCenterX(), camera.getCenterY(), 0.8f * camera.getWidth(), 0.65f * camera.getHeight());
 
@@ -990,7 +914,7 @@ public class MainMenuScene extends BaseScene implements Displayable, IOnMenuItem
 			setPlayerAsCpu(i, playerIsCpu[i]);
 		}
 		menuNewGamePlayersCanvas.addGraphic(titleCanvas, 0.5f, titleY, 0.9f, heightFactor);
-		menuNewGamePlayersCanvas.addGraphic(frame, 0.5f, 0.5f, 1f, 1f);
+		//menuNewGamePlayersCanvas.addGraphic(frame, 0.5f, 0.5f, 1f, 1f);
 
 		menuNewGame.attachChild(menuNewGamePlayersCanvas);
 	}
@@ -998,7 +922,7 @@ public class MainMenuScene extends BaseScene implements Displayable, IOnMenuItem
 	private void createLevelCanvas()
 	{
 		Sprite frame;
-		frame = new Sprite(0, 0, resources.frameRegion, vbom);
+		//frame = new Sprite(0, 0, resources.frameRegion, vbom);
 
 		int levels = GameOptions.numberOfLevels;
 
@@ -1079,7 +1003,7 @@ public class MainMenuScene extends BaseScene implements Displayable, IOnMenuItem
 
 		// TODO
 
-		menuNewGameLevelCanvas.addGraphic(frame, 0.5f, 0.5f, 1f, 1f);
+		//menuNewGameLevelCanvas.addGraphic(frame, 0.5f, 0.5f, 1f, 1f);
 
 		menuNewGame.attachChild(menuNewGameLevelCanvas);
 	}
@@ -1089,225 +1013,8 @@ public class MainMenuScene extends BaseScene implements Displayable, IOnMenuItem
 		menuNewGameGoCanvas = new RiskaCanvas(camera.getCenterX(), camera.getCenterY(), 0.8f * camera.getWidth(), 0.65f * camera.getHeight());
 	}
 
-	private void createNewGameTabs()
-	{
-		int numberOfMenus = 4;
-		float factor = 1f / numberOfMenus;
-
-		menuNewGameMapTab = new RiskaSprite(resources.tabRegion, vbom, "Map", resources.mMenuFont)
-		{
-			@Override
-			public boolean onAreaTouched(TouchEvent ev, float pX, float pY) 
-			{
-				switch(ev.getMotionEvent().getActionMasked()) 
-				{
-				case MotionEvent.ACTION_DOWN:
-					break;
-
-				case MotionEvent.ACTION_OUTSIDE:
-					break;
-
-				case MotionEvent.ACTION_UP:
-					onNewGameTabSelected(NEWGAME_TAB.MAP);
-					break;
-				}
-
-				return true;
-			}
-		};
-
-		menuNewGamePlayersTab = new RiskaSprite(resources.tabRegion, vbom, "Players", resources.mMenuFont)
-		{
-			@Override
-			public boolean onAreaTouched(TouchEvent ev, float pX, float pY) 
-			{
-				switch(ev.getMotionEvent().getActionMasked()) 
-				{
-				case MotionEvent.ACTION_DOWN:
-					break;
-
-				case MotionEvent.ACTION_OUTSIDE:
-					break;
-
-				case MotionEvent.ACTION_UP:
-					onNewGameTabSelected(NEWGAME_TAB.PLAYERS);
-					break;
-				}
-
-				return true;
-			}
-		};
-
-		menuNewGameLevelTab = new RiskaSprite(resources.tabRegion, vbom, "Level", resources.mMenuFont)
-		{
-			@Override
-			public boolean onAreaTouched(TouchEvent ev, float pX, float pY) 
-			{
-				switch(ev.getMotionEvent().getActionMasked()) 
-				{
-				case MotionEvent.ACTION_DOWN:
-					break;
-
-				case MotionEvent.ACTION_OUTSIDE:
-					break;
-
-				case MotionEvent.ACTION_UP:
-					onNewGameTabSelected(NEWGAME_TAB.LEVEL);
-					break;
-				}
-
-				return true;
-			}
-		};
-
-		menuNewGameGoTab = new RiskaMenuItem(NEW_GO, resources.tabRegion, vbom, "GO!", resources.mMenuFont);
-
-		menuNewGameMapTab.setSize(factor * menuNewGameMapCanvas.getWidth(), 0.1f * camera.getHeight());
-		menuNewGameMapTab.setPosition(Utils.leftGlobal(menuNewGameMapCanvas) + 0.5f * factor * menuNewGameMapCanvas.getWidth(),
-				Utils.bottomGlobal(menuNewGameMapCanvas) - 1f * Utils.halfY(menuNewGameMapTab));
-
-		menuNewGamePlayersTab.setSize(menuNewGameMapTab.getWidth(), menuNewGameMapTab.getHeight());
-		menuNewGamePlayersTab.setPosition(Utils.rightGlobal(menuNewGameMapTab) + Utils.halfX(menuNewGamePlayersTab), menuNewGameMapTab.getY());
-
-		menuNewGameLevelTab.setSize(menuNewGameMapTab.getWidth(), menuNewGameMapTab.getHeight());
-		menuNewGameLevelTab.setPosition(Utils.rightGlobal(menuNewGamePlayersTab) + Utils.halfX(menuNewGameLevelTab), menuNewGameMapTab.getY());
-
-		menuNewGameGoTab.setSize(menuNewGameMapTab.getWidth(), menuNewGameMapTab.getHeight());
-		menuNewGameGoTab.setPosition(Utils.rightGlobal(menuNewGameLevelTab) + Utils.halfX(menuNewGameGoTab), menuNewGameMapTab.getY());
-
-		menuNewGame.attachChild(menuNewGameMapTab);
-		menuNewGame.attachChild(menuNewGamePlayersTab);
-		menuNewGame.attachChild(menuNewGameLevelTab);
-
-		menuNewGame.addMenuItem(menuNewGameGoTab);
-
-		menuNewGame.registerTouchArea(menuNewGameMapTab);
-		menuNewGame.registerTouchArea(menuNewGamePlayersTab);
-		menuNewGame.registerTouchArea(menuNewGameLevelTab);
-
-		// Map tab selected
-		menuNewGameMapTab.setColor(Utils.OtherColors.DARK_GREY);
-		menuNewGamePlayersTab.setColor(Utils.OtherColors.DARK_GREY);
-		menuNewGameLevelTab.setColor(Utils.OtherColors.DARK_GREY);
-		menuNewGameGoTab.setColor(Utils.OtherColors.DARK_GREY);
-	}
-
-	private void onNewGameTabSelected(NEWGAME_TAB newTab)
-	{
-
-		if(!currentNewGameTab.equals(newTab))
-		{
-			switch(currentNewGameTab)
-			{
-			case MAP:
-				menuNewGameMapTab.setColor(Utils.OtherColors.DARK_GREY);
-				menuNewGameMapCanvas.fadeOut(animationTime);
-				// Unregister all touch areas in that canvas
-				for(int i = 0; i < mapCanvas.length; i++)
-				{
-					menuNewGame.unregisterTouchArea(mapCanvas[i]);
-				}
-				break;
-
-			case PLAYERS:
-				menuNewGamePlayersTab.setColor(Utils.OtherColors.DARK_GREY);
-				menuNewGamePlayersCanvas.fadeOut(animationTime);
-				// Unregister all touch areas in that canvas
-				for(int i = 0; i < playerName.length; i++)
-				{
-					menuNewGame.unregisterTouchArea(playerColorButton[i]);
-					menuNewGame.unregisterTouchArea(playerName[i]);
-					menuNewGame.unregisterTouchArea(playerActiveButton[i]);
-					menuNewGame.unregisterTouchArea(playerCpuButton[i]);
-				}
-				break;
-
-			case LEVEL:
-				menuNewGameLevelTab.setColor(Utils.OtherColors.DARK_GREY);
-				menuNewGameLevelCanvas.fadeOut(animationTime);
-				// Unregister all touch areas in that canvas
-				for(int i = 0; i < levelCheckBox.length; i++)
-				{
-					menuNewGame.unregisterTouchArea(levelCheckBox[i]);
-					menuNewGame.unregisterTouchArea(levelText[i]);
-				}	
-				break;
-
-			case GO:
-				menuNewGameGoTab.setColor(Utils.OtherColors.DARK_GREY);
-				menuNewGameGoCanvas.fadeOut(animationTime);
-				break;
-
-			default:
-				break;
-			}
-
-			currentNewGameTab = newTab;
-
-			switch(newTab)
-			{
-
-			case MAP:
-				menuNewGameMapTab.setColor(Color.WHITE);
-				menuNewGameMapCanvas.fadeIn(animationTime);
-				// Register all touch areas in that canvas
-				for(int i = 0; i < mapCanvas.length; i++)
-				{
-					menuNewGame.registerTouchArea(mapCanvas[i]);
-				}
-				break;
-
-			case PLAYERS:
-				menuNewGamePlayersTab.setColor(Color.WHITE);
-				menuNewGamePlayersCanvas.fadeIn(animationTime);
-				// Register all touch areas in that canvas
-				for(int i = 0; i < playerName.length; i++)
-				{
-					menuNewGame.registerTouchArea(playerColorButton[i]);
-					menuNewGame.registerTouchArea(playerName[i]);
-					menuNewGame.registerTouchArea(playerActiveButton[i]);
-					menuNewGame.registerTouchArea(playerCpuButton[i]);
-				}
-				break;
-
-			case LEVEL:
-				menuNewGameLevelTab.setColor(Color.WHITE);
-				menuNewGameLevelCanvas.fadeIn(animationTime);
-				// Register all touch areas in that canvas
-				for(int i = 0; i < levelCheckBox.length; i++)
-				{
-					menuNewGame.registerTouchArea(levelCheckBox[i]);
-					menuNewGame.registerTouchArea(levelText[i]);
-				}	
-				break;
-
-			case GO:
-				menuNewGameGoTab.setColor(Color.WHITE);
-				menuNewGameGoCanvas.fadeIn(animationTime);
-				break;
-
-			default:
-				break;
-			}
-		}
-	}
-
 	private void onMapSelected(int index)
 	{
-		//Log.d("Riska", " > Map Selected");
-
-		for(int i = 0; i < GameOptions.numberOfMaps; i++)
-		{
-			if(i != index)
-			{
-				mapCanvas[index].setColor(Color.WHITE);
-			}
-			else
-			{
-				mapCanvas[index].setColor(Utils.OtherColors.DARK_GREY);
-				mapIndex = i;
-			}
-		}
 	}
 
 	private void onNameReleased(int index)
@@ -1486,11 +1193,11 @@ public class MainMenuScene extends BaseScene implements Displayable, IOnMenuItem
 		switch(pMenuItem.getID())
 		{
 
-		case NEW_GO:
-			onNewGameTabSelected(NEWGAME_TAB.GO);
-			saveGameInfo();
-			changeSceneToGame();
-			break;
+//		case NEW_GO:
+//			onNewGameTabSelected(NEWGAME_TAB.GO);
+//			saveGameInfo();
+//			changeSceneToGame();
+//			break;
 
 		default:
 			break;
@@ -1554,7 +1261,7 @@ public class MainMenuScene extends BaseScene implements Displayable, IOnMenuItem
 			break;
 
 		case NEW:
-			menuNewGameMapTab.fadeIn(animationTime);
+			//menuNewGameMapTab.fadeIn(animationTime);
 			menuNewGamePlayersTab.fadeIn(animationTime);
 			menuNewGameLevelTab.fadeIn(animationTime);
 			menuNewGameGoTab.fadeIn(animationTime);
@@ -1562,7 +1269,7 @@ public class MainMenuScene extends BaseScene implements Displayable, IOnMenuItem
 			switch(currentNewGameTab)
 			{
 			case MAP:
-				menuNewGameMapCanvas.fadeIn(animationTime);
+				//menuNewGameMapCanvas.fadeIn(animationTime);
 				break;
 
 			case PLAYERS:
@@ -1623,7 +1330,7 @@ public class MainMenuScene extends BaseScene implements Displayable, IOnMenuItem
 			break;
 
 		case NEW:
-			menuNewGameMapTab.fadeOut(animationTime);
+			//menuNewGameMapTab.fadeOut(animationTime);
 			menuNewGamePlayersTab.fadeOut(animationTime);
 			menuNewGameLevelTab.fadeOut(animationTime);
 			menuNewGameGoTab.fadeOut(animationTime);
@@ -1631,7 +1338,7 @@ public class MainMenuScene extends BaseScene implements Displayable, IOnMenuItem
 			switch(currentNewGameTab)
 			{
 			case MAP:
-				menuNewGameMapCanvas.fadeOut(animationTime);
+				//menuNewGameMapCanvas.fadeOut(animationTime);
 				break;
 
 			case PLAYERS:

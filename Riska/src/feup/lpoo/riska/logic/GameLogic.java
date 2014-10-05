@@ -75,7 +75,7 @@ public class GameLogic
 		map = GameInfo.currentMap;
 
 		map.handOutRegions(players);
-		map.initRegions();
+		map.initRegions(GameInfo.minGarrison);
 	}
 
 	// ======================================================
