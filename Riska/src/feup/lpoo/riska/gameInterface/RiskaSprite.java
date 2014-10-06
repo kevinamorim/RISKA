@@ -12,19 +12,20 @@ import org.andengine.opengl.vbo.VertexBufferObjectManager;
 import org.andengine.util.adt.color.Color;
 
 import feup.lpoo.riska.interfaces.Animated;
+import feup.lpoo.riska.logic.GameOptions;
 import feup.lpoo.riska.utilities.Utils;
 
 public class RiskaSprite extends Sprite implements Animated {
 
-	private Text text;
-
-	private float textBoundingFactor = 0.55f;
-	private final float fadeAnimationTime = 0.2f;
+	private float textBoundingFactor = 0.8f;
+	private final float animationTime = GameOptions.animationTime;
 	private final float rotateAnimationTime = 3f;
 	private final float rotateStartingAngle = 0f;
 	private final float rotateEndingAngle = -360f;
 	
 	private boolean rotating = false;
+
+	private Text text;
 	
 	private AlphaModifier alphaModifier;
 	private RotationModifier rotationModifier;
@@ -55,7 +56,6 @@ public class RiskaSprite extends Sprite implements Animated {
 	public RiskaSprite(ITextureRegion pTexture, VertexBufferObjectManager vbom, String pString, Font pFont, int maxChars)
 	{
 		super(0f, 0f, pTexture, vbom);
-
 
 		createText(pString, pFont, vbom, maxChars);
 		wrapText();
@@ -171,21 +171,24 @@ public class RiskaSprite extends Sprite implements Animated {
 	{
 		unregisterEntityModifier(alphaModifier);
 		
-		if(deltaTime == 0f)
+		if(getAlpha() > 0f)
 		{
-			setAlpha(0f);
-		}
-		else
-		{
-			alphaModifier = new AlphaModifier(deltaTime, 1f, 0f);
-			registerEntityModifier(alphaModifier);
+			if(deltaTime == 0f)
+			{
+				setAlpha(0f);
+			}
+			else
+			{
+				alphaModifier = new AlphaModifier(deltaTime, getAlpha(), 0f);
+				registerEntityModifier(alphaModifier);
+			}
 		}
 	}
 
 	@Override
 	public void fadeOut()
 	{
-		fadeOut(fadeAnimationTime);
+		fadeOut(animationTime);
 	}
 
 	@Override
@@ -193,21 +196,24 @@ public class RiskaSprite extends Sprite implements Animated {
 	{
 		unregisterEntityModifier(alphaModifier);
 		
-		if(deltaTime == 0f)
+		if(getAlpha() < 1f)
 		{
-			setAlpha(1f);
+			if(deltaTime == 0f)
+			{
+				setAlpha(1f);
+			}
+			else
+			{
+				alphaModifier = new AlphaModifier(deltaTime, getAlpha(), 1f);
+				registerEntityModifier(alphaModifier);
+			}
 		}
-		else
-		{
-			alphaModifier = new AlphaModifier(deltaTime, 0f, 1f);
-			registerEntityModifier(alphaModifier);
-		}	
 	}
 
 	@Override
 	public void fadeIn()
 	{
-		fadeIn(fadeAnimationTime);
+		fadeIn(animationTime);
 	}
 
 	@Override
@@ -267,5 +273,10 @@ public class RiskaSprite extends Sprite implements Animated {
 		}
 	}
 	
+	@Override
+	public boolean isVisible()
+	{
+		return (getAlpha() > 0) && super.isVisible();
+	}
 	
 }

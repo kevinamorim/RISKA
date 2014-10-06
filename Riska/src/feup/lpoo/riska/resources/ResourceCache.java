@@ -42,6 +42,7 @@ public class ResourceCache {
 
 	public static ResourceCache instance = new ResourceCache();
 
+	/* CURRENT THEME - CHANGE IF NEED BE */
 	private static String currentTheme = "arrrrgh/";
 
 	// ==================================================
@@ -59,30 +60,20 @@ public class ResourceCache {
 	// ==================================================
 	// MAIN MENU RESOURCES
 	// ==================================================
-	private BuildableBitmapTextureAtlas mainMenuNewTextureAtlas;
+	private BuildableBitmapTextureAtlas mainMenuTextureAtlas;
 	public ITextureRegion riskaTitle, optionsTitle, startTitle;
 	
 	private BitmapTextureAtlas menuBackgroundTextureAtlas;
-	public ITextureRegion menuBackgroundRegion;
-
-	private BuildableBitmapTextureAtlas mainMenuTextureAtlas;
-	public ITextureRegion button;
-	public ITextureRegion emptyButtonRegion;
+	public ITextureRegion menuBackground;
 	
 	private BuildableBitmapTextureAtlas propsTextureAtlas;
-	public ITiledTextureRegion switchRegion;
-	public ITiledTextureRegion checkBoxRegion;
-	public ITiledTextureRegion factionColorRegion;
-	
-	public ITiledTextureRegion labelSmallRegion;
-	public ITextureRegion labelRegion;
-	public ITextureRegion labelLargeRegion;
-	
-	public ITextureRegion tabRegion;
-	
+	public ITiledTextureRegion checkBox;
+	public ITiledTextureRegion factionColors;
 	public ITiledTextureRegion plusMinusButton;
+	public ITiledTextureRegion labelSmall;
+	public ITextureRegion label;
+	public ITextureRegion labelLarge;
 	
-	// NEW GAME MENU RESOURCES
 	private BuildableBitmapTextureAtlas mapsTextureAtlas;
 	public ITiledTextureRegion mapsRegion;
 
@@ -220,46 +211,51 @@ public class ResourceCache {
 	
 	// ==================================================
 	// MAIN MENU SCENE
-	// ==================================================
-	
+	// ==================================================	
 	public void createMainMenuResources()
 	{
+		createBackgroundGraphics();
 		createMainMenuGraphics();
-		createMainMenuNewGraphics();
+		createPropsGraphics();
+		createMapsGraphics(); // Not the game maps, but the previews in the "Choose Map" section
 		
 		createMainMenuFonts();
 	}
 
-	private void createMainMenuNewGraphics()
+	private void createBackgroundGraphics()
+	{
+		BitmapTextureAtlasTextureRegionFactory.setAssetBasePath("gfx/themes/" + currentTheme + "menu/background/");
+		
+		int TextureWidth = 2048, TextureHeight = 1024;
+		
+		menuBackgroundTextureAtlas = new BitmapTextureAtlas(activity.getTextureManager(), 
+				TextureWidth, TextureHeight, TextureOptions.BILINEAR);
+		
+		menuBackground = BitmapTextureAtlasTextureRegionFactory.createFromAsset(menuBackgroundTextureAtlas, 
+				activity, "background.png", 0, 0);
+	}
+
+	private void createMainMenuGraphics()
 	{
 		BitmapTextureAtlasTextureRegionFactory.setAssetBasePath("gfx/themes/" + currentTheme + "menu/main/");
 		
-		int mainTextureWidth = 4096, mainTextureHeight = 4096;
-		int bgTextureWidth = 4096, bgTextureHeight = 2048;
-
+		int TextureWidth = 4096, TextureHeight = 4096;
 		
-		menuBackgroundTextureAtlas = new BitmapTextureAtlas(activity.getTextureManager(), 
-				bgTextureWidth, bgTextureHeight, TextureOptions.REPEATING_BILINEAR_PREMULTIPLYALPHA);
+		mainMenuTextureAtlas = new BuildableBitmapTextureAtlas(activity.getTextureManager(), 
+				TextureWidth, TextureHeight, TextureOptions.BILINEAR);
 		
-		menuBackgroundRegion = BitmapTextureAtlasTextureRegionFactory.createFromAsset(menuBackgroundTextureAtlas, 
-				activity, "Background.png", 0, 0);
+		riskaTitle = BitmapTextureAtlasTextureRegionFactory.createFromAsset(mainMenuTextureAtlas, 
+				activity, "riska_title.png");
 		
+		optionsTitle = BitmapTextureAtlasTextureRegionFactory.createFromAsset(mainMenuTextureAtlas, 
+				activity, "options_title.png");
 		
-		mainMenuNewTextureAtlas = new BuildableBitmapTextureAtlas(activity.getTextureManager(), 
-				mainTextureWidth, mainTextureHeight, TextureOptions.BILINEAR);
-		
-		riskaTitle = BitmapTextureAtlasTextureRegionFactory.createFromAsset(mainMenuNewTextureAtlas, 
-				activity, "RiskaTitle.png");
-		
-		optionsTitle = BitmapTextureAtlasTextureRegionFactory.createFromAsset(mainMenuNewTextureAtlas, 
-				activity, "OptionsTitle.png");
-		
-		startTitle = BitmapTextureAtlasTextureRegionFactory.createFromAsset(mainMenuNewTextureAtlas, 
-				activity, "StartTitle.png");
+		startTitle = BitmapTextureAtlasTextureRegionFactory.createFromAsset(mainMenuTextureAtlas, 
+				activity, "start_title.png");
 		
 		try
 		{
-			mainMenuNewTextureAtlas.build(new BlackPawnTextureAtlasBuilder<IBitmapTextureAtlasSource, BitmapTextureAtlas>(0, 1, 0));
+			mainMenuTextureAtlas.build(new BlackPawnTextureAtlasBuilder<IBitmapTextureAtlasSource, BitmapTextureAtlas>(0, 1, 0));
 		}
 		catch(final TextureAtlasBuilderException e)
 		{
@@ -267,23 +263,49 @@ public class ResourceCache {
 		}
 	}
 
-	private void createMainMenuGraphics()
+	private void createPropsGraphics()
 	{
-		BitmapTextureAtlasTextureRegionFactory.setAssetBasePath("gfx/themes/" + currentTheme + "menu/");
-
-		int mainTextureWidth = 2048, mainTextureHeight = 2048;
-
-		mainMenuTextureAtlas = new BuildableBitmapTextureAtlas(activity.getTextureManager(), 
-				mainTextureWidth, mainTextureHeight, TextureOptions.REPEATING_BILINEAR);
 		
-		button = BitmapTextureAtlasTextureRegionFactory.createFromAsset(mainMenuTextureAtlas, activity, 
-				"button.png");
+		BitmapTextureAtlasTextureRegionFactory.setAssetBasePath("gfx/themes/" + currentTheme + "menu/props/");
 		
-		emptyButtonRegion = BitmapTextureAtlasTextureRegionFactory.createFromAsset(mainMenuTextureAtlas, activity, 
-				"empty_button.png");
+		int propsTextureWidth = 4096, propsTextureHeight = 2048;
+		
+		propsTextureAtlas = new BuildableBitmapTextureAtlas(activity.getTextureManager(), 
+				propsTextureWidth, propsTextureHeight, TextureOptions.REPEATING_BILINEAR);
+		
+		labelSmall = BitmapTextureAtlasTextureRegionFactory.createTiledFromAsset(propsTextureAtlas, activity, 
+				"label_small.png", 1, 3);
+		
+		label = BitmapTextureAtlasTextureRegionFactory.createFromAsset(propsTextureAtlas, activity, 
+				"label.png");
+		
+		labelLarge = BitmapTextureAtlasTextureRegionFactory.createFromAsset(propsTextureAtlas, activity, 
+				"label_large.png");
+		
+		checkBox = BitmapTextureAtlasTextureRegionFactory.createTiledFromAsset(propsTextureAtlas, activity, 
+				"check_box.png", 1, 3);
+		
+		factionColors = BitmapTextureAtlasTextureRegionFactory.createTiledFromAsset(propsTextureAtlas, activity,
+				"faction_color_button.png", 1, 3);
+		
+		plusMinusButton = BitmapTextureAtlasTextureRegionFactory.createTiledFromAsset(propsTextureAtlas, activity,
+				"plus_minus_button.png", 1, 3);
+		
+		try
+		{
+			propsTextureAtlas.build(new BlackPawnTextureAtlasBuilder<IBitmapTextureAtlasSource, BitmapTextureAtlas>(0, 1, 0));
+		}
+		catch(final TextureAtlasBuilderException e)
+		{
+			Debug.e(e);
+		}	
+	}
+	
+	private void createMapsGraphics()
+	{
+		BitmapTextureAtlasTextureRegionFactory.setAssetBasePath("gfx/themes/" + currentTheme + "menu/maps/");
 		
 		// CREATE THE MAPS SPRITES REGIONS
-		
 		int cols = 2;
 		int rows = 1;
 		
@@ -294,47 +316,16 @@ public class ResourceCache {
 		mapsTextureAtlas = new BuildableBitmapTextureAtlas(activity.getTextureManager(), width, height, TextureOptions.BILINEAR);
 		
 		mapsRegion = BitmapTextureAtlasTextureRegionFactory.createTiledFromAsset(mapsTextureAtlas, activity, 
-				"maps/maps_tiled.png", 2, 1);
-		
-		int propsTextureWidth = 4096, propsTextureHeight = 2048;
-		
-		propsTextureAtlas = new BuildableBitmapTextureAtlas(activity.getTextureManager(), 
-				propsTextureWidth, propsTextureHeight, TextureOptions.REPEATING_BILINEAR);
-		
-		labelSmallRegion = BitmapTextureAtlasTextureRegionFactory.createTiledFromAsset(propsTextureAtlas, activity, 
-				"props/label_small.png", 1, 3);
-		
-		labelRegion = BitmapTextureAtlasTextureRegionFactory.createFromAsset(propsTextureAtlas, activity, 
-				"props/label.png");
-		
-		labelLargeRegion = BitmapTextureAtlasTextureRegionFactory.createFromAsset(propsTextureAtlas, activity, 
-				"props/label_large.png");
-		
-		switchRegion = BitmapTextureAtlasTextureRegionFactory.createTiledFromAsset(propsTextureAtlas, activity, 
-				"switch.png", 1, 3);
-		
-		checkBoxRegion = BitmapTextureAtlasTextureRegionFactory.createTiledFromAsset(propsTextureAtlas, activity, 
-				"check_box.png", 1, 3);
-		
-		factionColorRegion = BitmapTextureAtlasTextureRegionFactory.createTiledFromAsset(propsTextureAtlas, activity,
-				"faction_color_button.png", 1, 3);
-		
-		tabRegion = BitmapTextureAtlasTextureRegionFactory.createFromAsset(propsTextureAtlas, activity, 
-				"tab.png");
-		
-		plusMinusButton = BitmapTextureAtlasTextureRegionFactory.createTiledFromAsset(propsTextureAtlas, activity,
-				"plus_minus_button.png", 1, 3);
+				"maps_tiled.png", 2, 1);
 		
 		try
 		{
 			mapsTextureAtlas.build(new BlackPawnTextureAtlasBuilder<IBitmapTextureAtlasSource, BitmapTextureAtlas>(0, 1, 0));
-			mainMenuTextureAtlas.build(new BlackPawnTextureAtlasBuilder<IBitmapTextureAtlasSource, BitmapTextureAtlas>(0, 1, 0));
-			propsTextureAtlas.build(new BlackPawnTextureAtlasBuilder<IBitmapTextureAtlasSource, BitmapTextureAtlas>(0, 1, 0));
 		}
 		catch(final TextureAtlasBuilderException e)
 		{
 			Debug.e(e);
-		}	
+		}
 	}
 
 	private void createMainMenuFonts()
@@ -343,9 +334,7 @@ public class ResourceCache {
 		
 		menuFontTextureAtlas = new BitmapTextureAtlas(engine.getTextureManager(), 1024, 1024, TextureOptions.BILINEAR);
 
-		mMenuFont = FontFactory.create(
-				engine.getFontManager(),
-				menuFontTextureAtlas,
+		mMenuFont = FontFactory.create(engine.getFontManager(), menuFontTextureAtlas,
 				Typeface.createFromAsset(activity.getAssets(), FontFactory.getAssetBasePath() + "Cursive Option.ttf"),
 				125, true, Color.WHITE);
 	}
@@ -355,11 +344,8 @@ public class ResourceCache {
 		// Graphics
 		menuBackgroundTextureAtlas.load();		
 		mainMenuTextureAtlas.load();
-		mapsTextureAtlas.load();
-		mainMenuNewTextureAtlas.load();
 		propsTextureAtlas.load();
-		
-		//SVGTextureAtlas.load();
+		mapsTextureAtlas.load();
 		
 		// Fonts
 		mMenuFont.load();
@@ -367,10 +353,14 @@ public class ResourceCache {
 	
 	public void unloadMainMenuResources()
 	{
+		// Graphics
 		mainMenuTextureAtlas.unload();
-		mainMenuNewTextureAtlas.unload();
 		menuBackgroundTextureAtlas.unload();
 		propsTextureAtlas.unload();
+		mapsTextureAtlas.unload();
+		
+		// Fonts
+		mMenuFont.unload();
 	}
 
 	// ==================================================

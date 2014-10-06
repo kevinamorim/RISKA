@@ -15,8 +15,8 @@ import org.andengine.util.adt.color.Color;
 
 import feup.lpoo.riska.elements.Map;
 import feup.lpoo.riska.elements.Region;
+import feup.lpoo.riska.gameInterface.RiskaButtonSprite;
 import feup.lpoo.riska.gameInterface.RiskaSprite;
-import feup.lpoo.riska.gameInterface.RiskaTextButtonSprite;
 import feup.lpoo.riska.hud.GameHUD;
 import feup.lpoo.riska.logic.BattleGenerator;
 import feup.lpoo.riska.logic.GameInfo;
@@ -52,7 +52,7 @@ public class GameScene extends BaseScene implements IOnSceneTouchListener, IScro
 
 	private RiskaSprite[] focusSprite;
 
-	private RiskaTextButtonSprite[] regionButton;
+	private RiskaButtonSprite[] regionButton;
 
 	private float regionButtonSize;
 	private float regionButtonSizeSelected;
@@ -155,7 +155,7 @@ public class GameScene extends BaseScene implements IOnSceneTouchListener, IScro
 		regionButtonSizeTargeted = 1.2f * regionButtonSize;
 
 		//regions = new ButtonSprite[map.getNumberOfRegions()];
-		regionButton = new RiskaTextButtonSprite[map.getNumberOfRegions()];
+		regionButton = new RiskaButtonSprite[map.getNumberOfRegions()];
 
 		for(int i = 0; i < map.getNumberOfRegions(); i++)
 		{
@@ -164,7 +164,7 @@ public class GameScene extends BaseScene implements IOnSceneTouchListener, IScro
 			float pX = 0.01f * region.getStratCenter().x * mapSprite.getWidth();
 			float pY = 0.01f * region.getStratCenter().y * mapSprite.getHeight();
 
-			regionButton[i] = new RiskaTextButtonSprite(resources.buttonRegion, vbom, "", resources.mGameNumbersFont, Utils.maxNumericChars)
+			regionButton[i] = new RiskaButtonSprite(resources.buttonRegion, vbom, "", resources.mGameNumbersFont, Utils.maxNumericChars)
 			{
 				@Override
 				public boolean onAreaTouched(TouchEvent ev, float pX, float pY) 
@@ -461,7 +461,7 @@ public class GameScene extends BaseScene implements IOnSceneTouchListener, IScro
 
 		for(int i = 0; i < regionButton.length; i++)
 		{
-			RiskaTextButtonSprite button = regionButton[i];
+			RiskaButtonSprite button = regionButton[i];
 
 			if(button.isVisible())
 			{

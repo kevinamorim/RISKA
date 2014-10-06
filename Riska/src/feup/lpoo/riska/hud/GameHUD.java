@@ -12,7 +12,6 @@ import org.andengine.util.adt.color.Color;
 import android.view.MotionEvent;
 import feup.lpoo.riska.gameInterface.CameraManager;
 import feup.lpoo.riska.gameInterface.RiskaButtonSprite;
-import feup.lpoo.riska.gameInterface.RiskaTextButtonSprite;
 import feup.lpoo.riska.gameInterface.UIElement;
 import feup.lpoo.riska.interfaces.Displayable;
 import feup.lpoo.riska.logic.GameInfo;
@@ -50,16 +49,16 @@ public class GameHUD extends HUD implements Displayable {
 	private TiledSprite attackSprite, summonSprite, deploySprite;
 
 	private RiskaButtonSprite[] poolLeft, poolRight;
-	private RiskaTextButtonSprite soldiersLeft, soldiersRight;
+	private RiskaButtonSprite soldiersLeft, soldiersRight;
 	private Text soldiersLeftNum, soldiersRightNum;
 
 	private UIElement actionButton, endTurnButton;
 
-	private RiskaTextButtonSprite movesLeft;
+	private RiskaButtonSprite movesLeft;
 
-	private RiskaTextButtonSprite playerPoolSprite;
+	private RiskaButtonSprite playerPoolSprite;
 
-	private RiskaTextButtonSprite currentPlayerButton;
+	private RiskaButtonSprite currentPlayerButton;
 
 
 	private GameScene gameScene;
@@ -351,7 +350,7 @@ public class GameHUD extends HUD implements Displayable {
 		// ----------------------------------------
 		// CREATE POOL CIRCLES
 		// ----------------------------------------
-		soldiersLeft = new RiskaTextButtonSprite(resources.buttonRegionBig, vbom, "", resources.mGameNumbersFont);
+		soldiersLeft = new RiskaButtonSprite(resources.buttonRegionBig, vbom, "", resources.mGameNumbersFont);
 		soldiersLeft.setColor(Utils.OtherColors.CYAN);
 		soldiersLeft.setSize(pWidth, pHeight);
 		soldiersLeft.setTextColor(Utils.OtherColors.BLACK);
@@ -360,7 +359,7 @@ public class GameHUD extends HUD implements Displayable {
 		soldiersLeft.setAlpha(0.9f);
 		soldiersLeft.setPosition(posOffset * Utils.halfX(soldiersLeft), posOffset * Utils.halfY(soldiersLeft));
 		
-		soldiersRight = new RiskaTextButtonSprite(resources.buttonRegionBig, vbom, "", resources.mGameNumbersFont);
+		soldiersRight = new RiskaButtonSprite(resources.buttonRegionBig, vbom, "", resources.mGameNumbersFont);
 		soldiersRight.setColor(Utils.OtherColors.DARK_RED);
 		soldiersRight.setSize(pWidth, pHeight);
 		soldiersRight.setTextColor(Utils.OtherColors.BLACK);
@@ -465,7 +464,7 @@ public class GameHUD extends HUD implements Displayable {
 		//		attachChild(actionButton);
 		//		attachChild(endTurnButton);
 
-		playerPoolSprite = new RiskaTextButtonSprite(resources.buttonRegion, vbom, "", resources.mGameFont)
+		playerPoolSprite = new RiskaButtonSprite(resources.buttonRegion, vbom, "", resources.mGameFont)
 		{
 			@Override
 			public boolean onAreaTouched(TouchEvent ev, float pX, float pY) 
@@ -512,7 +511,7 @@ public class GameHUD extends HUD implements Displayable {
 		float pWidth = 0.35f * camera.getHeight();
 		float pHeight = pWidth;
 
-		movesLeft = new RiskaTextButtonSprite(resources.buttonRegion, vbom, "", resources.mGameFont);
+		movesLeft = new RiskaButtonSprite(resources.buttonRegion, vbom, "", resources.mGameFont);
 		movesLeft.setColor(Utils.OtherColors.GREY);
 		movesLeft.setSize(pWidth, pHeight);
 

@@ -17,7 +17,6 @@ import android.view.MotionEvent;
 import feup.lpoo.riska.gameInterface.RiskaButtonSprite;
 import feup.lpoo.riska.gameInterface.RiskaSprite;
 import feup.lpoo.riska.gameInterface.RiskaCanvas;
-import feup.lpoo.riska.gameInterface.RiskaMenuItem;
 import feup.lpoo.riska.gameInterface.UIElement;
 import feup.lpoo.riska.hud.MenuHUD;
 import feup.lpoo.riska.interfaces.Displayable;
@@ -42,6 +41,8 @@ public class MainMenuScene extends BaseScene implements Displayable, IOnMenuItem
 	private enum START_BUTTON {NEW, LOAD };
 
 	private enum NEWGAME_TAB { MAP, PLAYERS, LEVEL, GO, NONE };
+
+	private enum PLAYERS_TAB { NUM_PLAYERS, NUM_HUMAN_PLAYERS };
 
 	private static float animationTime = GameOptions.animationTime;
 
@@ -106,9 +107,6 @@ public class MainMenuScene extends BaseScene implements Displayable, IOnMenuItem
 	private RiskaCanvas menuNewGameLevelCanvas;
 	private ButtonSprite[] levelCheckBox;
 	private Text[] levelText;
-
-	private RiskaMenuItem menuNewGameGoTab;
-	private RiskaCanvas menuNewGameGoCanvas;
 
 	private boolean[] playerIsCpu;
 	private boolean[] playerActive;
@@ -196,7 +194,7 @@ public class MainMenuScene extends BaseScene implements Displayable, IOnMenuItem
 				camera.getCenterY(),
 				camera.getWidth(),
 				camera.getHeight(),
-				resources.menuBackgroundRegion, 
+				resources.menuBackground, 
 				vbom));
 
 		setBackground(background);
@@ -321,7 +319,7 @@ public class MainMenuScene extends BaseScene implements Displayable, IOnMenuItem
 		menuStart = new MenuScene(camera);
 		menuStart.setBackgroundEnabled(false);
 
-		menuStartNewButton = new RiskaSprite(resources.labelRegion, vbom, "New", resources.mMenuFont)
+		menuStartNewButton = new RiskaSprite(resources.label, vbom, "New", resources.mMenuFont)
 		{
 			@Override
 			public boolean onAreaTouched(TouchEvent ev, float pX, float pY)
@@ -351,7 +349,7 @@ public class MainMenuScene extends BaseScene implements Displayable, IOnMenuItem
 		menuStartNewButton.setPosition(0.5f * camera.getWidth(), 0.5f * camera.getHeight());
 		menuStartNewButton.setTextBoundingFactor(textBoundingFactor);
 
-		menuStartLoadButton = new RiskaSprite(resources.labelLargeRegion, vbom, "Load", resources.mMenuFont)
+		menuStartLoadButton = new RiskaSprite(resources.labelLarge, vbom, "Load", resources.mMenuFont)
 		{
 			@Override
 			public boolean onAreaTouched(TouchEvent ev, float pX, float pY)
@@ -391,7 +389,7 @@ public class MainMenuScene extends BaseScene implements Displayable, IOnMenuItem
 		menuStartNewButton.fadeOut(0f);
 		menuStartLoadButton.fadeOut(0f);
 
-		startTitle = new RiskaSprite(resources.labelLargeRegion, vbom, "Start", resources.mMenuFont);
+		startTitle = new RiskaSprite(resources.labelLarge, vbom, "Start", resources.mMenuFont);
 		startTitle.setTextColor(Color.BLACK);
 		startTitle.setSize(0.6f * camera.getWidth(), 0.25f * camera.getHeight());
 		startTitle.setTextBoundingFactor(0.9f);
@@ -444,7 +442,7 @@ public class MainMenuScene extends BaseScene implements Displayable, IOnMenuItem
 	{
 		float textBoundingFactor = 0.7f;
 
-		switchAudioMusic = new RiskaButtonSprite(resources.checkBoxRegion, vbom)
+		switchAudioMusic = new RiskaButtonSprite(resources.checkBox, vbom)
 		{
 			@Override
 			public boolean onAreaTouched(TouchEvent ev, float pX, float pY)
@@ -471,7 +469,7 @@ public class MainMenuScene extends BaseScene implements Displayable, IOnMenuItem
 		switchAudioMusic.setPosition(0.5f * camera.getWidth(), 0.60f * camera.getHeight());
 		switchAudioMusic.setCurrentTileIndex(0);
 
-		textAudioMusic = new RiskaSprite(resources.labelRegion, vbom, "Music", resources.mMenuFont)
+		textAudioMusic = new RiskaSprite(resources.label, vbom, "Music", resources.mMenuFont)
 		{
 			@Override
 			public boolean onAreaTouched(TouchEvent ev, float pX, float pY)
@@ -500,7 +498,7 @@ public class MainMenuScene extends BaseScene implements Displayable, IOnMenuItem
 		textAudioMusic.setTextColor(GameOptions.musicEnabled() ? Color.WHITE : Utils.OtherColors.DEACTIVATED_TEXT);
 		//textAudioMusic.setColor(GameOptions.musicEnabled() ? Color.WHITE : Utils.OtherColors.DEACTIVATED);
 
-		switchAudioSfx = new RiskaButtonSprite(resources.checkBoxRegion, vbom)
+		switchAudioSfx = new RiskaButtonSprite(resources.checkBox, vbom)
 		{
 			@Override
 			public boolean onAreaTouched(TouchEvent ev, float pX, float pY)
@@ -527,7 +525,7 @@ public class MainMenuScene extends BaseScene implements Displayable, IOnMenuItem
 		switchAudioSfx.setPosition(switchAudioMusic.getX(), 0.40f * camera.getHeight());
 		switchAudioSfx.setCurrentTileIndex(0);	
 
-		textAudioSfx = new RiskaSprite(resources.labelLargeRegion, vbom, "Sound Effects", resources.mMenuFont)
+		textAudioSfx = new RiskaSprite(resources.labelLarge, vbom, "Sound Effects", resources.mMenuFont)
 		{
 			@Override
 			public boolean onAreaTouched(TouchEvent ev, float pX, float pY)
@@ -556,7 +554,7 @@ public class MainMenuScene extends BaseScene implements Displayable, IOnMenuItem
 		textAudioSfx.setTextColor(GameOptions.sfxEnabled() ? Color.WHITE : Utils.OtherColors.DEACTIVATED_TEXT);
 		//textAudioSfx.setColor(GameOptions.sfxEnabled() ? Color.WHITE : Utils.OtherColors.DEACTIVATED);
 
-		switchAnimations = new RiskaButtonSprite(resources.checkBoxRegion, vbom)
+		switchAnimations = new RiskaButtonSprite(resources.checkBox, vbom)
 		{
 			@Override
 			public boolean onAreaTouched(TouchEvent ev, float pX, float pY)
@@ -582,7 +580,7 @@ public class MainMenuScene extends BaseScene implements Displayable, IOnMenuItem
 		switchAnimations.setPosition(switchAudioMusic.getX(), 0.20f * camera.getHeight());
 		switchAnimations.setCurrentTileIndex(0);
 
-		textAnimations = new RiskaSprite(resources.labelRegion, vbom, "Animations", resources.mMenuFont)
+		textAnimations = new RiskaSprite(resources.label, vbom, "Animations", resources.mMenuFont)
 		{
 			@Override
 			public boolean onAreaTouched(TouchEvent ev, float pX, float pY)
@@ -626,7 +624,7 @@ public class MainMenuScene extends BaseScene implements Displayable, IOnMenuItem
 		textAnimations.fadeOut(0f);
 
 
-		optionsTitle = new RiskaSprite(resources.labelLargeRegion, vbom, "Options", resources.mMenuFont);
+		optionsTitle = new RiskaSprite(resources.labelLarge, vbom, "Options", resources.mMenuFont);
 		optionsTitle.setTextColor(Color.BLACK);
 		optionsTitle.setSize(0.6f * camera.getWidth(), 0.25f * camera.getHeight());
 		optionsTitle.setTextBoundingFactor(0.9f);
@@ -792,52 +790,136 @@ public class MainMenuScene extends BaseScene implements Displayable, IOnMenuItem
 		playerEditable = new boolean[GameOptions.maxPlayers];
 		playerColor = new int[GameOptions.maxPlayers];
 
-		textNumPlayers = new RiskaSprite(resources.labelLargeRegion, vbom, "Number of players", resources.mMenuFont);
+		textNumPlayers = new RiskaSprite(resources.labelLarge, vbom, "Number of players", resources.mMenuFont);
 		textNumPlayers.setSize(0.5f * camera.getWidth(), 0.2f * camera.getHeight());
 		textNumPlayers.setPosition(0.33f * camera.getWidth(), 0.66f * camera.getHeight());
 		textNumPlayers.setTextColor(Utils.OtherColors.WHITE);
 		textNumPlayers.setTextBoundingFactor(0.75f);
 
-		spriteNumPlayers = new RiskaSprite(resources.labelRegion, vbom, "" + numPlayers, resources.mMenuFont);
+		spriteNumPlayers = new RiskaSprite(resources.label, vbom, "0", resources.mMenuFont);
 		spriteNumPlayers.setSize(0.3f * camera.getWidth(), textNumPlayers.getHeight());
 		spriteNumPlayers.setPosition(0.8f * camera.getWidth(), textNumPlayers.getY());
 		spriteNumPlayers.setTextColor(Utils.OtherColors.BLACK);
 		spriteNumPlayers.setTextBoundingFactor(0.5f);
 
-		plusNumPlayers = new RiskaButtonSprite(resources.plusMinusButton, vbom);
-		plusNumPlayers.setSize(0.4f * spriteNumPlayers.getHeight(), 0.4f * spriteNumPlayers.getHeight());
+		plusNumPlayers = new RiskaButtonSprite(resources.plusMinusButton, vbom)
+		{
+			@Override
+			public boolean onAreaTouched(TouchEvent ev,float pX, float pY)
+			{
+				switch(ev.getMotionEvent().getActionMasked()) 
+				{
+
+				case MotionEvent.ACTION_DOWN:
+					break;
+
+				case MotionEvent.ACTION_OUTSIDE:
+					break;
+
+				case MotionEvent.ACTION_UP:
+					onPlusTouched(PLAYERS_TAB.NUM_PLAYERS);
+					break;
+				}
+
+				return true;
+			}
+		};
+		plusNumPlayers.setSize(0.5f * spriteNumPlayers.getHeight(), 0.5f * spriteNumPlayers.getHeight());
 		plusNumPlayers.setPosition(0.87f * camera.getWidth(), spriteNumPlayers.getY());
 		plusNumPlayers.setCurrentTileIndex(0);
 
-		minusNumPlayers = new RiskaButtonSprite(resources.plusMinusButton, vbom);
+		minusNumPlayers = new RiskaButtonSprite(resources.plusMinusButton, vbom)
+		{
+			@Override
+			public boolean onAreaTouched(TouchEvent ev,float pX, float pY)
+			{
+				switch(ev.getMotionEvent().getActionMasked()) 
+				{
+
+				case MotionEvent.ACTION_DOWN:
+					break;
+
+				case MotionEvent.ACTION_OUTSIDE:
+					break;
+
+				case MotionEvent.ACTION_UP:
+					onMinusTouched(PLAYERS_TAB.NUM_PLAYERS);
+					break;
+				}
+
+				return true;
+			}
+		};
 		minusNumPlayers.setSize(plusNumPlayers.getWidth(), plusNumPlayers.getHeight());
 		minusNumPlayers.setPosition(0.73f * camera.getWidth(), spriteNumPlayers.getY());
 		minusNumPlayers.setCurrentTileIndex(1);
 
 
-		textNumHumanPlayers = new RiskaSprite(resources.labelLargeRegion, vbom, "Human players", resources.mMenuFont);
+		textNumHumanPlayers = new RiskaSprite(resources.labelLarge, vbom, "Human players", resources.mMenuFont);
 		textNumHumanPlayers.setSize(textNumPlayers.getWidth(), textNumPlayers.getHeight());
 		textNumHumanPlayers.setPosition(textNumPlayers.getX(), 0.33f * camera.getHeight());
 		textNumHumanPlayers.setTextColor(Utils.OtherColors.WHITE);
 		textNumHumanPlayers.setTextBoundingFactor(0.75f);
 
-		spriteNumHumanPlayers = new RiskaSprite(resources.labelRegion, vbom, "" + numHumanPlayers, resources.mMenuFont);
+		spriteNumHumanPlayers = new RiskaSprite(resources.label, vbom, "0", resources.mMenuFont);
 		spriteNumHumanPlayers.setSize(spriteNumPlayers.getWidth(), spriteNumPlayers.getHeight());
 		spriteNumHumanPlayers.setPosition(spriteNumPlayers.getX(), textNumHumanPlayers.getY());
 		spriteNumHumanPlayers.setTextColor(Utils.OtherColors.BLACK);
 		spriteNumHumanPlayers.setTextBoundingFactor(0.5f);
 
-		plusNumHumanPlayers = new RiskaButtonSprite(resources.plusMinusButton, vbom);
+		plusNumHumanPlayers = new RiskaButtonSprite(resources.plusMinusButton, vbom)
+		{
+			@Override
+			public boolean onAreaTouched(TouchEvent ev,float pX, float pY)
+			{
+				switch(ev.getMotionEvent().getActionMasked()) 
+				{
+
+				case MotionEvent.ACTION_DOWN:
+					break;
+
+				case MotionEvent.ACTION_OUTSIDE:
+					break;
+
+				case MotionEvent.ACTION_UP:
+					onPlusTouched(PLAYERS_TAB.NUM_HUMAN_PLAYERS);
+					break;
+				}
+
+				return true;
+			}
+		};
 		plusNumHumanPlayers.setSize(plusNumPlayers.getWidth(), plusNumPlayers.getHeight());
 		plusNumHumanPlayers.setPosition(plusNumPlayers.getX(), spriteNumHumanPlayers.getY());
 		plusNumHumanPlayers.setCurrentTileIndex(0);
 
-		minusNumHumanPlayers = new RiskaButtonSprite(resources.plusMinusButton, vbom);
+		minusNumHumanPlayers = new RiskaButtonSprite(resources.plusMinusButton, vbom)
+		{
+			@Override
+			public boolean onAreaTouched(TouchEvent ev,float pX, float pY)
+			{
+				switch(ev.getMotionEvent().getActionMasked()) 
+				{
+
+				case MotionEvent.ACTION_DOWN:
+					break;
+
+				case MotionEvent.ACTION_OUTSIDE:
+					break;
+
+				case MotionEvent.ACTION_UP:
+					onMinusTouched(PLAYERS_TAB.NUM_HUMAN_PLAYERS);
+					break;
+				}
+
+				return true;
+			}
+		};
 		minusNumHumanPlayers.setSize(plusNumPlayers.getWidth(), plusNumPlayers.getHeight());
 		minusNumHumanPlayers.setPosition(minusNumPlayers.getX(), spriteNumHumanPlayers.getY());
 		minusNumHumanPlayers.setCurrentTileIndex(1);
 
-
+		updateNumPlayerSprites();
 
 		textNumPlayers.fadeOut(0f);
 		spriteNumPlayers.fadeOut(0f);
@@ -859,6 +941,114 @@ public class MainMenuScene extends BaseScene implements Displayable, IOnMenuItem
 		menuNewGame.attachChild(plusNumHumanPlayers);
 		menuNewGame.attachChild(minusNumHumanPlayers);
 	}
+	
+	private void updateNumPlayerSprites()
+	{
+		if(numPlayers < GameOptions.maxPlayers)
+		{
+			plusNumPlayers.fadeIn(animationTime);
+		}
+		else
+		{
+			plusNumPlayers.fadeOut(animationTime);
+		}
+		if(numPlayers > GameOptions.minPlayers)
+		{
+			minusNumPlayers.fadeIn(animationTime);
+		}
+		else
+		{
+			minusNumPlayers.fadeOut(animationTime);
+		}
+		
+		if(numHumanPlayers < GameOptions.maxPlayers)
+		{
+			plusNumHumanPlayers.fadeIn(animationTime);
+		}
+		else
+		{
+			plusNumHumanPlayers.fadeOut(animationTime);
+		}
+		if(numHumanPlayers > GameOptions.minHumanPlayers)
+		{
+			minusNumHumanPlayers.fadeIn(animationTime);
+		}
+		else
+		{
+			minusNumHumanPlayers.fadeOut(animationTime);
+		}
+		
+		spriteNumPlayers.setText("" + numPlayers);
+		spriteNumHumanPlayers.setText("" + numHumanPlayers);
+	}
+
+	private void onMinusTouched(PLAYERS_TAB x) 
+	{
+		switch(x)
+		{
+		case NUM_PLAYERS:
+			if(numPlayers > GameOptions.minPlayers)
+			{
+				numPlayers -= 1;				
+			}
+			else
+			{
+				numPlayers = Math.max(numPlayers, GameOptions.minPlayers);
+			}
+			numHumanPlayers = Math.min(numPlayers, numHumanPlayers);
+			break;
+
+		case NUM_HUMAN_PLAYERS:
+			if(numHumanPlayers > GameOptions.minHumanPlayers)
+			{
+				numHumanPlayers -= 1;				
+			}
+			else
+			{
+				numHumanPlayers = Math.max(numHumanPlayers, GameOptions.minHumanPlayers);
+			}
+			break;
+
+		default:
+			break;
+		}
+		
+		updateNumPlayerSprites();
+	}
+
+	private void onPlusTouched(PLAYERS_TAB x)
+	{
+		switch(x)
+		{
+		case NUM_PLAYERS:
+			if(numPlayers < GameOptions.maxPlayers)
+			{
+				numPlayers += 1;
+			}
+			else
+			{
+				numPlayers = Math.min(numPlayers, GameOptions.maxPlayers);
+			}
+			break;
+
+		case NUM_HUMAN_PLAYERS:
+			if(numHumanPlayers < GameOptions.maxPlayers)
+			{
+				numHumanPlayers += 1;
+			}
+			else
+			{
+				numHumanPlayers = Math.min(numPlayers, GameOptions.maxPlayers);
+			}
+			numPlayers = Math.max(numPlayers, numHumanPlayers);
+			break;
+
+		default:
+			break;
+		}
+		
+		updateNumPlayerSprites();
+	}
 
 	private void createLevelCanvas()
 	{
@@ -877,7 +1067,7 @@ public class MainMenuScene extends BaseScene implements Displayable, IOnMenuItem
 
 		for(int i = 0; i < GameOptions.numberOfLevels; i++)
 		{
-			levelCheckBox[i] = new ButtonSprite(0f, 0f, resources.checkBoxRegion, vbom)
+			levelCheckBox[i] = new ButtonSprite(0f, 0f, resources.checkBox, vbom)
 			{	
 				@Override
 				public boolean onAreaTouched(TouchEvent ev, float pX, float pY)
@@ -951,7 +1141,7 @@ public class MainMenuScene extends BaseScene implements Displayable, IOnMenuItem
 
 	private void createGoCanvas()
 	{
-		menuNewGameGoCanvas = new RiskaCanvas(camera.getCenterX(), camera.getCenterY(), 0.8f * camera.getWidth(), 0.65f * camera.getHeight());
+		//menuNewGameGoCanvas = new RiskaCanvas(camera.getCenterX(), camera.getCenterY(), 0.8f * camera.getWidth(), 0.65f * camera.getHeight());
 	}
 
 	private void onNameReleased(int index)
@@ -1225,7 +1415,9 @@ public class MainMenuScene extends BaseScene implements Displayable, IOnMenuItem
 			{
 			case MAP:
 				for(int i = 0; i < mapSprite.length; i++)
+				{
 					registerTouchArea(mapSprite[i]);
+				}
 				mapsContainer.fadeIn(animationTime);
 				break;
 
@@ -1234,10 +1426,11 @@ public class MainMenuScene extends BaseScene implements Displayable, IOnMenuItem
 				textNumHumanPlayers.fadeIn(animationTime);
 				spriteNumPlayers.fadeIn(animationTime);
 				spriteNumHumanPlayers.fadeIn(animationTime);
-				plusNumPlayers.fadeIn(animationTime);
-				minusNumPlayers.fadeIn(animationTime);
-				plusNumHumanPlayers.fadeIn(animationTime);
-				minusNumHumanPlayers.fadeIn(animationTime);
+				updateNumPlayerSprites(); // This is called because we're not sure which one should be fading in
+				registerTouchArea(plusNumPlayers);
+				registerTouchArea(minusNumPlayers);
+				registerTouchArea(plusNumHumanPlayers);
+				registerTouchArea(minusNumHumanPlayers);
 				break;
 
 			case LEVEL:
@@ -1296,7 +1489,9 @@ public class MainMenuScene extends BaseScene implements Displayable, IOnMenuItem
 			{
 			case MAP:
 				for(int i = 0; i < mapSprite.length; i++)
+				{
 					unregisterTouchArea(mapSprite[i]);
+				}
 				mapsContainer.fadeOut(animationTime);
 				break;
 
@@ -1309,6 +1504,10 @@ public class MainMenuScene extends BaseScene implements Displayable, IOnMenuItem
 				minusNumPlayers.fadeOut(animationTime);
 				plusNumHumanPlayers.fadeOut(animationTime);
 				minusNumHumanPlayers.fadeOut(animationTime);
+				unregisterTouchArea(plusNumPlayers);
+				unregisterTouchArea(minusNumPlayers);
+				unregisterTouchArea(plusNumHumanPlayers);
+				unregisterTouchArea(minusNumHumanPlayers);
 				break;
 
 			case LEVEL:

@@ -2,16 +2,14 @@ package feup.lpoo.riska.utilities;
 
 import java.util.Random;
 
+import android.util.Log;
+
 import org.andengine.entity.IEntity;
-import org.andengine.entity.sprite.Sprite;
 import org.andengine.entity.text.Text;
 import org.andengine.opengl.font.Font;
 import org.andengine.opengl.vbo.VertexBufferObjectManager;
 import org.andengine.util.adt.color.Color;
 
-import android.util.Log;
-import feup.lpoo.riska.gameInterface.CameraManager;
-import feup.lpoo.riska.gameInterface.RiskaButtonSprite;
 import feup.lpoo.riska.logic.MainActivity;
 
 public class Utils

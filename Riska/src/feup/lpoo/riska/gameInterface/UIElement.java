@@ -17,7 +17,7 @@ public class UIElement extends Entity implements Animated {
 	VertexBufferObjectManager vbom;
 
 	private Text text;
-	private RiskaTiledSprite[] sprites;
+	private RiskaButtonSprite[] sprites;
 
 	private float textBoundingFactorX = 1f;
 	private float textBoundingFactorY = 1f;
@@ -43,11 +43,11 @@ public class UIElement extends Entity implements Animated {
 	{
 		if(sprites == null)
 		{
-			sprites = new RiskaTiledSprite[9];
+			sprites = new RiskaButtonSprite[9];
 		}
 		else
 		{
-			for(RiskaTiledSprite spr : sprites)
+			for(RiskaButtonSprite spr : sprites)
 			{
 				spr.detachSelf();
 			}
@@ -59,7 +59,7 @@ public class UIElement extends Entity implements Animated {
 			{
 				int index = j + i*3;
 				
-				sprites[index] = new RiskaTiledSprite(pTiledTexture.getWidth(), pTiledTexture.getWidth(), pTiledTexture, vbom);
+				sprites[index] = new RiskaButtonSprite(pTiledTexture.getWidth(), pTiledTexture.getWidth(), pTiledTexture, vbom);
 
 				Utils.wrap(sprites[index], this, 1/3f);
 				
@@ -238,7 +238,7 @@ public class UIElement extends Entity implements Animated {
 	@Override
 	public void fadeOut(float deltaTime)
 	{
-		for(RiskaTiledSprite spr : sprites)
+		for(RiskaButtonSprite spr : sprites)
 		{
 			spr.fadeOut(deltaTime);
 		}
@@ -247,7 +247,7 @@ public class UIElement extends Entity implements Animated {
 	@Override
 	public void fadeOut()
 	{
-		for(RiskaTiledSprite spr : sprites)
+		for(RiskaButtonSprite spr : sprites)
 		{
 			spr.fadeOut();
 		}
@@ -256,7 +256,7 @@ public class UIElement extends Entity implements Animated {
 	@Override
 	public void fadeIn(float deltaTime)
 	{
-		for(RiskaTiledSprite spr : sprites)
+		for(RiskaButtonSprite spr : sprites)
 		{
 			spr.fadeIn(deltaTime);
 		}
@@ -265,7 +265,7 @@ public class UIElement extends Entity implements Animated {
 	@Override
 	public void fadeIn()
 	{
-		for(RiskaTiledSprite spr : sprites)
+		for(RiskaButtonSprite spr : sprites)
 		{
 			spr.fadeIn();
 		}
@@ -274,7 +274,7 @@ public class UIElement extends Entity implements Animated {
 	@Override
 	public void rotate()
 	{
-		for(RiskaTiledSprite spr : sprites)
+		for(RiskaButtonSprite spr : sprites)
 		{
 			spr.rotate();
 		}
@@ -283,7 +283,7 @@ public class UIElement extends Entity implements Animated {
 	@Override
 	public void rotate(float pSpeed)
 	{
-		for(RiskaTiledSprite spr : sprites)
+		for(RiskaButtonSprite spr : sprites)
 		{
 			spr.rotate(pSpeed);
 		}
@@ -292,7 +292,7 @@ public class UIElement extends Entity implements Animated {
 	@Override
 	public void rotate(float pSpeed, float pStartingAngle, float pEndingAngle)
 	{
-		for(RiskaTiledSprite spr : sprites)
+		for(RiskaButtonSprite spr : sprites)
 		{
 			spr.rotate(pSpeed, pStartingAngle, pEndingAngle);
 		}
@@ -301,7 +301,7 @@ public class UIElement extends Entity implements Animated {
 	@Override
 	public void stopRotation()
 	{
-		for(RiskaTiledSprite spr : sprites)
+		for(RiskaButtonSprite spr : sprites)
 		{
 			spr.stopRotation();
 		}
@@ -310,7 +310,7 @@ public class UIElement extends Entity implements Animated {
 	@Override
 	public void fadeOutAndStopRotation(float deltaTime)
 	{
-		for(RiskaTiledSprite spr : sprites)
+		for(RiskaButtonSprite spr : sprites)
 		{
 			spr.fadeOutAndStopRotation(deltaTime);
 		}
