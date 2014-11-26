@@ -12,16 +12,11 @@ import org.andengine.opengl.vbo.VertexBufferObjectManager;
 import org.andengine.util.adt.color.Color;
 
 import feup.lpoo.riska.interfaces.Animated;
-import feup.lpoo.riska.logic.GameOptions;
 import feup.lpoo.riska.utilities.Utils;
 
 public class RiskaSprite extends Sprite implements Animated {
 
 	private float textBoundingFactor = 0.8f;
-	private final float animationTime = GameOptions.animationTime;
-	private final float rotateAnimationTime = 3f;
-	private final float rotateStartingAngle = 0f;
-	private final float rotateEndingAngle = -360f;
 	
 	private boolean rotating = false;
 
@@ -186,12 +181,6 @@ public class RiskaSprite extends Sprite implements Animated {
 	}
 
 	@Override
-	public void fadeOut()
-	{
-		fadeOut(animationTime);
-	}
-
-	@Override
 	public void fadeIn(float deltaTime)
 	{
 		unregisterEntityModifier(alphaModifier);
@@ -209,23 +198,11 @@ public class RiskaSprite extends Sprite implements Animated {
 			}
 		}
 	}
-
-	@Override
-	public void fadeIn()
-	{
-		fadeIn(animationTime);
-	}
-
-	@Override
-	public void rotate()
-	{
-		rotate(rotateAnimationTime, rotateStartingAngle, rotateEndingAngle);
-	}
 	
 	@Override
-	public void rotate(float pSpeed)
+	public void rotate(float deltaTime)
 	{
-		rotate(pSpeed, rotateStartingAngle, rotateEndingAngle);
+		rotate(deltaTime, 0, -360);
 	}
 	
 	@Override
@@ -233,6 +210,8 @@ public class RiskaSprite extends Sprite implements Animated {
 	{
 		if(!rotating)
 		{
+			rotating = true;
+			
 			rotationModifier = new RotationModifier(pSpeed, pStartingAngle, pEndingAngle);
 
 			registerEntityModifier(new LoopEntityModifier(rotationModifier));

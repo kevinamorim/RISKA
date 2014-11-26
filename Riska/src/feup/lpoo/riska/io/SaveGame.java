@@ -57,8 +57,10 @@ public class SaveGame {
 		
 		editor.putInt("totalRegions", logic.map.getNumberOfRegions());
 		
-		for(int i = 0; i < logic.map.getRegions().size(); i++) {
-			editor.putInt("soldiers_" + i, logic.map.getRegionById(i).getGarrison());
+		int regionsSize = logic.map.getRegions().size();
+		
+		for(int i = 0; i < regionsSize; i++) {
+			editor.putInt("soldiers_" + i, logic.map.getRegionById(i).getSoldiers());
 		}
 		
 		editor.commit();

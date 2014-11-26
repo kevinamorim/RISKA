@@ -12,16 +12,11 @@ import org.andengine.opengl.vbo.VertexBufferObjectManager;
 import org.andengine.util.adt.color.Color;
 
 import feup.lpoo.riska.interfaces.Animated;
-import feup.lpoo.riska.logic.GameOptions;
 import feup.lpoo.riska.utilities.Utils;
 
 public class RiskaButtonSprite extends ButtonSprite implements Animated {
 
 	private static float textBoundingFactor = 0.8f;
-	private static float animationTime = GameOptions.animationTime;
-	private final float rotateAnimationTime = 3f;
-	private final float rotateStartingAngle = 0f;
-	private final float rotateEndingAngle = -360f;
 	
 	private static int maxChars = Utils.maxNumericChars;
 
@@ -181,12 +176,6 @@ public class RiskaButtonSprite extends ButtonSprite implements Animated {
 	}
 
 	@Override
-	public void fadeOut()
-	{
-		fadeOut(animationTime);
-	}
-
-	@Override
 	public void fadeIn(float deltaTime)
 	{
 		unregisterEntityModifier(alphaModifier);
@@ -204,23 +193,11 @@ public class RiskaButtonSprite extends ButtonSprite implements Animated {
 			}
 		}
 	}
-
-	@Override
-	public void fadeIn()
-	{
-		fadeIn(animationTime);
-	}
-
-	@Override
-	public void rotate()
-	{
-		rotate(rotateAnimationTime, rotateStartingAngle, rotateEndingAngle);
-	}
 	
 	@Override
-	public void rotate(float pSpeed)
+	public void rotate(float deltaTime)
 	{
-		rotate(pSpeed, rotateStartingAngle, rotateEndingAngle);
+		rotate(deltaTime, 0, -360);
 	}
 	
 	@Override

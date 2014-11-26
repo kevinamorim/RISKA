@@ -8,6 +8,7 @@ import org.andengine.entity.IEntity;
 import org.andengine.entity.text.Text;
 import org.andengine.opengl.font.Font;
 import org.andengine.opengl.vbo.VertexBufferObjectManager;
+
 import org.andengine.util.adt.color.Color;
 
 import feup.lpoo.riska.logic.MainActivity;

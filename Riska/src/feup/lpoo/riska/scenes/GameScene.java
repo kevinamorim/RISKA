@@ -199,11 +199,11 @@ public class GameScene extends BaseScene implements IOnSceneTouchListener, IScro
 			regionButton[i].setPosition(pX, pY);
 			regionButton[i].setSize(regionButtonSize, regionButtonSize);
 
-			regionButton[i].setColor(region.getPrimaryColor());
+			regionButton[i].setColor(region.getPriColor());
 
 			regionButton[i].setTextBoundingFactor(0.9f);
-			regionButton[i].setTextColor(region.getSecundaryColor());
-			regionButton[i].setText("" + region.getGarrison());
+			regionButton[i].setTextColor(region.getSecColor());
+			regionButton[i].setText("" + region.getSoldiers());
 
 //			regions[i] = new ButtonSprite(0f, 0f, resources.regions[i], vbom);
 //
@@ -466,12 +466,12 @@ public class GameScene extends BaseScene implements IOnSceneTouchListener, IScro
 			if(button.isVisible())
 			{
 				Region region = map.getRegionByIndex(i);
-				button.setText("" + region.getGarrison());
+				button.setText("" + region.getSoldiers());
 
-				if(region.getPrimaryColor() != button.getColor())
+				if(region.getPriColor() != button.getColor())
 				{
-					button.setColor(region.getPrimaryColor());
-					button.setTextColor(region.getSecundaryColor());
+					button.setColor(region.getPriColor());
+					button.setTextColor(region.getSecColor());
 				}
 			}
 		}
@@ -490,64 +490,60 @@ public class GameScene extends BaseScene implements IOnSceneTouchListener, IScro
 		logic.onRegionTouched(map.getRegionById(regionID));
 	}
 
-	public void Untarget(int rID)
+	public void Untarget(Region region)
 	{
-		Region region = map.getRegionById(rID);	
-		region.setFocus(false);
+		region.focused = false;;	
 		
-		UpdateRegion(rID);
+		UpdateRegion(region);
 		
 		float fadeDuration = 0.5f;
 
-		regionButton[rID].setCurrentTileIndex(0);
-		regionButton[rID].setSize(regionButtonSize, regionButtonSize);
-//		focusSprite[rID].fadeOutAndStopRotation(fadeDuration);
+		regionButton[region.ID].setCurrentTileIndex(0);
+		regionButton[region.ID].setSize(regionButtonSize, regionButtonSize);
+//		focusSprite[region.ID].fadeOutAndStopRotation(fadeDuration);
 	}
 
-	public void Unselect(int rID)
+	public void Unselect(Region region)
 	{
-		Region region = map.getRegionById(rID);	
-		region.setFocus(false);
+		region.focused = false;
 		
-		UpdateRegion(rID);
+		UpdateRegion(region);
 		
 		float fadeDuration = 0.5f;
 
-		regionButton[rID].setCurrentTileIndex(0);
-		regionButton[rID].setSize(regionButtonSize, regionButtonSize);
+		regionButton[region.ID].setCurrentTileIndex(0);
+		regionButton[region.ID].setSize(regionButtonSize, regionButtonSize);
 //		focusSprite[rID].fadeOutAndStopRotation(fadeDuration);
 	}
 
-	public void Select(int rID)
+	public void Select(Region region)
 	{
-		Region region = map.getRegionById(rID);	
-		region.setFocus(true);
+		region.focused = true;
 		
-		UpdateRegion(rID);
+		UpdateRegion(region);
 		
 		float fadeDuration = 0.5f;
 		float rotationSpeed = 3f;
 
-		regionButton[rID].setCurrentTileIndex(1);
-		regionButton[rID].setSize(regionButtonSizeSelected, regionButtonSizeSelected);
+		regionButton[region.ID].setCurrentTileIndex(1);
+		regionButton[region.ID].setSize(regionButtonSizeSelected, regionButtonSizeSelected);
 //		focusSprite[rID].setSize(1.8f * regionButton[rID].getWidth(), 1.8f * regionButton[rID].getHeight());
 //		focusSprite[rID].setColor(Utils.OtherColors.WHITE);
 //		focusSprite[rID].fadeIn(fadeDuration);
 //		focusSprite[rID].rotate(rotationSpeed);
 	}
 
-	public void Target(int rID)
+	public void Target(Region region)
 	{
-		Region region = map.getRegionById(rID);	
-		region.setFocus(true);
+		region.focused = true;
 		
-		UpdateRegion(rID);
+		UpdateRegion(region);
 		
 		float fadeDuration = 0.5f;
 		float rotationSpeed = 3f;
 
-		regionButton[rID].setCurrentTileIndex(1);
-		regionButton[rID].setSize(regionButtonSizeTargeted, regionButtonSizeTargeted);
+		regionButton[region.ID].setCurrentTileIndex(1);
+		regionButton[region.ID].setSize(regionButtonSizeTargeted, regionButtonSizeTargeted);
 //		focusSprite[rID].setSize(1.8f * regionButton[rID].getWidth(), 1.8f * regionButton[rID].getHeight());
 //		focusSprite[rID].setColor(Utils.OtherColors.BLACK);
 //		focusSprite[rID].fadeIn(fadeDuration);
@@ -559,12 +555,12 @@ public class GameScene extends BaseScene implements IOnSceneTouchListener, IScro
 		//btn.setCurrentTileIndex(0);
 	}
 
-	public void UpdateRegion(int rID)
+	public void UpdateRegion(Region region)
 	{
-		Region reg = map.getRegionById(rID);
-		regionButton[rID].setColor(reg.priColor);
-		regionButton[rID].setTextColor(reg.secColor);
-		regionButton[rID].setText("" + reg.getGarrison());
+		Region reg = map.getRegionById(region.ID);
+		regionButton[region.ID].setColor(reg.getPriColor());
+		regionButton[region.ID].setTextColor(reg.getSecColor());
+		regionButton[region.ID].setText("" + reg.getSoldiers());
 	}
 
 	public void showOnlyNeighbourRegions(Region pRegion) {
@@ -864,7 +860,7 @@ public class GameScene extends BaseScene implements IOnSceneTouchListener, IScro
 	{
 		if(!deployScene.isVisible())
 		{
-			showPreMoveScene(logic.selectedRegion.getGarrison() - GameInfo.minGarrison);
+			showPreMoveScene(logic.selectedRegion.getSoldiers() - GameInfo.minGarrison);
 		}
 		else
 		{

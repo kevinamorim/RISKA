@@ -20,12 +20,12 @@ public class MainActivity extends BaseGameActivity {
 	// ======================================================
 	// CONSTANTS
 	// ======================================================
-	private final static int CAMERA_WIDTH = 800;
-	private final static int CAMERA_HEIGHT = 500;
+	private final static int CAMERA_WIDTH = 960;
+	private final static int CAMERA_HEIGHT = 540;
 	private final float MAX_VELOCITY = 700f;
 
-	public final static float RES_RATIO = 16f/10f;
-	public final static float RES_RATIO_INVERTED = 10f/16f;
+	public final static float RES_RATIO = 16f/9f;
+	public final static float RES_RATIO_INVERTED = 1f/RES_RATIO;
 
 	// ======================================================
 	// FIELDS

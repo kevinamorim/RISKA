@@ -12,14 +12,12 @@ public class Region extends Element {
 	// FIELDS
 	// ======================================================
 	public final int ID;
-	public Color priColor, secColor;
 	
-	private boolean focused;
-	private Player owner;
+	public boolean focused;
+	
 	private int garrisonArmy;
-	
-	private ArrayList<Region> neighbourRegion;
-	
+	private Player owner;	
+	private ArrayList<Region> neighbourRegion;	
 	private Point stratCenter;
 	
 	// ======================================================
@@ -36,21 +34,6 @@ public class Region extends Element {
 		garrisonArmy = 0;
 		neighbourRegion = new ArrayList<Region>();
 	}
-
-	public int getGarrison()
-	{
-		return garrisonArmy;
-	}
-	
-	public void addSoldiers(int value)
-	{
-		garrisonArmy += value;
-	}
-	
-	public void setSoldiers(int value)
-	{
-		garrisonArmy = value;
-	}
 	
 	public void addNeighbour(Region region)
 	{
@@ -64,16 +47,7 @@ public class Region extends Element {
 
 	public void setOwner(Player newOwner)
 	{
-		if(owner != null)
-		{
-			owner.removeRegion(this);
-		}
-		
 		owner = newOwner;
-		owner.addRegion(this);
-		
-		secColor = owner.priColor;
-		priColor = owner.secColor;
 	}
 
 	public Player owner()
@@ -85,64 +59,21 @@ public class Region extends Element {
 	{
 		return neighbourRegion.contains(pRegion);
 	}
-
-	public void setColors(Color priColor, Color secColor)
+	
+	public Color getPriColor()
 	{
-		this.priColor = priColor;
-		this.secColor = secColor;
-	}
-
-	private void switchColors(boolean toFocus)
-	{
-		if(toFocus)
-		{
-			priColor = owner.secColor;
-			secColor = owner.priColor;
-		}
+		if(focused)
+			return owner.secColor;
 		else
-		{
-			priColor = owner.priColor;
-			secColor = owner.secColor;
-		}
-	}
-
-	public void clearArmy()
-	{
-		garrisonArmy = 0;
+			return owner.priColor;
 	}
 	
-	public void setFocus(boolean value)
+	public Color getSecColor()
 	{
-		if(value)
-		{
-			focused = true;
-			switchColors(true);
-		}
+		if(focused)
+			return owner.priColor;
 		else
-		{
-			focused = false;
-			switchColors(false);
-		}
-	}
-
-	public boolean isFocused()
-	{
-		return focused;
-	}
-	
-	public Color getPrimaryColor()
-	{
-		return priColor;
-	}
-	
-	public Color getSecundaryColor()
-	{
-		return secColor;
-	}
-
-	public void add(int number)
-	{
-		addSoldiers(number);
+			return owner.secColor;
 	}
 	
 	public boolean ownerIs(Player player)
@@ -179,6 +110,21 @@ public class Region extends Element {
 	public Point getStratCenter()
 	{
 		return stratCenter;
+	}
+
+	public void setSoldiers(int value)
+	{
+		this.garrisonArmy = value;
+	}
+
+	public int getSoldiers()
+	{
+		return garrisonArmy;
+	}
+
+	public void addSoldiers(int value)
+	{
+		garrisonArmy += value;
 	}
 	
 }

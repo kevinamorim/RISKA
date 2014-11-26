@@ -1,5 +1,6 @@
 package feup.lpoo.riska.io;
 
+import feup.lpoo.riska.elements.Player;
 import feup.lpoo.riska.logic.GameLogic;
 import feup.lpoo.riska.logic.GameLogic.GAME_STATE;
 import feup.lpoo.riska.logic.MainActivity;
@@ -53,22 +54,29 @@ public class LoadGame {
 
 	private void loadCpuRegions() {
 		
+		Player p = logic.getPlayers()[1];
+		
 		int size = prefs.getInt("cpuRegionsSize", 0);
-		for(int i = 0; i < size; i++) {
+		
+		for(int i = 0; i < size; i++)
+		{
 			int id = prefs.getInt("cpuRegion_" + i, 0);
-
-			logic.map.getRegionById(id).setOwner(logic.getPlayers()[1]);
+			
+			p.addRegion(logic.map.getRegionById(id));
 		}
 		
 	}
 
 	private void loadPlayerRegions() {
 		
+		Player p = logic.getPlayers()[0];
+		
 		int size = prefs.getInt("playerRegionsSize", 0);
-		for(int i = 0; i < size; i++) {
+		for(int i = 0; i < size; i++)
+		{
 			int id = prefs.getInt("playerRegion_" + i, 0);
 
-			logic.map.getRegionById(id).setOwner(logic.getPlayers()[0]);
+			p.addRegion(logic.map.getRegionById(id));
 		}
 	}
 
@@ -101,12 +109,13 @@ public class LoadGame {
 		
 		int size = prefs.getInt("totalRegions", 0);
 		
-		Log.d("Loading", "Loading soldiers: " + size);
+		//Log.d("Loading", "Loading soldiers: " + size);
 		
 		for(int i = 0; i < size; i++)
 		{
 			int soldiers = prefs.getInt("soldiers_" + i, 1);
-			Log.d("Loading", "Soldiers: " + soldiers);
+			//Log.d("Loading", "Soldiers: " + soldiers);
+			
 			logic.map.getRegionById(i).setSoldiers(soldiers);
 		}
 	}

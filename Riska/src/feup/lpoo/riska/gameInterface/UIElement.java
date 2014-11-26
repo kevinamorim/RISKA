@@ -245,15 +245,6 @@ public class UIElement extends Entity implements Animated {
 	}
 
 	@Override
-	public void fadeOut()
-	{
-		for(RiskaButtonSprite spr : sprites)
-		{
-			spr.fadeOut();
-		}
-	}
-
-	@Override
 	public void fadeIn(float deltaTime)
 	{
 		for(RiskaButtonSprite spr : sprites)
@@ -261,32 +252,11 @@ public class UIElement extends Entity implements Animated {
 			spr.fadeIn(deltaTime);
 		}
 	}
-
+	
 	@Override
-	public void fadeIn()
+	public void rotate(float deltaTime)
 	{
-		for(RiskaButtonSprite spr : sprites)
-		{
-			spr.fadeIn();
-		}
-	}
-
-	@Override
-	public void rotate()
-	{
-		for(RiskaButtonSprite spr : sprites)
-		{
-			spr.rotate();
-		}
-	}
-
-	@Override
-	public void rotate(float pSpeed)
-	{
-		for(RiskaButtonSprite spr : sprites)
-		{
-			spr.rotate(pSpeed);
-		}
+		rotate(deltaTime, 0, -360);
 	}
 
 	@Override

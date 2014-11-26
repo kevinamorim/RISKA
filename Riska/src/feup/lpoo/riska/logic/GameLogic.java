@@ -1,7 +1,5 @@
 package feup.lpoo.riska.logic;
 
-import java.util.ArrayList;
-
 import feup.lpoo.riska.elements.Map;
 import feup.lpoo.riska.elements.Player;
 import feup.lpoo.riska.elements.Region;
@@ -117,26 +115,6 @@ public class GameLogic
 
 		UpdatePlayer();
 	}
-
-	private void OnSetupUpdate()
-	{
-		if(!currentPlayer.hasSoldiersInPool()) /* If player has deployed all of his soldiers. */
-		{
-			currentPlayer = getNextPlayer();
-
-			if(currentPlayer.equals(players[0])) /* If all players have deployed their soldiers. */
-			{
-				currentState = GAME_STATE.PLAY;
-			}
-			else
-			{
-				if(currentPlayer.isCpu)
-				{
-					deployAllSoldiers(currentPlayer);	
-				}
-			}
-		}
-	}
 	
 	public void deployAllSoldiers(Player player)
 	{
@@ -146,15 +124,12 @@ public class GameLogic
 		{
 			int toDeploy = Math.min(GameInfo.defaultDeployable, player.soldiersPool);
 			
-			Region pRegion = player.getRegions().get(i);
+			player.deploySoldiersTo(i, toDeploy);
 			
-			pRegion.addSoldiers(toDeploy);
-			player.soldiersPool -= toDeploy;
-			
+			gameScene.UpdateRegion(player.getRegion(i));
+
 			i++;
 			i %= player.getRegions().size();
-			
-			gameScene.UpdateRegion(pRegion.ID);
 		}
 		
 		UpdatePlayer();
@@ -185,34 +160,6 @@ public class GameLogic
 		else
 		{
 
-		}
-	}
-
-	private Region cpuSelectRegion()
-	{
-		if(currentState.equals(GAME_STATE.ATTACK))
-		{
-			return currentPlayer.pickRegionForAttack();
-		}
-		if(currentState.equals(GAME_STATE.MOVE))
-		{
-			return currentPlayer.pickRegionForMove();
-		}
-		return null;
-	}
-
-	private Region cpuTargetRegion(Region pRegion)
-	{
-		switch(currentState)
-		{
-		case ATTACK:
-			return currentPlayer.pickNeighbourEnemyRegion(pRegion);
-
-		case MOVE:
-			return currentPlayer.pickNeighbourAlliedRegion(pRegion);
-
-		default:
-			return null;
 		}
 	}
 
@@ -259,7 +206,6 @@ public class GameLogic
 		}
 
 		return (remainingPlayers < GameOptions.minPlayers);
-
 	}
 
 	// ======================================================
@@ -388,16 +334,16 @@ public class GameLogic
 	private void SummonOn(Region targetRegion)
 	{
 		// Can't summon more than the soldiers on the player's pool
-		int soldiersToDeploy = Math.min(GameInfo.defaultDeployable, currentPlayer.soldiersPool);
+		int toDeploy = Math.min(GameInfo.defaultDeployable, currentPlayer.soldiersPool);
 
 		// Subtract the summoned players from the player's pool
-		currentPlayer.subtractFromSoldiersPool(soldiersToDeploy);
+		currentPlayer.subtractFromSoldiersPool(toDeploy);
 		
 		// Add summoned soldiers to the region's garrison
-		targetRegion.addSoldiers(soldiersToDeploy);
+		targetRegion.addSoldiers(toDeploy);
 		
 		// Update the region's visual data
-		gameScene.UpdateRegion(targetRegion.ID);
+		gameScene.UpdateRegion(targetRegion);
 	}
 
 	public boolean Selected()
@@ -410,43 +356,12 @@ public class GameLogic
 		return targeted;
 	}
 
-	private boolean canDeploy(Region pRegion)
-	{
-		return pRegion.getGarrison() > GameInfo.minGarrison;
-	}
-
-	private boolean canAttack(Region pRegion)
-	{
-		return pRegion.getGarrison() > GameInfo.minGarrison;
-	}
-
-	private Region selectTargetRegion(Region pRegion1)
-	{
-		// TODO : Complete this for CPU
-		return null;
-	}
-
-	private ArrayList<Region> getEnemyNeighbours(Region pRegion)
-	{
-		ArrayList<Region> result = new ArrayList<Region>();
-
-		for(Region neighbour : pRegion.getNeighbours())
-		{
-			if(!neighbour.owner().equals(pRegion.owner()))
-			{
-				result.add(neighbour);
-			}
-		}
-
-		return result;
-	}
-
 	public void Select(Region pRegion)
 	{
 		selectedRegion = pRegion;
 		selected = true;
 
-		gameScene.Select(pRegion.ID);
+		gameScene.Select(pRegion);
 	}
 
 	public void Target(Region pRegion)
@@ -454,14 +369,14 @@ public class GameLogic
 		targetedRegion = pRegion;
 		targeted = true;
 		
-		gameScene.Target(pRegion.ID);
+		gameScene.Target(pRegion);
 	}
 
 	private void Unselect()
 	{
 		if(selectedRegion != null)
 		{
-			gameScene.Unselect(selectedRegion.ID);
+			gameScene.Unselect(selectedRegion);
 			
 			selectedRegion = null;
 			selected = false;
@@ -472,7 +387,7 @@ public class GameLogic
 	{
 		if(targetedRegion != null)
 		{
-			gameScene.Untarget(targetedRegion.ID);
+			gameScene.Untarget(targetedRegion);
 			
 			targetedRegion = null;
 			targeted = false;

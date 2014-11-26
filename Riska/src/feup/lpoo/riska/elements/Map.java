@@ -48,7 +48,7 @@ public class Map {
 	{
 		for(Region region : regions)
 		{
-			region.setSoldiers(Math.max(minGarrison, region.getGarrison()));
+			region.setSoldiers(minGarrison);
 		}
 	}
 	
@@ -118,8 +118,7 @@ public class Map {
 			Region region = regions.get(index);
 			Player player = players[i];
 
-			region.setOwner(player);
-			region.setColors(player.priColor, player.secColor);
+			player.addRegion(region);
 
 			i = (i + 1) % players.length;
 		}

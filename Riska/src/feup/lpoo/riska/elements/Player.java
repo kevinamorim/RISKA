@@ -51,16 +51,22 @@ public class Player extends Object {
 	public void addRegion(Region region)
 	{
 		regionsPool.add(region);
+		region.setOwner(this);
 	}
 
 	public void removeRegion(Region region)
 	{
 		regionsPool.remove(region);
+		region.setOwner(null);
 	}
 
 	public ArrayList<Region> getRegions()
 	{
 		return regionsPool;
+	}
+	
+	public Region getRegion(int index) {
+		return regionsPool.get(index);
 	}
 
 	public boolean ownsRegion(Region region)
@@ -171,5 +177,11 @@ public class Player extends Object {
 	public String toString()
 	{
 		return "Player '" + name + "' (cpu=" + isCpu + ")";
+	}
+
+	public void deploySoldiersTo(int regionIndex, int value)
+	{
+		this.regionsPool.get(regionIndex).addSoldiers(value);
+		this.soldiersPool -= value;
 	}
 }
