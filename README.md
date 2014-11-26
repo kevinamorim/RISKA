@@ -5,14 +5,11 @@ Android game for LPOO/FEUP
 
 ====================================
 
-Riska: 
+New Interface branch
 
-	Contains source code for the project. Some classes are already initialized. 
-	All the libraries needed are already linked.
+	This branch relates to all the new interface (inside the new gameplay all-round change) to be implemented.
 	
-RiskaMainTest:
-
-	Unit tests project. 
+	[!] The modifications break the game flow and structure and are not yet ready for merging!
 	
 	
 =====================================
