@@ -6,7 +6,7 @@ import org.andengine.engine.camera.Camera;
 import org.andengine.entity.scene.menu.MenuScene;
 
 import android.util.Log;
-import feup.lpoo.riska.gameInterface.RiskaItem;
+import feup.lpoo.riska.gameInterface.RiskaMenuItem;
 import feup.lpoo.riska.utilities.Utils;
 
 public class RiskaMenuScene extends MenuScene {
@@ -17,7 +17,7 @@ public class RiskaMenuScene extends MenuScene {
 	
 	// ------------------
 	//  General
-	protected ArrayList<RiskaItem> items;
+	protected ArrayList<RiskaMenuItem> items;
 	protected int numIcons = 0;
 	
 	protected MODE mode = MODE.CIRCULAR;
@@ -38,10 +38,10 @@ public class RiskaMenuScene extends MenuScene {
 		this.radius = 0.25f * this.getHeight();
 		//Log.d("Riska","Radius: " + radius);
 		
-		this.items = new ArrayList<RiskaItem>();
+		this.items = new ArrayList<RiskaMenuItem>();
 	}
 
-	public void addItem(RiskaItem item)
+	public void addItem(RiskaMenuItem item)
 	{
 		items.add(item);
 		numIcons = items.size();

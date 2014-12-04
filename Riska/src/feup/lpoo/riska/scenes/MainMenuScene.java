@@ -3,19 +3,22 @@ package feup.lpoo.riska.scenes;
 import org.andengine.entity.IEntity;
 import org.andengine.entity.modifier.DelayModifier;
 import org.andengine.entity.scene.background.Background;
+import org.andengine.entity.scene.background.SpriteBackground;
 import org.andengine.entity.scene.menu.MenuScene;
 import org.andengine.entity.scene.menu.item.IMenuItem;
 import org.andengine.entity.scene.menu.MenuScene.IOnMenuItemClickListener;
+import org.andengine.entity.sprite.Sprite;
 import org.andengine.util.adt.color.Color;
 
 import android.util.Log;
-import feup.lpoo.riska.gameInterface.RiskaItem;
-import feup.lpoo.riska.gameInterface.RiskaIcon;
+import feup.lpoo.riska.gameInterface.RiskaMenuItem;
+import feup.lpoo.riska.gameInterface.RiskaMenuIcon;
 import feup.lpoo.riska.gameInterface.RiskaSprite;
 import feup.lpoo.riska.interfaces.Displayable;
 import feup.lpoo.riska.logic.GameOptions;
 import feup.lpoo.riska.logic.SceneManager.SCENE_TYPE;
 import feup.lpoo.riska.scenes.RiskaMenuScene.MODE;
+import feup.lpoo.riska.utilities.Utils;
 
 public class MainMenuScene extends BaseScene implements Displayable, IOnMenuItemClickListener {
 
@@ -104,15 +107,27 @@ public class MainMenuScene extends BaseScene implements Displayable, IOnMenuItem
 
 	private void createBackground()
 	{
-//		background = new SpriteBackground(new Sprite(
-//				camera.getCenterX(), 
-//				camera.getCenterY(),
-//				camera.getWidth(),
-//				camera.getHeight(),
-//				resources.menuBackground, 
-//				vbom));
+		SpriteBackground background = new SpriteBackground(new Sprite(
+				camera.getCenterX(), 
+				camera.getCenterY(),
+				resources.menuBackground.getWidth(),
+				resources.menuBackground.getHeight(),
+				resources.menuBackground, 
+				vbom));
+		
+		setBackground(background);
+		
+		Sprite spr = new Sprite(
+				camera.getCenterX(), 
+				camera.getCenterY(),
+				resources.menuBackground.getWidth(),
+				resources.menuBackground.getHeight(),
+				resources.menuBackground, 
+				vbom);
+		
+		attachChild(spr);
 
-		setBackground(new Background(Color.WHITE));
+		//setBackground(new Background(Utils.OtherColors.BLACK));
 	}
 
 	// ==================================================
@@ -122,19 +137,28 @@ public class MainMenuScene extends BaseScene implements Displayable, IOnMenuItem
 	{
 		mainMenu = new RiskaMenuScene(camera);
 		
-		mainMenu.setDisplayMode(MODE.CIRCULAR);
+		Sprite background = new Sprite(
+				camera.getCenterX(),
+				camera.getCenterY(),
+				0.9f * camera.getWidth(),
+				0.9f * camera.getHeight(),
+				resources.mainBackground,
+				vbom);
+
+		background.setColor(Color.BLACK);
+		background.setAlpha(0.75f);
 		
-		float iconSize = 0.2f * mainMenu.getHeight();
-		RiskaItem x;
+		Sprite btnPlay = new Sprite(
+				camera.getCenterX(),
+				camera.getCenterY(),
+				resources.btnBullet.getWidth(),
+				resources.btnBullet.getHeight(),
+				resources.btnBullet,
+				vbom);
 		
-		x = new RiskaIcon(0f, 0f, iconSize, iconSize, new RiskaSprite(resources.windowRegion, vbom), new RiskaSprite(resources.label, vbom));
-		mainMenu.addItem(x);
+		mainMenu.attachChild(background);
 		
-		x = new RiskaIcon(0f, 0f, iconSize, iconSize, new RiskaSprite(resources.windowRegion, vbom), new RiskaSprite(resources.label, vbom));
-		mainMenu.addItem(x);
-		
-		x = new RiskaIcon(0f, 0f, iconSize, iconSize, new RiskaSprite(resources.windowRegion, vbom), new RiskaSprite(resources.label, vbom));
-		mainMenu.addItem(x);
+		mainMenu.attachChild(btnPlay);
 	}
 
 	// ==================================================
@@ -264,7 +288,7 @@ public class MainMenuScene extends BaseScene implements Displayable, IOnMenuItem
 	}
 
 	@Override
-	public boolean onMenuItemClicked(MenuScene scene, IMenuItem item, float pX, float pY) {
+	public boolean onMenuItemClicked(MenuScene menuScene, IMenuItem menuItem, float pX, float pY) {
 		// TODO Auto-generated method stub
 		return false;
 	}
