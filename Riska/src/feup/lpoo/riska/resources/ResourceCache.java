@@ -63,6 +63,7 @@ public class ResourceCache {
 	// ==================================================
 	private BuildableBitmapTextureAtlas menuBackgroundTextureAtlas;
 	public ITextureRegion menuBackground;
+	public ITextureRegion menuBackground2;
 	
 	private BuildableBitmapTextureAtlas mainMenuTextureAtlas;
 	public ITextureRegion mainBackground;
@@ -229,13 +230,16 @@ public class ResourceCache {
 	{
 		SVGBitmapTextureAtlasTextureRegionFactory.setAssetBasePath("gfx/themes/" + currentTheme + "menu/background/");
 		
-		int TextureWidth = 1024, TextureHeight = 1024;
+		int TextureWidth = 2048, TextureHeight = 2048;
 		
 		menuBackgroundTextureAtlas = new BuildableBitmapTextureAtlas(activity.getTextureManager(), 
 				TextureWidth, TextureHeight, TextureOptions.BILINEAR);
 		
 		menuBackground = SVGBitmapTextureAtlasTextureRegionFactory.createFromAsset(menuBackgroundTextureAtlas,
-				activity, "background_2.svg", 960, 540);
+				activity, "background_0.svg", 960, 540);
+		
+		menuBackground2 = SVGBitmapTextureAtlasTextureRegionFactory.createFromAsset(menuBackgroundTextureAtlas,
+				activity, "background_1.svg", 960, 540);
 		
 		try
 		{

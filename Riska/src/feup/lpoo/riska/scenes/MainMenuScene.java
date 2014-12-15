@@ -43,6 +43,7 @@ public class MainMenuScene extends BaseScene implements Displayable, IOnMenuItem
 	// FIELDS
 	// ==================================================
 	private RiskaMenuScene mainMenu;
+	private RiskaMenuScene playMenu;
 
 	// ==================================================
 	// METHODS
@@ -60,17 +61,17 @@ public class MainMenuScene extends BaseScene implements Displayable, IOnMenuItem
 	{
 		if(getEntityModifierCount() == 0)
 		{
-
-			if(getChildScene().equals(mainMenu))
-			{
-				//IOManager.saveGameOptions();
-				System.exit(0);
-			}
-			else
-			{
-				//detachChildren();
-				changeChildScene(currentChild, CHILD.MAIN);
-			}
+			System.exit(0);
+//			if(getChildScene().equals(mainMenu))
+//			{
+//				//IOManager.saveGameOptions();
+//				System.exit(0);
+//			}
+//			else
+//			{
+//				//detachChildren();
+//				changeChildScene(currentChild, CHILD.MAIN);
+//			}
 		}
 	}
 
@@ -101,33 +102,15 @@ public class MainMenuScene extends BaseScene implements Displayable, IOnMenuItem
 	{
 		createBackground();
 		createMainMenu();
+		createPlayMenu();
 		
-		setChildScene(mainMenu);
+		//setChildScene(mainMenu);
+		setChildScene(playMenu);
 	}
 
 	private void createBackground()
 	{
-		SpriteBackground background = new SpriteBackground(new Sprite(
-				camera.getCenterX(), 
-				camera.getCenterY(),
-				resources.menuBackground.getWidth(),
-				resources.menuBackground.getHeight(),
-				resources.menuBackground, 
-				vbom));
-		
-		setBackground(background);
-		
-		Sprite spr = new Sprite(
-				camera.getCenterX(), 
-				camera.getCenterY(),
-				resources.menuBackground.getWidth(),
-				resources.menuBackground.getHeight(),
-				resources.menuBackground, 
-				vbom);
-		
-		attachChild(spr);
-
-		//setBackground(new Background(Utils.OtherColors.BLACK));
+		setBackground(new Background(Utils.OtherColors.BLACK));
 	}
 
 	// ==================================================
@@ -136,8 +119,17 @@ public class MainMenuScene extends BaseScene implements Displayable, IOnMenuItem
 	private void createMainMenu()
 	{
 		mainMenu = new RiskaMenuScene(camera);
+		//mainMenu.setPosition(camera.getCenterX(), camera.getCenterY());
 		
 		Sprite background = new Sprite(
+				camera.getCenterX(), 
+				camera.getCenterY(),
+				resources.menuBackground.getWidth(),
+				resources.menuBackground.getHeight(),
+				resources.menuBackground, 
+				vbom);
+
+		Sprite alphaCover = new Sprite(
 				camera.getCenterX(),
 				camera.getCenterY(),
 				0.9f * camera.getWidth(),
@@ -145,20 +137,43 @@ public class MainMenuScene extends BaseScene implements Displayable, IOnMenuItem
 				resources.mainBackground,
 				vbom);
 
-		background.setColor(Color.BLACK);
-		background.setAlpha(0.75f);
-		
-		Sprite btnPlay = new Sprite(
-				camera.getCenterX(),
-				camera.getCenterY(),
-				resources.btnBullet.getWidth(),
-				resources.btnBullet.getHeight(),
-				resources.btnBullet,
-				vbom);
+		alphaCover.setColor(Color.BLACK);
+		alphaCover.setAlpha(0.8f);
 		
 		mainMenu.attachChild(background);
+		mainMenu.attachChild(alphaCover);
 		
-		mainMenu.attachChild(btnPlay);
+		//attachChild(mainMenu);
+	}
+	
+	void createPlayMenu() {
+		
+		playMenu = new RiskaMenuScene(camera);
+		//playMenu.setPosition(camera.getCenterX() + camera.getWidth(), camera.getCenterY());
+		
+		Sprite background = new Sprite(
+				camera.getCenterX(), 
+				camera.getCenterY(),
+				resources.menuBackground2.getWidth(),
+				resources.menuBackground2.getHeight(),
+				resources.menuBackground2, 
+				vbom);
+
+		Sprite alphaCover = new Sprite(
+				camera.getCenterX(),
+				camera.getCenterY(),
+				0.9f * camera.getWidth(),
+				0.9f * camera.getHeight(),
+				resources.mainBackground,
+				vbom);
+
+		alphaCover.setColor(Color.BLACK);
+		alphaCover.setAlpha(0.8f);
+		
+		playMenu.attachChild(background);
+		//playMenu.attachChild(alphaCover);
+		
+		//attachChild(playMenu);
 	}
 
 	// ==================================================
