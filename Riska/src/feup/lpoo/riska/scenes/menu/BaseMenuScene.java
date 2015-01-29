@@ -1,26 +1,18 @@
-package feup.lpoo.riska.scenes;
+package feup.lpoo.riska.scenes.menu;
 
 import org.andengine.entity.IEntity;
 import org.andengine.entity.modifier.DelayModifier;
 import org.andengine.entity.scene.background.Background;
-import org.andengine.entity.scene.background.SpriteBackground;
 import org.andengine.entity.scene.menu.MenuScene;
 import org.andengine.entity.scene.menu.item.IMenuItem;
 import org.andengine.entity.scene.menu.MenuScene.IOnMenuItemClickListener;
-import org.andengine.entity.sprite.Sprite;
-import org.andengine.util.adt.color.Color;
-
-import android.util.Log;
-import feup.lpoo.riska.gameInterface.RiskaMenuItem;
-import feup.lpoo.riska.gameInterface.RiskaMenuIcon;
-import feup.lpoo.riska.gameInterface.RiskaSprite;
 import feup.lpoo.riska.interfaces.Displayable;
 import feup.lpoo.riska.logic.GameOptions;
 import feup.lpoo.riska.logic.SceneManager.SCENE_TYPE;
-import feup.lpoo.riska.scenes.RiskaMenuScene.MODE;
+import feup.lpoo.riska.scenes.BaseScene;
 import feup.lpoo.riska.utilities.Utils;
 
-public class MainMenuScene extends BaseScene implements Displayable, IOnMenuItemClickListener {
+public class BaseMenuScene extends BaseScene implements Displayable, IOnMenuItemClickListener {
 
 	// ==================================================
 	// CONSTANTS
@@ -28,11 +20,7 @@ public class MainMenuScene extends BaseScene implements Displayable, IOnMenuItem
 	private enum CHILD {
 		MAIN,
 		OPTIONS,
-		OPTIONS_SOUND,
-		PLAY,
-		SINGLEPLAYER,
-		GO,
-		NONE
+		NEW_GAME
 	};
 	
 	private CHILD currentChild;
@@ -42,8 +30,7 @@ public class MainMenuScene extends BaseScene implements Displayable, IOnMenuItem
 	// ==================================================
 	// FIELDS
 	// ==================================================
-	private RiskaMenuScene mainMenu;
-	private RiskaMenuScene playMenu;
+	private MainMenuScene mainMenu;
 
 	// ==================================================
 	// METHODS
@@ -100,90 +87,22 @@ public class MainMenuScene extends BaseScene implements Displayable, IOnMenuItem
 	@Override
 	public void createDisplay()
 	{
-		createBackground();
-		createMainMenu();
-		createPlayMenu();
-		
-		//setChildScene(mainMenu);
-		setChildScene(playMenu);
-	}
-
-	private void createBackground()
-	{
 		setBackground(new Background(Utils.OtherColors.BLACK));
+		
+		mainMenu = new MainMenuScene(camera);
+		
+		setChildScene(mainMenu);
 	}
 
 	// ==================================================
 	// MAIN MENU
 	// ==================================================
-	private void createMainMenu()
+	
+	void createMenuPlay()
 	{
-		mainMenu = new RiskaMenuScene(camera);
-		//mainMenu.setPosition(camera.getCenterX(), camera.getCenterY());
-		
-		Sprite background = new Sprite(
-				camera.getCenterX(), 
-				camera.getCenterY(),
-				resources.menuBackground.getWidth(),
-				resources.menuBackground.getHeight(),
-				resources.menuBackground, 
-				vbom);
-
-		Sprite alphaCover = new Sprite(
-				camera.getCenterX(),
-				camera.getCenterY(),
-				0.9f * camera.getWidth(),
-				0.9f * camera.getHeight(),
-				resources.mainBackground,
-				vbom);
-
-		alphaCover.setColor(Color.BLACK);
-		alphaCover.setAlpha(0.8f);
-		
-		mainMenu.attachChild(background);
-		mainMenu.attachChild(alphaCover);
-		
-		//attachChild(mainMenu);
+		// TODO
 	}
 	
-	void createPlayMenu() {
-		
-		playMenu = new RiskaMenuScene(camera);
-		//playMenu.setPosition(camera.getCenterX() + camera.getWidth(), camera.getCenterY());
-		
-		Sprite background = new Sprite(
-				camera.getCenterX(), 
-				camera.getCenterY(),
-				resources.menuBackground2.getWidth(),
-				resources.menuBackground2.getHeight(),
-				resources.menuBackground2, 
-				vbom);
-
-		Sprite alphaCover = new Sprite(
-				camera.getCenterX(),
-				camera.getCenterY(),
-				0.9f * camera.getWidth(),
-				0.9f * camera.getHeight(),
-				resources.mainBackground,
-				vbom);
-
-		alphaCover.setColor(Color.BLACK);
-		alphaCover.setAlpha(0.8f);
-		
-		playMenu.attachChild(background);
-		//playMenu.attachChild(alphaCover);
-		
-		//attachChild(playMenu);
-	}
-
-	// ==================================================
-	// START MENU
-	// ==================================================
-
-	// ==================================================
-	// OPTIONS MENU
-	// ==================================================
-
 	// ==================================================
 	// UPDATE DATA
 	// ==================================================
@@ -227,7 +146,7 @@ public class MainMenuScene extends BaseScene implements Displayable, IOnMenuItem
 		case MAIN:
 			break;
 
-		case PLAY:
+		case NEW_GAME:
 			break;
 
 		case OPTIONS:
@@ -251,7 +170,7 @@ public class MainMenuScene extends BaseScene implements Displayable, IOnMenuItem
 //			menuMain.unregisterTouchArea(menuMainOptionsButton);
 			break;
 
-		case PLAY:
+		case NEW_GAME:
 //			startTitle.fadeOut(animationTime);
 //			menuStartNewButton.fadeOut(animationTime);
 //			menuStartLoadButton.fadeOut(animationTime);		

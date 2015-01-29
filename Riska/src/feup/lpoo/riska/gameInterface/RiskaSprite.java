@@ -43,7 +43,6 @@ public class RiskaSprite extends Sprite implements Animated {
 	{
 		super(0f, 0f, pTexture, vbom);
 
-
 		createText(pString, pFont, vbom, Utils.maxNumericChars);
 		wrapText();
 	}

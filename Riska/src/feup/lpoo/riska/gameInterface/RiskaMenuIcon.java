@@ -4,6 +4,7 @@ import org.andengine.entity.IEntity;
 import org.andengine.entity.modifier.AlphaModifier;
 import org.andengine.entity.modifier.LoopEntityModifier;
 import org.andengine.entity.modifier.RotationModifier;
+import org.andengine.opengl.texture.region.ITextureRegion;
 import org.andengine.util.adt.color.Color;
 
 import feup.lpoo.riska.utilities.Utils;
@@ -26,6 +27,15 @@ public class RiskaMenuIcon extends RiskaMenuItem {
 		image = pImage;
 		
 		setSize(pWidth, pHeight);
+		
+		if(background.hasParent())
+		{
+			background.detachSelf();
+		}
+		if(image.hasParent())
+		{
+			image.detachSelf();
+		}
 		
 		attachChild(background);
 		attachChild(image);
@@ -181,5 +191,17 @@ public class RiskaMenuIcon extends RiskaMenuItem {
 	public int getValue()
 	{
 		return value;
+	}
+	
+	public ITextureRegion getTextureRegion(int index) {
+		
+		if(index == 0) {
+			return background.getTextureRegion();
+		}
+		else if(index == 1) {
+			return image.getTextureRegion();
+		}
+		
+		return null;
 	}
 }

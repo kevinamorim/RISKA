@@ -10,3 +10,5 @@
 /Riska/lint.xml
 /Riska/.classpath
 *.db
+out
+.idea

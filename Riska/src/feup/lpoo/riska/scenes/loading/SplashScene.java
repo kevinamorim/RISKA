@@ -1,4 +1,4 @@
-package feup.lpoo.riska.scenes;
+package feup.lpoo.riska.scenes.loading;
 
 import org.andengine.entity.scene.background.Background;
 import org.andengine.entity.sprite.Sprite;
@@ -6,6 +6,7 @@ import org.andengine.util.adt.color.Color;
 
 import feup.lpoo.riska.interfaces.Displayable;
 import feup.lpoo.riska.logic.SceneManager.SCENE_TYPE;
+import feup.lpoo.riska.scenes.BaseScene;
 
 public class SplashScene extends BaseScene implements Displayable {
 	

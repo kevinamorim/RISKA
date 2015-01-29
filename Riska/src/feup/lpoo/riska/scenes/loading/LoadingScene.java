@@ -1,9 +1,11 @@
-package feup.lpoo.riska.scenes;
+package feup.lpoo.riska.scenes.loading;
 
 import org.andengine.entity.scene.background.SpriteBackground;
 import org.andengine.entity.sprite.Sprite;
 import org.andengine.entity.text.Text;
+
 import feup.lpoo.riska.logic.SceneManager.SCENE_TYPE;
+import feup.lpoo.riska.scenes.BaseScene;
 
 public class LoadingScene extends BaseScene {
 
@@ -13,7 +15,7 @@ public class LoadingScene extends BaseScene {
 	@Override
 	public void createScene()
 	{
-		background = new SpriteBackground(new Sprite(camera.getCenterX(), camera.getCenterY(), camera.getWidth(), camera.getHeight(), resources.loadingBackground, vbom));
+		//background = new SpriteBackground(new Sprite(camera.getCenterX(), camera.getCenterY(), camera.getWidth(), camera.getHeight(), resources, vbom));
 		
 		loadingText = new Text(
 				camera.getCenterX(),

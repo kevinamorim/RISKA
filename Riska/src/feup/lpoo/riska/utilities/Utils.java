@@ -15,7 +15,7 @@ import feup.lpoo.riska.logic.MainActivity;
 
 public class Utils
 {
-	
+
 	public static class OtherColors {
 	
 		// VIVID
@@ -486,5 +486,9 @@ public class Utils
 	{
 		Log.d("Riska", ((name != null) ? name: "Entity") + ": at ("+ e.getX() + ", " + e.getY() + ") sized (" + e.getWidth() + ", " + e.getHeight() + ")");
 	}
+
+    public static boolean isValidSoundContext(String x) {
+        return (x == "menu" || x == "game" || x == "battle");
+    }
 	
 }

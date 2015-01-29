@@ -1,10 +1,11 @@
-package feup.lpoo.riska.scenes;
+package feup.lpoo.riska.scenes.game;
 
 import org.andengine.entity.scene.background.Background;
 import org.andengine.entity.text.Text;
 import org.andengine.util.adt.color.Color;
 
 import feup.lpoo.riska.logic.SceneManager.SCENE_TYPE;
+import feup.lpoo.riska.scenes.BaseScene;
 
 public class GameOverScene extends BaseScene {
 

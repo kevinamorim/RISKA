@@ -4,7 +4,7 @@ import feup.lpoo.riska.elements.Map;
 import feup.lpoo.riska.elements.Player;
 import feup.lpoo.riska.elements.Region;
 import feup.lpoo.riska.hud.GameHUD;
-import feup.lpoo.riska.scenes.GameScene;
+import feup.lpoo.riska.scenes.game.GameScene;
 
 public class GameLogic
 {

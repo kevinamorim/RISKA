@@ -7,11 +7,11 @@ import org.andengine.ui.IGameInterface.OnCreateSceneCallback;
 
 import feup.lpoo.riska.resources.ResourceCache;
 import feup.lpoo.riska.scenes.BaseScene;
-import feup.lpoo.riska.scenes.GameOverScene;
-import feup.lpoo.riska.scenes.GameScene;
-import feup.lpoo.riska.scenes.LoadingScene;
-import feup.lpoo.riska.scenes.MainMenuScene;
-import feup.lpoo.riska.scenes.SplashScene;
+import feup.lpoo.riska.scenes.game.GameOverScene;
+import feup.lpoo.riska.scenes.game.GameScene;
+import feup.lpoo.riska.scenes.loading.LoadingScene;
+import feup.lpoo.riska.scenes.loading.SplashScene;
+import feup.lpoo.riska.scenes.menu.BaseMenuScene;
 
 public class SceneManager {
 	
@@ -58,7 +58,7 @@ public class SceneManager {
 	{
 		splashScene = new SplashScene();
 		ResourceCache.instance.loadSplashSceneResources();
-		ResourceCache.instance.loadLoadingSceneResources();
+		ResourceCache.instance.loadResourcesLoadingScene();
 		loadingScene = new LoadingScene();
 		currentScene = splashScene;
 		pOnCreateSceneCallback.onCreateSceneFinished(splashScene);
@@ -73,8 +73,8 @@ public class SceneManager {
 	
 	public void createMainMenuScene()
 	{
-		ResourceCache.instance.loadMainMenuResources();
-		mainMenuScene = new MainMenuScene();
+		ResourceCache.instance.loadMenuResources();
+		mainMenuScene = new BaseMenuScene();
 		setScene(mainMenuScene);
 		disposeSplashScene();
 	}
@@ -82,7 +82,7 @@ public class SceneManager {
 	public void createGameScene()
 	{
 		setScene(loadingScene);
-		ResourceCache.instance.unloadMainMenuResources();
+		ResourceCache.instance.unloadMenuResources();
 		mainMenuScene.disposeScene();
 		mainMenuScene = null;
 		engine.registerUpdateHandler(new TimerHandler(MIN_LOAD_SECONDS, new ITimerCallback()
@@ -149,8 +149,8 @@ public class SceneManager {
 			public void onTimePassed(TimerHandler pTimerHandler)
 			{
 				mEngine.unregisterUpdateHandler(pTimerHandler);
-				ResourceCache.instance.loadMainMenuResources();
-				mainMenuScene = new MainMenuScene();
+				ResourceCache.instance.loadMenuResources();
+				mainMenuScene = new BaseMenuScene();
 				setScene(mainMenuScene);
 			}
 		
