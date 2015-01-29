@@ -20,7 +20,6 @@ import feup.lpoo.riska.gameInterface.RiskaSprite;
 import feup.lpoo.riska.hud.GameHUD;
 import feup.lpoo.riska.logic.GameInfo;
 import feup.lpoo.riska.logic.GameLogic;
-import feup.lpoo.riska.logic.SceneManager.SCENE_TYPE;
 import feup.lpoo.riska.scenes.BaseScene;
 import feup.lpoo.riska.utilities.Utils;
 import android.graphics.Point;
@@ -76,14 +75,14 @@ public class GameScene extends BaseScene implements IOnSceneTouchListener, IScro
 	{
 		//debugRegions();
 		camera.zoomOutImmediate();
-		sceneManager.loadMainMenuScene(engine);
+		sceneManager.loadScene(Utils.CONTEXT.MENU);
 	}
 
 
 	@Override
-	public SCENE_TYPE getSceneType()
+	public Utils.CONTEXT getSceneType()
 	{
-		return SCENE_TYPE.GAME;
+		return Utils.CONTEXT.GAME;
 	}
 
 	@Override
@@ -670,7 +669,7 @@ public class GameScene extends BaseScene implements IOnSceneTouchListener, IScro
 	{
 		logic = new GameLogic(this, hud);
 
-		map = GameInfo.currentMap;
+		//map = GameInfo.currentMap;
 
 		lastTouchTime = 0;
 		doubleTapAllowed = true;

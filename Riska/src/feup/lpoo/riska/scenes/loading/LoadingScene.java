@@ -1,11 +1,10 @@
 package feup.lpoo.riska.scenes.loading;
 
 import org.andengine.entity.scene.background.SpriteBackground;
-import org.andengine.entity.sprite.Sprite;
 import org.andengine.entity.text.Text;
 
-import feup.lpoo.riska.logic.SceneManager.SCENE_TYPE;
 import feup.lpoo.riska.scenes.BaseScene;
+import feup.lpoo.riska.utilities.Utils;
 
 public class LoadingScene extends BaseScene {
 
@@ -39,9 +38,9 @@ public class LoadingScene extends BaseScene {
 	}
 
 	@Override
-	public SCENE_TYPE getSceneType()
+	public Utils.CONTEXT getSceneType()
 	{
-		return SCENE_TYPE.LOADING;
+		return Utils.CONTEXT.LOADING;
 	}
 
 	@Override

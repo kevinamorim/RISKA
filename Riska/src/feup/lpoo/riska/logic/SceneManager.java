@@ -4,212 +4,135 @@ import org.andengine.engine.Engine;
 import org.andengine.engine.handler.timer.ITimerCallback;
 import org.andengine.engine.handler.timer.TimerHandler;
 import org.andengine.ui.IGameInterface.OnCreateSceneCallback;
+import org.andengine.util.debug.Debug;
 
-import feup.lpoo.riska.resources.ResourceCache;
+import feup.lpoo.riska.interfaces.Debuggable;
+import feup.lpoo.riska.resources.ResourceManager;
 import feup.lpoo.riska.scenes.BaseScene;
-import feup.lpoo.riska.scenes.game.GameOverScene;
 import feup.lpoo.riska.scenes.game.GameScene;
 import feup.lpoo.riska.scenes.loading.LoadingScene;
 import feup.lpoo.riska.scenes.loading.SplashScene;
 import feup.lpoo.riska.scenes.menu.BaseMenuScene;
+import feup.lpoo.riska.utilities.Utils;
 
-public class SceneManager {
-	
+public class SceneManager implements Debuggable {
+
 	// ==================================================
 	// CONSTANTS
 	// ==================================================
 	private final float MIN_LOAD_SECONDS = 1f;
-	
-	
-	public enum SCENE_TYPE {
-		SPLASH, 
-		LOADING,
-		MAIN_MENU,
-		LOAD_MAP,
-		GAME,
-		NEWGAME,
-		LOADGAME,
-		PRE_BATTLE,
-		BATTLE,
-		PRE_MOVE,
-		GAMEOVER
-	};
 
 	// ==================================================
 	// FIELDS
 	// ==================================================
+    private Engine engine = MainActivity.instance.getEngine();
+
+    private Utils.CONTEXT currentScene = Utils.CONTEXT.SPLASH;
+
 	private BaseScene splashScene;
 	private BaseScene loadingScene;
 	private BaseScene mainMenuScene;
 	private BaseScene gameScene;
-	private BaseScene gameOverScene;
-	
-	public static SceneManager instance = new SceneManager();
-	private BaseScene currentScene;
-	private Engine engine = ResourceCache.instance.engine;
-	
-	private SCENE_TYPE currentSceneType = SCENE_TYPE.SPLASH;
 
+    // ==================================================
+    // SINGLETON
+    // ==================================================
+    public static SceneManager instance = new SceneManager();
+
+    private SceneManager() {
+        this.splashScene = new SplashScene();
+        this.loadingScene = new LoadingScene();
+        this.mainMenuScene = new BaseMenuScene();
+        this.gameScene = new GameScene();
+    }
 
 	// ==================================================
 	// CREATE SCENES
 	// ==================================================
-	public void createSplashScene(OnCreateSceneCallback pOnCreateSceneCallback)
-	{
-		splashScene = new SplashScene();
-		ResourceCache.instance.loadSplashSceneResources();
-		ResourceCache.instance.loadResourcesLoadingScene();
-		loadingScene = new LoadingScene();
-		currentScene = splashScene;
+	public void loadSplashScene(OnCreateSceneCallback pOnCreateSceneCallback) {
+		ResourceManager.instance.loadResources(Utils.CONTEXT.SPLASH);
+        ResourceManager.instance.loadResources(Utils.CONTEXT.LOADING);
+
+        splashScene = new SplashScene();
+        loadingScene = new LoadingScene();
+        currentScene = Utils.CONTEXT.SPLASH;
+
 		pOnCreateSceneCallback.onCreateSceneFinished(splashScene);
 	}
-	
-	public void disposeSplashScene()
-	{
-		ResourceCache.instance.unloadSplashSceneResources();
-		splashScene.dispose();
-		splashScene = null;
-	}
-	
-	public void createMainMenuScene()
-	{
-		ResourceCache.instance.loadMenuResources();
-		mainMenuScene = new BaseMenuScene();
-		setScene(mainMenuScene);
-		disposeSplashScene();
-	}
-	
-	public void createGameScene()
-	{
-		setScene(loadingScene);
-		ResourceCache.instance.unloadMenuResources();
-		mainMenuScene.disposeScene();
-		mainMenuScene = null;
-		engine.registerUpdateHandler(new TimerHandler(MIN_LOAD_SECONDS, new ITimerCallback()
-		{
-			@Override
-			public void onTimePassed(TimerHandler pTimerHandler)
-			{
-				engine.unregisterUpdateHandler(pTimerHandler);
-				ResourceCache.instance.loadGameSceneResources();
-				gameScene = new GameScene();
-				setScene(gameScene);
-			}
-		}));
-	}
-	
-	public void createGameOverScene()
-	{
-		setScene(loadingScene);
-		ResourceCache.instance.unloadGameSceneResources();
-		gameScene.dispose();
-		gameScene = null;
-		engine.registerUpdateHandler(new TimerHandler(MIN_LOAD_SECONDS, new ITimerCallback() {
 
-			@Override
-			public void onTimePassed(TimerHandler pTimerHandler) {
-				engine.unregisterUpdateHandler(pTimerHandler);
-				ResourceCache.instance.loadGameOverSceneResources();
-				gameOverScene = new GameOverScene();
-				setScene(gameOverScene);
-			}
-			
-		}));
-	}
-	
-	// ==================================================
-	// LOAD SCENES
-	// ==================================================
-	public void loadMainMenuScene(final Engine mEngine)
-	{
-		
-		SCENE_TYPE type = currentSceneType;
-		
-		setScene(loadingScene);
+    public void loadScene(final Utils.CONTEXT context) {
 
-		switch(type) {
-		case GAME:
-			gameScene.disposeScene();
-			ResourceCache.instance.unloadGameSceneResources();
-			break;
-			
-		case GAMEOVER:
-			gameOverScene.disposeScene();
-			ResourceCache.instance.unloadGameOverSceneResources();
-			break;
-			
-		default:
-			/* Not an handled scene. */
-			return;
-		}
+        Utils.CONTEXT current = currentScene;
 
-		mEngine.registerUpdateHandler(new TimerHandler(MIN_LOAD_SECONDS, new ITimerCallback()
-		{
-			@Override
-			public void onTimePassed(TimerHandler pTimerHandler)
-			{
-				mEngine.unregisterUpdateHandler(pTimerHandler);
-				ResourceCache.instance.loadMenuResources();
-				mainMenuScene = new BaseMenuScene();
-				setScene(mainMenuScene);
-			}
-		
-		}));
-	}
-	
+        setScene(Utils.CONTEXT.LOADING);
+
+        unloadScene(current);
+
+        engine.registerUpdateHandler(new TimerHandler(MIN_LOAD_SECONDS, new ITimerCallback()
+        {
+            @Override
+            public void onTimePassed(TimerHandler pTimerHandler)
+            {
+                engine.unregisterUpdateHandler(pTimerHandler);
+                ResourceManager.instance.loadResources(context);
+                getScene(context).createScene();
+                setScene(Utils.CONTEXT.GAME);
+            }
+        }));
+    }
+
 	// ==================================================
 	// GETTERS & SETTERS
 	// ==================================================
-	public SCENE_TYPE getCurrentSceneType()
-	{
-		return currentSceneType;
+	public void setScene(Utils.CONTEXT context) {
+
+		BaseScene scene = getScene(context);
+
+        if(scene != null) {
+            engine.setScene(scene);
+            currentScene = context;
+        }
+        else {
+            print("setScene() : context '" + context + "' returned no valid scene");
+        }
 	}
-	
-	public BaseScene getCurrentScene()
-	{
-		return currentScene;
-	}
-	
-	public void setScene(BaseScene scene)
-	{
-		engine.setScene(scene);
-		currentScene = scene;
-		currentSceneType = scene.getSceneType();
-	}
-	
-	public void setScene(SCENE_TYPE sceneType)
-	{
-		switch(sceneType)
-		{
-		
-		case SPLASH:
-			setScene(splashScene);
-			break;
-			
-		case MAIN_MENU:
-			setScene(mainMenuScene);
-			break;
-			
-		case GAMEOVER:
-			setScene(gameOverScene);
-			break;
-			
-		case GAME:
-			setScene(gameScene);
-			break;
-			
-		case LOADING:
-			setScene(loadingScene);
-			break;
-			
-		default:
-				break;
-		}
-	}
-	
-	public GameScene getGameScene()
-	{
-		return ((GameScene) gameScene);
-	}
+
+    public BaseScene getScene(Utils.CONTEXT context) {
+
+        switch(context)
+        {
+            case SPLASH:
+                return splashScene;
+            case LOADING:
+                return loadingScene;
+            case MENU:
+                return mainMenuScene;
+            case GAME:
+                return gameScene;
+
+            default:
+                return null;
+        }
+    }
+
+    public void unloadScene(Utils.CONTEXT context) {
+
+        BaseScene scene = getScene(context);
+
+        if(scene != null) {
+            ResourceManager.instance.unloadResources(context);
+            scene.disposeScene();
+        }
+    }
+
+    public BaseScene getCurrentScene() {
+        return getScene(currentScene);
+    }
+
+    @Override
+    public void print(String debugInfo) {
+        Debug.d("Scenes", "[Class=SceneManager]");
+        Debug.d("Scenes", "    " + debugInfo);
+    }
 
 }

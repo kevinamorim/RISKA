@@ -58,22 +58,22 @@ public class GameLogic
 
 	private void createPlayers()
 	{
-		players = GameInfo.players();
+/*		players = GameInfo.players();
 		currentPlayer = players[0];
 
 		for(Player p : players)
 		{
 			p.moves = GameInfo.defaultPlayerMoves;
 			p.soldiersPool = GameInfo.defaultSummonPoolSize;
-		}
+		}*/
 	}
 
 	private void createMap()
 	{
-		map = GameInfo.currentMap;
+		/*map = GameInfo.currentMap;
 
 		map.handOutRegions(players);
-		map.initRegions(GameInfo.minGarrison);
+		map.initRegions(GameInfo.minGarrison);*/
 	}
 
 	// ======================================================
@@ -122,9 +122,9 @@ public class GameLogic
 		
 		while(player.soldiersPool > 0)
 		{
-			int toDeploy = Math.min(GameInfo.defaultDeployable, player.soldiersPool);
+			//int toDeploy = Math.min(GameInfo.defaultDeployable, player.soldiersPool);
 			
-			player.deploySoldiersTo(i, toDeploy);
+			//player.deploySoldiersTo(i, toDeploy);
 			
 			gameScene.UpdateRegion(player.getRegion(i));
 
@@ -334,13 +334,13 @@ public class GameLogic
 	private void SummonOn(Region targetRegion)
 	{
 		// Can't summon more than the soldiers on the player's pool
-		int toDeploy = Math.min(GameInfo.defaultDeployable, currentPlayer.soldiersPool);
+		//int toDeploy = Math.min(GameInfo.defaultDeployable, currentPlayer.soldiersPool);
 
 		// Subtract the summoned players from the player's pool
-		currentPlayer.subtractFromSoldiersPool(toDeploy);
+		//currentPlayer.subtractFromSoldiersPool(toDeploy);
 		
 		// Add summoned soldiers to the region's garrison
-		targetRegion.addSoldiers(toDeploy);
+		//targetRegion.addSoldiers(toDeploy);
 		
 		// Update the region's visual data
 		gameScene.UpdateRegion(targetRegion);

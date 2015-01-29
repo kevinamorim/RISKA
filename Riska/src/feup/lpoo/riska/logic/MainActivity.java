@@ -13,7 +13,8 @@ import org.andengine.ui.activity.BaseGameActivity;
 import android.view.KeyEvent;
 import feup.lpoo.riska.gameInterface.CameraManager;
 import feup.lpoo.riska.io.IOManager;
-import feup.lpoo.riska.resources.ResourceCache;
+import feup.lpoo.riska.resources.ResourceManager;
+import feup.lpoo.riska.utilities.Utils;
 
 public class MainActivity extends BaseGameActivity {	
 
@@ -55,11 +56,11 @@ public class MainActivity extends BaseGameActivity {
 	@Override
 	public void onCreateResources(OnCreateResourcesCallback pOnCreateResourcesCallback) throws IOException
 	{
-		ResourceCache.prepareManager(mEngine, this, mCamera, getVertexBufferObjectManager());	
-		ResourceCache.instance.loadSplashScene();
-		ResourceCache.instance.createLoadingSceneResources();
-		ResourceCache.instance.createMainMenuResources();
-		ResourceCache.instance.createGameResources();
+		ResourceManager.prepareManager(mEngine, this, mCamera, getVertexBufferObjectManager());
+		ResourceManager.instance.createResources(Utils.CONTEXT.SPLASH);
+        ResourceManager.instance.createResources(Utils.CONTEXT.LOADING);
+        ResourceManager.instance.createResources(Utils.CONTEXT.MENU);
+        ResourceManager.instance.createResources(Utils.CONTEXT.GAME);
 
 		IOManager.loadGameOptions();
 
@@ -69,7 +70,7 @@ public class MainActivity extends BaseGameActivity {
 	@Override
 	public void onCreateScene(OnCreateSceneCallback pOnCreateSceneCallback) throws IOException
 	{
-		SceneManager.instance.createSplashScene(pOnCreateSceneCallback);
+		SceneManager.instance.loadSplashScene(pOnCreateSceneCallback);
 	}
 
 	@Override
@@ -83,8 +84,8 @@ public class MainActivity extends BaseGameActivity {
 			public void onTimePassed(TimerHandler pTimerHandler)
 			{
 				mEngine.unregisterUpdateHandler(pTimerHandler);
-				SceneManager.instance.createMainMenuScene();
-			}
+				SceneManager.instance.loadScene(Utils.CONTEXT.MENU);
+                  }
 		}));
 
 		pOnPopulateSceneCallback.onPopulateSceneFinished();	

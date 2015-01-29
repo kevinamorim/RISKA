@@ -5,6 +5,7 @@ import java.util.ArrayList;
 import org.andengine.util.debug.Debug;
 
 import feup.lpoo.riska.interfaces.Debuggable;
+import feup.lpoo.riska.logic.GameInfo;
 import feup.lpoo.riska.utilities.Utils;
 
 public class Conductor implements Debuggable {
@@ -18,13 +19,14 @@ public class Conductor implements Debuggable {
     private MusicFolder activeMusicFolder;
     private SoundFolder activeSoundFolder;
 
-    private String context;
+    // ==================================================
+    // SINGLETON
+    // ==================================================
+    public static Conductor instance = new Conductor();
 
     // ==================================================
     // METHODS
     // ==================================================
-    public static Conductor instance = new Conductor();
-
 	private Conductor() {
 
         this.activeMusicFolder = null;
@@ -38,8 +40,7 @@ public class Conductor implements Debuggable {
      * @param pContext
      */
     public void setContext(String pContext) {
-        if(Utils.isValidSoundContext(pContext)) {
-            this.context = pContext;
+        if(GameInfo.isValidSoundContext(pContext)) {
             setActiveFolder(pContext);
         }
         else {

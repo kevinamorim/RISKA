@@ -7,8 +7,8 @@ import org.andengine.opengl.vbo.VertexBufferObjectManager;
 import feup.lpoo.riska.gameInterface.CameraManager;
 import feup.lpoo.riska.logic.MainActivity;
 import feup.lpoo.riska.logic.SceneManager;
-import feup.lpoo.riska.logic.SceneManager.SCENE_TYPE;
-import feup.lpoo.riska.resources.ResourceCache;
+import feup.lpoo.riska.resources.ResourceManager;
+import feup.lpoo.riska.utilities.Utils;
 
 public abstract class BaseScene extends Scene {
 
@@ -17,7 +17,7 @@ public abstract class BaseScene extends Scene {
 	// ==================================================
 	protected Engine engine;
 	protected MainActivity activity;
-	protected ResourceCache resources;
+	protected ResourceManager resources;
 	protected VertexBufferObjectManager vbom;
 	protected CameraManager camera;
 	protected SceneManager sceneManager;
@@ -27,12 +27,12 @@ public abstract class BaseScene extends Scene {
 	// ==================================================
 	public BaseScene()
 	{
-		this.resources = ResourceCache.instance;
+		this.resources = ResourceManager.instance;
 		this.sceneManager = SceneManager.instance;
-		this.engine = resources.engine;
-		this.activity = resources.activity;
-		this.vbom = resources.vbom;
-		this.camera = resources.camera;
+		this.engine = MainActivity.instance.getEngine();
+		this.activity = MainActivity.instance;
+		this.vbom = MainActivity.instance.getVertexBufferObjectManager();
+		this.camera = MainActivity.instance.mCamera;
 		
 		createScene();
 	}
@@ -44,7 +44,7 @@ public abstract class BaseScene extends Scene {
 	
 	public abstract void onBackKeyPressed();
 
-	public abstract SCENE_TYPE getSceneType();
+	public abstract Utils.CONTEXT getSceneType();
 
 	public abstract void disposeScene();
 

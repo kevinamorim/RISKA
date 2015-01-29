@@ -1,45 +1,28 @@
 package feup.lpoo.riska.scenes.game;
 
-import org.andengine.entity.scene.background.Background;
-import org.andengine.entity.text.Text;
-import org.andengine.util.adt.color.Color;
-
-import feup.lpoo.riska.logic.SceneManager.SCENE_TYPE;
 import feup.lpoo.riska.scenes.BaseScene;
+import feup.lpoo.riska.utilities.Utils;
 
 public class GameOverScene extends BaseScene {
 
 	@Override
 	public void createScene() {
-		createBackground();
-		createText();
 	}
 
 	@Override
 	public void onBackKeyPressed() {
-		sceneManager.loadMainMenuScene(engine);
+		sceneManager.loadScene(Utils.CONTEXT.MENU);
 	}
 
 	@Override
-	public SCENE_TYPE getSceneType() {
-		return SCENE_TYPE.GAMEOVER;
+	public Utils.CONTEXT getSceneType() {
+		return Utils.CONTEXT.GAME_OVER;
 	}
 
 	@Override
 	public void disposeScene() {
 		detachSelf();
 		dispose();
-	}
-	
-	private void createBackground() {
-		setBackground(new Background(Color.BLACK));
-	}
-	
-	private void createText() {
-		Text text = new Text(0, 0, resources.mGameOverFont, "", 1000, vbom);
-		text.setText("Game Over...");
-		text.setPosition(camera.getCenterX() - text.getWidth(), camera.getCenterY());
-		attachChild(text);
 	}
 
 	@Override

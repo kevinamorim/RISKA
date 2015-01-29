@@ -8,7 +8,6 @@ import org.andengine.entity.scene.menu.item.IMenuItem;
 import org.andengine.entity.scene.menu.MenuScene.IOnMenuItemClickListener;
 import feup.lpoo.riska.interfaces.Displayable;
 import feup.lpoo.riska.logic.GameOptions;
-import feup.lpoo.riska.logic.SceneManager.SCENE_TYPE;
 import feup.lpoo.riska.scenes.BaseScene;
 import feup.lpoo.riska.utilities.Utils;
 
@@ -23,14 +22,13 @@ public class BaseMenuScene extends BaseScene implements Displayable, IOnMenuItem
 		NEW_GAME
 	};
 	
-	private CHILD currentChild;
+	private CHILD currentChild = CHILD.MAIN;
 
 	private static float animationTime = GameOptions.animationTime;
 
 	// ==================================================
 	// FIELDS
 	// ==================================================
-	private MainMenuScene mainMenu;
 
 	// ==================================================
 	// METHODS
@@ -76,9 +74,9 @@ public class BaseMenuScene extends BaseScene implements Displayable, IOnMenuItem
 	}
 
 	@Override
-	public SCENE_TYPE getSceneType()
+	public Utils.CONTEXT getSceneType()
 	{
-		return SCENE_TYPE.MAIN_MENU;
+		return Utils.CONTEXT.MENU;
 	}
 
 	// ==================================================
@@ -88,10 +86,6 @@ public class BaseMenuScene extends BaseScene implements Displayable, IOnMenuItem
 	public void createDisplay()
 	{
 		setBackground(new Background(Utils.OtherColors.BLACK));
-		
-		mainMenu = new MainMenuScene(camera);
-		
-		setChildScene(mainMenu);
 	}
 
 	// ==================================================
@@ -106,23 +100,8 @@ public class BaseMenuScene extends BaseScene implements Displayable, IOnMenuItem
 	// ==================================================
 	// UPDATE DATA
 	// ==================================================
-	private MenuScene getChildScene(CHILD x)
-	{
-		switch(x)
-		{
-
-		case MAIN:
-			return mainMenu;
-
-		default:
-			return null;
-		}
-	}
-
 	private void changeChildScene(final CHILD from, final CHILD to)
 	{
-		final MenuScene child = getChildScene(to);
-
 		hideChild(from);
 
 		DelayModifier waitForAnimation = new DelayModifier(1.2f * animationTime)
@@ -130,7 +109,6 @@ public class BaseMenuScene extends BaseScene implements Displayable, IOnMenuItem
 			@Override
 			protected void onModifierFinished(IEntity pItem)
 			{
-				setChildScene(child);
 				showChild(to);
 				currentChild = to;
 			}
@@ -209,7 +187,7 @@ public class BaseMenuScene extends BaseScene implements Displayable, IOnMenuItem
 				protected void onModifierFinished(IEntity pItem)
 				{
 					camera.setHUD(null);
-					sceneManager.createGameScene();
+					sceneManager.loadScene(Utils.CONTEXT.GAME);
 				}
 			};
 			registerEntityModifier(waitForAnimation);
@@ -217,7 +195,7 @@ public class BaseMenuScene extends BaseScene implements Displayable, IOnMenuItem
 		else
 		{
 			camera.setHUD(null);
-			sceneManager.createGameScene();		
+			sceneManager.loadScene(Utils.CONTEXT.GAME);
 		}
 	}
 

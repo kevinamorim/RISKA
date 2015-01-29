@@ -1,7 +1,6 @@
 package feup.lpoo.riska.resources;
 
 import org.andengine.engine.Engine;
-import org.andengine.extension.svg.opengl.texture.atlas.bitmap.SVGBitmapTextureAtlasTextureRegionFactory;
 import org.andengine.opengl.font.Font;
 import org.andengine.opengl.font.FontFactory;
 import org.andengine.opengl.texture.TextureOptions;
@@ -16,31 +15,29 @@ import org.andengine.opengl.texture.region.ITiledTextureRegion;
 import org.andengine.opengl.texture.region.TextureRegion;
 import org.andengine.opengl.vbo.VertexBufferObjectManager;
 import org.andengine.util.debug.Debug;
+import org.andengine.extension.svg.opengl.texture.atlas.bitmap.SVGBitmapTextureAtlasTextureRegionFactory;
 
 import android.graphics.Color;
 import android.graphics.Typeface;
+
 import feup.lpoo.riska.gameInterface.CameraManager;
 import feup.lpoo.riska.logic.MainActivity;
 import feup.lpoo.riska.sound.Conductor;
 import feup.lpoo.riska.sound.RiskaMusic;
 import feup.lpoo.riska.sound.RiskaSound;
+import feup.lpoo.riska.utilities.Utils;
 
-public class ResourceCache {
+
+public class ResourceManager {
 
 	// ======================================================
 	// FIELDS
 	// ======================================================
-	public MainActivity activity;
-	public Engine engine;
-	public CameraManager camera;
-	public VertexBufferObjectManager vbom;
-
-	public static ResourceCache instance = new ResourceCache();
-
-	// CURRENT THEME - CHANGE IF NEED BE
+	private MainActivity activity;
+    private Engine engine;
 	private static String currentTheme = "new/";
 
-    public static enum RESOURCE { SPLASH, LOADING, MENU, GAME, GAME_MAP };
+    public VertexBufferObjectManager vbom;
 
     // ======================================================
 	// RESOURCES
@@ -74,11 +71,15 @@ public class ResourceCache {
 	public Font mGameNumbersFont;
 	public Font mGameOverFont;
 
+    // ==================================================
+    // SINGLETON
+    // ==================================================
+    public static ResourceManager instance = new ResourceManager();
 
     // ==================================================
     // PUBLIC METHODS
     // ==================================================
-    public void createAndLoadResources(RESOURCE x) {
+    public void createAndLoadResources(Utils.CONTEXT x) {
 
         switch(x) {
             case SPLASH:
@@ -104,7 +105,7 @@ public class ResourceCache {
         loadResources(x);
     }
 
-    public void createResources(RESOURCE x) {
+    public void createResources(Utils.CONTEXT x) {
 
         switch(x) {
             case SPLASH:
@@ -137,12 +138,12 @@ public class ResourceCache {
                 break;
 
             default:
-                Debug.d("Resources","createResources(RESOURCE x) : x is not a valid RESOURCE");
+                Debug.d("Resources","createResources(CONTEXT x) : x is not a valid CONTEXT");
                 break;
         }
     }
 
-    public void loadResources(RESOURCE x) {
+    public void loadResources(Utils.CONTEXT x) {
 
         switch(x) {
             case SPLASH:
@@ -171,12 +172,12 @@ public class ResourceCache {
                 break;
 
             default:
-                Debug.d("Resources","loadResources(RESOURCE) : " + x + " is not a valid RESOURCE");
+                Debug.d("Resources","loadResources(CONTEXT) : " + x + " is not a valid CONTEXT");
                 break;
         }
     }
 
-    public void unloadResources(RESOURCE x) {
+    public void unloadResources(Utils.CONTEXT x) {
 
         switch(x) {
             case SPLASH:
@@ -205,15 +206,16 @@ public class ResourceCache {
                 break;
 
             default:
-                Debug.d("Resources","unloadResources(RESOURCE) : " + x + " is not a valid RESOURCE");
+                Debug.d("Resources","unloadResources(CONTEXT) : " + x + " is not a valid CONTEXT");
                 break;
         }
     }
 
-	// ==================================================
-	// SPLASH SCENE
-	// ==================================================
-	private void createSplashScene() {
+    // ==================================================
+    // PRIVATE METHODS
+    // ==================================================
+	// Splash Scene
+    private void createSplashScene() {
 		int textureWidth = 512, textureHeight = 512;
 
 		BitmapTextureAtlasTextureRegionFactory.setAssetBasePath("gfx/themes/" + currentTheme + "splash/");
@@ -225,9 +227,7 @@ public class ResourceCache {
 				activity, "splash.png", 0, 0);
 	}
 
-	// ==================================================
-	// LOADING SCENE
-	// ==================================================
+    // Loading Scene
 	private void createLoadingScene() {
 
 		int textureWidth = 4096, textureHeight = 2048;
@@ -238,9 +238,7 @@ public class ResourceCache {
 				textureWidth, textureHeight, TextureOptions.BILINEAR);
 	}
 
-	// ==================================================
-	// MAIN MENU SCENE
-	// ==================================================
+    // Menu Scene
 	private void createMenuBackground() {
 		SVGBitmapTextureAtlasTextureRegionFactory.setAssetBasePath("gfx/themes/" + currentTheme + "menu/background/");
 		
@@ -332,9 +330,7 @@ public class ResourceCache {
         Conductor.instance.addSoundToFolder("menu", sound);
     }
 
-	// ==================================================
-	// GAME SCENE
-	// ==================================================
+    // Game Scene
 	private void createGameBackground() {
 
 		BitmapTextureAtlasTextureRegionFactory.setAssetBasePath("gfx/themes/" + currentTheme + "game/");
@@ -421,11 +417,13 @@ public class ResourceCache {
         Conductor.instance.addSoundToFolder("game", sound);
     }
 
+    // ==================================================
+    // STATIC METHODS
+    // ==================================================
 	public static void prepareManager(Engine engine, MainActivity activity, CameraManager camera, VertexBufferObjectManager vbom) {
 		instance.engine = engine;
 		instance.activity = activity;
-		instance.camera = camera;
-		instance.vbom = vbom;
+        instance.vbom = vbom;
 	}
 
 }

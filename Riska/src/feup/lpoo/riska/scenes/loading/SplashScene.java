@@ -5,8 +5,8 @@ import org.andengine.entity.sprite.Sprite;
 import org.andengine.util.adt.color.Color;
 
 import feup.lpoo.riska.interfaces.Displayable;
-import feup.lpoo.riska.logic.SceneManager.SCENE_TYPE;
 import feup.lpoo.riska.scenes.BaseScene;
+import feup.lpoo.riska.utilities.Utils;
 
 public class SplashScene extends BaseScene implements Displayable {
 	
@@ -40,9 +40,9 @@ public class SplashScene extends BaseScene implements Displayable {
 	}
 	
 	@Override
-	public SCENE_TYPE getSceneType()
+	public Utils.CONTEXT getSceneType()
 	{
-		return SCENE_TYPE.SPLASH;
+		return Utils.CONTEXT.SPLASH;
 	}
 
 	// ==================================================
