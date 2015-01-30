@@ -11,8 +11,6 @@ import org.andengine.opengl.texture.atlas.bitmap.source.IBitmapTextureAtlasSourc
 import org.andengine.opengl.texture.atlas.buildable.builder.BlackPawnTextureAtlasBuilder;
 import org.andengine.opengl.texture.atlas.buildable.builder.ITextureAtlasBuilder.TextureAtlasBuilderException;
 import org.andengine.opengl.texture.region.ITextureRegion;
-import org.andengine.opengl.texture.region.ITiledTextureRegion;
-import org.andengine.opengl.texture.region.TextureRegion;
 import org.andengine.opengl.vbo.VertexBufferObjectManager;
 import org.andengine.util.debug.Debug;
 import org.andengine.extension.svg.opengl.texture.atlas.bitmap.SVGBitmapTextureAtlasTextureRegionFactory;
@@ -43,22 +41,18 @@ public class ResourceManager {
 	// RESOURCES
     // ======================================================
 	private BitmapTextureAtlas splashTextureAtlas;
-	public TextureRegion splashRegion;
+	public ITextureRegion splashLogo;
 
-	private BitmapTextureAtlas loadingTextureAtlas;
-	//public ITextureRegion loadingBackground;
+	private BuildableBitmapTextureAtlas loadingTextureAtlasBackground;
+	public ITextureRegion loadingBackground;
 
-	private BuildableBitmapTextureAtlas menuBackgroundTextureAtlas;
+	private BuildableBitmapTextureAtlas menuTextureAtlasBackground;
+    private BuildableBitmapTextureAtlas menuTextureAtlasButtons;
 	public ITextureRegion menuBackground;
-
-	private BuildableBitmapTextureAtlas mainMenuTextureAtlas;
-	public ITextureRegion solidNoBorder;
-	public ITextureRegion buttonGenericSmall;
-	public ITextureRegion buttonGenericMedium;
-	public ITextureRegion buttonGenericLarge;
-	public ITiledTextureRegion buttonRegion;
+    public ITextureRegion menuButtonStartGame;
 	
-	private BuildableBitmapTextureAtlas gameTextureAtlas;
+	private BuildableBitmapTextureAtlas gameTextureAtlasBackground;
+    public ITextureRegion gameBackground;
 
 	//public Font mSplashFont;
 	public Font mMenuFont;
@@ -146,17 +140,17 @@ public class ResourceManager {
                 break;
 
             case LOADING:
-                loadingTextureAtlas.load();
+                loadingTextureAtlasBackground.load();
                 break;
 
             case MENU:
-                menuBackgroundTextureAtlas.load();
-                mainMenuTextureAtlas.load();
+                menuTextureAtlasBackground.load();
+                menuTextureAtlasButtons.load();
                 mMenuFont.load();
                 break;
 
             case GAME:
-                gameTextureAtlas.load();
+                gameTextureAtlasBackground.load();
                 mGameFont.load();
                 mInfoTabFont.load();
                 mGameNumbersFont.load();
@@ -180,17 +174,17 @@ public class ResourceManager {
                 break;
 
             case LOADING:
-                loadingTextureAtlas.unload();
+                loadingTextureAtlasBackground.unload();
                 break;
 
             case MENU:
-                menuBackgroundTextureAtlas.unload();
-                mainMenuTextureAtlas.unload();
+                menuTextureAtlasBackground.unload();
+                menuTextureAtlasButtons.unload();
                 mMenuFont.unload();
                 break;
 
             case GAME:
-                gameTextureAtlas.unload();
+                gameTextureAtlasBackground.unload();
                 mGameFont.unload();
                 mInfoTabFont.unload();
                 mGameNumbersFont.unload();
@@ -218,19 +212,32 @@ public class ResourceManager {
 		splashTextureAtlas = new BitmapTextureAtlas(activity.getTextureManager(), 
 				textureWidth, textureHeight, TextureOptions.BILINEAR);
 		
-		splashRegion = BitmapTextureAtlasTextureRegionFactory.createFromAsset(splashTextureAtlas, 
+		splashLogo = BitmapTextureAtlasTextureRegionFactory.createFromAsset(splashTextureAtlas,
 				activity, "splash.png", 0, 0);
 	}
 
     // Loading Scene
 	private void createLoadingScene() {
+        SVGBitmapTextureAtlasTextureRegionFactory.setAssetBasePath("gfx/themes/" + currentTheme + "loading/background/");
 
 		int textureWidth = 4096, textureHeight = 2048;
 
 		BitmapTextureAtlasTextureRegionFactory.setAssetBasePath("gfx/themes/" + currentTheme + "loading/");
 
-		loadingTextureAtlas = new BitmapTextureAtlas(activity.getTextureManager(), 
+		loadingTextureAtlasBackground = new BuildableBitmapTextureAtlas(activity.getTextureManager(),
 				textureWidth, textureHeight, TextureOptions.BILINEAR);
+
+        loadingBackground = SVGBitmapTextureAtlasTextureRegionFactory.createFromAsset(menuTextureAtlasBackground,
+                activity, "background.svg", 960, 540);
+
+        try
+        {
+            loadingTextureAtlasBackground.build(new BlackPawnTextureAtlasBuilder<IBitmapTextureAtlasSource, BitmapTextureAtlas>(0, 1, 0));
+        }
+        catch(final TextureAtlasBuilderException e)
+        {
+            Debug.e(e);
+        }
 	}
 
     // Menu Scene
@@ -239,15 +246,15 @@ public class ResourceManager {
 		
 		int TextureWidth = 1024, TextureHeight = 1024;
 		
-		menuBackgroundTextureAtlas = new BuildableBitmapTextureAtlas(activity.getTextureManager(), 
+		menuTextureAtlasBackground = new BuildableBitmapTextureAtlas(activity.getTextureManager(),
 				TextureWidth, TextureHeight, TextureOptions.BILINEAR);
 		
-		menuBackground = SVGBitmapTextureAtlasTextureRegionFactory.createFromAsset(menuBackgroundTextureAtlas,
-				activity, "background_0.svg", 960, 540);
+		menuBackground = SVGBitmapTextureAtlasTextureRegionFactory.createFromAsset(menuTextureAtlasBackground,
+				activity, "background.svg", 960, 540);
 		
 		try
 		{
-			menuBackgroundTextureAtlas.build(new BlackPawnTextureAtlasBuilder<IBitmapTextureAtlasSource, BitmapTextureAtlas>(0, 1, 0));
+			menuTextureAtlasBackground.build(new BlackPawnTextureAtlasBuilder<IBitmapTextureAtlasSource, BitmapTextureAtlas>(0, 1, 0));
 		}
 		catch(final TextureAtlasBuilderException e)
 		{
@@ -261,24 +268,15 @@ public class ResourceManager {
 		
 		int atlasWidth = 1024, atlasHeight = 1024;
 		
-		mainMenuTextureAtlas = new BuildableBitmapTextureAtlas(activity.getTextureManager(), 
+		menuTextureAtlasButtons = new BuildableBitmapTextureAtlas(activity.getTextureManager(),
 				atlasWidth, atlasHeight, TextureOptions.BILINEAR);
 		
-		solidNoBorder = SVGBitmapTextureAtlasTextureRegionFactory.createFromAsset(mainMenuTextureAtlas,
-				activity, "blank_region.svg", 96, 54);
-		
-		buttonGenericSmall = SVGBitmapTextureAtlasTextureRegionFactory.createFromAsset(mainMenuTextureAtlas,
-				activity, "button_generic_small.svg", 64, 64);
-		
-		buttonGenericMedium = SVGBitmapTextureAtlasTextureRegionFactory.createFromAsset(mainMenuTextureAtlas,
+		menuButtonStartGame = SVGBitmapTextureAtlasTextureRegionFactory.createFromAsset(menuTextureAtlasButtons,
 				activity, "button_generic_medium.svg", 256, 256);
-
-		buttonGenericLarge = SVGBitmapTextureAtlasTextureRegionFactory.createFromAsset(mainMenuTextureAtlas,
-				activity, "button_generic_diamond.svg", 512, 512);
 
 		try
 		{
-			mainMenuTextureAtlas.build(new BlackPawnTextureAtlasBuilder<IBitmapTextureAtlasSource, BitmapTextureAtlas>(0, 1, 0));
+			menuTextureAtlasButtons.build(new BlackPawnTextureAtlasBuilder<IBitmapTextureAtlasSource, BitmapTextureAtlas>(0, 1, 0));
 		}
 		catch(final TextureAtlasBuilderException e)
 		{
@@ -311,24 +309,22 @@ public class ResourceManager {
         Conductor.instance.addSoundToFolder("menu", new RiskaSound("clicked", soundBasePath + "background.mp3"));
     }
 
-    private void createMenuSounds() {
-
-
-    }
-
     // Game Scene
 	private void createGameBackground() {
 
-		BitmapTextureAtlasTextureRegionFactory.setAssetBasePath("gfx/themes/" + currentTheme + "game/");
+		BitmapTextureAtlasTextureRegionFactory.setAssetBasePath("gfx/themes/" + currentTheme + "game/background/");
 		
 		int gameTextureWidth = 1024, gameTextureHeight = 1024;
 
-		gameTextureAtlas = new BuildableBitmapTextureAtlas(activity.getTextureManager(),
+		gameTextureAtlasBackground = new BuildableBitmapTextureAtlas(activity.getTextureManager(),
 				gameTextureWidth, gameTextureHeight, TextureOptions.BILINEAR);
+
+        menuBackground = SVGBitmapTextureAtlasTextureRegionFactory.createFromAsset(menuTextureAtlasBackground,
+                activity, "background.svg", 960, 540);
 		
 		try
 		{
-			gameTextureAtlas.build(new BlackPawnTextureAtlasBuilder<IBitmapTextureAtlasSource, BitmapTextureAtlas>(0, 1, 0));
+			gameTextureAtlasBackground.build(new BlackPawnTextureAtlasBuilder<IBitmapTextureAtlasSource, BitmapTextureAtlas>(0, 1, 0));
 		}
 		catch(final TextureAtlasBuilderException e)
 		{

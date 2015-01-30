@@ -57,13 +57,13 @@
   <g
      id="layer1"
      transform="matrix(2.3973346,2.3973346,-2.3973346,2.3973346,2531.392,-2395.1233)"
-     style="fill:#ffffff;stroke:#000000;stroke-width:1.17982161;stroke-miterlimit:4;stroke-opacity:1;stroke-dasharray:none">
+     style="fill:#ff0000;stroke:#000000;stroke-width:1.17982161000000010;stroke-miterlimit:4;stroke-opacity:1;stroke-dasharray:none">
     <rect
        id="rect2991"
        height="48.077"
        width="48.077"
        y="1003.3"
        x="0.96153998"
-       style="fill:#ffffff;fill-rule:nonzero;stroke:#000000;stroke-width:1.17982161;stroke-miterlimit:4;stroke-opacity:1;stroke-dasharray:none" />
+       style="fill:#ff0000;fill-rule:nonzero;stroke:#000000;stroke-width:1.17982161000000010;stroke-miterlimit:4;stroke-opacity:1;stroke-dasharray:none" />
   </g>
 </svg>

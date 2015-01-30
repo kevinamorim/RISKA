@@ -62,7 +62,7 @@ public class SplashScene extends BaseScene implements Displayable {
 	private void createSplashLogo()
 	{
 		splash = new Sprite(0,0, 
-				resources.splashRegion,
+				resources.splashLogo,
 				vbom);
 		
 		splash.setPosition(camera.getCenterX(), camera.getCenterY());

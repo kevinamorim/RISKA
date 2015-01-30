@@ -14,8 +14,6 @@
     </content>
     <orderEntry type="inheritedJdk" />
     <orderEntry type="sourceFolder" forTests="false" />
-    <orderEntry type="module" module-name="AndEngineSVGTextureRegionExtension" />
-    <orderEntry type="module" module-name="AndEngine" />
   </component>
 </module>
 

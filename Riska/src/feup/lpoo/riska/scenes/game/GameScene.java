@@ -5,13 +5,13 @@ import org.andengine.entity.modifier.DelayModifier;
 import org.andengine.entity.scene.IOnSceneTouchListener;
 import org.andengine.entity.scene.Scene;
 import org.andengine.entity.scene.background.Background;
+import org.andengine.entity.scene.background.SpriteBackground;
 import org.andengine.entity.sprite.ButtonSprite;
 import org.andengine.entity.sprite.Sprite;
 import org.andengine.input.touch.TouchEvent;
 import org.andengine.input.touch.detector.ScrollDetector;
 import org.andengine.input.touch.detector.ScrollDetector.IScrollDetectorListener;
 import org.andengine.input.touch.detector.SurfaceScrollDetector;
-import org.andengine.util.adt.color.Color;
 
 import feup.lpoo.riska.elements.Map;
 import feup.lpoo.riska.elements.Region;
@@ -99,25 +99,23 @@ public class GameScene extends BaseScene implements IOnSceneTouchListener, IScro
 	private void createDisplay()
 	{
 		createBackground();
-		createHUD();
-		createMapSprite();
-		createRegions();
-		createChildScenes();
-		createAnimatedSprites();
+		//createHUD();
+		//createMapSprite();
+		//createRegions();
+		//createChildScenes();
+		//createAnimatedSprites();
 	}
 
 	private void createBackground()
 	{
-		setBackground(new Background(Color.BLACK));
-		
-//		SpriteBackground background = new SpriteBackground(new Sprite(
-//				camera.getCenterX(),
-//				camera.getCenterY(),
-//				camera.getWidth() + 2,
-//				camera.getHeight() + 2,
-//				resources.background, vbom));
-//
-//		setBackground(background);
+		SpriteBackground background = new SpriteBackground(new Sprite(
+				camera.getCenterX(),
+				camera.getCenterY(),
+				camera.getWidth() + 2,
+				camera.getHeight() + 2,
+				resources.gameBackground, vbom));
+
+		setBackground(background);
 	}
 
 	private void createHUD()
@@ -144,7 +142,7 @@ public class GameScene extends BaseScene implements IOnSceneTouchListener, IScro
 
 	private void createRegions()
 	{
-		regionButtonSize = 0.07f * mapSprite.getHeight();
+		/*regionButtonSize = 0.07f * mapSprite.getHeight();
 		regionButtonSizeSelected = 1.5f * regionButtonSize;
 		regionButtonSizeTargeted = 1.2f * regionButtonSize;
 
@@ -225,7 +223,7 @@ public class GameScene extends BaseScene implements IOnSceneTouchListener, IScro
 			mapSprite.attachChild(regionButton[i]);
 		}
 
-		registerTouchAreaForAllRegions();
+		registerTouchAreaForAllRegions();*/
 	}
 
 	private void createChildScenes()

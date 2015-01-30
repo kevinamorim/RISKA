@@ -3,9 +3,12 @@ package feup.lpoo.riska.scenes.menu;
 import org.andengine.entity.IEntity;
 import org.andengine.entity.modifier.DelayModifier;
 import org.andengine.entity.scene.background.Background;
+import org.andengine.entity.scene.background.SpriteBackground;
 import org.andengine.entity.scene.menu.MenuScene;
 import org.andengine.entity.scene.menu.item.IMenuItem;
 import org.andengine.entity.scene.menu.MenuScene.IOnMenuItemClickListener;
+import org.andengine.entity.sprite.Sprite;
+
 import feup.lpoo.riska.interfaces.Displayable;
 import feup.lpoo.riska.logic.GameOptions;
 import feup.lpoo.riska.scenes.BaseScene;
@@ -85,8 +88,20 @@ public class BaseMenuScene extends BaseScene implements Displayable, IOnMenuItem
 	@Override
 	public void createDisplay()
 	{
-		setBackground(new Background(Utils.OtherColors.BLACK));
+        createBackground();
 	}
+
+    private void createBackground()
+    {
+        SpriteBackground background = new SpriteBackground(new Sprite(
+                camera.getCenterX(),
+                camera.getCenterY(),
+                camera.getWidth() + 2,
+                camera.getHeight() + 2,
+                resources.menuBackground, vbom));
+
+        setBackground(background);
+    }
 
 	// ==================================================
 	// MAIN MENU
