@@ -13,8 +13,8 @@ import org.andengine.util.adt.color.Color;
 
 import feup.lpoo.riska.logic.MainActivity;
 
-public class Utils
-{
+public class Utils {
+
     public static enum CONTEXT { SPLASH, LOADING, MENU, GAME, GAME_MAP, GAME_OVER }
 
 	public static class OtherColors {
@@ -51,7 +51,7 @@ public class Utils
 	public static final int maxNumericChars = 50;
 	public static final int maxTextChars = 200;
 	
-	private static MainActivity activity = MainActivity.getSharedInstance();
+	private static MainActivity activity = MainActivity.instance;
 
 	private static Random r = new Random();
 

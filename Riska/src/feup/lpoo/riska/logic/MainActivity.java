@@ -23,7 +23,7 @@ public class MainActivity extends BaseGameActivity {
 	// ======================================================
 	private final static int CAMERA_WIDTH = 960;
 	private final static int CAMERA_HEIGHT = 540;
-	private final float MAX_VELOCITY = 700f;
+	private final static float MAX_VELOCITY = 700f;
 
 	public final static float RES_RATIO = 16f/9f;
 	public final static float RES_RATIO_INVERTED = 1f/RES_RATIO;
@@ -85,7 +85,7 @@ public class MainActivity extends BaseGameActivity {
 			{
 				mEngine.unregisterUpdateHandler(pTimerHandler);
 				SceneManager.instance.loadScene(Utils.CONTEXT.MENU);
-                  }
+            }
 		}));
 
 		pOnPopulateSceneCallback.onPopulateSceneFinished();	
@@ -94,33 +94,21 @@ public class MainActivity extends BaseGameActivity {
 	@Override
 	public boolean onKeyDown(int keyCode, KeyEvent event)
 	{
-		
-		switch(keyCode)
-		{
-		case KeyEvent.KEYCODE_BACK:
-			SceneManager.instance.getCurrentScene().onBackKeyPressed();
-			break;
-			
-		case KeyEvent.KEYCODE_MENU:
-			SceneManager.instance.getCurrentScene().onMenuKeyPressed();
-		break;
-			
-		default:
-			break;
-		}
-		if(keyCode == KeyEvent.KEYCODE_BACK)
-		{
-			
-		}
-		
-		if(keyCode == KeyEvent.KEYCODE_BACK)
-		{
-			
-		}
-		
+        switch(keyCode)
+        {
+            case KeyEvent.KEYCODE_BACK:
+                SceneManager.instance.getCurrentScene().onBackKeyPressed();
+                break;
+
+            case KeyEvent.KEYCODE_MENU:
+                SceneManager.instance.getCurrentScene().onMenuKeyPressed();
+                break;
+
+            default:
+                break;
+        }
+
 		return false;
 	}
-
-	public static MainActivity getSharedInstance() { return instance; }
 
 }

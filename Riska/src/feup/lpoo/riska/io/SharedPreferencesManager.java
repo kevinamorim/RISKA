@@ -9,7 +9,7 @@ public class SharedPreferencesManager {
 	
 	public static void SaveBoolean(String key, boolean value) {
 		
-		SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(MainActivity.getSharedInstance());
+		SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(MainActivity.instance);
 		Editor editor = prefs.edit();
 		
 		editor.putBoolean(key, value);
@@ -22,7 +22,7 @@ public class SharedPreferencesManager {
 		
 		boolean defaultValue = true;
 		
-		SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(MainActivity.getSharedInstance());
+		SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(MainActivity.instance);
 		
 		return prefs.getBoolean(key, defaultValue);
 		

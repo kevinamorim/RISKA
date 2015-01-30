@@ -6,15 +6,17 @@ import java.util.ArrayList;
 
 import feup.lpoo.riska.interfaces.Debuggable;
 
-public class MusicFolder implements Debuggable {
+public class AudioFolder implements Debuggable {
 
     public String name;
     private ArrayList<RiskaMusic> musics;
+    private ArrayList<RiskaSound> sounds;
 
-    public MusicFolder(String pName) {
+    public AudioFolder(String pName) {
         this.name = pName;
 
         this.musics = new ArrayList<RiskaMusic>();
+        this.sounds = new ArrayList<RiskaSound>();
     }
 
     public void addMusic(RiskaMusic music) {
@@ -27,7 +29,17 @@ public class MusicFolder implements Debuggable {
         }
     }
 
-    private RiskaMusic getMusic(String name) {
+    public void addSound(RiskaSound sound) {
+
+        if(getSound(sound.name) != null) {
+            sounds.add(sound);
+        }
+        else {
+            print("addSound() : sound with name '" + sound.name + "' already exists");
+        }
+    }
+
+    public RiskaMusic getMusic(String name) {
 
         for(RiskaMusic music : musics) {
             if(music.name == name) {
@@ -38,9 +50,20 @@ public class MusicFolder implements Debuggable {
         return null;
     }
 
+    public RiskaSound getSound(String name) {
+
+        for(RiskaSound sound : sounds) {
+            if(sound.name == name) {
+                return sound;
+            }
+        }
+
+        return null;
+    }
+
     @Override
     public void print(String debugInfo) {
-        Debug.d("Sounds", "[Class=MusicFolder]");
+        Debug.d("Sounds", "[Class=AudioFolder]");
         Debug.d("Sounds", "    " + debugInfo);
     }
 }

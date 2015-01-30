@@ -13,11 +13,9 @@ public class Conductor implements Debuggable {
     // ==================================================
     // FIELDS
     // ==================================================
-    private static ArrayList<MusicFolder> musicFolders = new ArrayList<MusicFolder>();
-    private static ArrayList<SoundFolder> soundFolders = new ArrayList<SoundFolder>();
+    private static ArrayList<AudioFolder> audioFolders = new ArrayList<AudioFolder>();
 
-    private MusicFolder activeMusicFolder;
-    private SoundFolder activeSoundFolder;
+    private AudioFolder activeAudioFolder;
 
     // ==================================================
     // SINGLETON
@@ -29,15 +27,14 @@ public class Conductor implements Debuggable {
     // ==================================================
 	private Conductor() {
 
-        this.activeMusicFolder = null;
-        this.activeSoundFolder = null;
+        this.activeAudioFolder = null;
     }
 
     /**
      * Should be set active whenever a context changes (generally, a "top" scene,
      *      eg: menu->game or vice-versa).
      *
-     * @param pContext
+     * @param pContext : Context of the conductor (menu, game, battle, etc...)
      */
     public void setContext(String pContext) {
         if(GameInfo.isValidSoundContext(pContext)) {
@@ -49,43 +46,27 @@ public class Conductor implements Debuggable {
     }
 
     private void setActiveFolder(String name) {
-        MusicFolder fdMusic = getMusicFolder(name);
-        SoundFolder fdSound = getSoundFolder(name);
+        AudioFolder fdAudio = getAudioFolder(name);
 
-        if(fdMusic != null && fdSound != null) {
-            activeMusicFolder = fdMusic;
-            activeSoundFolder = fdSound;
+        if(fdAudio != null) {
+            activeAudioFolder = fdAudio;
         }
         else {
-            if(fdMusic == null) {
-                print("setActiveFolder() : music folder '" + name + "' does not exist");
-            }
-            if(fdSound == null) {
-                print("setActiveFolder() : sound folder '" + name + "' does not exist");
-            }
+            print("setActiveFolder() : audio folder '" + name + "' does not exist");
         }
     }
 
-    public void createMusicFolder(String name) {
-        if(getMusicFolder(name) != null) {
-            musicFolders.add(new MusicFolder(name));
+    public void createAudioFolder(String name) {
+        if(getAudioFolder(name) != null) {
+            audioFolders.add(new AudioFolder(name));
         }
         else {
-            print("createMusicFolder() : music folder with name '" + name + "' already exists");
-        }
-    }
-
-    public void createSoundFolder(String name) {
-        if(getSoundFolder(name) != null) {
-            soundFolders.add(new SoundFolder(name));
-        }
-        else {
-            print("createSoundFolder() : sound folder with name '" + name + "' already exists");
+            print("createAudioFolder() : audio folder with name '" + name + "' already exists");
         }
     }
 
     public void addMusicToFolder(String folderName, RiskaMusic music) {
-        MusicFolder fd = getMusicFolder(folderName);
+        AudioFolder fd = getAudioFolder(folderName);
 
         if(fd != null) {
             fd.addMusic(music);
@@ -96,7 +77,7 @@ public class Conductor implements Debuggable {
     }
 
     public void addSoundToFolder(String folderName, RiskaSound sound) {
-        SoundFolder fd = getSoundFolder(folderName);
+        AudioFolder fd = getAudioFolder(folderName);
 
         if(fd != null) {
             fd.addSound(sound);
@@ -106,20 +87,9 @@ public class Conductor implements Debuggable {
         }
     }
 
-    private MusicFolder getMusicFolder(String name) {
+    private AudioFolder getAudioFolder(String name) {
 
-        for(MusicFolder folder : musicFolders) {
-            if(folder.name == name) {
-                return folder;
-            }
-        }
-
-        return null;
-    }
-
-    private SoundFolder getSoundFolder(String name) {
-
-        for(SoundFolder folder : soundFolders) {
+        for(AudioFolder folder : audioFolders) {
             if(folder.name == name) {
                 return folder;
             }

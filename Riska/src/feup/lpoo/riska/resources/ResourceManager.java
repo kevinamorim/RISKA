@@ -60,16 +60,12 @@ public class ResourceManager {
 	
 	private BuildableBitmapTextureAtlas gameTextureAtlas;
 
-	// FONTS
-	private BitmapTextureAtlas fontTextureAtlas;
-	private BitmapTextureAtlas menuFontTextureAtlas;
-
 	//public Font mSplashFont;
 	public Font mMenuFont;
 	public Font mInfoTabFont;
 	public Font mGameFont;
 	public Font mGameNumbersFont;
-	public Font mGameOverFont;
+	//public Font mGameOverFont;
 
     // ==================================================
     // SINGLETON
@@ -121,8 +117,7 @@ public class ResourceManager {
                 createMenuButtons();
                 createMenuMaps();
                 createMenuFonts();
-                //createMenuMusic(); TODO
-                //createMenuSounds(); TODO
+                //createMenuAudio(); TODO
                 break;
 
             case GAME:
@@ -298,36 +293,27 @@ public class ResourceManager {
 	private void createMenuFonts() {
 
 		FontFactory.setAssetBasePath("fonts/");
-		
-		menuFontTextureAtlas = new BitmapTextureAtlas(engine.getTextureManager(), 1024, 1024, TextureOptions.BILINEAR);
+
+        BitmapTextureAtlas menuFontTextureAtlas = new BitmapTextureAtlas(engine.getTextureManager(), 1024, 1024, TextureOptions.BILINEAR);
 
 		mMenuFont = FontFactory.create(engine.getFontManager(), menuFontTextureAtlas,
 				Typeface.createFromAsset(activity.getAssets(), FontFactory.getAssetBasePath() + "Cursive Option.ttf"),
 				125, true, Color.WHITE);
 	}
 
-    private void createMenuMusic() {
+    private void createMenuAudio() {
 
         String musicBasePath = "sounds/menu/music/";
+        String soundBasePath = "sounds/menu/sfx/";
 
-        RiskaMusic music;
-        music = new RiskaMusic("background", musicBasePath + "background.mp3", engine.getMusicManager(), activity);
-
-        Conductor.instance.createMusicFolder("menu");
-
-        Conductor.instance.addMusicToFolder("menu", music);
+        Conductor.instance.createAudioFolder("menu");
+        Conductor.instance.addMusicToFolder("menu", new RiskaMusic("background", musicBasePath + "background.mp3"));
+        Conductor.instance.addSoundToFolder("menu", new RiskaSound("clicked", soundBasePath + "background.mp3"));
     }
 
     private void createMenuSounds() {
 
-        String soundBasePath = "sounds/menu/sfx/";
 
-        RiskaSound sound;
-        sound = new RiskaSound("clicked", soundBasePath + "background.mp3", engine.getSoundManager(), activity);
-
-        Conductor.instance.createSoundFolder("menu");
-
-        Conductor.instance.addSoundToFolder("menu", sound);
     }
 
     // Game Scene
@@ -358,13 +344,13 @@ public class ResourceManager {
 
 		FontFactory.setAssetBasePath("fonts/");
 
+        BitmapTextureAtlas fontTextureAtlas = new BitmapTextureAtlas(engine.getTextureManager(), 256, 256, TextureOptions.BILINEAR);
+
 		mGameFont = FontFactory.create(
 				engine.getFontManager(), 
 				engine.getTextureManager(), 512, 512, TextureOptions.BILINEAR,
 				Typeface.create(Typeface.DEFAULT, Typeface.BOLD), 48f,
 				Color.WHITE);
-		
-		fontTextureAtlas = new BitmapTextureAtlas(engine.getTextureManager(), 256, 256, TextureOptions.BILINEAR);
 		
 		mGameNumbersFont = FontFactory.create(
 				engine.getFontManager(),
@@ -379,8 +365,9 @@ public class ResourceManager {
 	}
 	
 	private void createMapsLiterally() {
+        /*
         // TODO : move this to an appropriate place
-/*		if(maps == null)
+		if(maps == null)
 		{
 			maps = new ArrayList<Map>();
 		}
@@ -393,28 +380,14 @@ public class ResourceManager {
 		}*/
 	}
 
-    private void createGameMusic() {
+    private void createGameAudio() {
 
-        String musicBasePath = "sounds/game/music";
-
-        RiskaMusic music;
-        music = new RiskaMusic("background", musicBasePath + "background.mp3",engine.getMusicManager(),activity);
-
-        Conductor.instance.createMusicFolder("menu");
-
-        Conductor.instance.addMusicToFolder("menu", music);
-    }
-
-    private void createGameSounds() {
-
+        String musicBasePath = "sounds/game/music/";
         String soundBasePath = "sounds/game/sfx/";
 
-        RiskaSound sound;
-        sound = new RiskaSound("background", soundBasePath + "background.mp3",engine.getSoundManager(),activity);
-
-        Conductor.instance.createSoundFolder("game");
-
-        Conductor.instance.addSoundToFolder("game", sound);
+        Conductor.instance.createAudioFolder("game");
+        Conductor.instance.addMusicToFolder("game", new RiskaMusic("background", musicBasePath + "background.mp3"));
+        Conductor.instance.addSoundToFolder("game", new RiskaSound("clicked", soundBasePath + "background.mp3"));
     }
 
     // ==================================================

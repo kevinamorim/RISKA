@@ -14,7 +14,7 @@ import feup.lpoo.riska.logic.MainActivity;
  */
 public class FileRead {
 	
-	static MainActivity activity = MainActivity.getSharedInstance();;
+	static MainActivity activity = MainActivity.instance;
 
 	/**
 	 * Reads the given filename to the given ArrayList data

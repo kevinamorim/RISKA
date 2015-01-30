@@ -8,7 +8,7 @@ import feup.lpoo.riska.logic.MainActivity;
 
 public class IOManager {
 	
-	private static SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(MainActivity.getSharedInstance());
+	private static SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(MainActivity.instance);
 	
 	public static void saveGameOptions()
 	{
